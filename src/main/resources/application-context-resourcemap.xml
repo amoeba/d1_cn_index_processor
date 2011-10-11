@@ -1,0 +1,17 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="resourceMapSubprocessor" class="org.dataone.cn.indexer.parser.ResourceMapSubprocessor">
+		<property name="matchDocument"
+			value="/d064:systemMetadata/fmtid[text()='http://www.openarchives.org/ore/terms']" />
+		<property name="httpService" ref="httpService"></property>
+		<property name="documentSource">
+			<bean id="resourceMapDataSource"
+				class="org.dataone.cn.indexer.resourcemap.ResourceMapFileDataSource">
+			</bean>
+		</property>
+		<property name="solrQueryUri" value="${solr.base}/select/"></property>
+	</bean>
+
+</beans>

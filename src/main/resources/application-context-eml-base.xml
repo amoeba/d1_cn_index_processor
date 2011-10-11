@@ -1,0 +1,127 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<bean id="eml.abstract" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="abstract" />
+		<!--TODO: descendants::text() is inefficient use something more precise 
+			like para::text() see eml schema -->
+		<constructor-arg name="xpath"
+			value="//dataset/abstract/descendant::text()" />
+		<property name="combineNodes" value="true" />
+	</bean>
+
+	<bean id="eml.keywords" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="keywords" />
+		<constructor-arg name="xpath"
+			value="//dataset/keywordSet/keyword/text()" />
+		<property name="multivalue" value="true" />
+	</bean>
+
+	<bean id="eml.southBoundCoord" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="southBoundCoord" />
+		<constructor-arg name="xpath"
+			value="//dataset/coverage/geographicCoverage/boundingCoordinates/southBoundingCoordinate/text()" />
+		<property name="multivalue" value="false" />
+		<property name="converter" ref="solrLatitudeConverter" />
+	</bean>
+
+	<bean id="eml.northBoundCoord" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="northBoundCoord" />
+		<constructor-arg name="xpath"
+			value="//dataset/coverage/geographicCoverage/boundingCoordinates/northBoundingCoordinate/text()" />
+		<property name="multivalue" value="false" />
+		<property name="converter" ref="solrLatitudeConverter" />
+	</bean>
+
+	<bean id="eml.westBoundCoord" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="westBoundCoord" />
+		<constructor-arg name="xpath"
+			value="//dataset/coverage/geographicCoverage/boundingCoordinates/westBoundingCoordinate/text()" />
+		<property name="multivalue" value="false" />
+		<property name="converter" ref="solrLongitudeConverter" />
+	</bean>
+
+	<bean id="eml.eastBoundCoord" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="eastBoundCoord" />
+		<constructor-arg name="xpath"
+			value="//dataset/coverage/geographicCoverage/boundingCoordinates/eastBoundingCoordinate/text()" />
+		<property name="multivalue" value="false" />
+		<property name="converter" ref="solrLongitudeConverter" />
+	</bean>
+
+	<bean id="eml.beginDate" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="beginDate" />
+		<constructor-arg name="xpath"
+			value="//dataset/coverage/temporalCoverage/rangeOfDates/beginDate/calendarDate/text()" />
+		<property name="multivalue" value="false" />
+		<property name="converter" ref="dateConverter" />
+	</bean>
+
+	<bean id="eml.endDate" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="endDate" />
+		<constructor-arg name="xpath"
+			value="//dataset/coverage/temporalCoverage/rangeOfDates/endDate/calendarDate/text()" />
+		<property name="multivalue" value="false" />
+		<property name="converter" ref="dateConverter" />
+	</bean>
+
+	<bean id="eml.title" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="title" />
+		<constructor-arg name="xpath" value="//dataset/title/text()" />
+		<property name="multivalue" value="false" />
+	</bean>
+
+	<bean class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="author" />
+		<constructor-arg name="xpath"
+			value="concat (//dataset/creator/individualName/surName/text(),' ',//dataset/creator/individualName/givenName/text())" />
+		<property name="multivalue" value="false" />
+	</bean>
+
+	<bean class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="author_lname" />
+		<constructor-arg name="xpath"
+			value="//dataset/creator/individualName/surName/text()" />
+		<property name="multivalue" value="true" />
+	</bean>
+
+	<!--<bean class="org.dataone.cn.indexer.parser.SolrField"> -->
+	<!--<constructor-arg name="name" value="keyConcept"/> -->
+	<!--<constructor-arg name="xpath" value=""/> -->
+	<!--<property name="multivalue" value="true"/> -->
+	<!--</bean> -->
+
+	<!--<bean class="org.dataone.cn.indexer.parser.SolrField"> -->
+	<!--<constructor-arg name="name" value="namedLocation"/> -->
+	<!--<constructor-arg name="xpath" value=""/> -->
+	<!--<property name="multivalue" value="true"/> -->
+	<!--</bean> -->
+	<!--<bean class="org.dataone.cn.indexer.parser.SolrField"> -->
+	<!--<constructor-arg name="name" value="text"/> -->
+	<!--<constructor-arg name="xpath" value=""/> -->
+	<!--<property name="multivalue" value="false"/> -->
+	<!--</bean> -->
+	<!--<bean class="org.dataone.cn.indexer.parser.SolrField"> -->
+	<!--<constructor-arg name="name" value="variableName"/> -->
+	<!--<constructor-arg name="xpath" value=""/> -->
+	<!--<property name="multivalue" value="true"/> -->
+	<!--</bean> -->
+	<!--<bean class="org.dataone.cn.indexer.parser.SolrField"> -->
+	<!--<constructor-arg name="name" value="scientificName"/> -->
+	<!--<constructor-arg name="xpath" value=""/> -->
+	<!--<property name="multivalue" value="true"/> -->
+	<!--</bean> -->
+
+	<!--<bean class="org.dataone.cn.indexer.parser.SolrField"> -->
+	<!--<constructor-arg name="name" value="relatedOrganizations"/> -->
+	<!--<constructor-arg name="xpath" value=""/> -->
+	<!--<property name="multivalue" value="true"/> -->
+	<!--</bean> -->
+	<!--<bean class="org.dataone.cn.indexer.parser.SolrField"> -->
+	<!--<constructor-arg name="name" value="datePublished"/> -->
+	<!--<constructor-arg name="xpath" value=""/> -->
+	<!--<property name="multivalue" value="false"/> -->
+	<!--</bean> -->
+</beans>
