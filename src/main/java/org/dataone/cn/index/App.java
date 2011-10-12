@@ -8,7 +8,9 @@ package org.dataone.cn.index;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.List;
+import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -31,10 +33,13 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+
 public class App {
   public static final String DOCUMENT_PARSERS = "documentParsers";
   private static ApplicationContext context = null;
   private String springConfigFile = null;
+  private String taskListPath = "/tmp/indexing/index_tasks.txt";
+  private String objectBasePath = "";
   public List<XPathDocumentParser> parserList = null;
   Log log = LogFactory.getLog(App.class);
 
@@ -44,7 +49,7 @@ public class App {
    */
   public static void main(String[] args) {
     App app = new App();
-    Options opps = app.getOptions();
+/*    Options opps = app.getOptions();
     CommandLineParser parser = new PosixParser();
     CommandLine line = null;
     try {
@@ -58,14 +63,26 @@ public class App {
 
     String configFile = line.getOptionValue("config");
     String metadir = line.getOptionValue("metadir");
-    app.setSpringConfigFile(configFile);
+    app.setSpringConfigFile(configFile); */
     // app.index(metadir);
-    app.run(metadir);
+    app.run();
   }
 
+  public void loadConfig() {
+    Properties props = new Properties();
+    URL url = ClassLoader.getSystemResource("index_processor.properties");
+    try {
+      props.load(url.openStream());
+      taskListPath = props.getProperty("taskListPath", taskListPath);
+      objectBasePath = props.getProperty("objectBasePath", objectBasePath);
+    } catch (IOException e) {
+      log.info(e.getMessage());
+    }
+  }
+  
   
   public IndexingTaskList loadTasks(String sourcePath) {
-    IndexingTaskList tasks = new IndexingTaskList(sourcePath, "/Users/vieglais/remote/cndev");
+    IndexingTaskList tasks = new IndexingTaskList(sourcePath, objectBasePath);
     return tasks;
   }
   
@@ -76,12 +93,14 @@ public class App {
    * updates to the entries referenced by the resource map.
    * @param metadir
    */
-  public void run(String metadir) {
+  public void run() {
+    loadConfig();
     context = getContext();
     parserList = (List<XPathDocumentParser>) context.getBean(DOCUMENT_PARSERS);
     XPathDocumentParser parser = parserList.get(0);
-
-    IndexingTaskList tasks = loadTasks("/Users/vieglais/remote/cndev/tmp/indexing/index_tasks.txt");
+    
+    IndexingTaskList tasks = loadTasks(taskListPath);
+    
     for (int i=0; i<tasks.size(); i++) {
       IndexingTask task = tasks.get(i);
       log.debug("PID, sys, object = " + task.pid + ", " + task.sysMetaPath +", " + task.objectPath);
@@ -140,7 +159,6 @@ public class App {
       } else {
         context = new ClassPathXmlApplicationContext("application-context.xml");
       }
-
     }
     return context;
   }

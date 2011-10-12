@@ -61,6 +61,7 @@ public class IndexingTaskList extends ArrayList<IndexingTask> {
           break;
         case 1:
           task.setPid(line);
+          //log.debug("TASK pid=" + line);
           break;
         case 2:
           task.setDateSysmModified(line);
