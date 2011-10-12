@@ -73,14 +73,14 @@
 		<property name="multivalue" value="false" />
 	</bean>
 
-	<bean class="org.dataone.cn.indexer.parser.SolrField">
+	<bean id="eml.author" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="author" />
 		<constructor-arg name="xpath"
 			value="concat (//dataset/creator/individualName/surName/text(),' ',//dataset/creator/individualName/givenName/text())" />
 		<property name="multivalue" value="false" />
 	</bean>
 
-	<bean class="org.dataone.cn.indexer.parser.SolrField">
+	<bean id="eml.author_lname" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="author_lname" />
 		<constructor-arg name="xpath"
 			value="//dataset/creator/individualName/surName/text()" />

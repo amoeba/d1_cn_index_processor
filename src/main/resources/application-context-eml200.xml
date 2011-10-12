@@ -17,6 +17,8 @@
 				<ref bean="eml.eastBoundCoord" />
 				<ref bean="eml.beginDate" />
 				<ref bean="eml.endDate" />
+        <ref bean="eml.author" />
+        <ref bean="eml.author_lname" />
 			</list>
 		</property>
 	</bean>
