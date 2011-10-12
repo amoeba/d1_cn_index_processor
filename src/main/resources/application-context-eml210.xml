@@ -1,25 +1,26 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-	
-	<bean id="eml210Subprocessor"
-		class="org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor">
-		<property name="matchDocument"
-			value="/d064:systemMetadata/fmtid[text() = 'eml://ecoinformatics.org/eml-2.1.0']"></property>
-		<property name="fieldList">
-			<list>
-				<ref bean="eml.abstract" />
-				<ref bean="eml.keywords" />
-				<ref bean="eml.title" />
-				<ref bean="eml.southBoundCoord" />
-        <ref bean="eml.northBoundCoord" />
-        <ref bean="eml.westBoundCoord" />
-        <ref bean="eml.eastBoundCoord" />
-        <ref bean="eml.beginDate" />
-        <ref bean="eml.endDate" />
-        <ref bean="eml.author" />
-        <ref bean="eml.author_lname" />
-			</list>
-		</property>
-	</bean>
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+ <bean id="eml210Subprocessor"
+  class="org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor">
+  <property name="matchDocument"
+   value="/d064:systemMetadata/fmtid[text() = 'eml://ecoinformatics.org/eml-2.1.0']"></property>
+  <property name="fieldList">
+   <list>
+    <ref bean="eml.abstract" />
+    <ref bean="eml.keywords" />
+    <ref bean="eml.title" />
+    <ref bean="eml.southBoundCoord" />
+    <ref bean="eml.northBoundCoord" />
+    <ref bean="eml.westBoundCoord" />
+    <ref bean="eml.eastBoundCoord" />
+    <ref bean="eml.beginDate" />
+    <ref bean="eml.endDate" />
+    <ref bean="eml.author" />
+    <ref bean="eml.author_lname" />
+    <ref bean="eml.contactOrganization" />
+   </list>
+  </property>
+ </bean>
 </beans>

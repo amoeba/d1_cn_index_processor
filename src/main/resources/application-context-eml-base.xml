@@ -87,6 +87,16 @@
 		<property name="multivalue" value="true" />
 	</bean>
 
+  <bean id="eml.contactOrganization" class="org.dataone.cn.indexer.parser.MergeSolrField">
+    <constructor-arg name="name" value="contactOrganization" />
+    <constructor-arg name="xpath"
+      value="//dataset/creator/organizationName/text()" />
+    <constructor-arg name="delimiter" value="; " />
+    <property name="multivalue" value="false" />
+    <property name="dedupe" value="true" />
+  </bean>
+
+
 	<!--<bean class="org.dataone.cn.indexer.parser.SolrField"> -->
 	<!--<constructor-arg name="name" value="keyConcept"/> -->
 	<!--<constructor-arg name="xpath" value=""/> -->
