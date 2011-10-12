@@ -135,10 +135,6 @@
   <constructor-arg value="public" />
  </bean>
 
- <!-- Generate entries in web_url that enable download of the object described 
-  by the record -->
- <bean id="objectLocationConverter" class="org.dataone.cn.indexer.convert.ObjectLocationConverter">
- </bean>
 
  <!-- TODO: This node map obviously should be loaded from the node registry. It is used to populate the retrieval URL for each object in the index.
  Note: this means that is a node changes base URL, then really everything needs to be re-indexed. It would be
