@@ -13,25 +13,31 @@ import java.util.Calendar;
 public class IndexingTask {
 
   public String pid = null;
+  public String fmtid = null;
   public String sysMetaPath = null;
   public String objectPath = null;
-  public Date dateSysmModified = null;
+  public long dateSysmModified = 0;
   public Date tstamp = null;
   
   public void IndexingTask() {
     tstamp = new Date();
   }
   
-  public void IndexingTask(String id, String sysMeta, String object, Date tmod) {
-    pid = id;
-    sysMetaPath = sysMeta;
-    objectPath = object;
-    dateSysmModified = tmod;
-    tstamp = new Date();
+  public void IndexingTask(String id, String fmtid, String sysMeta, String object, long tmod) {
+    this.pid = id;
+    this.fmtid = fmtid;
+    this.sysMetaPath = sysMeta;
+    this.objectPath = object;
+    this.dateSysmModified = tmod;
+    this.tstamp = new Date();
   }
   
   public void setPid(String pid) {
     this.pid = pid;
+  }
+  
+  public void setFmtid(String fmtid) {
+    this.fmtid = fmtid;
   }
   
   public void setSysMetaPath(String sysMetaPath) {
@@ -43,8 +49,8 @@ public class IndexingTask {
   }
   
   public void setDateSysmModified(String tstamp) {
-    long t = Long.parseLong(tstamp);
-    dateSysmModified = new Date(t);
+    dateSysmModified = Long.parseLong(tstamp);
+    //dateSysmModified = new Date(t);
   }
   
 }

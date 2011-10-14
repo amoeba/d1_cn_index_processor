@@ -64,12 +64,15 @@ public class IndexingTaskList extends ArrayList<IndexingTask> {
           //log.debug("TASK pid=" + line);
           break;
         case 2:
-          task.setDateSysmModified(line);
+          task.setFmtid(line);
           break;
         case 3:
-          task.setSysMetaPath(basePath + line);
+          task.setDateSysmModified(line);
           break;
         case 4:
+          task.setSysMetaPath(basePath + line);
+          break;
+        case 5:
           if (!line.equals("null") & line != null) {
             task.setObjectPath(basePath + line);
           }

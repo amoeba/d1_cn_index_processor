@@ -182,6 +182,18 @@
             value="/d064:systemMetadata/identifier/text()" />
           <constructor-arg name="nodesXPath" value="//replica[replicationStatus/text()='completed']/replicaMemberNode/text()" />
           <constructor-arg name="nodeMap" ref="nodeRegistryMap" />
+          <property name="onlyReferenceCNs" value="true" />
+          <property name="multivalue" value="true" />
+        </bean>
+        <bean class="org.dataone.cn.indexer.parser.WebUrlSolrField">
+        <!--  -->
+          <constructor-arg name="name" value="data_url" />
+          <constructor-arg name="xpath"
+            value="/d064:systemMetadata/identifier/text()" />
+          <constructor-arg name="nodesXPath" value="//replica[replicationStatus/text()='completed']/replicaMemberNode/text()" />
+          <constructor-arg name="nodeMap" ref="nodeRegistryMap" />
+          <property name="onlyReferenceCNs" value="false" />
+          <property name="multivalue" value="true" />
         </bean>
       
 			</list>

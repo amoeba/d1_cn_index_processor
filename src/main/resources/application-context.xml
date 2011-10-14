@@ -1,24 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- <beans xmlns="http://www.springframework.org/schema/beans" -->
-<!-- xmlns:context="http://www.springframework.org/schema/context" -->
-<!-- xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" -->
-<!-- xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd -->
-<!-- http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd -->
-<!-- http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"> -->
 <beans xmlns="http://www.springframework.org/schema/beans"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
- xmlns:util="http://www.springframework.org/schema/util"
- xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
-        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
-
- <context:property-placeholder
-  properties-ref="props" />
- <util:properties id="props">
-  <!-- <prop key="solr.base">http://localhost:9080/solr</prop> -->
-  <prop key="solr.base">http://cn-dev.dataone.org/solr</prop>
- </util:properties>
-
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
  <bean id="dateConverter" class="org.dataone.cn.indexer.convert.SolrDateConverter" />
  <bean id="solrLatitudeConverter" class="org.dataone.cn.indexer.convert.SolrLatitudeConverter" />
@@ -31,8 +14,10 @@
      <constructor-arg name="fields" ref="xpath_system_metadata_064">
      </constructor-arg>
      <constructor-arg name="xmlNamespaceConfig" ref="xmlNamespaceConfig" />
-     <property name="solrindexUri" value="${solr.base}/update?commit=true" />
-     <property name="solrQueryUri" value="${solr.base}/select/" />
+<!--      <property name="solrBaseUri" value="http://cn-dev.dataone.org/solr" /> -->
+     <property name="solrBaseUri" value="http://localhost:9080/solr" />
+<!--      <property name="solrindexUri" value="${solr.base}/update?commit=true" /> -->
+<!--      <property name="solrQueryUri" value="${solr.base}/select/" /> -->
      <property name="output_encoding" value="UTF-8" />
      <property name="input_encoding" value="UTF-8" />
      <property name="httpService" ref="httpService"></property>
@@ -141,44 +126,31 @@
   this means that is a node changes base URL, then really everything needs 
   to be re-indexed. It would be better if the URL generation operation were 
   to happen outside of the index, in the Mercury application for example. -->
- <util:map id="nodeRegistryMap">
-  <!-- <entry key="DEMO1" value="https://demo1.test.datone.org/mn/v1/object/" 
-   /> -->
-  <entry key="c3p0" value="https://cn-dev.dataone.org/cn/v1/object/" />
-  <!-- <entry key="r2d2" value="https://gmn-dev.test.dataone.org/mn/v1/object/" 
-   /> -->
-  <!-- <entry key="DEMO10" -->
-  <!-- value="https://demo10.test.dataone.org:443/knb/d1/mn/v1/object/" /> -->
-  <!-- <entry key="DEMO6" -->
-  <!-- value="https://demo6.test.dataone.org:443/knb/d1/mn/v1/object/" /> -->
-  <!-- <entry key="DEMO4" -->
-  <!-- value="https://demo4.test.dataone.org:443/knb/d1/mn/v1/object/" /> -->
-  <!-- <entry key="DEMO1" -->
-  <!-- value="https://demo1.test.dataone.org:443/knb/d1/mn/v1/object/" /> -->
-  <!-- <entry key="DEMO8" -->
-  <!-- value="https://demo8.test.dataone.org:443/knb/d1/mn/v1/object/" /> -->
-  <!-- <entry key="DEMO2" -->
-  <!-- value="https://demo2.test.dataone.org:443/knb/d1/mn/v1/object/" /> -->
-  <!-- <entry key="DEMO3" -->
-  <!-- value="https://demo3.test.dataone.org:443/knb/d1/mn/v1/object/" /> -->
-  <!-- <entry key="DEMO7" -->
-  <!-- value="https://demo7.test.dataone.org:443/knb/d1/mn/v1/object/" /> -->
-  <!-- <entry key="DEMO5" -->
-  <!-- value="https://demo5.test.dataone.org:443/knb/d1/mn/v1/object/" /> -->
-  <!-- <entry key="DEMO9" -->
-  <!-- value="https://demo9.test.dataone.org:443/knb/d1/mn/v1/object/" /> -->
-  <!-- <entry key="c1R1" -->
-  <!-- value="https://cn-rpw-orc.communalware.net:443/knb/d1/mn/v1/object/" 
-   /> -->
-  <!-- <entry key="c2R1" -->
-  <!-- value="https://cn-rpw-unm.communalware.net:443/knb/d1/mn/v1/object/" 
-   /> -->
-  <!-- <entry key="m1c1" -->
-  <!-- value="http://mn-rpw-cat1.communalware.net/knb/d1/mn/v1/object/" /> -->
-  <!-- <entry key="m2c1" -->
-  <!-- value="http://mn-rpw-cat2.communalware.net/knb/d1/mn/v1/object/" /> -->
- </util:map>
-
+  
+<bean id="nodeRegistryMap" class="org.springframework.beans.factory.config.MapFactoryBean">
+  <property name="sourceMap">
+      <map>
+        <entry key="c3p0" value="https://cn-dev.dataone.org/cn/v1/object/" />
+        <entry key="DEMO1" value="https://demo1.test.datone.org/mn/v1/object/" />
+        <entry key="r2d2" value="https://gmn-dev.test.dataone.org/mn/v1/object/" />
+        <entry key="DEMO10" value="https://demo10.test.dataone.org/knb/d1/mn/v1/object/" />
+        <entry key="DEMO6" value="https://demo6.test.dataone.org/knb/d1/mn/v1/object/" />
+        <entry key="DEMO4" value="https://demo4.test.dataone.org/knb/d1/mn/v1/object/" />
+        <entry key="DEMO1" value="https://demo1.test.dataone.org/knb/d1/mn/v1/object/" />
+        <entry key="DEMO8" value="https://demo8.test.dataone.org/knb/d1/mn/v1/object/" />
+        <entry key="DEMO2" value="https://demo2.test.dataone.org/knb/d1/mn/v1/object/" />
+        <entry key="DEMO3" value="https://demo3.test.dataone.org/knb/d1/mn/v1/object/" />
+        <entry key="DEMO7" value="https://demo7.test.dataone.org/knb/d1/mn/v1/object/" />
+        <entry key="DEMO5" value="https://demo5.test.dataone.org/knb/d1/mn/v1/object/" />
+        <entry key="DEMO9" value="https://demo9.test.dataone.org/knb/d1/mn/v1/object/" />
+        <entry key="c1R1" value="https://cn-rpw-orc.communalware.net/knb/d1/mn/v1/object/" />
+        <entry key="c2R1" value="https://cn-rpw-unm.communalware.net/knb/d1/mn/v1/object/" />
+        <entry key="m1c1" value="http://mn-rpw-cat1.communalware.net/knb/d1/mn/v1/object/" />
+        <entry key="m2c1" value="http://mn-rpw-cat2.communalware.net/knb/d1/mn/v1/object/" />
+      </map>
+  </property>
+</bean>  
+  
  <bean id="httpService" class="org.dataone.cn.indexer.solrhttp.HTTPService">
  </bean>
 

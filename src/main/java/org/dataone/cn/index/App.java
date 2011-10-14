@@ -5,10 +5,13 @@ package org.dataone.cn.index;
  */
 
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -35,9 +38,12 @@ import org.xml.sax.SAXException;
 
 
 public class App {
-  public static final String DOCUMENT_PARSERS = "documentParsers";
+  public static String DOCUMENT_PARSERS = "documentParsers";
+  public static String LOCKFILE = "/tmp/indexing/indexlock.lck";
+  public static String TSTAMPFILE = "/tmp/indexing/indextstamp.txt";
   private static ApplicationContext context = null;
-  private String springConfigFile = null;
+  private String springConfigFile = "/etc/dataone/indexing/application-context.xml";
+  private String processingProperties="/etc/dataone/indexing/index_processor.properties";
   private String taskListPath = "/tmp/indexing/index_tasks.txt";
   private String objectBasePath = "";
   public List<XPathDocumentParser> parserList = null;
@@ -48,8 +54,16 @@ public class App {
    * @param args
    */
   public static void main(String[] args) {
+
+    File alock = new File(LOCKFILE);
+    if (alock.exists() )
+    {
+      System.err.println("ERROR: Lock file " + LOCKFILE + " exists.");
+      System.exit(1);
+    }
+    
     App app = new App();
-/*    Options opps = app.getOptions();
+    Options opps = app.getOptions();
     CommandLineParser parser = new PosixParser();
     CommandLine line = null;
     try {
@@ -61,18 +75,46 @@ public class App {
       System.exit(-1);
     }
 
-    String configFile = line.getOptionValue("config");
-    String metadir = line.getOptionValue("metadir");
-    app.setSpringConfigFile(configFile); */
-    // app.index(metadir);
-    app.run();
+    try {
+      FileWriter flock = new FileWriter(LOCKFILE);
+      flock.write("locked at: " + new Date().toString() );
+      flock.close();
+      alock.deleteOnExit();
+    } catch (IOException e) {
+      System.err.println("ERROR: Could not create lock file " + LOCKFILE);
+      System.exit(2);     
+    }
+    
+    String configFile = line.getOptionValue("config", "/etc/dataone/indexing/application-context.xml");
+    String taskFile = line.getOptionValue("tasks","/tmp/indexing/index_tasks.txt");
+    String base = line.getOptionValue("base", "");
+    //Load spring configuration
+    app.setSpringConfigFile(configFile);
+    //Load properties from the configuration file
+    app.loadConfig();
+    //Command line options override the properties file values
+    app.setTaskListPath(taskFile);
+    app.setObjectBasePath(base);
+    long youngestSysMeta = app.run();
+    if (youngestSysMeta >= 0) {
+      try {
+        FileWriter fts = new FileWriter(TSTAMPFILE);
+        fts.write(youngestSysMeta + "\n");
+        fts.close();
+      } catch (IOException e) {
+        System.err.println("ERROR: Could not create timestamp file "
+            + TSTAMPFILE);
+      }
+    }
   }
 
+  /**
+   * Load options from properties file
+   */
   public void loadConfig() {
     Properties props = new Properties();
-    URL url = ClassLoader.getSystemResource("index_processor.properties");
     try {
-      props.load(url.openStream());
+      props.load(new FileInputStream(processingProperties));
       taskListPath = props.getProperty("taskListPath", taskListPath);
       objectBasePath = props.getProperty("objectBasePath", objectBasePath);
     } catch (IOException e) {
@@ -80,7 +122,12 @@ public class App {
     }
   }
   
-  
+  /**
+   * Load a list of tasks from the task file.
+   * TODO: only add tasks that were modified after the last run
+   * @param sourcePath
+   * @return
+   */
   public IndexingTaskList loadTasks(String sourcePath) {
     IndexingTaskList tasks = new IndexingTaskList(sourcePath, objectBasePath);
     return tasks;
@@ -93,17 +140,22 @@ public class App {
    * updates to the entries referenced by the resource map.
    * @param metadir
    */
-  public void run() {
-    loadConfig();
+  public long run() {
     context = getContext();
     parserList = (List<XPathDocumentParser>) context.getBean(DOCUMENT_PARSERS);
     XPathDocumentParser parser = parserList.get(0);
     
     IndexingTaskList tasks = loadTasks(taskListPath);
     
+    //-1 indicates nothing changed so don't update the timestamp.
+    long youngestTask = -1;
+    
     for (int i=0; i<tasks.size(); i++) {
       IndexingTask task = tasks.get(i);
-      log.debug("PID, sys, object = " + task.pid + ", " + task.sysMetaPath +", " + task.objectPath);
+      if (task.dateSysmModified > youngestTask) {
+        youngestTask = task.dateSysmModified; 
+      }
+      log.info("PID, sys, object = " + task.pid + ", " + task.sysMetaPath +", " + task.objectPath);
       try {
         parser.processPID(task.pid, task.sysMetaPath, task.objectPath);
       } catch (Exception e) {
@@ -111,6 +163,7 @@ public class App {
         log.error(e.getMessage());
       }
     }
+    return youngestTask;
   }
 
   /**
@@ -131,18 +184,18 @@ public class App {
     Option spring = OptionBuilder.hasArg()
         .withDescription("spring configuration file").create("config");
     Option files = OptionBuilder
-        .isRequired()
         .hasArg()
         .withDescription(
-            "Directory containing System Metadata files to be indexed")
-        .create("metadir");
-    // Option overrideResourceMapResolver =
-    // OptionBuilder.isRequired().hasArg().withDescription("Overrides resource map resolver fully qualified class name of type org.dataone.cn.indexer.parser.IDocumentProvider").create("resourceMapResolverClass");
+            "Full path to the tasks list file (/tmp/indexing/index_tasks.txt)")
+        .create("tasks");
+    Option base = OptionBuilder
+        .hasArg()
+        .withDescription(
+            "Filesystem root that config and tasks are relative to (null)")
+        .create("base");
     spring.setRequired(false);
-    files.setRequired(true);
-    // overrideResourceMapResolver.setRequired(false);
-    options = options.addOption(spring).addOption(files);// .addOption(overrideResourceMapResolver);
-
+    files.setRequired(false);
+    options = options.addOption(spring).addOption(files).addOption(base);
     return options;
   }
 
@@ -152,11 +205,11 @@ public class App {
    */
   public ApplicationContext getContext() {
     if (context == null) {
-      // URL resource = this.getClass().getResource("application-context.xml");
-      // System.out.println("resource.getFile() = " + resource.getFile());
-      if (springConfigFile != null) {
+      try {
         context = new FileSystemXmlApplicationContext(springConfigFile);
-      } else {
+      } catch(Exception e) {
+        log.info(e.getMessage());
+        log.info("Falling back to configuration included in jar file.");
         context = new ClassPathXmlApplicationContext("application-context.xml");
       }
     }
@@ -171,4 +224,13 @@ public class App {
     this.springConfigFile = springConfigFile;
   }
 
+  public void setTaskListPath(String taskListPath) {
+    this.taskListPath = taskListPath;
+  }
+  
+  public void setObjectBasePath(String objectBasePath) {
+    this.objectBasePath = objectBasePath;
+  }
+  
+  
 }
