@@ -21,28 +21,24 @@
 					<constructor-arg name="name" value="size" />
 					<constructor-arg name="xpath"
 						value="/d064:systemMetadata/size/text()" />
-					<property name="escapeXML" value="true" />
 				</bean>
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
         <!--  -->
 					<constructor-arg name="name" value="checksum" />
 					<constructor-arg name="xpath"
 						value="/d064:systemMetadata/checksum/text()" />
-					<property name="escapeXML" value="true" />
 				</bean>
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
         <!--  -->
 					<constructor-arg name="name" value="submitter" />
 					<constructor-arg name="xpath"
 						value="/d064:systemMetadata/submitter/text()" />
-					<property name="escapeXML" value="true" />
 				</bean>
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
         <!--  -->
 					<constructor-arg name="name" value="checksumAlgorithm" />
 					<constructor-arg name="xpath"
 						value="/d064:systemMetadata/checksum/@algorithm" />
-					<property name="escapeXML" value="true" />
 				</bean>
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
         <!--  -->
@@ -55,7 +51,6 @@
 					<constructor-arg name="name" value="rep_allowed" />
 					<constructor-arg name="xpath"
 						value="/d064:systemMetadata/replicationPolicy/@replicationAllowed" />
-					<property name="escapeXML" value="true" />
 				</bean>
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
         <!--  -->

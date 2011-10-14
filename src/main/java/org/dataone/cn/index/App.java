@@ -132,6 +132,26 @@ public class App {
     IndexingTaskList tasks = new IndexingTaskList(sourcePath, objectBasePath);
     return tasks;
   }
+
+  
+//  public void populateNodeMap() {
+//    
+//    NodeList nodes = null;
+//    CNode cnode = new CNode("https://cn-dev.dataone.org/cn");
+//    try{
+//      nodes = cnode.listNodes();
+//    } catch (Exception e) {
+//      log.error(e.getMessage());
+//    }
+//    for (int i=0; i < nodes.sizeNodeList(); i++) {
+//      Node node = nodes.getNode(i);
+//      String nodeid = node.getIdentifier().getValue();
+//      log.info("Node id = " + nodeid + " Name = " + node.getName());
+//      nodeMap.put(nodeid, node);
+//    }
+//  }
+  
+
   
   /**
    * Here the indexing tasks are run sequentially, which is not really necessary
@@ -157,7 +177,9 @@ public class App {
       }
       log.info("PID, sys, object = " + task.pid + ", " + task.sysMetaPath +", " + task.objectPath);
       try {
+        //if (task.pid.equals("__test_object_valid_eml__sciMD-eml-201-NoLastLForCR__")) {
         parser.processPID(task.pid, task.sysMetaPath, task.objectPath);
+        //}
       } catch (Exception e) {
         //log.error(e.getMessage());
         log.error(e.getMessage());

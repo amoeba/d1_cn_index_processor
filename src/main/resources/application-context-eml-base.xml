@@ -6,7 +6,7 @@
 <!-- 	<bean id="eml.abstract" class="org.dataone.cn.indexer.parser.SolrField"> -->
 <!-- 		<constructor-arg name="name" value="abstract" /> -->
  		<!--TODO: descendants::text() is inefficient use something more precise 
-<!-- 			like para::text() see eml schema --> 
+  			like para::text() see eml schema --> 
 <!-- 		<constructor-arg name="xpath" -->
 <!-- 			value="//dataset/abstract/descendant::text()" /> -->
 <!-- 		<property name="combineNodes" value="true" /> -->

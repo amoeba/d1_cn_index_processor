@@ -121,11 +121,8 @@
  </bean>
 
 
- <!-- TODO: This node map obviously should be loaded from the node registry. 
-  It is used to populate the retrieval URL for each object in the index. Note: 
-  this means that is a node changes base URL, then really everything needs 
-  to be re-indexed. It would be better if the URL generation operation were 
-  to happen outside of the index, in the Mercury application for example. -->
+<!-- <bean id="nodeRegistryMap" class="org.dataone.cn.indexer.NodeRegistryMap"> -->
+<!-- </bean> -->
   
 <bean id="nodeRegistryMap" class="org.springframework.beans.factory.config.MapFactoryBean">
   <property name="sourceMap">
