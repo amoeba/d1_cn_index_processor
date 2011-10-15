@@ -175,13 +175,15 @@ public class App {
       if (task.dateSysmModified > youngestTask) {
         youngestTask = task.dateSysmModified; 
       }
-      log.info("PID, sys, object = " + task.pid + ", " + task.sysMetaPath +", " + task.objectPath);
+      log.info("Processing PID, sys, object = " + task.pid + ", " + task.sysMetaPath +", " + task.objectPath);
       try {
         //if (task.pid.equals("__test_object_valid_eml__sciMD-eml-201-NoLastLForCR__")) {
         parser.processPID(task.pid, task.sysMetaPath, task.objectPath);
+        log.info("Processing complete for PID = " + task.pid);
         //}
       } catch (Exception e) {
         //log.error(e.getMessage());
+        log.info("Processing failed for PID = " + task.pid);
         log.error(e.getMessage());
       }
     }

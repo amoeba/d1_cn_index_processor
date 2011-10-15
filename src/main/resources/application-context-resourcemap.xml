@@ -4,14 +4,14 @@
 
 	<bean id="resourceMapSubprocessor" class="org.dataone.cn.indexer.parser.ResourceMapSubprocessor">
 		<property name="matchDocument"
-			value="/d064:systemMetadata/fmtid[text()='http://www.openarchives.org/ore/terms']" />
+			value="/d064:systemMetadata/fmtid[text()='http://www.openarchives.org/ore/terms'] | /d064:systemMetadata/fmtid[text()='http://www.w3.org/TR/rdf-syntax-grammar']" />
 		<property name="httpService" ref="httpService"></property>
 		<property name="documentSource">
 			<bean id="resourceMapDataSource"
 				class="org.dataone.cn.indexer.resourcemap.ResourceMapFileDataSource">
 			</bean>
 		</property>
-		<property name="solrQueryUri" value="${solr.base}/select/"></property>
+		<property name="solrQueryUri" value="http://localhost:8080/solr/select/"></property>
 	</bean>
 
 </beans>
