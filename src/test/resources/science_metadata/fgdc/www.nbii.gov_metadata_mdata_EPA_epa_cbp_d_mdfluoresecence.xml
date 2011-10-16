@@ -1,0 +1,1008 @@
+<?xml version="1.0"?>
+<metadata><Source>http://www.nbii.gov/metadata/mdata/EPA/epa_cbp_d_mdfluoresecence.xml</Source>
+<idinfo>
+<citation>
+<citeinfo>
+<origin>Richard Lacouture</origin>
+<origin>Stella Sellner</origin>
+<origin>
+Academy of Natural Sciences (ANS) Benedict
+Estuarine Reseach Labortory
+</origin>
+<pubdate>20000101</pubdate>
+<title>
+Maryland Chesapeake Bay Water Quality Monitoring
+Program:Fluorescence Monitoring Component
+</title>
+<geoform>maps data</geoform>
+<pubinfo>
+<pubplace>Annapolis, MD</pubplace>
+<publish>US EPA Chesapeake Bay Program Office</publish>
+</pubinfo>
+<onlink>www.chesapeakebay.net</onlink>
+<onlink>ftp.chesapeakebay.net</onlink>
+<lworkcit>
+<citeinfo>
+<origin>Jacqueline Johnson</origin>
+<pubdate>19981231</pubdate>
+<title>Chesapeake Bay Program Plankton Database</title>
+<edition>Version 2.0</edition>
+<geoform>database</geoform>
+<pubinfo>
+<pubplace>Annapolis, MD</pubplace>
+<publish>US EPA Chesapeake Bay Program</publish>
+</pubinfo>
+<othercit>None</othercit>
+<onlink>www.chesapeakebay.net</onlink>
+</citeinfo>
+</lworkcit>
+</citeinfo>
+</citation>
+<descript>
+<abstract>
+Vertical fluorescence profiles were measured at
+stations in the Chesapeake Bay and its tidal
+tributaries.  Horizontal fluorescence profiles
+were measured on transects between fixed
+monitoring stations in the Chesapeake Bay and its
+tidal tributaries.  Data were  typically collected
+18 times annually between 1984 and 1994; monthly
+from October - March and twice monthly from April
+- September (with the exception of the Choptank
+River stations and the station in Baltimore
+Harbor, which are not sampled in January and
+February).
+</abstract>
+<purpose>
+The state of Maryland, in cooperation with the US
+EPA Chesapeake Bay Program, has used in vivo
+fluorescence to measure horizontal and vertical
+profiles of chlorophyll a between fixed monitoring
+stations in the Maryland Chesapeake Bay mainstem
+and tidal tributaries since August 1984. A
+horizontal transect program from the during the
+months of April-September began  in the Potomac
+estuary in August 1990. The program is designed to
+give comprehensive spatial and temporal
+information on phytoplankton. Sampling is
+performed in conjunction with the Maryland
+phytoplankton, zooplankton and water quality
+monitoring programs.
+</purpose>
+<supplinf>
+# STATION NAMES AND DESCRIPTIONS  &gt;Vertical
+Profile  and Horizontal Transect  End Point
+Stations.   CB1.1-Mouth of Susquehanna River-Main
+Bay CB2.1 -South West of Turkey Point-Main Bay
+CB2.2  -West of Still Pond near Buoy R 34-Main Bay
+CB3.1   -South East of Gunpowder Neck between
+Buoys 24A and 24B Main Bay CB3.2    -North West of
+Swan Point near Buoy R 10- Main Bay CB3.3W -North
+West of Bay Bridge-Main Bay CB3.3C   -North of Bay
+Bridge-Main Bay CB3.3E    -North East of Bay
+Bridge-Main Bay CB4.0W    -South West of Thomas
+Point Shoal-Main Bay CB4.0C-South of Thomas Point
+Shoal-Main Bay CB4.0E -South East of Thomas Point
+Shoal-Main Bay CB4.1W -South East of Horseshoe
+Point-Main Bay CB4.1C   -South West of Kent
+Point-Main Bay CB4.1E    -South of Kent Point-Main
+Bay CB4.2W    -North West of Plum Point-Main Bay
+CB4.2C-South West of Tilghman Island near Buoy BW
+CR-Main Bay CB4.2E -South West of Tilghman
+Island-Main Bay CB4.3W -East of Dares Beach-Main
+Bay CB4.3C   -East of Dares Beach near Buoy R
+64-Main Bay CB4.3E-Mouth of Choptank River-Main
+Bay CB4.4-North East of Cove Point-Main Bay
+CB5.1-East of Cedar Point East of PR Buoy-Main Bay
+CB5.2 -East of Point No Point-Main Bay CB5.3
+-North East of Smith Point at Virginia State
+Line-Main Bay LE2.3    -Mouth of Potomac
+River-Main Bay ANPC    -Annapolis City dock-Severn
+River ANPS     -Sandy Point Park near
+Annapolis-Main Bay SOL-Solomons Island CBL
+dock-Patuxent River TIL   -West entrance of Knapps
+Narrows on Tilghman Island TOLCHES-Entrance to
+marina south of Tolchester Beach BENEDIC-Old
+Benedict Estuarine Reseach Laboratory-Benedict MD
+CB5.1-Off Cedar Point at RB HI Buoy-Patuxent River
+CB5.1W-Between Cedar Point and Cove Point in mid
+channel-Patuxent River LE1.4-Between Drum Point
+and Fishing Point in mid channel-Patuxent River
+LE1.3 -North of Point Patience and ESE of Half
+Pone Point in mid channel-Patuxent River
+LE1.2-South West of Petersons Point in mid
+channel-Patuxent River LE1.1 -Between Jack Bay
+sandspit and Sandgates in mid channel-Patuxent
+River RET1.1-East North East of Long Point in mid
+channel-Patuxent River TF1.7-East South East of
+Jacks Creek in mid channel-Patuxent River TF1.6
+-Off wharf at Lower Marlboro in mid
+channel-Patuxent River TF1.5  -At Nottingham in
+mid channel-Patuxent River TF2.3   -Off Indianhead
+at Buoy N 54-Potomac River RET2.2 -Off Maryland
+Point at Buoy 19-Potomac River LE2.2-Off Ragged
+Point at buoy BW 51B-Potomac River ET4.2 -South of
+Eastern Neck Island at Buoy 9-lower Chester River
+ET5.1  -Downstream of confluence with Tuckahoe
+Creek-upper Choptank River ET5.2   -Near Rt. 50
+bridge at Cambridge-lower Choptank River EE3.1
+-North Tangier Sound North of Buoy R 16-Main Bay
+WT5.1    -East of Hawkins Point at Buoy
+5M-Patapsco River (Baltimore Harbor) 3S -South of
+Sandy Point Light House-Main Bay  4S  -North of
+Sandy Point Light House-Main Bay  	  &gt;Potomac
+River Horizontal Transects. Note, this station
+list represents only the start and ending stations
+of cross river transects.  XEA9075-400 yds. N of
+buoy 64 XEA6000C-Red buoy 62 off Gunston Cove
+XEA6000W-300 yds. off boat ramp at Pohick Bay
+Regional Park XEA5000C-Buoy 51 XEA5000E   -250
+yds. W. of shoreline parallel to buoy 51 XEA5000W
+-Middle of Occoquan Bay parallel to buoy 51
+XEA4000C   -Green buoy 45, off Mattawoman Creek
+XEA4000E   -Red day marker 6, Mattawoman Creek
+XDA3000C   -Green buoy 33 XDA3000E   -600 yds. W.
+of shoreline in Wades Bay parallel to green buoy
+33 XDA3000W   -450 yds. E. of shoreline parallel
+to green buoy 33 RET2.2     -10 yds. N. of buoy 19
+</supplinf>
+</descript>
+<timeperd>
+<timeinfo>
+<rngdates>
+<begdate>198407101</begdate>
+<enddate>Present</enddate>
+</rngdates>
+</timeinfo>
+<current>Ground Condition</current>
+</timeperd>
+<status>
+<progress>In work</progress>
+<update>Biannually</update>
+</status>
+<spdom>
+<descgeog>
+Chesapeake Bay and its Tidal Tributaries in
+Maryland
+</descgeog>
+<bounding>
+<westbc>-77.2936</westbc>
+<eastbc>-75.9222</eastbc>
+<northbc>39.4794</northbc>
+<southbc>37.9947</southbc>
+</bounding>
+</spdom>
+<keywords>
+<theme>
+<themekt>None</themekt>
+<themekey>ANALYZED</themekey>
+<themekey>Water</themekey>
+<themekey>Fluorescence</themekey>
+<themekey>Chlorophyll A</themekey>
+</theme>
+<place>
+<placekt>None</placekt>
+<placekey>Chesapeake Bay</placekey>
+<placekey>Potomac River</placekey>
+<placekey>Maryland</placekey>
+<placekey>Patuxent River</placekey>
+<placekey>Chester River</placekey>
+<placekey>Choptank River</placekey>
+<placekey>Patapsco River</placekey>
+<placekey>MD</placekey>
+</place>
+<stratum>
+<stratkt>None</stratkt>
+<stratkey>Water Column</stratkey>
+</stratum>
+<temporal>
+<tempkt>None</tempkt>
+<tempkey>monthly</tempkey>
+<tempkey>bimonthly</tempkey>
+</temporal>
+</keywords>
+<taxonomy>
+<taxonkey>plants</taxonkey>
+<taxonkey>phytoplankton</taxonkey>
+<taxoncov>
+<taxoninf>
+<kingdom>Plant</kingdom>
+</taxoninf>
+</taxoncov>
+</taxonomy>
+<accconst>None</accconst>
+<useconst>Use at your own risk</useconst>
+<ptcontac>
+<cntinfo>
+<cntperp>
+<cntper>Jacqueline Johnson</cntper>
+<cntorg>Interstate Commission on Potomac River Basin</cntorg>
+</cntperp>
+<cntpos>
+Chesapeake Bay Program Living Resources Data
+Manager
+</cntpos>
+<cntaddr>
+<addrtype>mailing and physical address</addrtype>
+<address>410 Severn Avenue, Suite 109</address>
+<city>Annapolis</city>
+<state>Maryland</state>
+<postal>21403</postal>
+<country>USA</country>
+</cntaddr>
+<cntvoice>1-800-968-7229</cntvoice>
+<cntvoice>410-267-5729</cntvoice>
+<cntfax>410-267-5777</cntfax>
+<cntemail>jjohnson@chesapeakebay.net</cntemail>
+<hours>8:00 a.m. to 4:00 p.m. Monday Through Friday</hours>
+<cntinst>unavailable</cntinst>
+</cntinfo>
+</ptcontac>
+<datacred>
+ACADEMY OF NATURAL SCIENCES, BENEDICT ESTUARINE
+RESEARCH LABORATORY, Maryland Department of
+Natural Resources and EPA Chesapeake Bay Program
+</datacred>
+<native>Microsoft Access Database</native>
+<crossref>
+<citeinfo>
+<origin>Jacqueline Johnson</origin>
+<pubdate>20000101</pubdate>
+<pubtime>Unknown</pubtime>
+<title>
+2000 Users' Guide to Chesapeake Bay Program
+Biological and Living Resources Data
+</title>
+<edition>Version 1</edition>
+<pubinfo>
+<pubplace>Annapolis, MD</pubplace>
+<publish>USEPA CHESAPEAKE BAY PROGRAM OFFICE</publish>
+</pubinfo>
+<othercit>Unknown</othercit>
+<onlink>ftp.chesapeakebay.net/Pub/Living_Resources/guide2000.PDF</onlink>
+</citeinfo>
+</crossref>
+</idinfo>
+<dataqual>
+<attracc>
+<attraccr>
+In vivo fluorescence (IVF) values are corrected
+for background dissolved fluorescence.  This
+fluorescence was estimated on samples passing
+0.22 um Millipore filters. Negative Chlorophyll A
+(CHLA) values reflect values below detection
+threshold of methods.  In the ASCII version of the
+data set, prior to cruise 47, values preceeded by
+'&gt;' indicate IVF values where the fluorometer was
+offscale indicating values greater than the
+highest value for that scale.
+</attraccr>
+</attracc>
+<logic>Not Applicable</logic>
+<complete>
+Station  XCG8613 was dropped from the sampling
+scheme beginning in March 1992.  Between April
+1994 and June 1994 the Maryland Department of
+the Environment (agency managing the program at
+that time) added two extra stations between CB3.1
+and CB2.2.  Due to program funding reductions in
+1996, sampling was reduced to once a month for the
+months  of April, May, June and September.
+Improper filters were used in the fluorometer
+during April and May 1991 so data is not included.
+</complete>
+<posacc>
+<horizpa>
+<horizpar>
+Between 1984 and 1997 station station latitudes
+and longitudes were input into a Loran-C receiver
+and sampling begins when boat reaches
+pre-programmed coordinates.  Loran-C is accurate
+to +/- 1500 ft.  The actual  Loran coordinates for
+each sampling event were not recorded in data set.
+Chesapeake Bay Program Analytical Method Code
+CHL_F105: Station positions in data set are
+approximations of actual positions in the field.
+Station latitudes and longitudes are input into a
+GPS receiver and sampling begins when boat reaches
+pre-programmed coordinates.
+</horizpar>
+</horizpa>
+<vertacc>
+<vertaccr>
+Plus or minus 0.1 meter Chesapeake Bay Program
+Sample_Type Code.  ISM_V:Water is pumped from
+depth. A Hydrolab CTD with a pressure/depth sensor
+and hose mounted on the sampling array are lowered
+through the water column to obtain profiles.
+</vertaccr>
+</vertacc>
+</posacc>
+<lineage>
+<method>
+<methtype>Lab</methtype>
+<methodid>
+<methkt>None</methkt>
+<methkey>Chlorophyll a</methkey>
+<methkey>Fluorescence</methkey>
+<methkey>In vivo</methkey>
+<methkey>Vertical</methkey>
+<methkey>Horizontal</methkey>
+</methodid>
+<methdesc>
+DETERMINATION OF CHLORPHYLL a FOR  DERIVATION OF
+FLUORESCENCE TO CHLOROPHYLL REGRESSIONS
+Generally, a volume between 100-500 ml is filtered
+at &lt; 10 p. s. i. vacuum pressure onto Whatman GF/F
+filters with ~ 10 drops of MgCO3 added just prior
+to completion of filtration.  Spectrophotometric
+analysis of these grab samples is performed with a
+Milton Roy Spectronic 501.  Each sample is first
+read at an absorbance of 750 nm. to determine
+turbidity and then read again at an absorbance of
+665 nm.  Each sample  is then acidified with 3
+drops of 2N HCl and reread at 665 nm and at  750
+nm.  Final chlorophyll a concentrations are then
+calculated using the formula outlined in
+Strickland and Parsons, Standard Methods for
+Seawater Analysis.  Beginning in March, 1999, a
+new technique for determining chl a was initiated.
+The new procedure is as follows:  The
+spectrophotometer is zeroed with the blank at
+750nm.  Each sample is read at this wavelength and
+the value is recorded in the data book.  The
+spectrophotometer is then changed to a wavelength
+of 665nm and  rezeroed.  Then, the above process
+is repeated. After the initial reading at 665nm is
+recorded, 2 drops of 1N HCl is added to each
+sample.  The spectrophotometer is then changed to
+a wavelength of 664nm and rezeroed.  The samples
+are then read again at 664nm and 750nm.  After
+this process is complete, the samples are removed
+from the cuvettes and each cuvette is rinsed with
+90% acetone 3 times before being filled again.
+All values that have been recorded in the data
+book are entered into a spreadsheet that contains
+the formula for calculating chlorophyll
+concentration.
+</methdesc>
+<methcite>
+<citeinfo>
+<origin>Strickland, J. D. H.</origin>
+<origin>T. R. Parsons.</origin>
+<pubdate>196820101</pubdate>
+<title>Practical Handbook of Seawater Analysis</title>
+<edition>Unknown</edition>
+<geoform>document</geoform>
+<pubinfo>
+<pubplace>Ottowa, Canada</pubplace>
+<publish>Fisherise Research Board of Canada</publish>
+</pubinfo>
+</citeinfo>
+</methcite>
+</method>
+<procstep>
+<procdesc>
+After collection of all field voltages and grab
+samples all data is returned to the lab.
+Chlorophyll A calibration samples are processed
+and regression conversions are determined and
+applied to  fluorescence voltage inorder to derive
+invivo chlopophyll a concentrations. Latitude and
+Longitude positions were then determined if
+necessary.  The formula used is from Standard
+Methods: chl a (mg/m3) =
+26.7((665b-750b)-(664a-750a)) * ve        Vf * l ;
+where ve = volume of extracted sample, and   Vf =
+volume filtered  The chlorophyll a concentrations
+are used to formulate a linear regression of
+chlorophyll a against IVF (in vivo fluorescence).
+These linear regressions are then used to convert
+the remaining IVF's to chlorophyll a.
+</procdesc>
+<procdate>Unknown</procdate>
+<proccont>
+<cntinfo>
+<cntperp>
+<cntper>Jacqueline Johnson</cntper>
+<cntorg>Interstate Commission on Potomac River Basin</cntorg>
+</cntperp>
+<cntpos>
+Chesapeake Bay Program Living Resources Data
+Manager
+</cntpos>
+<cntaddr>
+<addrtype>mailing and physical address</addrtype>
+<address>410 Severn Avenue, Suite 109</address>
+<city>Annapolis</city>
+<state>Maryland</state>
+<postal>21403</postal>
+<country>USA</country>
+</cntaddr>
+<cntvoice>1-800-968-7229</cntvoice>
+<cntvoice>410-267-5729</cntvoice>
+<cntfax>410-267-5777</cntfax>
+<cntemail>jjohnson@chesapeakebay.net</cntemail>
+<hours>8:00 a.m. to 4:00 p.m. Monday Through Friday</hours>
+<cntinst>unavailable</cntinst>
+</cntinfo>
+</proccont>
+</procstep>
+</lineage>
+</dataqual>
+<spdoinfo>
+<indspref>
+Chesapeake Bay and tidal tributaries in state of
+Maryland
+</indspref>
+<direct>Point</direct>
+<ptvctinf>
+<sdtsterm>
+<sdtstype>Area point</sdtstype>
+<sdtstype>Entity point</sdtstype>
+</sdtsterm>
+</ptvctinf>
+</spdoinfo>
+<spref>
+<horizsys>
+<geograph>
+<latres>30</latres>
+<longres>30</longres>
+<geogunit>Decimal seconds</geogunit>
+</geograph>
+<geodetic>
+<horizdn>North American Datum of 1983</horizdn>
+<ellips>Geodedic Reference System 80</ellips>
+<semiaxis>6378137</semiaxis>
+<denflat>298.257</denflat>
+</geodetic>
+</horizsys>
+<vertdef>
+<depthsys>
+<depthdn>Chart datum; datum for sounding reduction</depthdn>
+<depthres>.1</depthres>
+<depthdu>meters</depthdu>
+<depthem>Attribute values</depthem>
+</depthsys>
+</vertdef>
+</spref>
+<eainfo>
+<detailed>
+<enttyp>
+<enttypl>MDFLHFyy.TXT or MDFLVFyy.TXT or MDFLPFyy.TXT</enttypl>
+<enttypd>Horizontal or Vertical fluorescence data</enttypd>
+<enttypds>
+Chesapeake Bay Program Fluorescence Monitoring
+Database
+</enttypds>
+</enttyp>
+<attr>
+<attrlabl>SOURCE</attrlabl>
+<attrdef>Data Collection Agency</attrdef>
+<attrdefs>
+Chesapeake Bay Program Fluorescence Monitoring
+Database
+</attrdefs>
+<attrdomv>
+<edom>
+<edomv>ANS</edomv>
+<edomvd>Academy of Natural Science</edomvd>
+<edomvds>Living Resources Data Dictionary</edomvds>
+</edom>
+</attrdomv>
+</attr>
+<enttyp>
+<enttypl>MDFLHFyy.TXT or MDFLVFyy.TXT or MDFLPFyy.TXT</enttypl>
+<enttypd>Horizontal or Vertical fluorescence data</enttypd>
+<enttypds>
+Chesapeake Bay Program Fluorescence Monitoring
+Database
+</enttypds>
+</enttyp>
+<attr>
+<attrlabl>CRUISE</attrlabl>
+<attrdef>Chesapeake Bay Program Cruise Number</attrdef>
+<attrdefs>Living Resources Data Dictionary</attrdefs>
+<attrdomv>
+<codesetd>
+<codesetn>Chesapeake Bay Program Bay Cruise Numbers</codesetn>
+<codesets>Living Resources Data Dictionary</codesets>
+</codesetd>
+</attrdomv>
+</attr>
+<enttyp>
+<enttypl>MDFLHFyy.TXT or MDFLVFyy.TXT or MDFLPFyy.TXT</enttypl>
+<enttypd>Horizontal or Vertical fluorescence data</enttypd>
+<enttypds>
+Chesapeake Bay Program Fluorescence Monitoring
+Database
+</enttypds>
+</enttyp>
+<attr>
+<attrlabl>SAMPLE_DATE</attrlabl>
+<attrdef>Sampling Date (YYYYMMDD)</attrdef>
+<attrdefs>Living Resources Data Dictionary</attrdefs>
+<attrdomv>
+<rdom>
+<rdommin>19840701</rdommin>
+<rdommax>19991231</rdommax>
+</rdom>
+</attrdomv>
+</attr>
+<enttyp>
+<enttypl>MDFLHFyy.TXT or MDFLVFyy.TXT or MDFLPFyy.TXT</enttypl>
+<enttypd>Horizontal or Vertical fluorescence data</enttypd>
+<enttypds>
+Chesapeake Bay Program Fluorescence Monitoring
+Database
+</enttypds>
+</enttyp>
+<attr>
+<attrlabl>LONGITUDE</attrlabl>
+<attrdef>Longitude in Decimal Degrees</attrdef>
+<attrdefs>Living Resources Data Dictionary</attrdefs>
+<attrdomv>
+<rdom>
+<rdommin>77.1167</rdommin>
+<rdommax>77.3180</rdommax>
+</rdom>
+</attrdomv>
+<attrunit>decimal degrees</attrunit>
+</attr>
+<enttyp>
+<enttypl>MDFLHFyy.TXT or MDFLVFyy.TXT or MDFLPFyy.TXT</enttypl>
+<enttypd>Horizontal or Vertical fluorescence data</enttypd>
+<enttypds>
+Chesapeake Bay Program Fluorescence Monitoring
+Database
+</enttypds>
+</enttyp>
+<attr>
+<attrlabl>STATION</attrlabl>
+<attrdef>Sampling Station (if ISM_V sample_type)</attrdef>
+<attrdefs>Living Resources Data Dictionary</attrdefs>
+<attrdomv>
+<codesetd>
+<codesetn>Chesapeake Bay Program Standard Station Identifier</codesetn>
+<codesets>Living Resources Data Dictionary</codesets>
+</codesetd>
+</attrdomv>
+</attr>
+<enttyp>
+<enttypl>MDFLHFyy.TXT or MDFLVFyy.TXT or MDFLPFyy.TXT</enttypl>
+<enttypd>Horizontal or Vertical fluorescence data</enttypd>
+<enttypds>
+Chesapeake Bay Program Fluorescence Monitoring
+Database
+</enttypds>
+</enttyp>
+<attr>
+<attrlabl>SAMPLE_TIME</attrlabl>
+<attrdef>Sample Collection Time</attrdef>
+<attrdefs>Living Resources Data Dictionary</attrdefs>
+<attrdomv>
+<rdom>
+<rdommin>060000</rdommin>
+<rdommax>220000</rdommax>
+</rdom>
+</attrdomv>
+<attrunit>HH:MM:SS-hours minutes and seconds</attrunit>
+</attr>
+<enttyp>
+<enttypl>MDFLHFyy.TXT or MDFLVFyy.TXT or MDFLPFyy.TXT</enttypl>
+<enttypd>Horizontal or Vertical fluorescence data</enttypd>
+<enttypds>
+Chesapeake Bay Program Fluorescence Monitoring
+Database
+</enttypds>
+</enttyp>
+<attr>
+<attrlabl>LATITUDE</attrlabl>
+<attrdef>Latitude in Decimal Degrees</attrdef>
+<attrdefs>Living Resources Data Dictionary</attrdefs>
+<attrdomv>
+<rdom>
+<rdommin>38.3467</rdommin>
+<rdommax>38.6818</rdommax>
+</rdom>
+</attrdomv>
+<attrunit>Decimal Degrees</attrunit>
+</attr>
+<enttyp>
+<enttypl>MDFLHFyy.TXT or MDFLVFyy.TXT or MDFLPFyy.TXT</enttypl>
+<enttypd>Horizontal or Vertical fluorescence data</enttypd>
+<enttypds>
+Chesapeake Bay Program Fluorescence Monitoring
+Database
+</enttypds>
+</enttyp>
+<attr>
+<attrlabl>SAMPLE_TYPE</attrlabl>
+<attrdef>Sample Collection Type</attrdef>
+<attrdefs>Living Resources Data Dictionary</attrdefs>
+<attrdomv>
+<codesetd>
+<codesetn>Chesapeake Bay Program Sample Collection Types</codesetn>
+<codesets>Living Resources Data Dictionary</codesets>
+</codesetd>
+</attrdomv>
+</attr>
+<enttyp>
+<enttypl>MDFLHFyy.TXT or MDFLVFyy.TXT or MDFLPFyy.TXT</enttypl>
+<enttypd>Horizontal or Vertical fluorescence data</enttypd>
+<enttypds>
+Chesapeake Bay Program Fluorescence Monitoring
+Database
+</enttypds>
+</enttyp>
+<attr>
+<attrlabl>SAMPLE_DEPTH</attrlabl>
+<attrdef>Sample Collection Depth (Meters)</attrdef>
+<attrdefs>Living Resources Data Dictionary</attrdefs>
+<attrdomv>
+<rdom>
+<rdommin>0.5</rdommin>
+<rdommax>36</rdommax>
+</rdom>
+</attrdomv>
+<attrunit>Meters</attrunit>
+<attrmres>.1</attrmres>
+</attr>
+<enttyp>
+<enttypl>MDFLHFyy.TXT or MDFLVFyy.TXT or MDFLPFyy.TXT</enttypl>
+<enttypd>Horizontal or Vertical fluorescence data</enttypd>
+<enttypds>
+Chesapeake Bay Program Fluorescence Monitoring
+Database
+</enttypds>
+</enttyp>
+<attr>
+<attrlabl>PARAMETER</attrlabl>
+<attrdef>Parameter Sampled</attrdef>
+<attrdefs>Living Resources Data Dictionary</attrdefs>
+<attrdomv>
+<edom>
+<edomv>CHL_F</edomv>
+<edomvd>Chlorophyll a Fluorescnece</edomvd>
+<edomvds>Living Resources Data Dictionary</edomvds>
+</edom>
+</attrdomv>
+<attrdomv>
+<codesetd>
+<codesetn>Chesapeake Bay Program Sample Parameters</codesetn>
+<codesets>Living Resources Data Dictionary</codesets>
+</codesetd>
+</attrdomv>
+</attr>
+<enttyp>
+<enttypl>MDFLHFyy.TXT or MDFLVFyy.TXT or MDFLPFyy.TXT</enttypl>
+<enttypd>Horizontal or Vertical fluorescence data</enttypd>
+<enttypds>
+Chesapeake Bay Program Fluorescence Monitoring
+Database
+</enttypds>
+</enttyp>
+<attr>
+<attrlabl>VALUE</attrlabl>
+<attrdef>Reported Parameter Value</attrdef>
+<attrdefs>Living Resources Data Dictionary</attrdefs>
+<attrdomv>
+<rdom>
+<rdommin>0</rdommin>
+<rdommax>800</rdommax>
+</rdom>
+</attrdomv>
+<attrdomv>
+<udom>Numeric value based on methodology</udom>
+</attrdomv>
+<attrunit>micrograms per liter</attrunit>
+</attr>
+<enttyp>
+<enttypl>MDFLHFyy.TXT or MDFLVFyy.TXT or MDFLPFyy.TXT</enttypl>
+<enttypd>Horizontal or Vertical fluorescence data</enttypd>
+<enttypds>
+Chesapeake Bay Program Fluorescence Monitoring
+Database
+</enttypds>
+</enttyp>
+<attr>
+<attrlabl>UNITS</attrlabl>
+<attrdef>Parameter Reporting Units</attrdef>
+<attrdefs>Living Resources Data Dictionary</attrdefs>
+<attrdomv>
+<codesetd>
+<codesetn>Living Resources Reporting Units</codesetn>
+<codesets>Living Resources Data Dictionary</codesets>
+</codesetd>
+</attrdomv>
+</attr>
+<enttyp>
+<enttypl>MDFLHFyy.TXT or MDFLVFyy.TXT or MDFLPFyy.TXT</enttypl>
+<enttypd>Horizontal or Vertical fluorescence data</enttypd>
+<enttypds>
+Chesapeake Bay Program Fluorescence Monitoring
+Database
+</enttypds>
+</enttyp>
+<attr>
+<attrlabl>QUALIFIER</attrlabl>
+<attrdef>Detection Limit Qualifier</attrdef>
+<attrdefs>Living Resources Data Dictionary</attrdefs>
+<attrdomv>
+<codesetd>
+<codesetn>CBP Detection Limit Codes</codesetn>
+<codesets>Living Resources Data Dictionary</codesets>
+</codesetd>
+</attrdomv>
+</attr>
+<enttyp>
+<enttypl>MDFLHFyy.TXT or MDFLVFyy.TXT or MDFLPFyy.TXT</enttypl>
+<enttypd>Horizontal or Vertical fluorescence data</enttypd>
+<enttypds>
+Chesapeake Bay Program Fluorescence Monitoring
+Database
+</enttypds>
+</enttyp>
+<attr>
+<attrlabl>METHOD</attrlabl>
+<attrdef>Parameter Collection Method Code</attrdef>
+<attrdefs>Living Resources Data Dictionary</attrdefs>
+<attrdomv>
+<codesetd>
+<codesetn>CBP Living Resources Methods Codes</codesetn>
+<codesets>Living Resources Data Dictionary</codesets>
+</codesetd>
+</attrdomv>
+</attr>
+<enttyp>
+<enttypl>MDFLHFyy.TXT or MDFLVFyy.TXT or MDFLPFyy.TXT</enttypl>
+<enttypd>Horizontal or Vertical fluorescence data</enttypd>
+<enttypds>
+Chesapeake Bay Program Fluorescence Monitoring
+Database
+</enttypds>
+</enttyp>
+<attr>
+<attrlabl>SALZONE</attrlabl>
+<attrdef>Salinity Zone</attrdef>
+<attrdefs>Living Resources Data Dictionary</attrdefs>
+<attrdomv>
+<codesetd>
+<codesetn>Venicean Salinity Zones</codesetn>
+<codesets>Living Resources Data Dictionary</codesets>
+</codesetd>
+</attrdomv>
+<attrdomv>
+<udom>Standard Venice Salinity classes used</udom>
+</attrdomv>
+</attr>
+<enttyp>
+<enttypl>MDFLHFyy.TXT or MDFLVFyy.TXT or MDFLPFyy.TXT</enttypl>
+<enttypd>Horizontal or Vertical fluorescence data</enttypd>
+<enttypds>
+Chesapeake Bay Program Fluorescence Monitoring
+Database
+</enttypds>
+</enttyp>
+<attr>
+<attrlabl>R_DATE</attrlabl>
+<attrdef>Data Version Date</attrdef>
+<attrdefs>Living Resources Data Dictionary</attrdefs>
+<attrdomv>
+<rdom>
+<rdommin>19850301</rdommin>
+<rdommax>19991231</rdommax>
+</rdom>
+</attrdomv>
+</attr>
+<enttyp>
+<enttypl>MDFLHFyy.TXT or MDFLVFyy.TXT or MDFLPFyy.TXT</enttypl>
+<enttypd>Horizontal or Vertical fluorescence data</enttypd>
+<enttypds>
+Chesapeake Bay Program Fluorescence Monitoring
+Database
+</enttypds>
+</enttyp>
+<attr>
+<attrlabl>BASIN</attrlabl>
+<attrdef>Chesapeake Bay Basin Designation</attrdef>
+<attrdefs>Living Resources Data Dictionary</attrdefs>
+<attrdomv>
+<codesetd>
+<codesetn>Chesapeake Bay Basin Designation</codesetn>
+<codesets>Living Resources Data Dictionary</codesets>
+</codesetd>
+</attrdomv>
+</attr>
+<enttyp>
+<enttypl>MDFLHFyy.TXT or MDFLVFyy.TXT or MDFLPFyy.TXT</enttypl>
+<enttypd>Horizontal or Vertical fluorescence data</enttypd>
+<enttypds>
+Chesapeake Bay Program Fluorescence Monitoring
+Database
+</enttypds>
+</enttyp>
+<attr>
+<attrlabl>SER_NUM</attrlabl>
+<attrdef>Source Sample Serial Number</attrdef>
+<attrdefs>Living Resources Data Dictionary</attrdefs>
+<attrdomv>
+<udom>Source specific internal values</udom>
+</attrdomv>
+</attr>
+<enttyp>
+<enttypl>MDFLHFyy.TXT or MDFLVFyy.TXT or MDFLPFyy.TXT</enttypl>
+<enttypd>Horizontal or Vertical fluorescence data</enttypd>
+<enttypds>
+Chesapeake Bay Program Fluorescence Monitoring
+Database
+</enttypds>
+</enttyp>
+<attr>
+<attrlabl>HUC8</attrlabl>
+<attrdef>USGS Eight Digit Hydrologic Unit Code</attrdef>
+<attrdefs>Living Resources Data Dictionary</attrdefs>
+<attrdomv>
+<codesetd>
+<codesetn>USGS Eight Digit Hydrologic Unit Code</codesetn>
+<codesets>US Geologic Survey</codesets>
+</codesetd>
+</attrdomv>
+</attr>
+<enttyp>
+<enttypl>MDFLHFyy.TXT or MDFLVFyy.TXT or MDFLPFyy.TXT</enttypl>
+<enttypd>Horizontal or Vertical fluorescence data</enttypd>
+<enttypds>
+Chesapeake Bay Program Fluorescence Monitoring
+Database
+</enttypds>
+</enttyp>
+<attr>
+<attrlabl>FIPS</attrlabl>
+<attrdef>Federal Information Processing Code</attrdef>
+<attrdefs>Living Resources Data Dictionary</attrdefs>
+<attrdomv>
+<codesetd>
+<codesetn>Federal Information Processing Code</codesetn>
+<codesets>Federal Information Processing Center</codesets>
+</codesetd>
+</attrdomv>
+</attr>
+<enttyp>
+<enttypl>MDFLHFyy.TXT or MDFLVFyy.TXT or MDFLPFyy.TXT</enttypl>
+<enttypd>Horizontal or Vertical fluorescence data</enttypd>
+<enttypds>
+Chesapeake Bay Program Fluorescence Monitoring
+Database
+</enttypds>
+</enttyp>
+<attr>
+<attrlabl>LL_DATUM</attrlabl>
+<attrdef>Latitude and Longitude Geographic Datum</attrdef>
+<attrdefs>Living Resources Data Dictionary</attrdefs>
+<attrdomv>
+<rdom>
+<rdommin>NAD27</rdommin>
+<rdommax>NAD83</rdommax>
+</rdom>
+</attrdomv>
+</attr>
+</detailed>
+</eainfo>
+<distinfo>
+<distrib>
+<cntinfo>
+<cntperp>
+<cntper>Jacqueline Johnson</cntper>
+<cntorg>Interstate Commission on Potomac River Basin</cntorg>
+</cntperp>
+<cntpos>
+Chesapeake Bay Program Living Resources Data
+Manager
+</cntpos>
+<cntaddr>
+<addrtype>mailing and physical address</addrtype>
+<address>410 Severn Avenue, Suite 109</address>
+<city>Annapolis</city>
+<state>Maryland</state>
+<postal>21403</postal>
+<country>USA</country>
+</cntaddr>
+<cntvoice>1-800-968-7229</cntvoice>
+<cntvoice>410-267-5729</cntvoice>
+<cntfax>410-267-5777</cntfax>
+<cntemail>jjohnson@chesapeakebay.net</cntemail>
+<hours>8:00 a.m. to 4:00 p.m. Monday Through Friday</hours>
+<cntinst>unavailable</cntinst>
+</cntinfo>
+</distrib>
+<distliab>
+I, the data requestor, agree to acknowledge the
+Chesapeake Bay Program and any other agencies and
+institutions as specified by the Chesapeake Bay
+Program Office as data providers. I agree to
+credit the data originators in any publications,
+reports or presentations generated from this data.
+I also accept that, although these data have been
+processed successfully on a computer system at the
+Chesapeake Bay Program, no warranty expressed or
+implied is made regarding the accuracy or utility
+of the data on any other system or for general or
+scientific purposes, nor shall the act of
+distribution constitute any such warranty. This
+disclaimer applies both to individual use of the
+data and aggregate use with other data. It is
+strongly recommended that careful attention be
+paid to the contents of the data documentation
+file associated with these data. The Chesapeake
+Bay Program shall not be held liable for improper
+or incorrect use of the data described and/or
+contained herein.
+</distliab>
+<stdorder>
+<digform>
+<digtinfo>
+<formname>ASCII</formname>
+</digtinfo>
+<digtopt>
+<onlinopt>
+<computer>
+<networka>
+<networkr>ftp.chesapeakebay.net/Pub/Living_Resources/</networkr>
+<networkr>www.chesapeakebay.net</networkr>
+</networka>
+</computer>
+</onlinopt>
+<offoptn>
+<offmedia>CD-ROM</offmedia>
+<reccap>
+<recden>750</recden>
+<recdenu>megabite</recdenu>
+</reccap>
+<recfmt>ISO 9660</recfmt>
+<compat>None</compat>
+</offoptn>
+</digtopt>
+</digform>
+<fees>None</fees>
+<ordering>None</ordering>
+<turnarnd>5 Working Days</turnarnd>
+</stdorder>
+<custom>None</custom>
+<techpreq>None</techpreq>
+</distinfo>
+<metainfo>
+<metd>20000124</metd>
+<metc>
+<cntinfo>
+<cntperp>
+<cntper>Jacqueline Johnson</cntper>
+<cntorg>Interstate Commission on Potomac River Basin</cntorg>
+</cntperp>
+<cntpos>
+Chesapeake Bay Program Living Resources Data
+Manager
+</cntpos>
+<cntaddr>
+<addrtype>mailing and physical address</addrtype>
+<address>410 Severn Avenue, Suite 109</address>
+<city>Annapolis</city>
+<state>Maryland</state>
+<postal>21403</postal>
+<country>USA</country>
+</cntaddr>
+<cntvoice>1-800-968-7229</cntvoice>
+<cntvoice>410-267-5729</cntvoice>
+<cntfax>410-267-5777</cntfax>
+<cntemail>jjohnson@chesapeakebay.net</cntemail>
+<hours>8:00 a.m. to 4:00 p.m. Monday Through Friday</hours>
+<cntinst>unavailable</cntinst>
+</cntinfo>
+</metc>
+<metstdn>
+NBII Content Standard for National Biological
+Information Infrastructure Metadata
+</metstdn>
+<metstdv>December 1995</metstdv>
+</metainfo>
+</metadata>

@@ -1,0 +1,380 @@
+<?xml version="1.0"?>
+<metadata><Source>http://www.nbii.gov/metadata/mdata/EPA/epa_cbp_d_mdprimaryproduction.xml</Source>
+<idinfo>
+<citation>
+<citeinfo>
+<origin>
+Richard V. Lacouture, Benedict Estuarine Research
+Laboratory, Academy of Natural Sciences
+</origin>
+<pubdate>1999</pubdate>
+<title>
+Maryland Chesapeake Bay Water Quality Monitoring
+Program: Primary Productivity Component
+</title>
+<geoform>maps data</geoform>
+<pubinfo>
+<pubplace>Annapolis, Maryland</pubplace>
+<publish>
+US E.P.A. Chesapeake Bay Program and Maryland
+Department of Natural Resources (program
+administered by Maryland Department of the
+Environment prior to  July 1995 and subsequently
+Maryland Department of Natural Resources)
+</publish>
+</pubinfo>
+<onlink>http://www.chesapeakebay.net</onlink>
+<lworkcit>
+<citeinfo>
+<origin>Jacqueline Johnson</origin>
+<pubdate>19981321</pubdate>
+<title>Chesapeake Bay Program Plankton Database</title>
+<edition>Version 2.0</edition>
+<geoform>database</geoform>
+<pubinfo>
+<pubplace>Annapolis, MD</pubplace>
+<publish>US EPA Chesapeake Bay Program</publish>
+</pubinfo>
+<onlink>www.chesapeakebay.net</onlink>
+</citeinfo>
+</lworkcit>
+</citeinfo>
+</citation>
+<descript>
+<abstract>
+The overall phytoplankton monitoring program is
+designed to detect and monitor changes in plankton
+production in relation to changing water quality
+conditions in Chesapeake Bay. Phytoplankton are
+the dominant producers in the Chesapeake Bay and
+are the base of the food chain for many higher
+tropic levels.  Excessive blooms  of plankton
+species are considered evidence of eutrophication
+in the bay and are known to degrade water quality
+and block light from submerged aquatic vegetation.
+Sampling is performed in conjunction with  the
+Maryland phytoplankton, fluorometry,
+mesozooplankton, microzooplankton, jellyfish and
+water quality monitoring programs.    Carbon
+fixation rates (C-14) were obtained from replicate
+surface layer composite samples at 16 stations in
+the Maryland portion of the Chesapeake Bay and its
+tributaries. Samples were collected 18 times over
+the year, with monthly samples in October through
+March, and biweekly samples in April through
+September.
+</abstract>
+<purpose>
+The overall phytoplankton monitoring program is
+designed to detect and monitor changes in plankton
+production in relation to changing water quality
+conditions in Chesapeake Bay.
+</purpose>
+<supplinf>
+Information for this metadata was adapted from the
+Environmental Protection Agency Chesapeake Bay
+Program data page web site -
+www.chesapeakebay.net/data/index.htm.  If above
+web sites change go to www.chesapeakebay.net.
+</supplinf>
+</descript>
+<timeperd>
+<timeinfo>
+<rngdates>
+<begdate>19840802</begdate>
+<enddate>1991213</enddate>
+</rngdates>
+</timeinfo>
+<current>ground condition</current>
+</timeperd>
+<status>
+<progress>In work</progress>
+<update>Annually</update>
+</status>
+<spdom>
+<descgeog>|Chesapeake Bay and Tidal Tributaries in State of|Maryland|</descgeog>
+<bounding>
+<westbc>-77.205</westbc>
+<eastbc>-75.912</eastbc>
+<northbc>39.5467</northbc>
+<southbc>38.1367</southbc>
+</bounding>
+</spdom>
+<keywords>
+<theme>
+<themekt>None</themekt>
+<themekey>water quality monitoring</themekey>
+<themekey>Maryland</themekey><themekey>Chesapeake Bay</themekey><themekey>phytoplankton</themekey></theme>
+<place>
+<placekt>None</placekt>
+<placekey>Mouth of Susquehanna River, main Bay</placekey>
+<placekey>West of Still Pond near Buoy R 34, main Bay</placekey>
+<placekey>North of Bay Bridge, main Bay</placekey>
+<placekey>East of Dares Beach near Buoy R 64, main Bay</placekey>
+<placekey>East of Point No Point, main Bay</placekey>
+<placekey>
+Between Jack Bay sandspit and Sandgates in mid
+channel, Patuxent River
+</placekey>
+<placekey>
+East South East of Jacks Creek in mid channel,
+Patuxent River
+</placekey>
+<placekey>At Nottingham in mid channel, Patuxent River</placekey>
+<placekey>Off Indianhead at Buoy N 54, Potomac River</placekey>
+<placekey>Off Maryland Point at Buoy 19, Potomac River</placekey>
+<placekey>Off Ragged Point at buoy BW 51B, Potomac River</placekey>
+<placekey>
+Downstream of confluence with Tuckahoe Creek,
+upper  Choptank River
+</placekey>
+<placekey>
+Near Rt 50 bridge at Cambridge, lower Choptank
+River
+</placekey>
+<placekey>
+East of Hawkins Point at Buoy 5M, Patapsco River,
+(Baltimore Harbor)
+</placekey>
+<placekey>Maryland</placekey>
+<placekey>MD</placekey>
+<placekey>USA</placekey>
+<placekey>Between Jack Bay sandspit and Sandgates in mid</placekey><placekey>channel, Patuxent River</placekey><placekey>East South East of Jacks Creek in mid channel,</placekey><placekey>Patuxent River</placekey><placekey>Downstream of confluence with Tuckahoe Creek,</placekey><placekey>upper  Choptank River</placekey><placekey>Near Rt 50 bridge at Cambridge, lower Choptank</placekey><placekey>River</placekey><placekey>East of Hawkins Point at Buoy 5M, Patapsco River,</placekey><placekey>(Baltimore Harbor)</placekey></place>
+</keywords>
+<taxonomy>
+<taxonkey>phytoplankton</taxonkey>
+<taxoncov>
+<taxoninf>
+<kingdom>Animal</kingdom>
+<common>phytoplankton</common>
+</taxoninf>
+</taxoncov>
+</taxonomy>
+<accconst>None</accconst>
+<useconst>None</useconst>
+<ptcontac>
+<cntinfo>
+<cntorgp>
+<cntorg>Interstate Commission on Potomac River Basin</cntorg>
+<cntper>Jacqueline Johnson</cntper>
+</cntorgp>
+<cntpos>
+Chesapeake Bay Program Living Resources Data
+Manager
+</cntpos>
+<cntaddr>
+<addrtype>mailing and physical address</addrtype>
+<address>410 Severn Avenue, Suite 109</address>
+<city>Annapolis</city>
+<state>Maryland</state>
+<postal>21403</postal>
+</cntaddr>
+<cntvoice>1-800-968-7229</cntvoice>
+<cntvoice>410-267-5729</cntvoice>
+<cntfax>410-267-5777</cntfax>
+<cntemail>jjohnson@chesapeakebay.net</cntemail>
+<hours>8:00 a.m. to 4:00 p.m. Monday Through Friday</hours>
+<cntinst>unavailable</cntinst>
+</cntinfo>
+</ptcontac>
+</idinfo>
+<dataqual>
+<attracc>
+<attraccr>
+Primary production samples are collected by a
+member of the Benedict Estuarine Research
+Laboratory plankton section.  At the end of the
+sampling cruise, the samples are transferred to
+the C14 laboratory staff.  Production and
+alkalinity measurements are made within
+twenty-four hours of  sample collection.
+Chlorophyll a measurements are immediately frozen
+until analysis is performed.  All Chlorophyll
+samples are processed within 2 months of sample
+collection.
+</attraccr>
+</attracc>
+<logic>not applicable</logic>
+<complete>
+Samples were collected 18 times over the year,
+with monthly samples in October through March, and
+biweekly samples in April through September. In
+January and February, the stations in the Choptank
+River and Baltimore Harbor are not sampled. After
+June, 1986 stations ET4.2 and EE3.1 were no longer
+sampled. Beginning in January 1996, there was no
+sampling done in February  and November. Sampling
+was reduced to once a month in June and September.
+Sampling at Station CB1.1 was discontinued
+entirely.
+</complete>
+<lineage>
+<method>
+<methtype>Lab</methtype>
+<methodid>
+<methkt>None</methkt>
+<methkey>
+Chesapeake Bay Program Analytical Method Code-
+PD101
+</methkey>
+</methodid>
+<methdesc>
+At the end of a sampling day, four 100 milliliters
+subsamples per station are decanted from the two
+surface-layer composite samples into sample-rinsed
+Pyrex milk dilution bottles (or polycarbonate
+bottles after July, 1989), one for time-zero C-14
+blank (t0), one for alkalinity determination, and
+one from each composite for C-14 incubation.  The
+two incubation samples per station are placed in a
+constant light incubator (&gt;250 uE per sq m per
+sec) receiving running water from the study area
+for temperature control for an acclimation period &gt;0.5 h.  Then 1-2 uCi labeled NaHCO3 is added and
+samples are returned to the incubator for &gt;1 h.  After incubation, 15 ml is filtered through a 0.45
+um membrane filter, rinsed with filtered sample
+water and fumed over concentrated HCl.  Fifteen ml
+of t0 sample is similarly filtered and fumed.  The
+filters are placed in scintillation vials and
+stored in a freezer.
+</methdesc>
+<methtype>Field</methtype>
+<methdesc>
+Samples were collected 18 times over the year,
+with monthly samples in October through March, and
+biweekly samples in April through September.
+</methdesc>
+</method>
+<procstep>
+<procdesc>
+The following equations were used to determine the
+rate of carbon fixation in ug/l/hr.  Note that the
+raw data used in these calculations are not
+presented in the associated data set. Only the
+resulting carbon fixation rate is included.   1)
+CARBALK = 12000 * (Total Alkalinity)   2) CARBFIX
+= IVOL * ((DPMSAM/FVOL)-(DPMT0/FVOL)) * CARBALK *
+1.05 / DPMSP * (ETIME-BTIME) where CARBFIX =
+Carbon fixation rate in ug C/l/hr IVOL = Volume
+incubated; FVOL = Volume filtered DPMSAM =
+Disintegrations per minute from incubated sample;
+DPMT0 = Disintegrations per minute from
+corresponding unincubated (time zero - t0) sample
+DPMSP = Total; disintegrations per minute for C-14
+spike; BTIME = Beginning time of incubation
+(h); ETIME = Ending time of incubation (h);
+CARBALK = Total inorganic carbonate from 1);
+Calculation of Assimilation Ratio; ASMRATIO =
+CARBFIX / CHLA - this ratio is calculated prior to
+rounding the CARBFIX value; where ASMRATIO =
+Assimilation ratio; CARBFIX = Carbon fixation in
+ug C/l/h from 2); CHLA = Chlorophyll a in ug/l.
+</procdesc>
+<procdate>unknown</procdate>
+</procstep>
+</lineage>
+</dataqual>
+<spdoinfo>
+<indspref>Based on local reference names.</indspref>
+</spdoinfo>
+<eainfo>
+<overview>
+<eaover>
+Maryland Chesapeake Bay Phytoplankton Primary
+Production (Entity);Carbon Fixation Rates
+(Associated Attributes).
+</eaover>
+<eadetcit>unknown</eadetcit>
+</overview>
+</eainfo>
+<distinfo>
+<distrib>
+<cntinfo>
+<cntorgp>
+<cntorg>Interstate Commission on Potomac River Basin</cntorg>
+<cntper>Jacqueline Johnson</cntper>
+</cntorgp>
+<cntpos>
+Chesapeake Bay Program Living Resources Data
+Manager
+</cntpos>
+<cntaddr>
+<addrtype>mailing and physical address</addrtype>
+<address>410 Severn Avenue, Suite 109</address>
+<city>Annapolis</city>
+<state>Maryland</state>
+<postal>21403</postal>
+</cntaddr>
+<cntvoice>1-800-968-7229</cntvoice>
+<cntvoice>410-267-5729</cntvoice>
+<cntfax>410-267-5777</cntfax>
+<cntemail>jjohnson@chesapeakebay.net</cntemail>
+<hours>8:00 a.m. to 4:00 p.m. Monday Through Friday</hours>
+<cntinst>unavailable</cntinst>
+</cntinfo>
+</distrib>
+<resdesc>MDPDCFyy.TXT, MDPDEVyy.TXT</resdesc>
+<distliab>
+Although these data have been processed
+successfully on a computer system at the
+Chesapeake Bay Program, no warranty expressed or
+implied is made regarding the accuracy or utility
+of the data on any other system or for general or
+scientific purposes, nor shall the act of
+distribution constitute any such warranty. This
+disclaimer applies both to individual use of the
+data and aggregate use with other data. It is
+strongly recommended that careful attention be
+paid to the contents of the metadata file
+associated with these data. The Chesapeake Bay
+Program shall not be held liable for improper or
+incorrect use of the data described and/or
+contained herein.
+</distliab>
+<stdorder>
+<digform>
+<digtinfo>
+<formname>ASCII</formname>
+</digtinfo>
+<digtopt>
+<onlinopt>
+<computer>
+<networka>
+<networkr>http://www.chesapeakebay.net/data/index.htm</networkr>
+</networka>
+</computer>
+</onlinopt>
+</digtopt>
+</digform>
+<fees>None</fees>
+</stdorder>
+</distinfo>
+<metainfo>
+<metd>199903</metd>
+<metc>
+<cntinfo>
+<cntorgp>
+<cntorg>Raytheon ITSS</cntorg>
+<cntper>Cheryl Solomon</cntper>
+</cntorgp>
+<cntpos>Ecosystem Coordinator</cntpos>
+<cntaddr>
+<addrtype>Mailing and Physical Address</addrtype>
+<address>4500 Forbes Avenue</address>
+<city>Lanham</city>
+<state>Maryland</state>
+<postal>20706</postal>
+</cntaddr>
+<cntvoice>301-794-3049</cntvoice>
+<cntfax>301-794-3164</cntfax>
+<cntemail>solomon@gcmd.nasa.gov</cntemail>
+</cntinfo>
+</metc>
+<metstdn>
+NBII Content Standard for National Biological
+Information Infrastructure Metadata
+</metstdn>
+<metstdv>December 1995</metstdv>
+<metac>None</metac>
+<metuc>None</metuc>
+</metainfo>
+</metadata>

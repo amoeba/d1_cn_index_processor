@@ -1,0 +1,2728 @@
+<?xml version="1.0"?>
+<metadata>
+
+<idinfo>
+
+<citation>
+
+<citeinfo>
+
+<origin>Lamoille County Natural Resources Conservation District (LCNRCD)</origin>
+
+<pubdate>200312</pubdate>
+
+<title>Post Monitoring (2003) of the West Branch Natural Channel Design Restoration Project -- Stowe, Vermont</title>
+
+<geoform>maps data</geoform>
+
+<othercit>Tile Structure - NONE</othercit>
+
+<onlink>http://www.vcgi.org/dataware/</onlink>
+
+</citeinfo>
+
+</citation>
+
+<descript>
+
+<abstract>
+
+Because of the well known problems of the river, the West Branch was identified as a restoration implementation site to be funded as part of the Federal Emergency Management Agency (FEMA) Project Impact Initiative.  The Lamoille County Planning Commission (LCPC) coordinated the project development and construction of the river restoration project on the West Branch in Stowe, Vermont between 2000 and 2001.  This is Phase I of the project.  There is significant amount of work planned for both the West Branch and the main stem of the Little River.
+
+The West Branch is a classic example of degraded river system due to multiple human disturbances.  Occurring excessively in the 1980's, gravel mining was just one of these disturbances. This reduction of sediment over-widened the stream channel, disallowing sufficient sediment transport.  As of 2003, the West Branch (5.8 miles) is listed on the Environmental Protection Agency's (EPA) 303(d) impaired waters list for the pollution listing of physical habitat changes.
+
+There are several causes of instability on the West Branch, including excessive gravel mining, urban runoff, and floodplain encroachments.  All of these have led to the West Branch's active stream channel losing connection to its floodplain in many locations. The stream has responded to these human induced disturbances by trying to reestablish a new floodplain at a lower elevation and degrading its bed. The bed degradation has migrated upstream (head cut) and created additional instability. The head cut has also caused the adjoining tributaries to become unstable, further contributing to the excess sedimentation of the West Branch. During this valley forming process, additional stream energy has remained in the channel causing streambanks to oversteepen and the additional bank erosion has lead to a channel bed build up of sediment (aggradation). This sedimentation process has many adverse impacts on fisheries habitat and water quality. Deep pool areas have filled in with sediment and fish spawning habitat has become smothered with fine sediment.
+
+Creating quality trout habitat in the West Branch was one of the restoration goals of the project.  By re-establishing a stable reach of the river and providing habitat for all life stages of trout, the project partners hoped to achieve increases of instream cover and greater depth in pools.
+
+In order to assess changes to the project area over a period of time, permanent photographic stations were established along the river.  These photo stations are documented by Michael S. Adams of the Army Corps of Engineers on the site plans.  Pre-restoration photos were taken by Mr. Adams prior to construction in 2001.  These photos, titled 'Army Corps of Engineers Pre-Restoration Photo Inventory (2001) of the West Branch in Stowe, VT' can be found zipped with this dataset. The first year of photos were taken on September 27, 2002 and the second year photos were taken on September 8, 2003. These restoration photos </abstract>
+
+<purpose>The purpose of the project was to implement streambank and fisheries habitat restoration by stabilizing eroding riverbanks, restoring floodplain access, and creating a geomorphologically stable channel, which may in turn have a positive effect on the sedimentation problems farther downstream, including the Waterbury Reservoir. This metadata documents aspects of the project implementation in 2001 and first year post-monitoring of this project in 2002. By conducting the post-construction monitoring (2002, 2003, and 2004), we will document the changes occurring in the stream and determine the success of Phase I of this project in order to assess the success of the fairly new bioengineering techniques used in this project.  The Army Corps of Engineers has designated the West Branch under their Section 206 Habitat Restoration Projects.</purpose>
+
+<supplinf>
+
+Note that the area covered by this metadata in the associated shapefile is referenced as SITE_ID2 # 97, #122, and #126, and #129 (Town of Stowe property).
+
+For information about the restoration of streams (channel design) throughout Lamoille County, Vermont, see metadata titled 'Lamoille County River Restoration Data', and it's associated shapefile (see Cross Reference for this metadata citation).
+
+This project required a State of Vermont Stream Alteration Permit, a U.S. Army Corps of Engineers Permit, and was reviewed by FEMA under the National Environmental Policy Act (NEPA).  As part of the permit requirements for the U.S. Army Corps of Engineers permit, the project must be monitored for performance once each year for three consecutive years (2002, 2003, 2004).
+
+NOTE that this metadata was generated using the NBII Biological Profile and includes information about methods in Section 2 that will be lost if imported into a metadata software that doesn't recognize the biological fields (i.e. ArcCatalog).
+
+(previous geoform was 'map')</supplinf>
+
+</descript>
+
+<timeperd>
+
+<timeinfo>
+
+<mdattim>
+
+<sngdate>
+
+<caldate>20030908</caldate>
+
+</sngdate>
+
+<sngdate>
+
+<caldate>200304</caldate>
+
+</sngdate>
+
+<sngdate>
+
+<caldate>200307</caldate>
+
+</sngdate>
+
+</mdattim>
+
+</timeinfo>
+
+<current>ground condition</current>
+
+</timeperd>
+
+<status>
+
+<progress>Complete</progress>
+
+<update>None planned</update>
+
+</status>
+
+<spdom>
+
+<descgeog>West Branch Little River near Stowe, Vermont</descgeog>
+
+<bounding>
+
+<westbc>-73.501049</westbc>
+
+<eastbc>-72.733376</eastbc>
+
+<northbc>45.085739</northbc>
+
+<southbc>43.538681</southbc>
+
+</bounding>
+
+</spdom>
+
+<keywords>
+
+<theme>
+
+<themekt>None</themekt>
+
+<themekey>hydrography</themekey>
+
+<themekey>surface waters</themekey>
+
+<themekey>streambank restoration</themekey>
+
+<themekey>riverbank restoration</themekey>
+
+<themekey>riparian buffers</themekey>
+
+<themekey>channel restoration</themekey>
+
+<themekey>fisheries habitat</themekey>
+
+<themekey>channel avulsion</themekey>
+
+<themekey>riverbank erosion</themekey>
+
+<themekey>riverbed erosion</themekey>
+
+<themekey>riffle-pool</themekey>
+
+<themekey>Lamoille County Planning Commission (LCPC)</themekey>
+
+<themekey>Lamoille County Natural Resources Conservation District (LCNRCD)</themekey>
+
+<themekey>fish surveys</themekey>
+
+<themekey>riffle habitat</themekey>
+
+<themekey>riverbank bioengineering</themekey>
+
+</theme>
+
+<place>
+
+<placekt>None</placekt>
+
+<placekey>Foote Brook</placekey>
+
+<placekey>Lamoille River</placekey>
+
+<placekey>Johnson</placekey>
+
+<placekey>Lamoille County</placekey>
+
+<placekey>Vermont</placekey>
+
+<placekey>USA</placekey>
+
+<placekey>United States of America</placekey>
+
+<placekey>VT</placekey>
+
+<placekey>West Branch Little River</placekey>
+
+</place>
+
+</keywords>
+
+<taxonomy>
+
+<keywtax>
+
+<taxonkt>none</taxonkt>
+
+<taxonkey>red maple</taxonkey>
+
+<taxonkey>sugar maple</taxonkey>
+
+<taxonkey>white birch</taxonkey>
+
+<taxonkey>gray birch</taxonkey>
+
+<taxonkey>swamp white oak</taxonkey>
+
+<taxonkey>red oak</taxonkey>
+
+<taxonkey>silver maple</taxonkey>
+
+<taxonkey>serviceberry</taxonkey>
+
+<taxonkey>highbush cranberry</taxonkey>
+
+<taxonkey>white ash</taxonkey>
+
+<taxonkey>silky dogwood</taxonkey>
+
+<taxonkey>black cherry</taxonkey>
+
+</keywtax>
+
+<taxoncl>
+
+<taxonrn>Kingdom</taxonrn>
+
+<taxonrv>Plantae</taxonrv>
+
+<taxoncl>
+
+<taxonrn>Division</taxonrn>
+
+<taxonrv>Magnoliophyta</taxonrv>
+
+<taxoncl>
+
+<taxonrn>Class</taxonrn>
+
+<taxonrv>Magnoliopsida</taxonrv>
+
+<taxoncl>
+
+<taxonrn>Order</taxonrn>
+
+<taxonrv>Sapindales</taxonrv>
+
+<taxoncl>
+
+<taxonrn>Family</taxonrn>
+
+<taxonrv>Aceraceae</taxonrv>
+
+<taxoncl>
+
+<taxonrn>Genus</taxonrn>
+
+<taxonrv>Acer</taxonrv>
+
+<taxoncl>
+
+<taxonrn>Species</taxonrn>
+
+<taxonrv>rubrum</taxonrv>
+
+</taxoncl>
+
+<taxoncl>
+
+<taxonrn>Species</taxonrn>
+
+<taxonrv>saccharum</taxonrv>
+
+</taxoncl>
+
+</taxoncl>
+
+</taxoncl>
+
+</taxoncl>
+
+<taxoncl>
+
+<taxonrn>Order</taxonrn>
+
+<taxonrv>Fagales</taxonrv>
+
+<taxoncl>
+
+<taxonrn>Family</taxonrn>
+
+<taxonrv>Fagaceae</taxonrv>
+
+<taxoncl>
+
+<taxonrn>Genus</taxonrn>
+
+<taxonrv>Quercus</taxonrv>
+
+<taxoncl>
+
+<taxonrn>Species</taxonrn>
+
+<taxonrv>rubra</taxonrv>
+
+</taxoncl>
+
+<taxoncl>
+
+<taxonrn>Species</taxonrn>
+
+<taxonrv>bicolor</taxonrv>
+
+</taxoncl>
+
+</taxoncl>
+
+</taxoncl>
+
+</taxoncl>
+
+</taxoncl>
+
+</taxoncl>
+
+</taxoncl>
+
+</taxonomy>
+
+<accconst>Vermont Center for Geographic Information (VCGI), Lamoille County Natural Resources Conservation District (LCNRCD), the Lamoille County Planning Commission (LCPC), and the State of Vermont make no representations of any kind, including but not limited to the warranties of merchantability or fitness for a particular use, nor are any such warranties to be implied with respect to the data.</accconst>
+
+<useconst>
+
+This data constitutes the best available surface water data of its kind to date, available at the sub basin level. However, this does not ensure absolute accuracy of all features and the user must be alert to potential errors at all times when using data for cartographic display or analytical purposes.  The creators of the data make no representations that the inventory of river restoration sites includes all sites, known or unknown.
+
+NOTE that this metadata was generated using the NBII Biological Profile and includes information about methods in Section 2 that will be lost if imported into a metadata software that doesn't recognize the biological fields (i.e. ArcCatalog).
+
+</useconst>
+
+<ptcontac>
+
+<cntinfo>
+
+<cntorgp>
+
+<cntorg>Lamoille County Natural Resources Conservation District</cntorg>
+
+</cntorgp>
+
+<cntpos>District Manager</cntpos>
+
+<cntaddr>
+
+<addrtype>mailing and physical address</addrtype>
+
+<address>109 Professional Drive, Suite 2</address>
+
+<city>Morrisville</city>
+
+<state>VT</state>
+
+<postal>05661</postal>
+
+<country>USA</country>
+
+</cntaddr>
+
+<cntvoice>(802) 888-9218</cntvoice>
+
+<cntemail>lcnature@pwshift.com</cntemail>
+
+<hours>M-F; 8am - 4:30pm</hours>
+
+</cntinfo>
+
+</ptcontac>
+
+<browse>
+
+<browsen>http://maps.vcgi.org:8080/servlet/com.esri.wms.Esrimap?servicename=WMS_VCGI_OGC&amp;WMTVER=1.0.0&amp;request=map&amp;BBOX=-73.45416,42.72279,-71.46528,45.018356&amp;SRS=EPSG:4326&amp;LAYERS=ENVIRON_WBRANCH2003_LINE&amp;WIDTH=300&amp;HEIGHT=400&amp;FORMAT=GIF</browsen>
+
+<browsed>GIF</browsed>
+
+<browset>GIF</browset>
+
+</browse>
+
+<datacred>
+
+Project Manager:  Allison Cardwell
+
+Project Team:
+
+Federal Agencies: Federal Emergency Management Agency (FEMA-Project Impact), U.S. Fish and Wildlife Service (USFWS), USDA Natural Resources Conservation Service (NRCS), Lake Champlain Basin Project (LCBP)
+
+State Agencies: Department of Environmental Conservation (DEC), VT Department of Fish and Wildlife, VT Agency of Transportation, VT Department of Agriculture
+
+Community: Lamoille County Planning Commission (LCPC), Lamoille County Natural Resources Conservation District (LCNRCD), Town of Stowe, Stowe Conservation Commission, Private Landowners
+
+</datacred>
+
+<native>ESRI ArcCatalog and ArcMap 8.3</native>
+
+<crossref>
+
+<citeinfo>
+
+<origin>Brian Burakowski</origin>
+
+<pubdate>2001</pubdate>
+
+<title>Lamoille County River Restoration Data Photo Inventory</title>
+
+<geoform>multimedia presentation</geoform>
+
+<pubinfo>
+
+<pubplace>Morrisville, VT</pubplace>
+
+<publish>LCNRCD</publish>
+
+</pubinfo>
+
+<othercit>MS Powerpoint presentation showing photos of each river restoration site found in this database.  This photo inventory relates to the metadata and data titled 'Lamoille County River Restoration Data'.</othercit>
+
+<onlink>http://www.vcgi.org/</onlink>
+
+</citeinfo>
+
+</crossref>
+
+<crossref>
+
+<citeinfo>
+
+<origin>Lamoille County Natural Resources Conservation District (LCNRCD)</origin>
+
+<pubdate>Unpublished Material</pubdate>
+
+<title>Photo inventory of the Post-Monitoring (2002-2003) of the West Branch in Stowe, Vermont</title>
+
+<geoform>Figure</geoform>
+
+<pubinfo>
+
+<pubplace>Morrisville, VT</pubplace>
+
+<publish>LCNRCD</publish>
+
+</pubinfo>
+
+<othercit>.jpg images of restoration site stations</othercit>
+
+<onlink>http://www.vcgi.org/</onlink>
+
+</citeinfo>
+
+</crossref>
+
+<crossref>
+
+<citeinfo>
+
+<origin>Lamoille County Natural Resources Conservation District (LCNRCD)</origin>
+
+<pubdate>Unpublished Material</pubdate>
+
+<title>Army Corps of Engineers Pre-Restoration Photo Inventory (2001) of the West Branch in Stowe, VT</title>
+
+<geoform>Figure</geoform>
+
+<othercit>Photos through Army Corps (Northeast District Corps of Engineers) permit number #200001561.  These are .jpg images of pre-restoration site.  See included readme text file in for station information.</othercit>
+
+<onlink>http://www.vcgi.org/</onlink>
+
+</citeinfo>
+
+</crossref>
+
+<crossref>
+
+<citeinfo>
+
+<origin>U.S. Department of Agriculture, Natural Resources Conservation Service, Morrisville, Vermont</origin>
+
+<pubdate>Unpublished Material</pubdate>
+
+<title>As-Built and Site Plans for the West Branch Natural Channel Design Restoration Project (2001-2003) in Stowe, Vermont</title>
+
+<geoform>CAD data</geoform>
+
+<othercit>.jpg images of CAD plans</othercit>
+
+<onlink>http://www.vcgi.org/</onlink>
+
+</citeinfo>
+
+</crossref>
+
+<crossref>
+
+<citeinfo>
+
+<origin>The Vermont Department of Environmental Conservation (VT DEC)</origin>
+
+<pubdate>Unpublished Material</pubdate>
+
+<title>Water Quality GIS Database for Lamoille County, VT--West Branch</title>
+
+<geoform>Database</geoform>
+
+<othercit>
+
+The Vermont Department of Environmental Conservation (VT DEC) has a water quality spatial database  (STORET) and a biomonitoring/macroinvertebrate spatial database (BIOSITES).  Points along the West Branch in Stowe are included in their monitoring databases.  STORET and BIOSITES data will be available after June, 2004.  Contact Peter Telep for information or a copy of the dataset:
+
+Peter Telep, GIS Specialist
+
+VT DEC
+
+2 South Building
+
+103 South Main Street
+
+Waterbury, VT 05671
+
+(802) 241-3406
+
+peter.telep@anr.state.vt.us
+
+</othercit>
+
+</citeinfo>
+
+</crossref>
+
+<crossref>
+
+<citeinfo>
+
+<origin>Lamoille County Natural Resources Conservation District (LCNRCD)</origin>
+
+<pubdate>200312</pubdate>
+
+<title>River Restoration Data in Lamoille County, Vermont</title>
+
+<geoform>map</geoform>
+
+<othercit>Tile Structure - NONE</othercit>
+
+<onlink>http://www.vcgi.org/pub/dataware/gisdata/</onlink>
+
+</citeinfo>
+
+</crossref>
+
+<crossref>
+
+<citeinfo>
+
+<origin>Lamoille County Natural Resources Conservation District (LCNRCD)</origin>
+
+<pubdate>200212</pubdate>
+
+<title>The West Branch Natural Channel Design Restoration Project (2001) and Post Monitoring Project (2002) -- Stowe, Vermont</title>
+
+<geoform>map</geoform>
+
+<othercit>Tile Structure - NONE</othercit>
+
+<onlink>http://www.vcgi.org/pub/dataware/gisdata/</onlink>
+
+</citeinfo>
+
+</crossref>
+
+</idinfo>
+
+<dataqual>
+
+<attracc>
+
+<attraccr>Data meets current VGIS Surface Water Data Standards in its partial implementation.  Attribute information for each restoration site was acquired by GPS data collection.  Attributes have been quality checked by the person responsible for the data collection-and found to accurately represent the features on the ground.</attraccr>
+
+</attracc>
+
+<logic>Points, nodes, lines, and areas conform to topological rules. Lines intersect only at nodes, and all nodes anchor the ends of lines. Lines do not overshoot or undershoot other lines where they are supposed to meet. There are no duplicate lines. Lines bound areas and lines identify the areas to the left and right of the lines. Gaps and overlaps among areas do not exist. All areas close. Network lines exist within all two dimensional "2d" features to ensure "hydrologic connectivity"  from headwater reaches to receiving waters through the network of single line "1d", and "2d" rivers and lakes. "Dummy" lines separate polygonal rivers from lakes and exist nowhere else.</logic>
+
+<complete>
+
+This data layer is based on the best available surface water data across the state and has been enhanced via on-screen digitizing with the aid of photo-interpreting RF 5,000 scale orthophotos, derived contours and multi-spectral aerial photographs. It has not been subject to field checking. River and lakeshore features are seasonal and have been interpreted at the feature's position as of the date of the source photos. The best available surface water data sources include layers from VCGI, Regional Planning Commissions, Town GIS offices, USGS DLG, Regional projects (i.e., NFLRI, VBP etc.) and more. Standardized delineation methodologies were followed throughout the compilation of this data providing a high degree of consistency.  All sections were taken as sections of lines, or the right or left banks of two arcs.
+
+"CERTIFIED"  NHD DATA: Transport reaches are defined on nearly all features of type: stream/river, canal/ditch, artificial path, pipeline, and connector. Water body reaches are defined on the subset of lake/pond features identified as water bodies. Geographic names, where present, were carried over from both 1:24k DLG hydrography data and from the best available source data. Near the international boundaries with Canada, only the parts of features within the United States are delineated. Detailed capture conditions are provided for every feature type in the Standards for NHD (USGS, 1999), available online through &lt;http://mapping.usgs.gov/standards/.&gt;
+
+This dataset does not claim to include all potential or conducted river restoration sites in Lamoille County, VT.
+
+</complete>
+
+<posacc>
+
+<horizpa>
+
+<horizpar>
+
+Compiled to meet 4.92 meters horizontal accuracy at 95% confidence level. Tested (value varies by sub basin-see below) meters horizontal accuracy at 95% confidence level.  These values do not account for the error of the source digital orthophotos (approx. +/- 6 meters) on which the data is based. Horizontal accuracy was assessed by comparing 20 well defined "check" points of the source RF 5,000 scale digital orthophotos against derived surface water data. This approach is detailed in the FGDC Geospatial Positioning Accuracy Standards (&lt;http://www.fgdc.gov/standards/status/sub1_3.html&gt;). Digitized data was overlaid upon the RF 5k scale digital orthophotos. Check points were assessed on-screen to determine the spatial difference between the delineated vector data features and the location of the features on the orthophotos. Check points are any combination of the following features: 1) Confluences of one dimensional streams ("1d" or single line streams); 2) Confluences of two dimensional streams ("2d" or double line streams represented as polygons); 3) Polygonal lake and pond features; and 4) Distinct island features. Personnel other than the originator conducted accuracy analysis. Data is believed to be of uniform positional accuracy. Potential errors were deemed to be random, thus check points were dispersed across the extent of the data.
+
+Additional enhancement to data accuracy involved the use of RF 40,000 scale 1992-93 NAPP color infrared aerial photos (Lamoille and White River Sub basins only). The RF 5,000 scale surface water data was plotted at RF 20,000 scale and overlaid onto enlargements (RF 20,000 scale) of the photos to determine errors of omission of water polygons. Errors noted on Mylar were digitized on-screen using digital orthophotos.
+
+River restoration sites were GPS'd using Trimble Pathfinder Basic Plus.  Points were verified using benchmarks and found to be within 2 meters of accuracy.
+
+</horizpar>
+
+<qhorizpa>
+
+<horizpav>4.92</horizpav>
+
+<horizpae>
+
+Assessment of horizontal accuracy was conducted by following guidelines outlined in "FGDC Geospatial Positioning Accuracy Standards Part 3: National Standards for Spatial Data Accuracy", section 3.2.2 Accuracy Test Guidelines (&lt;http://www.fgdc.gov/standards/status/sub1_3.html&gt;).  Accuracy checking is ideally conducted by a third party using an independent data source of higher accuracy than that used to create the data being tested.
+
+The accuracies reported were generated under the following conditions:
+
+1)  Personnel other than the original editor conducted accuracy analysis,
+
+2) The best "independent source of higher accuracy" available is the RF 5000 scale Vermont Mapping Program digital orthophotos on which the original editing is based, and
+
+3) Potential errors were deemed to be random, thus test points were dispersed across the entire extent of the data.
+
+OVERVIEW - Twenty random "check" points were generated along the finalized surface water drainage network and compared against their actual "test" points on the ground that were visible using the RF 5,000 scale digital orthophotos.
+
+Horizontal accuracy was assessed by conducting the following steps in ArcView&amp;#194;&amp;#174; for each sub basin:
+
+1) The finalized surface water data was assessed to ensure that a single route represented the entire 8 digit cataloging unit (sub basin). If one didn't exist then it was created.
+
+2) Using the ArcView&amp;#194;&amp;#174; extension "randpts.avx", a user extension created by Jeff Jenness, a Wildlife Biologist and GIS Analyst with the US Forest Service at the Rocky Mountain Research Station in Flagstaff, AZ, 20 random points were generated as "check" points. This extension is available from the ESRI Arc Scripts website.
+
+3) The "check" points and surface water data were overlaid upon the RF 5000 scale digital orthophotos to assess "check points with their true locations, i.e., "test" points. Test point locations were stored in a separate point theme. A "key" field was maintained between these data sets. In some locations it was not possible to determine a "test" point with a high level of confidence so the "check" point was moved to the closest location along the same linear feature where a  "test" location could be adequately determined on the orthophoto. Check points included any combination of the following features: A) Confluences of one dimensional streams "1d" or single line streams); B) Confluences of two dimensional streams ("2d" or double line streams represented as polygons); C) Polygonal lake and pond features; and D) Distinct island features.
+
+4) Using the ArcView&amp;#194;&amp;#174; sample script "addxycoo.ave", X,Y coordinates were added to the features tables of both the "check and "test" point attribute tables. These were then exported to comma delimited text files.
+
+5) Using an Excel spreadsheet, created by the Minnesota Planning Land Management Information Center in a publication titled the "Positional Accuracy Handbook: Using the National Standard for Spatial Data Accuracy to measure and report geographic data quality " (http://www.mnplan.state.mn.us/press/accurate.html), the delimited files were imported. This spreadsheet contains all formulas necessary to generate the NSSDA statistic representing average horizontal positional accuracy.
+
+Source data for each sub basin is a composite of surface water data from different sources created using varying methodologies by numerous entities. Therefore, reported accuracy values are reported for this composite data. Features in this data are believed to be of uniform positional accuracy. Accuracy value does not take into account the horizontal positional accuracy of the source digital orthophotos, on which the data is based.
+
+</horizpae>
+
+</qhorizpa>
+
+</horizpa>
+
+</posacc>
+
+<lineage>
+
+<method>
+
+<methtype>Field</methtype>
+
+<methodid>
+
+<methkt>None</methkt>
+
+<methkey>riparian vegetation</methkey>
+
+<methkey>surface water runoff</methkey>
+
+<methkey>tree revetments</methkey>
+
+<methkey>willow wattles</methkey>
+
+<methkey>willow stakes</methkey>
+
+<methkey>willow brush mat</methkey>
+
+<methkey>rock vane</methkey>
+
+<methkey>toe riprap</methkey>
+
+<methkey>stone refusal (tiebacks)</methkey>
+
+<methkey>root wads</methkey>
+
+<methkey>rock weirs</methkey>
+
+</methodid>
+
+<methdesc>
+
+STRUCTURAL COMPONENTS &amp; ASSESSMENT:
+
+An assessment of the condition and performance of the structures occurred during the monitoring year.  Below is a list of installed practices that occurred in 2001 and the performance evaluation.  Note that stations are measured on the ground in feet from the beginning of the restoration section upstream to the end of the restoration section.  For example, station 24+00 equates to 2400 feet from the beginning of the section.  Station 28+50 equates to 2850 feet from the beginning of the restoration section.  NOTE, however, that the measurement units are in meters for the spatial dataset.  Photographs were taken of the eight stations and can be found zipped with the spatial dataset located at the spatial download site (see Metadata Section 6 - Distribution).
+
+a. A grade control structure was installed at Station 7+00, consisting of a rock vane with two root wads.  Purpose: to prohibit downstream headcut migration.  A secondary function of the grade control structure was to improve fisheries habitat.
+
+STATUS  This structure is appropriately prohibiting upstream headcutting and a pocket is beginning to scour out creating a pool for fish habitat.
+
+b. Double tree revetments were installed from Station 12+96 - 17+00.
+
+Amendment: Tree revetments were not installed from 11+50 - 12+96 because the &amp;#226;&amp;#128;&amp;#156;J vane was not installed.  This section from 11+50 - 12+96 was riprapped.  Purpose: to protect bank from erosion and stabilize banks until vegetation can take hold.
+
+STATUS  The tree revetments above the first rock vane are performing well and protecting the bank from further erosion.  The section of revetments below the first vane was blown out in the summer of 2002.  This section was repaired in the fall of 2002 with a toe rock revetment and the bank was sloped. The bank was planted with three rows of willows in the spring of 2003, which are establishing themselves well.
+
+c. Two rock vanes were installed at Stations 13+00 and 13+70.
+
+Amendment: The third &amp;#226;&amp;#128;&amp;#156;J vane was not installed, but instead the bank was riprapped. The vane was not installed because the blue-silt was not an adequate foundation for the vane. Purpose: vanes were designed to slow velocities along the bank by directing flows to the center of the waterway.  This will allow sediments to collect along the bank, narrowing the channel.  STATUS: The first vane initially served this purpose until the structure partially breached following the first storm event in 2002, which in turn blew out the tree revetments below it.  This breach in the first vane allows water to move through the vane.  This makes the vane shorter in length, but water velocity is still slowing along the bank, allowing sediment to slowly collect.  A deep pool has also formed on the backside of the vane.  When constructed, the second (downstream) vane did not encroach as far into the channel as the upstream vane and presently is not completely intact.  This breach in the first vane will be closely monitored to see if it is not performing its purpose and if corrective repair would need to take place.
+
+d. The two rock weirs at Stations 21+75 and 23+50 were not installed because the blue-silt sediments did not provide an adequate foundation.
+
+Amendment: Because the bearing capacity of the substrate below the armor layer endangered the equipment, operation was not possible.  Rock had already been dumped over the bank with no way of retrieval.  In order to provide the level of grade control that a riffle line would, the rock was randomly placed on the bed and pushed down so it was flush with the bed.  Essentially the two weirs were converted to riffles. Purpose: Create a grade control in the incised section of river to reduce erosion on the banks and streambed.
+
+STATUS  The constructed riffles are somewhat intact.  A few of the boulders have moved, but the riffles still exist.  No erosion of the banks or streambed is occurring.
+
+e. A riffle-pool sequence from Stations 20+26 - 30+50 was established by raising the channel bed elevation by 1&amp;#226;&amp;#128;&amp;#153;-2&amp;#226;&amp;#128;&amp;#153;.  A plan for relocation, creation of floodplain access and the placement of riprap along 500 linear feet of the right bank from Stations 24+00-29+00 was also established.  A point bar was constructed on the left bank extending a maximum of 25&amp;#226;&amp;#128;&amp;#153; beyond the existing OHW. Purpose: create a geomorphologically stable channel with floodplain access and provide energy dissipation at bankfull discharges.
+
+STATUS  The new channel is intact, maintaining its dimension, pattern and profile.
+
+VEGETATION:
+
+The creation of a woody riparian buffer is essential to a successful project. In order to officially establish these buffers, adjacent landowners entered into US Fish and Wildlife Service Partners for Fish and Wildlife agreements. These agreements stated that the landowner would keep a 25 foot riparian buffer for 20 years. The LCNRCD was responsible for coordinating the ordering of the vegetative plantings and was responsible for the completion of the spring plantings.  The majority of the vegetation was installed in the spring of 2002, with few exceptions as mentioned below.
+
+River Bank Bioengineering
+
+The bank section below the first rock vane, which was repaired in the fall of 2002, was planted with three rows of willow wattles in the spring of 2003, in order to stabilize the highly erodible bank above the stone toe rock revetment. The willows have established well and are healthy.
+
+Riparian Buffer
+
+The majority of the vegetated buffer was planted in the spring of 2002.  Because a repair job was done on the river in November 2002, the section of buffer on the downstream portion of Percy&amp;#226;&amp;#128;&amp;#153;s land was replanted in the spring 2003.   In the spring of 2002, plantings were only placed in the 10-15&amp;#226;&amp;#128;&amp;#153; section of buffer that had been fenced off.  After working with the landowner to fence off the proper footage, the final fenced off riparian area of 25&amp;#226;&amp;#128;&amp;#153; was then fully planted. This completed the plantings within the whole riparian buffer.
+
+The buffer was planted with balled and burlaped trees supplied by Gary Drinkwater Nursery of Hardwick, Vermont. The large trees were supplied by the Gary Drinkwater Nursery in Hardwick, Vermont.  He supplied us with trees ranging from 11-15&amp;#226;&amp;#128;&amp;#153; in height and 1-2 caliper.  Each tree and shrub had a burlap brush blanket in order to keep weed growth down around the base of the plantings.  The trees also had a plastic tree guard surrounding their trunk in order to discourage girdling by rodents.  The tree species were red maple, sugar maple, white ash, gray birch and white birch.  A total of 50 large trees were planted in the spring of 2003. The riparian plantings were performed in the spring of 2003 by Jim Smith; a stream restoration contractor with significant experience in riparian plantings.
+
+The project site was assessed on September 8, 2003, in order to assess the health and survival of the planted stock and document any suggested changes.
+
+Upstream section, Stations 24+00 to 28+50:
+
+There was 100% survival of the large trees and approximately 70% survival of the small trees and shrubs.  The trees and shrubs were free of any disease or insect infestation.  There was also no evidence of wildlife or rodent damage to the plantings.  The plantings appeared to be stable and hardy.  The newly formed floodplain had been planted with a mixture of willows and live stakes.  The row of willows closest to the river had excellent survival.  The middle section (3rd, 4th, 5th rows) or willows had approximately 50-60% survival.  There were a few large patches were the willows did not take root. It appears that high waters had washed away some of the sediment covering the willows.  The willows planted on the upper section (closest to the recreation path) had approximately 75-80% survival.  The willows were in excellent health.
+
+Downstream section, Stations 12+00 to 17+00:
+
+There is 90% survival of the large trees and approximately 70% survival of the small trees and shrubs.  The large trees exhibited some sort of insect damage to the leaves.  This will be monitored during the next year to see if any action needs to occur.  There was also no evidence of wildlife damage to the plantings.  The plantings appeared to be stable and hardy.  The willows planted in the spring of 2002 were in excellent health.  Three rows of willows had been planted in the spring of 2003 and with the exception of a few patches were also exhibiting strong growth.
+
+REPAIR/MAINTENANCE:
+
+No repair or maintenance was performed at the project site during monitoring year 2003.  The section of bank that was blown out in spring/summer of 2002 and fixed in November 2002 is performing well and no further erosion is occurring.
+
+FISHERIES:
+
+Creating quality trout habitat in the West Branch was one of the restoration goals of the project.  By re-establishing a stable reach of the river and providing habitat for all life stages of trout, the project partners hoped to achieve increases of instream cover and greater depth in pools.  The most upstream section of the project site consists dominantly of riffle habitat.  This riffle habitat will be a food source and a place where oxygenated water flows freely.  The constructed riffles will allow trout to feed from biological drift.  The right bank is riprapped with smaller rock, which currently does not provide much cover.  The willows on the lower terrace will eventually shade the river and provide stability.  The trees and shrubs on the upper terrace will provide shade, stability and become a beneficial food source for fish.  On the backside (downstream end) of the first vane, a pool has formed providing some nice fish habitat.  This provides a deeper, slower area directly adjacent to the riffle created by the vane which is a beneficial area for fish to rest without expending energy. As the vegetation grows in this section, it will provide the river with shade, a decrease in sediment loads and a good source of food matter.  The revetments are also providing good cover.  The grade control structure consisting of a rock vane with two root wads has created a pool which establishes a beneficial area of deep water.  Overall the project reach is slowly establishing a prime mix of habitat features for trout and other aquatic species.
+
+The Vermont Department of Fish and Wildlife performed some fish surveys during July and September of 2002 and 2003.  Sampling stations are listed below:
+
+Station 10 &amp;#226;&amp;#128;&amp;#147;Elevation 1550 - Barnes Camp bridge
+
+Station 20 &amp;#226;&amp;#128;&amp;#147;Elevation 1440 - Below Mt. Mansfield Co. base lodge access bridge.
+
+Station 23 &amp;#226;&amp;#128;&amp;#147;Elevation 1410 - Below snowmaking diversion
+
+Station 30 &amp;#226;&amp;#128;&amp;#147;Elevation 840   - Upper Stowe Bike Path &amp;#226;&amp;#128;&amp;#147;above confluence of Peterson Bk.
+
+Station 35 &amp;#226;&amp;#128;&amp;#147;Elevation 790   - Stowe Bike Path &amp;#226;&amp;#128;&amp;#147;above Percy&amp;#226;&amp;#128;&amp;#153;s Farm
+
+Station 40 &amp;#226;&amp;#128;&amp;#147;Elevation 750   - Stowe Bike Path &amp;#226;&amp;#128;&amp;#147;above Von Trapp Road parking area.
+
+Station 50 &amp;#226;&amp;#128;&amp;#147;Elevation 700   - Above Weeks Hill Bridge.
+
+Attached on pages 20-24 are fisheries monitoring surveys from the Vermont Department of Fish &amp; Wildlife for the West Branch for 2002 and 2003.
+
+RECOMMENDATIONS:
+
+As of the writing of this report, there has been no determination of a need for repair or changes at this restoration site.  The project team will continue to discuss positives and negatives of the project process and outcome.  Discussion regarding the structural integrity and complexities of the site will also continue.  The LCNRCD will continue to monitor the project area in the upcoming year.
+
+</methdesc>
+
+</method>
+
+<method>
+
+<methtype>Lab</methtype>
+
+<methodid>
+
+<methkt>none</methkt>
+
+<methkey>critical depth</methkey>
+
+<methkey>hydraulic jumps</methkey>
+
+<methkey>roughness coefficients</methkey>
+
+<methkey>As-built plans</methkey>
+
+<methkey>site engineering plans</methkey>
+
+<methkey>HEC-RAS hydraulic model</methkey>
+
+<methkey>flood discharges</methkey>
+
+<methkey>water surface profiles</methkey>
+
+<methkey>peak rates of discharge</methkey>
+
+<methkey>shear values along edge of bank</methkey>
+
+<methkey>channel velocities</methkey>
+
+</methodid>
+
+<methdesc>
+
+The engineering firm Dubois and King performed a hydraulic analysis on the West Branch using the 2000 version of the U.S. Army Corps of Engineers HEC-RAS hydraulic model. They utilized the most appropriate existing hydrology (peak rates of discharge) developed by others (Flood Insurance Studies, previous engineering reports, etc.).  Flood discharges for the bank full event (Q1.5), 5 year, 10 year, 25 year, 50 year, and 100 year events were obtained and utilized.
+
+Cross sections were developed from the 3-dimensional ground survey and were linked to the river stationing indicated on the base map.  The cross sections along with other appropriate data (roughness coefficients, expansion and contraction losses, etc) were coded into the HEC-RAS and an existing condition hydraulic model was developed.  The model computes appropriate hydraulic information such as water surface profiles, channel velocities, shear values along the edge of a bank, critical depth locations, hydraulic jumps, and other appropriate information necessary for the use in design of the river stabilization improvements.
+
+The hydraulic engineer observed and documented the sediment transport capacity of the channel.  Using the average channel velocities, the critical velocity to induce bed material transport and the fall velocity of the average pebble size in the channel, Dubois and King made an assessment of the sediment transport capacity of the channel.
+
+Following the approval of improvements, Dubois and King prepared the engineering plans (site plans and site details) for the restoration construction in August of 2000. Modifications were submitted and approved by the Army Corps of Engineers in October, 2002.  The As-Built and As-Planted engineering plans were prepared by the U.S. Department of Agriculture, Natural Resources Conservation Service.  Some of these plans have been zipped with and served with this dataset.  For additional information about the engineering plans, contact the Lamoille County Natural Resources Conservation District.
+
+</methdesc>
+
+</method>
+
+<srcinfo>
+
+<srccite>
+
+<citeinfo>
+
+<origin>VCGI</origin>
+
+<pubdate>19990101</pubdate>
+
+<title>WaterHydro_VHD</title>
+
+<geoform>vector digital data</geoform>
+
+<onlink>www.vcgi.org (WaterHydro_VHD)</onlink>
+
+</citeinfo>
+
+</srccite>
+
+<srcscale>5000</srcscale>
+
+<typesrc>online</typesrc>
+
+<srctime>
+
+<timeinfo>
+
+<rngdates>
+
+<begdate>19950101</begdate>
+
+<enddate>Unknown</enddate>
+
+</rngdates>
+
+</timeinfo>
+
+<srccurr>ground condition</srccurr>
+
+</srctime>
+
+<srccitea>WaterHydro_VHD</srccitea>
+
+<srccontr>Best available surface water data solicited from a variety of state, regional and local sources, i.e., layers: WaterHydro_SW, SW_nnnn, BCRC\BCSW, CVRPC\CVSW, NFLRI\SW, WaterHydro_DLGLAKE, DLGSWnn.</srccontr>
+
+</srcinfo>
+
+<srcinfo>
+
+<srccite>
+
+<citeinfo>
+
+<origin>LCPC</origin>
+
+<pubdate>20020301</pubdate>
+
+<title>Riversections_2000604b</title>
+
+<geoform>vector digital data</geoform>
+
+</citeinfo>
+
+</srccite>
+
+<srcscale>5000</srcscale>
+
+<typesrc>CD-ROM</typesrc>
+
+<srctime>
+
+<timeinfo>
+
+<sngdate>
+
+<caldate>2002</caldate>
+
+</sngdate>
+
+</timeinfo>
+
+<srccurr>ground condition</srccurr>
+
+</srctime>
+
+<srccitea>Lamoille County Planning Commission river restoration sections (Riversections_2000604b)</srccitea>
+
+<srccontr>Lamoille County Planning Commission's identified river restoration sections from WaterHydro_VHD data, the best available surface waters data.</srccontr>
+
+</srcinfo>
+
+<srcinfo>
+
+<srccite>
+
+<citeinfo>
+
+<origin>LCNRCD</origin>
+
+<pubdate>20020301</pubdate>
+
+<title>Lamoille County Natural Resources Conservation District River Restoration Sections</title>
+
+<geoform>vector digital data</geoform>
+
+</citeinfo>
+
+</srccite>
+
+<srcscale>5000</srcscale>
+
+<typesrc>CD-ROM</typesrc>
+
+<srctime>
+
+<timeinfo>
+
+<rngdates>
+
+<begdate>200106</begdate>
+
+<enddate>200109</enddate>
+
+</rngdates>
+
+</timeinfo>
+
+<srccurr>publication date</srccurr>
+
+</srctime>
+
+<srccitea>LC Natural Resources and Conservation District's attributes for Lamoille County river restoration (lcnrcdrvrrest.shp)</srccitea>
+
+<srccontr>Provides additional attributes (to LCPC river restoration sections- Riversections_2002604b) including buffer type, buffer condition, lead agency, workforce, funding amount, type of restoration, and condition of site</srccontr>
+
+</srcinfo>
+
+<procstep>
+
+<procdesc>Lamoille County rivers selected and extracted from WaterHydro_VHD (Vermont's 1:5000 hydrology data).</procdesc>
+
+<procdate>20020301</procdate>
+
+<proccont>
+
+<cntinfo>
+
+<cntorgp>
+
+<cntorg>Lamoille County Planning Commission</cntorg>
+
+</cntorgp>
+
+<cntpos>GIS Technician</cntpos>
+
+<cntaddr>
+
+<addrtype>mailing address</addrtype>
+
+<address>P.O. Box 1009</address>
+
+<city>Morrisville</city>
+
+<state>VT</state>
+
+<postal>05661-1009</postal>
+
+<country>USA</country>
+
+</cntaddr>
+
+<cntvoice>802.888.4548</cntvoice>
+
+</cntinfo>
+
+</proccont>
+
+</procstep>
+
+<procstep>
+
+<procdesc>River restoration sites were determined and length of sites GPS'd.</procdesc>
+
+<procdate>20010901</procdate>
+
+<proccont>
+
+<cntinfo>
+
+<cntperp>
+
+<cntper>Allison Cardwell</cntper>
+
+<cntorg>Lamoille County Natural Resources Conservation District</cntorg>
+
+</cntperp>
+
+<cntpos>Director</cntpos>
+
+<cntaddr>
+
+<addrtype>mailing and physical address</addrtype>
+
+<address>109 Professional Drive, Ste. 2</address>
+
+<city>Morrisville</city>
+
+<state>VT</state>
+
+<postal>05661</postal>
+
+<country>USA</country>
+
+</cntaddr>
+
+<cntvoice>802.888.9218</cntvoice>
+
+</cntinfo>
+
+</proccont>
+
+</procstep>
+
+<procstep>
+
+<procdesc>Data were differentially corrected (post correction) using Montpelier, VT base station (correction dates vary).  Data points were checked for accuracy using local benchmarks and found to be within 2 meters accuracy.</procdesc>
+
+<procdate>2001</procdate>
+
+<proccont>
+
+<cntinfo>
+
+<cntorgp>
+
+<cntorg>USDA NRCS</cntorg>
+
+<cntper>Toby Alexander</cntper>
+
+</cntorgp>
+
+<cntaddr>
+
+<addrtype>mailing and physical address</addrtype>
+
+<address>356 Mountain View Drive, Ste. 105</address>
+
+<city>Colchester</city>
+
+<state>VT</state>
+
+<postal>05446</postal>
+
+<country>USA</country>
+
+</cntaddr>
+
+<cntvoice>802.951.6796</cntvoice>
+
+</cntinfo>
+
+</proccont>
+
+</procstep>
+
+<procstep>
+
+<procdesc>Post GPS corrected shape files of river restoration sites were merged and attributed.</procdesc>
+
+<procdate>200110</procdate>
+
+<proccont>
+
+<cntinfo>
+
+<cntperp>
+
+<cntper>Allison Cardwell</cntper>
+
+<cntorg>LCNRCD</cntorg>
+
+</cntperp>
+
+<cntpos>Director</cntpos>
+
+<cntaddr>
+
+<addrtype>mailing and physical address</addrtype>
+
+<address>109 Professional Drive, Ste. 2</address>
+
+<city>Morrisville</city>
+
+<state>VT</state>
+
+<postal>05661</postal>
+
+<country>USA</country>
+
+</cntaddr>
+
+<cntvoice>802.888.9218</cntvoice>
+
+</cntinfo>
+
+</proccont>
+
+</procstep>
+
+<procstep>
+
+<procdesc>Additional attributes were added to GPS data.</procdesc>
+
+<procdate>2002</procdate>
+
+<proccont>
+
+<cntinfo>
+
+<cntperp>
+
+<cntper>Allison Cardwell</cntper>
+
+<cntorg>LCNRCD</cntorg>
+
+</cntperp>
+
+<cntpos>Director</cntpos>
+
+<cntaddr>
+
+<addrtype>mailing and physical address</addrtype>
+
+<address>109 Professional Drive, Ste. 2</address>
+
+<city>Morrisville</city>
+
+<state>VT</state>
+
+<postal>05661</postal>
+
+<country>USA</country>
+
+</cntaddr>
+
+<cntvoice>802.888.9218</cntvoice>
+
+</cntinfo>
+
+</proccont>
+
+</procstep>
+
+<procstep>
+
+<procdesc>Attribute data table from the GPS site data joined with riversections_2000604b (river sections identifying restoration sites) at attribute = SITE_ID</procdesc>
+
+<procdate>20031118</procdate>
+
+<proccont>
+
+<cntinfo>
+
+<cntperp>
+
+<cntper>Michelle Gudorf</cntper>
+
+<cntorg>GIS Contractor</cntorg>
+
+</cntperp>
+
+<cntaddr>
+
+<addrtype>mailing and physical address</addrtype>
+
+<address>4510 East Hill Rd.</address>
+
+<city>Craftsbury</city>
+
+<state>VT</state>
+
+<postal>05826</postal>
+
+<country>USA</country>
+
+</cntaddr>
+
+<cntvoice>802.586.7589</cntvoice>
+
+</cntinfo>
+
+</proccont>
+
+</procstep>
+
+</lineage>
+
+<cloud>0</cloud>
+
+</dataqual>
+
+<spdoinfo>
+
+<indspref>Foote Brook in Johnson, VT (Lamoille County)</indspref>
+
+<direct>Vector</direct>
+
+<ptvctinf>
+
+<sdtsterm>
+
+<sdtstype>String</sdtstype>
+
+<ptvctcnt>68</ptvctcnt>
+
+</sdtsterm>
+
+<sdtsterm>
+
+<sdtstype>Label point</sdtstype>
+
+<ptvctcnt>6058</ptvctcnt>
+
+</sdtsterm>
+
+<sdtsterm>
+
+<sdtstype>GT-polygon composed of chains</sdtstype>
+
+<ptvctcnt>6058</ptvctcnt>
+
+</sdtsterm>
+
+<sdtsterm>
+
+<sdtstype>Node, planar graph</sdtstype>
+
+<ptvctcnt>14012</ptvctcnt>
+
+</sdtsterm>
+
+<sdtsterm>
+
+<sdtstype>Point</sdtstype>
+
+<ptvctcnt>7078</ptvctcnt>
+
+</sdtsterm>
+
+<sdtsterm>
+
+<sdtstype>Ring with mixed composition</sdtstype>
+
+<ptvctcnt>12677</ptvctcnt>
+
+</sdtsterm>
+
+<sdtsterm>
+
+<sdtstype>Ring with mixed composition</sdtstype>
+
+<ptvctcnt>6389</ptvctcnt>
+
+</sdtsterm>
+
+<sdtsterm>
+
+<sdtstype>Ring with mixed composition</sdtstype>
+
+<ptvctcnt>3094</ptvctcnt>
+
+</sdtsterm>
+
+<sdtsterm>
+
+<sdtstype>Ring with mixed composition</sdtstype>
+
+<ptvctcnt>3118</ptvctcnt>
+
+</sdtsterm>
+
+</ptvctinf>
+
+</spdoinfo>
+
+<spref>
+
+<horizsys>
+
+<planar>
+
+<gridsys>
+
+<gridsysn>State Plane Coordinate System 1983</gridsysn>
+
+<spcs>
+
+<spcszone>4400</spcszone>
+
+<transmer>
+
+<sfctrmer>0.999964</sfctrmer>
+
+<longcm>-72.5</longcm>
+
+<latprjo>42.5</latprjo>
+
+<feast>500000</feast>
+
+<fnorth>0</fnorth>
+
+</transmer>
+
+</spcs>
+
+</gridsys>
+
+<planci>
+
+<plance>Coordinate Pair</plance>
+
+<coordrep>
+
+<absres>0.001559</absres>
+
+<ordres>0.001559</ordres>
+
+</coordrep>
+
+<plandu>meters</plandu>
+
+</planci>
+
+</planar>
+
+<geodetic>
+
+<horizdn>North American Datum of 1983</horizdn>
+
+<ellips>Geodetic Reference System 80</ellips>
+
+<semiaxis>6378137</semiaxis>
+
+<denflat>298.257222</denflat>
+
+</geodetic>
+
+</horizsys>
+
+</spref>
+
+<eainfo>
+
+<detailed>
+
+<enttyp>
+
+<enttypl>River Restoration (channel design) for Lamoille County, Vermont</enttypl>
+
+<enttypd>Standard ESRI and NHD attributes; nonstandard LCNRCD attributes</enttypd>
+
+<enttypds>ESRI, National Hydrologic Dataset, LCNRCD</enttypds>
+
+</enttyp>
+
+<attr>
+
+<attrlabl>ANALYSIS</attrlabl>
+
+<attrdef>Documentation of analysis.</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<udom>Contact LCNRCD for additional agency contact information.</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>BUFF_COND</attrlabl>
+
+<attrdef>Buffer condition-describes the condition of the riparian buffer (as observed 9/2001) .</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<edom>
+
+<edomv>Poor</edomv>
+
+<edomvd>This buffer condition identifies that 50% or more of the buffer is established by shallow rooted vegetation and less than 25% of the buffer is established by trees.  These sites may have unhealthy grass filter strips or poorly established forested riparian buffers.  Continuous mowing of the buffer and destruction or depletion of the buffer continues to decrease the health of the riparian buffer.</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>Fair</edomv>
+
+<edomvd>This buffer condition identifies a buffer dominated by healthy shallow rooted vegetation with less than 50% of the buffer zone to be dominated by trees (unless the goal is to manage for the buffer as a grass filter strip).</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>Good</edomv>
+
+<edomvd>This buffer condition identifies that the riparian buffer is dominated 50% or more by trees and also has a fully vegetated understory.</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>BUFFER</attrlabl>
+
+<attrdef>Buffer vegetation type-the composition of the vegetation of the riparian buffer, if there is a buffer</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<edom>
+
+<edomv>Grass filter</edomv>
+
+<edomvd>Grass and shallow rooted vegetation dominant in the riparian buffer zone</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>Forested</edomv>
+
+<edomvd>This riparian buffer zone is dominated primarily by large trees.  Additionally, vegetation is established in the under story.</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>Young forested</edomv>
+
+<edomvd>This type of riparian zone has fairly young trees established along 30% or more of the stream reach with little or no vegetation present along the rest of the stream reach.</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>None</edomv>
+
+<edomvd>No buffer maintained.</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>Shrubs and grasses</edomv>
+
+<edomvd>none provided</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>COMMENTS</attrlabl>
+
+<attrdef>Notes specific to restoration site.</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<udom>Notes specific to restoration site.</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>COUNT_ID</attrlabl>
+
+<attrdef>Unique identifier for each section</attrdef>
+
+<attrdefs>LCPC</attrdefs>
+
+<attrdomv>
+
+<rdom>
+
+<rdommin>1</rdommin>
+
+<rdommax>91</rdommax>
+
+</rdom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>DOWNSTREAM</attrlabl>
+
+<attrdef>Condition of the downstream meander- the condition of the next bend in the river downstream from the restoration site.</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<edom>
+
+<edomv>Stable</edomv>
+
+<edomvd>These meanders have gradual sloping stream banks with vegetation dominating 50% or more of the scarp of the stream.  Additionally, a vegetated or forested buffer is not visible to the naked eye.</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>Unstable</edomv>
+
+<edomvd>These meanders have steep stream banks with vegetation dominating less than 50% of the scarp of the stream bank.  Additionally, a vegetated or forested buffer is not visible to the naked eye.</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>ENCROACH</attrlabl>
+
+<attrdef>Human disturbance that in some way negatively impacts the restoration site.</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<udom>Attributes are self explanatory.</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>FID</attrlabl>
+
+<attrdef>Internal feature number.</attrdef>
+
+<attrdefs>ESRI</attrdefs>
+
+<attrdomv>
+
+<udom>Sequential unique whole numbers that are automatically generated.</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>FNODE_</attrlabl>
+
+<attrdef>Internal node number for the beginning of an arc (from-node).</attrdef>
+
+<attrdefs>ESRI</attrdefs>
+
+<attrdomv>
+
+<udom>Whole numbers that are automatically generated.</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>FUNDING</attrlabl>
+
+<attrdef>Amount contributed by each agency toward restoration site work.</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<udom>Attribute information is self explanatory.</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>HEIGHT</attrlabl>
+
+<attrdef>The height of the stream bank from the surface of the water.  (Note that the value in this field represents measurements in feet, however, dataset is in meters.)</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<udom>(Note that the value in this field represents measurements in feet, however, dataset is in meters.)</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>LANDUSE</attrlabl>
+
+<attrdef>How the landowner manages or utilizes the land surrounding or impacting river restoration site</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<udom>Landuse types self-explanatory</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>LEAD</attrlabl>
+
+<attrdef>Lead agency</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<udom>Contact LCNRCD for additional agency contact information.</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>LENGTH</attrlabl>
+
+<attrdef>Length of feature in internal units.</attrdef>
+
+<attrdefs>ESRI</attrdefs>
+
+<attrdomv>
+
+<udom>Positive real numbers that are automatically generated.</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>LENGTH_1</attrlabl>
+
+<attrdef>Length of the reach of stream where restoration has taken place.</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<udom>Length of the reach of stream where restoration has taken place.</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>LINEACC</attrlabl>
+
+<attrdef>ANR DEC Requested item.</attrdef>
+
+<attrdefs>VGIS Surface Waters Data Standards</attrdefs>
+
+<attrdomv>
+
+<udom>Development code - may be removed</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>LPOLY_</attrlabl>
+
+<attrdef>Internal node number for the left polygon.</attrdef>
+
+<attrdefs>ESRI</attrdefs>
+
+<attrdomv>
+
+<udom>Whole numbers that are automatically generated.</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>NEEDS</attrlabl>
+
+<attrdef>Future remediation needed-Riparian conservation work that should be done in succeeding years.</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<udom>Attributes are self explanatory.</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>OID_</attrlabl>
+
+<attrdef>Unique feature identifier</attrdef>
+
+<attrdefs>ESRI</attrdefs>
+
+<attrdomv>
+
+<udom>Whole numbers that are automatically generated.</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>OWNER</attrlabl>
+
+<attrdef>Owner of property surrounding or impacting river restoration site</attrdef>
+
+<attrdefs>LCNRC</attrdefs>
+
+<attrdomv>
+
+<udom>Owner of property surrounding or impacting river restoration site</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>PRACTICE</attrlabl>
+
+<attrdef>Type of conservation work carried out at restoration site.</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<edom>
+
+<edomv>Hydro seeding</edomv>
+
+<edomvd>Unknown</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>Willows</edomv>
+
+<edomvd>Unknown</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>Trees</edomv>
+
+<edomvd>Unknown</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>Willows and trees</edomv>
+
+<edomvd>Unknown</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>Revetments</edomv>
+
+<edomvd>Unknown</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>Full rock</edomv>
+
+<edomvd>Unknown</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>Rock Toe</edomv>
+
+<edomvd>Unknown</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>Stone Toe</edomv>
+
+<edomvd>Unknown</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>Root wad</edomv>
+
+<edomvd>Unknown</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>Flood plain grading</edomv>
+
+<edomvd>Unknown</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>Fence</edomv>
+
+<edomvd>Unknown</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>Stone weir</edomv>
+
+<edomvd>Unknown</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>REVIEW</attrlabl>
+
+<attrdef>If additional monitoring occurred at site, conditions noted here.</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<udom>Comment field and self explanatory.  Contact LCNRCD for additional information.</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>RIV_SIDE</attrlabl>
+
+<attrdef>Side of river where restoration site is located (facing downstream).</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<udom>Notes specific to restoration site.</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>RIVID</attrlabl>
+
+<attrdef>Flow Regime - Do not rely on these values! Values are unchanged from the numerous source data layers used to create the VHD and may be inconsistent and/or incomplete. Flow regime values, i.e., "perennial", "intermittent" etc. are part of the NHD model and will eventually be represented in the "certified" release of the VHD. Both the SWL and FREG attributes will be represented in the single attribute (FTYPE) in the Route.Drain feature of the "certified" data.</attrdef>
+
+<attrdefs>VGIS Surface Waters Data Standards</attrdefs>
+
+<attrdomv>
+
+<edom>
+
+<edomv>P</edomv>
+
+<edomvd>Perennial - flows year round</edomvd>
+
+<edomvds>VGIS</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>I</edomv>
+
+<edomvd>Intermittent - Contains water for only part of the year, but more than just after rainstorms and at snowmelt</edomvd>
+
+<edomvds>VGIS</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>U</edomv>
+
+<edomvd>Unknown</edomvd>
+
+<edomvds>VGIS</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>N</edomv>
+
+<edomvd>Not Coded</edomvd>
+
+<edomvds>VGIS</edomvds>
+
+</edom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>RIVNAME</attrlabl>
+
+<attrdef>Water Body ID - VT ANR Lakes  Ponds Division Naming Conventions</attrdef>
+
+<attrdefs>VT Agency of Natural Resources</attrdefs>
+
+<attrdomv>
+
+<udom>Common names of rivers and streams</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>RPOLY_</attrlabl>
+
+<attrdef>Internal node number for the right polygon.</attrdef>
+
+<attrdefs>ESRI</attrdefs>
+
+<attrdomv>
+
+<udom>Whole numbers that are automatically generated.</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>Shape</attrlabl>
+
+<attrdef>Feature geometry.</attrdef>
+
+<attrdefs>ESRI</attrdefs>
+
+<attrdomv>
+
+<udom>Coordinates defining the features.</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>SITE_ID</attrlabl>
+
+<attrdef>Code to match riversections dataset with LCNRCD GPS site data; unique ID code for each restoration site.</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<udom>unique ID code for each restoration site.</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>SITE_ID2</attrlabl>
+
+<attrdef>Code to match riversections dataset with LCNRCD GPS site data</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<udom>Unique ID code for each restoration site</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>SOURCE</attrlabl>
+
+<attrdef>Funding source contributors.</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<udom>Contact LCNRCD for additional agency contact information.</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>SOURCETHM</attrlabl>
+
+<attrdef>Source theme for river restoration sections</attrdef>
+
+<attrdefs>LCPC/LCNRCD</attrdefs>
+
+<attrdomv>
+
+<udom>Names</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>STAB_COND</attrlabl>
+
+<attrdef>Stabilization condition - the current condition of the riverbank as observed 9/2001</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<edom>
+
+<edomv>Poor</edomv>
+
+<edomvd>Consisting of steep vertical stream banks where soil erosion is occurring along 50% or more of the stream reach.  Additionally, these reaches also possess less than 50% vegetation established along the scarp of the stream bank and soil erosion is prevalent.</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>Fair</edomv>
+
+<edomvd>This stream reach has vegetation established along at least 50% of the scarp of the stream bank.  Additionally, these types of stream banks tend to have more gradual slopes, thus decreasing the chance of erosion.</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>Good</edomv>
+
+<edomvd>This type of stream reach has vegetation established along 75% or more of the scarp of the stream bank and little signs of erosion are prevalent at the toe or scarp of the stream bank.</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>STREAM</attrlabl>
+
+<attrdef>Name of stream where restoration site is located.</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<udom>Name of stream where restoration site is located.</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>SWDEV</attrlabl>
+
+<attrdef>ANR DEC Water Quality Division Surface Water classification. CVRPC regional planning commission records are the only ones with values.</attrdef>
+
+<attrdefs>VGIS Surface Waters Data Standards</attrdefs>
+
+<attrdomv>
+
+<udom>Development code - may be removed</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>SWL</attrlabl>
+
+<attrdef>Surface Waters Line-type of each line; descriptive or functional.</attrdef>
+
+<attrdefs>VGIS Surface Waters Data Standards</attrdefs>
+
+<attrdomv>
+
+<edom>
+
+<edomv>S</edomv>
+
+<edomvd>Single Line Stream</edomvd>
+
+<edomvds>Descriptive Code-Describes actual surface water feature</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>R</edomv>
+
+<edomvd>River bank of a double line river, i.e., "2d" or "polygonal"</edomvd>
+
+<edomvds>Descriptive Code - describes actual surface water</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>L</edomv>
+
+<edomvd>Lake Shore</edomvd>
+
+<edomvds>Descriptive Code - describes actual surface water</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>W</edomv>
+
+<edomvd>Wetland boundary between a wetland and land; not a river or lake boundary</edomvd>
+
+<edomvds>Descriptive Code - describes actual surface water</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>I</edomv>
+
+<edomvd>Island shore (in a river, lake or wetland)</edomvd>
+
+<edomvds>Descriptive Code - describes actual surface water</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>D</edomv>
+
+<edomvd>Dummy line, separates river polygon from lake polygon</edomvd>
+
+<edomvds>Function Code - feature producing a continuous hydrologic network</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>N</edomv>
+
+<edomvd>Network line added along the approximate center of a "polygonal" river or lake; used to create a topological network</edomvd>
+
+<edomvds>Function Code - feature producing a continuous hydrologic network</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>V</edomv>
+
+<edomvd>Wetland connector connecting the topological network across a wetland</edomvd>
+
+<edomvds>Function Code - feature producing a continuous hydrologic network</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>C</edomv>
+
+<edomvd>Constructed water conduit (e.g., culverts and canals)</edomvd>
+
+<edomvds>Function Code - feature producing a continuous hydrologic network</edomvds>
+
+</edom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>SWSRC</attrlabl>
+
+<attrdef>Surface Water Resolution - Records map scale each line was digitized from</attrdef>
+
+<attrdefs>VGIS Surface Waters Data Standards</attrdefs>
+
+<attrdomv>
+
+<edom>
+
+<edomv>0</edomv>
+
+<edomvd>No resolution code (for certain "dummy" lines)</edomvd>
+
+<edomvds>VGIS</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>1</edomv>
+
+<edomvd>1:250,000</edomvd>
+
+<edomvds>VGIS</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>2</edomv>
+
+<edomvd>1:100,000</edomvd>
+
+<edomvds>VGIS</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>3</edomv>
+
+<edomvd>1:62,500</edomvd>
+
+<edomvds>VGIS</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>4</edomv>
+
+<edomvd>1:24,000</edomvd>
+
+<edomvds>VGIS</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>5</edomv>
+
+<edomvd>1:20,000 (Vermont Orthophoto Scale)</edomvd>
+
+<edomvds>VGIS</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>6</edomv>
+
+<edomvd>1:5,000 (Vermont Orthophoto Scale)</edomvd>
+
+<edomvds>VGIS</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>7</edomv>
+
+<edomvd>1:2,500</edomvd>
+
+<edomvds>VGIS</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>8</edomv>
+
+<edomvd>1:1,250</edomvd>
+
+<edomvds>VGIS</edomvds>
+
+</edom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>TNODE_</attrlabl>
+
+<attrdef>Internal node number for the end of an arc (to-node).</attrdef>
+
+<attrdefs>ESRI</attrdefs>
+
+<attrdomv>
+
+<udom>Whole numbers that are automatically generated.</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>TOWN</attrlabl>
+
+<attrdef>Town location of restoration site</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<udom>Town location of restoration site</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>UPSTREAM</attrlabl>
+
+<attrdef>Condition of the upstream meander-condition of the first bend in the river upstream from the restoration site.</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<edom>
+
+<edomv>Stable</edomv>
+
+<edomvd>These meanders have gradual sloping stream banks with vegetation dominating 50% or more of the scarp of the stream.  Additionally, a vegetated or forested buffer is not visible to the naked eye.</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+<edom>
+
+<edomv>Unstable</edomv>
+
+<edomvd>These meanders have steep stream banks with vegetation dominating less than 50% of the scarp of the stream bank.  Additionally, a vegetated or forested buffer is not visible to the naked eye.</edomvd>
+
+<edomvds>LCNRCD</edomvds>
+
+</edom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>VHD0617_</attrlabl>
+
+<attrdef>Internal feature number.</attrdef>
+
+<attrdefs>VCGI</attrdefs>
+
+<attrdomv>
+
+<udom>Unknown</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>VHD0617_ID</attrlabl>
+
+<attrdef>User-defined feature number.</attrdef>
+
+<attrdefs>VCGI</attrdefs>
+
+<attrdomv>
+
+<udom>Common names of rivers and streams</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>WIDTH</attrlabl>
+
+<attrdef>The average width of the buffer extending from the top of the stream bank (measured in feet in the initial ground study.  (Note that the value in this field represents measurements in feet, however, dataset is in meters.)</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<udom>(Note that the value in this field represents measurements in feet, however, dataset is in meters.)</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>WORKFORCE</attrlabl>
+
+<attrdef>Those people or groups contributing to restoration work.</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<udom>Contact LCNRCD for additional information regarding these individuals or groups.</udom>
+
+</attrdomv>
+
+</attr>
+
+<attr>
+
+<attrlabl>YEAR</attrlabl>
+
+<attrdef>Year river restoration was initiated at the site</attrdef>
+
+<attrdefs>LCNRCD</attrdefs>
+
+<attrdomv>
+
+<udom>Year river restoration was initiated at the site</udom>
+
+</attrdomv>
+
+</attr>
+
+</detailed>
+
+<overview>
+
+<eaover>
+
+"CERTIFIED" NHD DATA: The VHD, as part of the NHD is a "core framework" dataset, is a comprehensive set of digital spatial data that encodes information about naturally occurring and constructed bodies of water, paths through which water flows, and related entities. The information encoded about features includes classification by type, other characteristics, a unique common identifier, the feature length or area, and (rarely) the elevation of the surface of water pools and a description of the stage of the elevation. For reaches, encoded information includes a reach code, the date the reach code was assigned, a unique common identifier, the reach length or area, and, for transport reaches, the stream level. Geographic names, and their identifiers in the Geographic Names Information System, are assigned to reaches or, if no reach is available, to features. The data also contain relations among reaches that encode the direction of water flow, metadata, and information that supports the exchange of future updates and improvements to the data.
+
+Attributes are present that were not developed as part of the NHD dataset and standard, and that are not part of any standards.  Note the Attribute Definition Source to identify source agencies.
+
+</eaover>
+
+<eadetcit>
+
+"CERTIFIED" NHD DATA: Ultimately, the VHD will only contain NHD compliant attributes.  For an overview on the VHD  feature types, characteristics, and values, review the latest U.S. Geological Survey, "Standards for National Hydrography Dataset - High Resolution": Reston, Virginia, U.S. Geological Survey. The document is available online through &lt;http://mapping.usgs.gov/standards/&gt;. Information about tables and fields in the data are available from the "Concepts and Contents" document at the NHD Technical Reference homepage (http://NHD.usgs.gov/techref.html).
+
+Attributes are present that were not developed as part of the NHD dataset and standard, and that are not part of any standards.  Note the Attribute Definition Source to identify source agencies.
+
+</eadetcit>
+
+</overview>
+
+</eainfo>
+
+<distinfo>
+
+<distrib>
+
+<cntinfo>
+
+<cntorgp>
+
+<cntorg>VT Center for Geographic Information</cntorg>
+
+</cntorgp>
+
+<cntaddr>
+
+<addrtype>mailing and physical address</addrtype>
+
+<address>58 South Main Street, Suite 2</address>
+
+<city>Waterbury</city>
+
+<state>VT</state>
+
+<postal>05676</postal>
+
+<country>USA</country>
+
+</cntaddr>
+
+<cntvoice>(802)882-3000</cntvoice>
+
+<cnttdd>None</cnttdd>
+
+<cntfax>(802)882-3001</cntfax>
+
+<cntemail>geowiz@vcgi.org</cntemail>
+
+<hours>9am - 5pm, M-F</hours>
+
+</cntinfo>
+
+</distrib>
+
+<resdesc>EnvironOther_WBRANCH2003</resdesc>
+
+<distliab>VCGI and the State of Vermont make no representations of any kind, including but not limited to the warranties of merchantability or fitness for a particular use, nor are any such warranties to be implied with respect to the data.</distliab>
+
+<stdorder>
+
+<digform>
+
+<digtinfo>
+
+<formname>ARCE</formname>
+
+<formvern>8.3</formvern>
+
+<formspec>ArcInfo Export file</formspec>
+
+<formcont>ArcInfo Export File (WinZip self extracting format)</formcont>
+
+<filedec>WinZIP</filedec>
+
+</digtinfo>
+
+<digtopt>
+
+<onlinopt>
+
+<computer>
+
+<networka>
+
+<networkr>http://www.vcgi.org/dataware/default.cfm?layer=EnvironOther_WBRANCH2003</networkr>
+
+</networka>
+
+</computer>
+
+<accinstr>Download from web site.</accinstr>
+
+</onlinopt>
+
+</digtopt>
+
+</digform>
+
+<fees>No charge when downloading from the internet, and when no custom processing is required.</fees>
+
+<ordering>Download from web site or mail-fax a copy of the VCGI 'Data Request Form' which is available from http://www.vcgi.org/dataware/order_forms</ordering>
+
+<turnarnd>About 5 days.</turnarnd>
+
+</stdorder>
+
+<custom>Mail or Fax a copy of the VCGI 'Data Request Form' which is available from http://www.vcgi.org/dataware/order_forms</custom>
+
+<techpreq>ESRI Arc/Info, ArcView, or ArcExplorer software.</techpreq>
+
+</distinfo>
+
+<metainfo>
+
+<metd>20040422</metd>
+
+<metc>
+
+<cntinfo>
+
+<cntperp>
+
+<cntper>Michelle Gudorf</cntper>
+
+<cntorg>GIS Contractor</cntorg>
+
+</cntperp>
+
+<cntaddr>
+
+<addrtype>mailing and physical address</addrtype>
+
+<address>4510 East Hill Rd.</address>
+
+<city>Craftsbury</city>
+
+<state>VT</state>
+
+<postal>05826</postal>
+
+<country>USA</country>
+
+</cntaddr>
+
+<cntvoice>802.586.7589</cntvoice>
+
+</cntinfo>
+
+</metc>
+
+<metstdn>FGDC Biological Data Profile of the Content Standard for Digital Geospatial Metadata</metstdn>
+
+<metstdv>FGDC-STD-001.1-1999</metstdv>
+
+<metac>None</metac>
+
+<metuc>None</metuc>
+
+</metainfo>
+
+</metadata>

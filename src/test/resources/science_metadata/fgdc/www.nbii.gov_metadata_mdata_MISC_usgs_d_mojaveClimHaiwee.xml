@@ -1,0 +1,815 @@
+<?xml version="1.0"?>
+<metadata><Source>http://www.nbii.gov/metadata/mdata/MISC/usgs_d_mojaveClimHaiwee.xml</Source>
+  <idinfo>
+    <citation>
+      <citeinfo>
+        <origin>Richard Hereford and Claire Longpre; US Geological Survey</origin>
+        <pubdate>1997</pubdate>
+        <title>Climate History of the Mojave Desert Region, Haiwee Weather Station, 1948 - 1996; USGS</title>
+        <geoform>Maps and Data</geoform>
+        <pubinfo>
+          <pubplace>Flagstaff, Arizona</pubplace>
+          <publish>U.S. Geological Survey</publish>
+        </pubinfo>
+        <onlink>http://geography.wr.usgs.gov/mojave/climate-history/</onlink>
+      </citeinfo>
+    </citation>
+    <descript>
+      <abstract>Aside from human activity, climate variation is one of the principal factors causing change in the Mojave Desert ecosystem. Even though dry most of the time, the countless washes, gullies, and rills, and the vegetation associated with them attest to the importance of precipitation in the desert ecosystem. The present landscape and vegetation reflect to a measurable degree the climate variation of the past several decades. Climate affects sediment yield, frequency of surface runoff, recharge of shallow aquifers, and the recovery of the landscape from human disturbances.  Climate also influences vegetation density, establishment of invasive species, and the frequency and intensity of wildfires. 
+
+
+The Climate History of the Mojava Desert Region provides an overview of regional climate variations including precipitation and temperature information. To evaluate climate variation, weather data was compiled from 48 long-term weather stations across the Mojave Desert. The stations are in western Arizona, eastern California, southern Nevada, and southwest Utah.
+        
+
+The primary data set consists of about 1.2 and 1.8 million daily observations of precipitation and temperature, respectively. These data were collected mainly at weather stations staffed by volunteers (NOAA, 1986). Some of the raw data were purchased in electronic form from EarthInfo, Inc. who obtained it from the National Climate Data Center (NCDC), Asheville, North Carolina. These data do not contain the entire record of a particular station, as the available electronic record typically begins in 1948. To evaluate climate variation, the longest possible record is necessary. Thus, the USGS obtained from the NCDC the complete National Weather Service reports on microfiche for the four-state region of the Mojave Desert. These data were entered into the computer manually, producing a record of precipitation beginning in 1892.
+
+
+The record of precipitation for the Haiwee Weather Station is 1948-1996. The record of temperature is 1948-1996.</abstract>
+      <purpose>Climate variation has implications for land management in the Mojave Desert region. The present climate, for example, is wetter overall than the climate prevailing only about 20 years ago. This implies that recovery of vegetation and landscape from disturbances has been enhanced since about 1978. Restoration projects since 1978 were undertaken during a period of generally favorable climate.</purpose>
+    </descript>
+    <timeperd>
+      <timeinfo>
+        <rngdates>
+          <begdate>19480101</begdate>
+          <enddate>19961231</enddate>
+        </rngdates>
+      </timeinfo>
+      <current>ground condition</current>
+    </timeperd>
+    <status>
+      <progress>Complete</progress>
+      <update>As needed</update>
+    </status>
+    <spdom>
+      <descgeog>Mojave Desert, Haiwee Weather Station (USGS)</descgeog>
+      <bounding>
+        <westbc>-117.95</westbc>
+        <eastbc>-117.95</eastbc>
+        <northbc>36.13</northbc>
+        <southbc>36.13</southbc>
+        <boundalt>
+          <altmin>0</altmin>
+          <altmax>1166</altmax>
+          <altunits>meters</altunits>
+        </boundalt>
+      </bounding>
+    </spdom>
+    <keywords>
+      <theme>
+        <themekt>GCMD SCIENCE PARAMETERS</themekt>
+        <themekey>EARTH SCIENCE &gt; ATMOSPHERE &gt; PRECIPITATION &gt; PRECIPITATION AMOUNT</themekey>
+        <themekey>EARTH SCIENCE &gt; ATMOSPHERE &gt; ATMOSPHERIC TEMPERATURE &gt; AIR TEMPERATURE</themekey>
+        <themekey>EARTH SCIENCE &gt; ATMOSPHERE &gt; ATMOSPHERIC TEMPERATURE &gt; MAXIMUM/MINIMUM TEMPERATURE</themekey>
+        <themekey>EARTH SCIENCE &gt; CLIMATE INDICATORS &gt; DROUGHT/PRECIPITATION INDICES</themekey>
+        <themekey>EARTH SCIENCE &gt; BIOSPHERE &gt; TERRESTRIAL ECOSYSTEMS &gt; DESERTS</themekey>
+      </theme>
+      <theme>
+        <themekt>ISO Topic Category</themekt>
+        <themekey>CLIMATOLOGY/METEOROLOGY/ATMOSPHERE</themekey>
+        <themekey>BIOTA</themekey>
+      </theme>
+      <theme>
+        <themekt>None</themekt>
+        <themekey>Annual Precipitation</themekey>
+        <themekey>Average Daily Precipitation</themekey>
+        <themekey>Extreme Temperatures</themekey>
+        <themekey>Weather Station Maps</themekey>
+        <themekey>Climate History</themekey>
+        <themekey>Maps</themekey>
+        <themekey>Thermometers</themekey>
+        <themekey>Rain Gauges</themekey>
+      </theme>
+      <place>
+        <placekt>GCMD</placekt>
+        <placekey>CONTINENT &gt; NORTH AMERICA &gt; UNITED STATES OF AMERICA &gt; ARIZONA</placekey>
+        <placekey>CONTINENT &gt; NORTH AMERICA &gt; UNITED STATES OF AMERICA &gt; CALIFORNIA</placekey>
+        <placekey>CONTINENT &gt; NORTH AMERICA &gt; UNITED STATES OF AMERICA &gt; NEVADA</placekey>
+        <placekey>CONTINENT &gt; NORTH AMERICA &gt; UNITED STATES OF AMERICA &gt; UTAH</placekey>
+      </place>
+    </keywords>
+    <accconst>None</accconst>
+    <useconst>None</useconst>
+    <ptcontac>
+      <cntinfo>
+        <cntperp>
+          <cntper>RICHARD HEREFORD</cntper>
+        </cntperp>
+        <cntpos>TECHNICAL CONTACT</cntpos>
+        <cntaddr>
+          <addrtype>Mailing and Physical Address</addrtype>
+          <address>US Geological Survey</address>
+          <address>2255 N. Gemini Drive, 319</address>
+          <city>Flagstaff</city>
+          <state>AZ</state>
+          <postal>86001</postal>
+          <country>USA</country>
+        </cntaddr>
+        <cntvoice>928-556-7159</cntvoice>
+        <cntemail>rhereford@usgs.gov</cntemail>
+      </cntinfo>
+    </ptcontac>
+    <crossref>
+      <citeinfo>
+        <origin>Dettinger, M.D., and Cayan, D.R.</origin>
+        <pubdate>1995</pubdate>
+        <title>Large-scale atmospheric forcing of recent trends toward early snowmelt runoff in California</title>
+        <geoform>Publication</geoform>
+        <serinfo>
+          <sername>Journal of Climate</sername>
+          <issue>v. 8, p. 606-623</issue>
+        </serinfo>
+      </citeinfo>
+    </crossref>
+    <crossref>
+      <citeinfo>
+        <origin>Hereford, Richard, and Webb, R.H.</origin>
+        <pubdate>1997</pubdate>
+        <title>How often does rainfall cause overland flow in the arid Mojave Desert? A study of reservoir deposits in Valjean Valley (abs.)</title>
+        <geoform>Publication</geoform>
+        <serinfo>
+          <sername>Quarterly San Bernardino County Museum Association</sername>
+          <issue>v. 44, p. 14</issue>
+        </serinfo>
+      </citeinfo>
+    </crossref>
+    <crossref>
+      <citeinfo>
+        <origin>Hunning, J.R.</origin>
+        <pubdate>1978</pubdate>
+        <title>A characterization of the climate of the California desert: Riverside, California</title>
+        <geoform>Publication</geoform>
+        <serinfo>
+          <sername>Bureau of Land Management</sername>
+          <issue>Contract No. CA-060-CT7-2812</issue>
+        </serinfo>
+      </citeinfo>
+    </crossref>
+    <crossref>
+      <citeinfo>
+        <origin>Katz, R.W., and Glantz, M.H.</origin>
+        <pubdate>1986</pubdate>
+        <title>Anatomy of a rainfall index</title>
+        <geoform>Publication</geoform>
+        <serinfo>
+          <sername>Monthly Weather Review</sername>
+          <issue>v. 114, p. 764-771</issue>
+        </serinfo>
+      </citeinfo>
+    </crossref>
+    <crossref>
+      <citeinfo>
+        <origin>Minobe, Shoshiro</origin>
+        <pubdate>1997</pubdate>
+        <title>A 50-70 year climatic oscillation over the North Pacific and North America</title>
+        <geoform>Publication</geoform>
+        <serinfo>
+          <sername>Geophysical Research Letters</sername>
+          <issue>v. 24, p. 683-686</issue>
+        </serinfo>
+      </citeinfo>
+    </crossref>
+    <crossref>
+      <citeinfo>
+        <origin>NOAA</origin>
+        <pubdate>1986</pubdate>
+        <title>Surface land daily cooperative summary of the day TD-3200: Asheville, North Carolina</title>
+        <geoform>Publication</geoform>
+        <serinfo>
+          <sername>National Climate Data Center</sername>
+          <issue>23 p.</issue>
+        </serinfo>
+      </citeinfo>
+    </crossref>
+    <crossref>
+      <citeinfo>
+        <origin>Rowlands, P.G.; Latting, June, and Rowlands, P.G., eds.</origin>
+        <pubdate>1995</pubdate>
+        <title>Regional bioclimatology of the California desert</title>
+        <geoform>Publication</geoform>
+        <pubinfo>
+          <pubplace>Riverside, California</pubplace>
+          <publish>University of California Press</publish>
+        </pubinfo>
+      </citeinfo>
+    </crossref>
+    <crossref>
+      <citeinfo>
+        <origin>Webb, R.H., and Betancourt, J.L.</origin>
+        <pubdate>1992</pubdate>
+        <title>Climate variability and flood frequency of the Santa Cruz River, Pima County, Arizona</title>
+        <geoform>Publication</geoform>
+        <serinfo>
+          <sername>U.S. Geological Survey Water Supply Paper</sername>
+          <issue>2379, 40 p.</issue>
+        </serinfo>
+      </citeinfo>
+    </crossref>
+    <crossref>
+      <citeinfo>
+        <origin>Zhang, Yuan, Wallace, J.M., and Battisti, D.S.</origin>
+        <pubdate>1997</pubdate>
+        <title>ENSO-like interdecadal variability: 1900-93</title>
+        <geoform>Publication</geoform>
+        <serinfo>
+          <sername>Journal of Climate</sername>
+          <issue>v. 10, p. 1004-1020</issue>
+        </serinfo>
+      </citeinfo>
+    </crossref>
+  </idinfo>
+  <dataqual>
+    <logic>Not Available</logic>
+    <complete>In these calculations, traces of precipitation were ignored (set to 0) and a missing value code (-99) was entered if more than 10 percent of the observations in the accounting period were missing.</complete>
+    <lineage>
+      <procstep>
+        <procdesc>No process steps have been described for this data set</procdesc>
+        <procdate>Unknown</procdate>
+      </procstep>
+    </lineage>
+  </dataqual>
+  <eainfo>
+    <detailed>
+      <enttyp>
+        <enttypl>ppt_ann.txt</enttypl>
+        <enttypd>annual precipitation cycle</enttypd>
+        <enttypds>none</enttypds>
+      </enttyp>
+      <attr>
+        <attrlabl>Date</attrlabl>
+        <attrdef>calendar date of data sampling</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>MM/DD</edomv>
+            <edomvd>date</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Day</attrlabl>
+        <attrdef>day of sampling in sequence</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>number</edomv>
+            <edomvd>number in sequence</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Average</attrlabl>
+        <attrdef>average daily precipitation</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>inches</edomv>
+            <edomvd>height of precipitation measurement</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Maximum</attrlabl>
+        <attrdef>daily maximum precipitation</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>inches</edomv>
+            <edomvd>height of precipitation measurement</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+    </detailed>
+    <detailed>
+      <enttyp>
+        <enttypl>mint_ann.txt</enttypl>
+        <enttypd>annual minimum temperature cycle</enttypd>
+        <enttypds>none</enttypds>
+      </enttyp>
+      <attr>
+        <attrlabl>Date</attrlabl>
+        <attrdef>calendar date of data sampling</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>MM/DD</edomv>
+            <edomvd>date</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Day</attrlabl>
+        <attrdef>day of sampling in sequence</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>number</edomv>
+            <edomvd>number in sequence</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Average</attrlabl>
+        <attrdef>average daily temperature</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>degrees Farenheit</edomv>
+            <edomvd>temperature</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>StdDev</attrlabl>
+        <attrdef>standard deviation</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>standard deviation</edomv>
+            <edomvd>measure of variance</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Maximum</attrlabl>
+        <attrdef>daily maximum temperature</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>degrees Farenheit</edomv>
+            <edomvd>temperature</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Minimum</attrlabl>
+        <attrdef>daily minimum temperature</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>degrees Farenheit</edomv>
+            <edomvd>temperature</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+    </detailed>
+    <detailed>
+      <enttyp>
+        <enttypl>maxt_ann.txt</enttypl>
+        <enttypd>annual maximum temperature cycle</enttypd>
+        <enttypds>none</enttypds>
+      </enttyp>
+      <attr>
+        <attrlabl>Date</attrlabl>
+        <attrdef>calendar date of data sampling</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>MM/DD</edomv>
+            <edomvd>date</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Day</attrlabl>
+        <attrdef>day of sampling in sequence</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>number</edomv>
+            <edomvd>number in sequence</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Average</attrlabl>
+        <attrdef>average daily temperature</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>degrees Farenheit</edomv>
+            <edomvd>temperature</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>StdDev</attrlabl>
+        <attrdef>standard deviation</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>standard deviation</edomv>
+            <edomvd>measure of variance</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Maximum</attrlabl>
+        <attrdef>daily maximum temperature</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>degrees Farenheit</edomv>
+            <edomvd>temperature</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Minimum</attrlabl>
+        <attrdef>daily minimum temperature</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>degrees Farenheit</edomv>
+            <edomvd>temperature</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+    </detailed>
+    <detailed>
+      <enttyp>
+        <enttypl>ppt_year.txt</enttypl>
+        <enttypd>total annual precipitation with daily maximum, days without precipitation and days with precipitation</enttypd>
+        <enttypds>none</enttypds>
+      </enttyp>
+      <attr>
+        <attrlabl>Year</attrlabl>
+        <attrdef>year of sampling record</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>YYYY</edomv>
+            <edomvd>year</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Total</attrlabl>
+        <attrdef>total annual precipitation</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>inches</edomv>
+            <edomvd>height of precipitation measurement</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Avg</attrlabl>
+        <attrdef>average daily precipitation</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>inches</edomv>
+            <edomvd>height of precipitation measurement</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Max</attrlabl>
+        <attrdef>daily maximimum precipitation</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>inches</edomv>
+            <edomvd>height of precipitation measurement</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Zero</attrlabl>
+        <attrdef>days without precipitation</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>number</edomv>
+            <edomvd>number of days (count)</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Pptdays</attrlabl>
+        <attrdef>days with precipitation</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>number</edomv>
+            <edomvd>number of days (count)</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+    </detailed>
+    <detailed>
+      <enttyp>
+        <enttypl>maxt_year.txt</enttypl>
+        <enttypd>average annual maximum temperature</enttypd>
+        <enttypds>none</enttypds>
+      </enttyp>
+      <attr>
+        <attrlabl>Year</attrlabl>
+        <attrdef>year of sampling record</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>YYYY</edomv>
+            <edomvd>year</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Avg</attrlabl>
+        <attrdef>average temperature</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>degrees Farenheit</edomv>
+            <edomvd>temperature</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+    </detailed>
+    <detailed>
+      <enttyp>
+        <enttypl>mint_year.txt</enttypl>
+        <enttypd>average annual minimum temperature</enttypd>
+        <enttypds>none</enttypds>
+      </enttyp>
+      <attr>
+        <attrlabl>Year</attrlabl>
+        <attrdef>year of sampling record</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>YYYY</edomv>
+            <edomvd>year</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Avg</attrlabl>
+        <attrdef>average temperature</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>degrees Farenheit</edomv>
+            <edomvd>temperature</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+    </detailed>
+    <detailed>
+      <enttyp>
+        <enttypl>ppt_cool.txt</enttypl>
+        <enttypd>total cool season precipitation with daily maximum, days without precipiation and days with precipitation</enttypd>
+        <enttypds>none</enttypds>
+      </enttyp>
+      <attr>
+        <attrlabl>Year</attrlabl>
+        <attrdef>year of sampling record</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>YYYY</edomv>
+            <edomvd>year</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Total</attrlabl>
+        <attrdef>total annual precipitation</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>inches</edomv>
+            <edomvd>height of precipitation measurement</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Avg</attrlabl>
+        <attrdef>average daily precipitation</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>inches</edomv>
+            <edomvd>height of precipitation measurement</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Max</attrlabl>
+        <attrdef>daily maximimum precipitation</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>inches</edomv>
+            <edomvd>height of precipitation measurement</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Zero</attrlabl>
+        <attrdef>days without precipitation</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>number</edomv>
+            <edomvd>number of days (count)</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Pptdays</attrlabl>
+        <attrdef>days with precipitation</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>number</edomv>
+            <edomvd>number of days (count)</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+    </detailed>
+    <detailed>
+      <enttyp>
+        <enttypl>ppt_warm.txt</enttypl>
+        <enttypd>total warm season precipitation with daily maximum, days without precipitation and days with precipitation</enttypd>
+        <enttypds>none</enttypds>
+      </enttyp>
+      <attr>
+        <attrlabl>Year</attrlabl>
+        <attrdef>year of sampling record</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>YYYY</edomv>
+            <edomvd>year</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Total</attrlabl>
+        <attrdef>total annual precipitation</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>inches</edomv>
+            <edomvd>height of precipitation measurement</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Avg</attrlabl>
+        <attrdef>average daily precipitation</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>inches</edomv>
+            <edomvd>height of precipitation measurement</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Max</attrlabl>
+        <attrdef>daily maximimum precipitation</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>inches</edomv>
+            <edomvd>height of precipitation measurement</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Zero</attrlabl>
+        <attrdef>days without precipitation</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>number</edomv>
+            <edomvd>number of days (count)</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Pptdays</attrlabl>
+        <attrdef>days with precipitation</attrdef>
+        <attrdefs>none</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>number</edomv>
+            <edomvd>number of days (count)</edomvd>
+            <edomvds>none</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+    </detailed>
+    <overview>
+      <eaover>The summary data consists of two main types: (1) the annual cycle of precipitation and temperature, i.e. average daily precipitation, maximum precipitation, and the average daily maximum and minimum temperature and extreme temperatures calculated for each calendar day for the period of record; and (2) total precipitation and average daily maximum and minimum temperature computed seasonally or by calendar year for the period of record of a particular station.</eaover>
+      <eadetcit>Complete description available at http://mojave.usgs.gov/climate-history/</eadetcit>
+    </overview>
+  </eainfo>
+  <distinfo>
+    <distrib>
+      <cntinfo>
+        <cntorgp>
+          <cntorg>DOI/USGS/GEOG/WRG/MOJAVE &gt; Mojave Desert, Western Region Geography, Geography Division, U.S. Geological Survey, U.S. Department of the Interior</cntorg>
+          <cntper>RICHARD HEREFORD</cntper>
+        </cntorgp>
+        <cntpos>DATA CENTER CONTACT</cntpos>
+        <cntaddr>
+          <addrtype>Mailing and Physical Address</addrtype>
+          <address>US Geological Survey</address>
+          <address>2255 N. Gemini Drive, 319</address>
+          <city>Flagstaff</city>
+          <state>AZ</state>
+          <postal>86001</postal>
+          <country>USA</country>
+        </cntaddr>
+        <cntvoice>928-556-7159</cntvoice>
+        <cntemail>rhereford@usgs.gov</cntemail>
+      </cntinfo>
+    </distrib>
+    <distliab>None</distliab>
+    <stdorder>
+      <digform>
+        <digtinfo>
+          <formname>ASCII</formname>
+          <filedec>No compression applied</filedec>
+        </digtinfo>
+        <digtopt>
+          <onlinopt>
+            <computer>
+              <networka>
+                <networkr>http://mojave.usgs.gov/climate-history/Baker/baker.zip</networkr>
+              </networka>
+            </computer>
+            <accinstr>Climate History of the Mojave Desert Region, 1892 - 1996 data download: Baker Weather Station</accinstr>
+          </onlinopt>
+        </digtopt>
+      </digform>
+      <fees>None</fees>
+    </stdorder>
+  </distinfo>
+  <metainfo>
+    <metd>20090904</metd>
+    <metrd>20050524</metrd>
+    <metc>
+      <cntinfo>
+        <cntorgp>
+          <cntorg>NASA GCMD</cntorg>
+        </cntorgp>
+        <cntaddr>
+          <addrtype>Mailing and Physical Address</addrtype>
+          <address>NASA Goddard Space Flight Center</address>
+          <address>Code 610.2</address>
+          <city>Greenbelt</city>
+          <state>MD</state>
+          <postal>20771</postal>
+          <country>USA</country>
+        </cntaddr>
+        <cntvoice>(301) 614-6163</cntvoice>
+        <cntfax>301-614-5268</cntfax>
+        <cntemail>gsfc-gcmduso@mail.nasa.gov</cntemail>
+      </cntinfo>
+    </metc>
+    <metstdn>FGDC Content Standard for Digital Geospatial Metadata</metstdn>
+    <metstdv>FGDC-STD-001-1998</metstdv>
+  </metainfo>
+</metadata>

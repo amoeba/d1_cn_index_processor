@@ -1,0 +1,400 @@
+<?xml version="1.0"?>
+<metadata><Source>http://www.nbii.gov/metadata/mdata/USGS_FORT/usgs_brd_fort_d_2015.xml</Source>
+	<idinfo>
+		<citation>
+			<citeinfo>
+				<origin>U.S. Geological Survey, Fort Collins Science Center (FORT)</origin>
+				<pubdate>Unpublished material</pubdate>
+				<title>BRD * Upper Delaware River Basin Environmental Flows Study - Depth-Velocity-Water's edge</title>
+				<geoform>maps data</geoform>
+			</citeinfo>
+		</citation>
+		<descript>
+			<abstract>New York City's Delaware system impounds Delaware River tributaries in three reservoirs: Cannonsville Reservoir on the West Branch, Pepacton Reservoir on the East Branch, and the Neversink Reservoir on the Neversink River. Approximately 725,985 AF/yr is diverted out of the Delaware Basin from these reservoirs through the Delaware Aqueduct. The Delaware River Basin Compact, which became law in 1961, created the Delaware River Basin Commission (DRBC) to manage water resources of the basin and to help resolve regional resource conflicts without returning to court. The DRBC is made up of the governors from the states of Delaware, New Jersey, New York, and Pennsylvania, and a federal represented appointed by the President. Using its authority, the DRBC funded a'Flow Needs Study' designed to define flow related issues, provide tools (featuring a flow simulation model called OASIS), and recommend additional study needs to help resolve interstate flow management issues. This study identified many cases where the technical basis for flow management decisions required strengthening. One such area is the updating of ecologically based flow relationships for the Upper Delaware main stem and tributaries. The recent discovery of several colonies of Dwarf Wedgemussel, an endangered species, on the Upper Main Stem Delaware has highlighted the need for additional ecological assessment of the flow regime. There are a number of operational and management factors which affect the flow regime in the Upper Delaware Basin. Among these are the Montague flow target formula, minimum NYC reservoir releases, NYCDEP reservoir management decisions, the reservoir operating rule curves, and reservoir capacity. Montague flow target: During normal conditions as defined by the operating rule curves, New York City can divert up to 800 million gallons a day (2,456 AF) out of the three reservoirs as long as a Delaware River flow target of 1,750 cubic feet per second (cfs) is met at the Montague, NJ gage. New York City must comply with this direction, but may use any of the three Upper Delaware reservoirs to do so, making the low flow regime in the upper Delaware and tributaries highly variable. Minimum releases: New York State Department of Environmental Conservation (DEC) regulations require minimum releases from the three reservoirs for conservation purposes. During periods of drought watch, drought warning, and drought as defined by the operating rule curves, both flow targets and minimum releases would be reduced under the proposal. In addition, thermal releases are also made when needed to protect coldwater fisheries below the reservoirs. Rule curves: The rule curves defining drought watch, warning and drought conditions represent a seasonal water allocation of NYC reservoir storage among the decree parties. Drought or drought warning operations have been invoked frequently in recent history, resulting in frequent enforcement of the basic conservation release and abnormally low flows for extended periods of time. Reservoir capacity: Reservoir spills result when large runoff events occur when the reservoir is full or nearly full. Under natural conditions, peak flows would normally occur in April and May in response to snowmelt runoff. Attenuation of peaks is greatest in the Neversink River and least in the West Branch due to differences in reservoir capacity and inflow.  Datasets consist of nodal depth, nodal velocity and water's edge locations produced from hydraulic simulations for each study site and eash flow regime.</abstract>
+			<purpose>Program - Fisheries: Aquatic and Endangered Resources Goal 4 Aquatic Species and Habitats -Quantify and describe functional relationships among aquatic species and habitats to provide information to conserve or restore aquatic community function. Goal 5 Aquatic Species at Risk - Provide science support to natural resource managers by investigating the factors that contribute to the conservation and recovery of aquatic species at risk. Goal 6 Research Support and Technical Assistance - Enhance research capabilities and technical assistance to provide research support to DOI bureaus, other government agencies, Tribes, and NGO's for application in natural resource management problem solving and decision making. Objective: Identification of environmental flows for the Neversink, East and West Branch of the Delaware Rivers. Continuation of the project initiated January 2004. The USGS' involvement in the Upper Delaware is a the result of Congressional funding directed towards the study of instream habitat needs in the Upper Delaware. This project was proposed for federal funding by a coalition of non-profit groups (including The Nature Conservancy, Trout Unlimited, and the Delaware River Foundation) and supported by the Delaware River Basin Commission. The study plan was developed in conjunction with the Subcommittee on Ecological Flows for the Delaware Basin (SEF). SEF's goal is to 'to develop ecological flow requirements for the maintenance or restoration of healthy self-sustaining and managed aquatic ecosystems in the Delaware Basin.'  The goal of the present study is provide information relating instream habitat and streamflow to fill data gaps that currently exist in the OASIS model. Specifically, the objectives of the study are: 1) the quantification of habitat metrics over a range of discharges and seasons at selected locations in the three tributaries and mainstem Delaware, 2) development and calibration of a network-wide temperature simulation model for the upper Delaware River basin, and 3) development of a prototype decision support system to assist DRBC and other stakeholders to analyze and interpret water management and reservoir operations alternatives.  The specific objectives of the study were - 1) the quantification of habitat metrics over a range of discharges and seasons at selected locations in the three tributaries and mainstem Delaware, 2) development and calibration of a network-wide temperature simulation model for the upper Delaware River basin, and 3) development of a prototype decision support system to assist DRBC and other stakeholders to analyze and interpret water management and reservoir operations alternatives.</purpose>
+			<supplinf>Information used to prepare this metadata was extracted from entries in the USGS BASIS+ database for 832798A.22.0 on 20060301  (previous geoform was 'Tabular digital data')</supplinf>
+		</descript>
+		<timeperd>
+			<timeinfo>
+				<rngdates>
+					<begdate>20031001</begdate>
+					<enddate>20060930</enddate>
+				</rngdates>
+			</timeinfo>
+			<current>Ground condition</current>
+		</timeperd>
+		<status>
+			<progress>Complete</progress>
+			<update>None planned</update>
+		</status>
+		<spdom>
+			<descgeog>New York; Delaware River; Pennsylvania; Neversink River</descgeog>
+			<bounding>
+				<westbc>-75.44</westbc>
+				<eastbc>-74.59</eastbc>
+				<northbc>42.09</northbc>
+				<southbc>41.43</southbc>
+			</bounding>
+		</spdom>
+		<keywords>
+			<theme>
+				<themekt>ISO 19115 Topic Category</themekt>
+				<themekey>biota</themekey>
+				<themekey>environment</themekey>
+				<themekey>inlandWaters</themekey>
+			</theme>
+			<theme>
+				<themekt>None</themekt>
+				<themekey>Stream Modeling</themekey>
+				<themekey>Dams</themekey>
+				<themekey>Decision support systems</themekey>
+				<themekey>Ecosystems</themekey>
+				<themekey>Aquatic ecosystems</themekey>
+				<themekey>Habitat</themekey>
+				<themekey>Endangered species</themekey>
+				<themekey>River system management</themekey>
+				<themekey>Water quality</themekey>
+				<themekey>2-dimensional hydraulic modeling</themekey>
+				<themekey>spatially explicit habitat modeling</themekey>
+				<themekey>habitat use guilds</themekey>
+				<themekey>habitat persistence</themekey>
+			</theme>
+			<place>
+				<placekt>None</placekt>
+				<placekey>New York</placekey>
+				<placekey>NY</placekey>
+				<placekey>Pennsylvania</placekey>
+				<placekey>PA</placekey>
+			</place>
+		</keywords>
+		<taxonomy>
+			<keywtax>
+				<taxonkt>None</taxonkt>
+				<taxonkey>Brown Trout</taxonkey>
+				<taxonkey>American shad</taxonkey>
+				<taxonkey>Rainbow trout</taxonkey>
+			</keywtax>
+			<taxoncl>
+				<taxonrn>Kingdom</taxonrn>
+				<taxonrv>Animalia</taxonrv>
+				<taxoncl>
+					<taxonrn>Phylum</taxonrn>
+					<taxonrv>Chordata</taxonrv>
+					<taxoncl>
+						<taxonrn>Class</taxonrn>
+						<taxonrv>Actinopterygii</taxonrv>
+						<taxoncl>
+							<taxonrn>Order</taxonrn>
+							<taxonrv>Clupeiformes</taxonrv>
+							<taxoncl>
+								<taxonrn>Family</taxonrn>
+								<taxonrv>Clupeidae</taxonrv>
+								<taxoncl>
+									<taxonrn>Genus</taxonrn>
+									<taxonrv>Alosa</taxonrv>
+									<taxoncl>
+										<taxonrn>Species</taxonrn>
+										<taxonrv>sapidissima</taxonrv>
+										<common>American shad</common>
+									</taxoncl>
+								</taxoncl>
+							</taxoncl>
+						</taxoncl>
+						<taxoncl>
+							<taxonrn>Order</taxonrn>
+							<taxonrv>Salmoniformes</taxonrv>
+							<taxoncl>
+								<taxonrn>Family</taxonrn>
+								<taxonrv>Salmonidae</taxonrv>
+								<taxoncl>
+									<taxonrn>Genus</taxonrn>
+									<taxonrv>Oncorhynchus</taxonrv>
+									<taxoncl>
+										<taxonrn>Species</taxonrn>
+										<taxonrv>mykiss</taxonrv>
+										<common>Rainbow trout</common>
+									</taxoncl>
+								</taxoncl>
+								<taxoncl>
+									<taxonrn>Genus</taxonrn>
+									<taxonrv>Salmo</taxonrv>
+									<taxoncl>
+										<taxonrn>Species</taxonrn>
+										<taxonrv>trutta</taxonrv>
+										<common>Brown trout</common>
+									</taxoncl>
+								</taxoncl>
+							</taxoncl>
+						</taxoncl>
+					</taxoncl>
+				</taxoncl>
+			</taxoncl>
+		</taxonomy>
+		<accconst>None, except for dwarfwedge mussel locations.</accconst>
+		<useconst>None.</useconst>
+		<ptcontac>
+			<cntinfo>
+				<cntperp>
+					<cntper>Bovee, Ken</cntper>
+					<cntorg>U.S. Geological Survey, Fort Collins Science Center (FORT)</cntorg>
+				</cntperp>
+				<cntaddr>
+					<addrtype>Mailing and physical</addrtype>
+					<address>U.S. Geological Survey, Fort Collins Science Center (FORT)</address>
+					<address>2150 Centre Avenue, Bldg C</address>
+					<city>Fort Collins</city>
+					<state>CO</state>
+					<postal>80526-8118</postal>
+					<country>USA</country>
+				</cntaddr>
+				<cntvoice>(970) 226-9100</cntvoice>
+				<cntfax>(970) 226-9230</cntfax>
+			</cntinfo>
+		</ptcontac>
+		<datacred>Delaware River Basin Commission (DRBC), DRBC Flow Management Technical Advisory Committee, DRBC Subcommittee on Ecological Flows for the Delaware Basin, Nature Conservancy, Trout Unlimited, the Delaware River Foundation</datacred>
+		<native>Text file</native>
+		<crossref>
+			<citeinfo>
+				<origin>Bovee, Ken</origin>
+				<pubdate>1997</pubdate>
+				<title>Data Collection Procedures for the Physical Habitat Simulation System</title>
+				<geoform>Book</geoform>
+				<pubinfo>
+					<pubplace>Fort Collins, CO</pubplace>
+					<publish>U.S. Geological Survey</publish>
+				</pubinfo>
+				<othercit>146 pp.</othercit>
+				<onlink>Publication Online at http://www.fort.usgs.gov/products/publications/20002/20002.asp</onlink>
+			</citeinfo>
+		</crossref>
+		<crossref>
+			<citeinfo>
+				<origin>Bovee, K.D., B.L. Lamb, J.M. Bartholow, C.B. Stalnaker, J. Taylor, and J. Henriksen, U.S. Geological Survey</origin>
+				<pubdate>1998</pubdate>
+				<title>Stream Habitat Analysis Using the Instream Flow Incremental Methodology</title>
+				<geoform>Report</geoform>
+				<serinfo>
+					<sername>Information and Technology Report USGS/BRD/ITR-1998-0004</sername>
+					<issue>Information and Technology Report USGS/BRD/ITR-1998-0004: 130 pp.</issue>
+				</serinfo>
+				<pubinfo>
+					<pubplace>Fort Collins, CO</pubplace>
+					<publish>U.S. Geological Survey-BRD</publish>
+				</pubinfo>
+				<othercit>130 pp.</othercit>
+				<onlink>Publication Online at http://www.fort.usgs.gov/products/publications/3910/3910.asp</onlink>
+			</citeinfo>
+		</crossref>
+		<crossref>
+			<citeinfo>
+				<origin>Bovee, K.D., and M.L. Scott</origin>
+				<pubdate>2002</pubdate>
+				<title>Implications of flood pulse restoration for populus regeneration on the upper Missouri River</title>
+				<geoform>Journal Article</geoform>
+				<serinfo>
+					<sername>River Research and Applications</sername>
+					<issue>18:287-298</issue>
+				</serinfo>
+				<pubinfo>
+					<pubplace>Information not in the FORT Pubs database system</pubplace>
+					<publish>Wiley InterScience</publish>
+				</pubinfo>
+				<othercit>Vol. 18 pages 287-298</othercit>
+			</citeinfo>
+		</crossref>
+		<crossref>
+			<citeinfo>
+				<origin>Bovee, K.D., T.J. Waddle, and R.B. Jacobson</origin>
+				<pubdate>2004</pubdate>
+				<title>Quantification of habitat patch persistence in rivers affected by hydropeaking</title>
+				<geoform>Proceedings</geoform>
+				<serinfo>
+					<sername>Lanfear, K.J., and D.R. Maidment,(eds.). AWRA spring specialty conference: GIS and water resources III, May 17-19, 2004, Nashvile, TN</sername>
+					<issue>pages 1-10</issue>
+				</serinfo>
+				<pubinfo>
+					<pubplace>Nashville, TN</pubplace>
+					<publish>AWRA</publish>
+				</pubinfo>
+				<othercit>pages 1-10</othercit>
+			</citeinfo>
+		</crossref>
+		<crossref>
+			<citeinfo>
+				<origin>Bovee, K.D</origin>
+				<pubdate>2005</pubdate>
+				<title>USGS workshop: linking hydrological change and ecological response in streams and rivers of the eastern United States, February 8-10, 2005, Herndon, VA</title>
+				<geoform>Abstract</geoform>
+				<pubinfo>
+					<pubplace>Herndon, VA</pubplace>
+					<publish>U.S. Geological Survey</publish>
+				</pubinfo>
+				<othercit>1 pp.</othercit>
+				<lworkcit>
+					<citeinfo>
+						<origin>Information not in the FORT Pubs database system</origin>
+						<pubdate>2005</pubdate>
+						<title>USGS workshop: linking hydrological change and ecological response in streams and rivers of the eastern United States, February 8-10, 2005, Herndon, VA</title>
+						<geoform>USGS workshop: linking hydrological change and ecological response in streams and rivers of the eastern United States, February 8-10, 2005, Herndon, VA</geoform>
+						<pubinfo>
+							<pubplace>Herndon, VA</pubplace>
+							<publish>U.S. Geological Survey</publish>
+						</pubinfo>
+						<othercit>1 pp.</othercit>
+					</citeinfo>
+				</lworkcit>
+			</citeinfo>
+		</crossref>
+	</idinfo>
+	<dataqual>
+		<attracc>
+			<attraccr>Data was converted to raster or vector form and visually accessed for reasonableness based on study site knowledge.</attraccr>
+		</attracc>
+		<logic>Data was converted to raster or vector form and visually accessed for reasonableness based on study site knowledge.</logic>
+		<complete>Unknown</complete>
+		<posacc>
+			<horizpa>
+				<horizpar>X,Y, Z data were collected with survey grade global positioning system (GPS) equipment with a precision of 0.1 meters.  Positional accuracy of control point was 0.5 meters. X,Y accuracy was 0.2 meter.</horizpar>
+			</horizpa>
+			<vertacc>
+				<vertaccr>Positional accuracy of control point was 0.5 meters. Z accuracy was 0.5 meter.</vertaccr>
+			</vertacc>
+		</posacc>
+		<lineage>
+			<method>
+				<methtype>Lab</methtype>
+				<methdesc>Collect bathymetric, habitat and discharge data for 11 sites in the Upper Delaware River (UDR) system. Prepare streambed topography, computational mesh and 2-D model input files, and simulate 12 - 15 unmeasured discharges for each site. Prepare GIS-based habitat maps for 10 - 12 habitat classes for each simulated discharge. Compile information from the habitat maps into functional relationships between habitat class metrics and discharge. Assemble these relationships in a DSS to display the results of alternative operating regimes for the UDR.  After completion of each River 2D simulation run (for a given flow and study site), the export utility in River 2D was used to create a text file of water depth, water velocity, and end points of line segments representing the water's edge.</methdesc>
+			</method>
+			<procstep>
+				<procdesc>Program - Fisheries: Aquatic and Endangered Resources Goal 4 Aquatic Species and Habitats -Quantify and describe functional relationships among aquatic species and habitats to provide information to conserve or restore aquatic community function. Goal 5 Aquatic Species at Risk - Provide science support to natural resource managers by investigating the factors that contribute to the conservation and recovery of aquatic species at risk. Goal 6 Research Support and Technical Assistance - Enhance research capabilities and technical assistance to provide research support to DOI bureaus, other government agencies, Tribes, and NGO?s for application in natural resource management problem solving and decision making. Objective 1: Quantification of habitat metrics over a range of discharges. A. Complete collection of bathymetric data for remaining sites. We anticipate collection of the remaining bathymetric data for two mainstem Delaware River sites and one Neversink site during May, 2005. B. Complete habitat maps for all sites and simulated flows by October, 2005. Objective 2. Development and calibration of a network-wide temperature simulation model for the upper Delaware River basin. This task is complete or nearly complete. Objective 3: Development of a prototype decision support system. Work on this objective will begin upon completion of the habitat classification maps for all sites. We are exploring the feasibility of posting results from DSS runs to the Delaware River NBII layer.</procdesc>
+				<procdate>20060930</procdate>
+			</procstep>
+		</lineage>
+	</dataqual>
+	<eainfo>
+		<detailed>
+			<enttyp>
+				<enttypl>Depth</enttypl>
+				<enttypd>Water depth as measured from water surface down (negative values are out of water)</enttypd>
+				<enttypds>Producer defined</enttypds>
+			</enttyp>
+			<attr>
+				<attrlabl>Depth</attrlabl>
+				<attrdef>Water depth in meters measured from water surface toward bed (negative depths are out of water)</attrdef>
+				<attrdefs>Producer defined</attrdefs>
+				<attrdomv>
+					<udom>Depths from 0 to maximum depth in meters, with resolution of about 10 cm.</udom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>Easting</attrlabl>
+				<attrdef>UTM Easting coordinate value in meters</attrdef>
+				<attrdefs>Producer defined</attrdefs>
+				<attrdomv>
+					<udom>Appropriate positive values within UTM coordinate system</udom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>NodeID</attrlabl>
+				<attrdef>Identification number for coordinate position</attrdef>
+				<attrdefs>Assigned in River 2D software program</attrdefs>
+				<attrdomv>
+					<udom>Positive integer values</udom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>Northing</attrlabl>
+				<attrdef>UTM Northing coordinate value in meters</attrdef>
+				<attrdefs>Producer defined</attrdefs>
+				<attrdomv>
+					<udom>Appropriate positive values within UTM coordinate system</udom>
+				</attrdomv>
+			</attr>
+		</detailed>
+		<detailed>
+			<enttyp>
+				<enttypl>Velocity</enttypl>
+				<enttypd>Water speed in Meters/sec</enttypd>
+				<enttypds>Producer defined</enttypds>
+			</enttyp>
+			<attr>
+				<attrlabl>Easting</attrlabl>
+				<attrdef>UTM Easting coordinate value in meters</attrdef>
+				<attrdefs>Producer defined</attrdefs>
+				<attrdomv>
+					<udom>Appropriate positive values within UTM coordinate system</udom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>NodeID</attrlabl>
+				<attrdef>Identification number for coordinate position</attrdef>
+				<attrdefs>Assigned in River 2D software program</attrdefs>
+				<attrdomv>
+					<udom>Positive integer values</udom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>Northing</attrlabl>
+				<attrdef>UTM Northing coordinate value in meters</attrdef>
+				<attrdefs>Producer defined</attrdefs>
+				<attrdomv>
+					<udom>Appropriate positive values within UTM coordinate system</udom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>Velocity</attrlabl>
+				<attrdef>Water speed in meters per sec.</attrdef>
+				<attrdefs>Producer defined</attrdefs>
+				<attrdomv>
+					<udom>0 to maximum velocity in meters per second (no negative values)</udom>
+				</attrdomv>
+			</attr>
+		</detailed>
+		<detailed>
+			<enttyp>
+				<enttypl>WatersEdge</enttypl>
+				<enttypd>Each line item contains the starting and ending coordinate point pair for a line segment which defines the water's edge for the given flow simulation</enttypd>
+				<enttypds>Producer defined</enttypds>
+			</enttyp>
+			<attr>
+				<attrlabl>EndX</attrlabl>
+				<attrdef>X coordinate in meters for ending point of line segment defining water's edge</attrdef>
+				<attrdefs>Producer defined</attrdefs>
+				<attrdomv>
+					<udom>Positive double precision values</udom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>EndY</attrlabl>
+				<attrdef>Y coordinate in meters for ending point of line segment defining water's edge</attrdef>
+				<attrdefs>Producer defined</attrdefs>
+				<attrdomv>
+					<udom>Positive double precision values</udom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>StartX</attrlabl>
+				<attrdef>X coordinate in meters for starting point of line segment defining water's edge</attrdef>
+				<attrdefs>Producer defined</attrdefs>
+				<attrdomv>
+					<udom>Positive double precision values</udom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>StartY</attrlabl>
+				<attrdef>Y coordinate in meters for starting point of line segment defining water's edge</attrdef>
+				<attrdefs>Producer defined</attrdefs>
+				<attrdomv>
+					<udom>Positive double precision values</udom>
+				</attrdomv>
+			</attr>
+		</detailed>
+	</eainfo>
+	<metainfo>
+		<metd>20060724</metd>
+		<metc>
+			<cntinfo><cntorgp><cntorg>U.S. Geological Survey Fort Collins Science Center (FORT)</cntorg><cntper>Colin Talbert</cntper></cntorgp><cntpos>FORT Metadata Specialist</cntpos><cntaddr><addrtype>Mailing and physical</addrtype><address>U.S. Geological Survey, Fort Collins Science Center (FORT)</address><address>2150 Centre Avenue, Bldg C</address><city>Fort Collins</city><state>C0</state><postal>80526-8118</postal><country>USA</country></cntaddr><cntvoice>(970) 226-9100</cntvoice><cntfax>(970) 226-9230</cntfax><cntemail>fort_metadata_team@usgs.gov</cntemail></cntinfo></metc>
+		<metstdn>FGDC Biological Data Profile of the Content Standard for Digital Geospatial Metadata</metstdn>
+		<metstdv>FGDC-STD-001.1-1999</metstdv>
+	</metainfo>
+</metadata>
