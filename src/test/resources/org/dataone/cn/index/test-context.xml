@@ -7,6 +7,6 @@
     <!-- 
     This import overrides default postgres datasource for testing.
     	 To test with postgres, comment out the following import 
-	<import resource="classpath:hsql-datasource.xml" />
 	-->
+	<import resource="classpath:hsql-datasource.xml" />
 </beans>
