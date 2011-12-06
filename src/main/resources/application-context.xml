@@ -7,7 +7,7 @@
  <bean id="solrLatitudeConverter" class="org.dataone.cn.indexer.convert.SolrLatitudeConverter" />
  <bean id="solrLongitudeConverter" class="org.dataone.cn.indexer.convert.SolrLongitudeConverter" />
 
- <bean id="documentParsers" class="java.util.ArrayList">
+ <bean id="documentParsers" class="java.util.ArrayList" autowire="byName">
   <constructor-arg>
    <list>
     <bean class="org.dataone.cn.indexer.XPathDocumentParser">
@@ -141,5 +141,11 @@
   
  <bean id="httpService" class="org.dataone.cn.indexer.solrhttp.HTTPService">
  </bean>
-
+ 
+ 
+	<import resource="classpath:task-index-context.xml"/>
+	<bean id="indexTaskProcessor" class="org.dataone.cn.index.processor.IndexTaskProcessor" />
+	<bean id="indexTaskProcessorScheduler" class="org.dataone.cn.index.processor.IndexTaskProcessorScheduler"/>
+	<bean id="indexTaskProcessorJob" class="org.dataone.cn.index.processor.IndexTaskProcessorJob" />
+	
 </beans>
