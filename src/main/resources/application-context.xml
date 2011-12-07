@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+ xmlns:context="http://www.springframework.org/schema/context"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans 
+ http://www.springframework.org/schema/beans/spring-beans.xsd
+ http://www.springframework.org/schema/context  
+ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
  <bean id="dateConverter" class="org.dataone.cn.indexer.convert.SolrDateConverter" />
  <bean id="solrLatitudeConverter" class="org.dataone.cn.indexer.convert.SolrLatitudeConverter" />
  <bean id="solrLongitudeConverter" class="org.dataone.cn.indexer.convert.SolrLongitudeConverter" />
+
+ <context:property-placeholder location="classpath:jdbc.properties, classpath:org/dataone/configuration/solr.properties"/>
 
  <bean id="documentParsers" class="java.util.ArrayList" autowire="byName">
   <constructor-arg>
@@ -14,10 +20,7 @@
      <constructor-arg name="fields" ref="xpath_system_metadata_064">
      </constructor-arg>
      <constructor-arg name="xmlNamespaceConfig" ref="xmlNamespaceConfig" />
-<!--      <property name="solrBaseUri" value="http://cn-dev.dataone.org/solr" /> -->
-     <property name="solrBaseUri" value="http://localhost:9080/solr" />
-<!--      <property name="solrindexUri" value="${solr.base}/update?commit=true" /> -->
-<!--      <property name="solrQueryUri" value="${solr.base}/select/" /> -->
+     <property name="solrBaseUri" value="${solr.base.uri}" />
      <property name="output_encoding" value="UTF-8" />
      <property name="input_encoding" value="UTF-8" />
      <property name="httpService" ref="httpService"></property>
