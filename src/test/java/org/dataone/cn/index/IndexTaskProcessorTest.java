@@ -17,11 +17,18 @@ import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.ObjectFormatIdentifier;
 import org.dataone.service.types.v1.Subject;
 import org.dataone.service.types.v1.SystemMetadata;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.hazelcast.config.ClasspathXmlConfig;
+import com.hazelcast.config.Config;
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "test-context.xml" })
@@ -37,6 +44,8 @@ public class IndexTaskProcessorTest {
 
     @Autowired
     private ArrayList<XPathDocumentParser> documentParsers;
+
+    private HazelcastInstance hzMember;
 
     @Test
     public void testInjection() {
@@ -67,10 +76,30 @@ public class IndexTaskProcessorTest {
 
     private IndexTask saveIndexTaskWithStatus(String pid, String status) {
         SystemMetadata smd = buildTestSysMetaData(pid);
-        IndexTask it = new IndexTask(smd, null);
+        IndexTask it = new IndexTask(smd, "index-processor-test-object-path");
         it.setStatus(status);
         repo.save(it);
         return it;
+    }
+
+    @Before
+    public void setUp() throws Exception {
+
+        Config hzConfig = new ClasspathXmlConfig("org/dataone/configuration/hazelcast.xml");
+
+        System.out.println("Hazelcast Group Config:\n" + hzConfig.getGroupConfig());
+        System.out.print("Hazelcast Maps: ");
+        for (String mapName : hzConfig.getMapConfigs().keySet()) {
+            System.out.print(mapName + " ");
+        }
+        System.out.println();
+        hzMember = Hazelcast.init(hzConfig);
+        System.out.println("Hazelcast member hzMember name: " + hzMember.getName());
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        Hazelcast.shutdownAll();
     }
 
     public SystemMetadata buildTestSysMetaData(String pidValue) {

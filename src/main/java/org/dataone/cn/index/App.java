@@ -22,7 +22,6 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dataone.cn.index.processor.IndexTaskProcessor;
 import org.dataone.cn.indexer.XPathDocumentParser;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -180,12 +179,6 @@ public class App {
             }
         }
         return youngestTask;
-    }
-
-    public void run2() {
-        context = getContext();
-        IndexTaskProcessor processor = (IndexTaskProcessor) context.getBean("indexTaskProcessor");
-        processor.processIndexTaskQueue();
     }
 
     /**
