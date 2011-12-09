@@ -23,7 +23,7 @@
      <property name="solrBaseUri" value="${solr.base.uri}" />
      <property name="output_encoding" value="UTF-8" />
      <property name="input_encoding" value="UTF-8" />
-     <property name="httpService" ref="httpService"></property>
+     <property name="httpService" ref="httpService" />
      <property name="subprocessors">
       <list>
        <ref bean="eml200Subprocessor" />
@@ -142,8 +142,9 @@
   </property>
 </bean>  
   
- <bean id="httpService" class="org.dataone.cn.indexer.solrhttp.HTTPService">
- </bean>
+	<bean id="httpService" class="org.dataone.cn.indexer.solrhttp.HTTPService">
+		<property name="solrSchemaPath" value="${solr.schema.path}" />
+	</bean>
  
  
 	<import resource="classpath:task-index-context.xml"/>
