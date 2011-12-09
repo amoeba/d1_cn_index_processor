@@ -20,8 +20,9 @@ import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.configuration.Settings;
 import org.dataone.service.types.v1.Identifier;
-import org.dataone.service.types.v1.SystemMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -47,16 +48,12 @@ public class IndexTaskProcessor {
 
     private HazelcastInstance hzClient;
 
-    private static final String HZ_SYSTEM_METADATA = Settings.getConfiguration().getString(
-            "dataone.hazelcast.systemMetadata");
-
     private static final String HZ_OBJECT_PATH = Settings.getConfiguration().getString(
             "dataone.hazelcast.objectPath");
 
     private static final String SOLR_QUERY_URI = Settings.getConfiguration().getString(
             "solr.query.uri");
 
-    private IMap<Identifier, SystemMetadata> systemMetadata;
     private IMap<Identifier, String> objectPaths;
 
     public IndexTaskProcessor() {
@@ -224,18 +221,12 @@ public class IndexTaskProcessor {
     private void startHazelClient() {
         if (this.hzClient == null) {
             this.hzClient = HazelcastClientInstance.getHazelcastClient();
-            this.systemMetadata = this.hzClient.getMap(HZ_SYSTEM_METADATA);
             this.objectPaths = this.hzClient.getMap(HZ_OBJECT_PATH);
         }
     }
 
-    /*
-     * Dealing with resource maps - push to top of queue by sorting on
-     * resourceMap or by assigning resource maps a high priority. At the top,
-     * best chance to short circuit repetitious update to solr index.
-     */
     private List<IndexTask> getIndexTaskQueue() {
-        return repo.findIndexTaskQueue(IndexTask.STATUS_NEW);
+        return repo.findByStatusOrderByPriorityAscTaskModifiedDateAsc(IndexTask.STATUS_NEW);
     }
 
     private XPathDocumentParser getXPathDocumentParser() {
@@ -273,5 +264,39 @@ public class IndexTaskProcessor {
                     + task.getObjectPath());
         }
         return docObject;
+    }
+
+    // no paging, no single query - just ask for the next single task and try to
+    // process
+    // more queries - less worry about consistant views of data
+
+    private List<IndexTask> getIndexTaskQueueWithPaging(int pageNumber) {
+        List<IndexTask> queue = new ArrayList<IndexTask>();
+        Page<IndexTask> page = repo.findByStatusOrderByPriorityAscTaskModifiedDateAsc(
+                IndexTask.STATUS_NEW, new PageRequest(pageNumber, 1000));
+        queue.addAll(page.getContent());
+        return queue;
+    }
+
+    // unused proposed paging solution...does not guarentee consistent data
+    // view of pages.
+    private void processIndexTaskQueueWithPaging() {
+        startHazelClient();
+        int pageNumber = 0;
+        int processedTasks = 0;
+        while (processedTasks < 1000) {
+            List<IndexTask> queue = getIndexTaskQueueWithPaging(pageNumber);
+            if (queue.size() == 0) {
+                logger.info("processed " + processedTasks + " index tasks.");
+                processedTasks = 1000;
+            }
+            IndexTask task = getNextIndexTask(queue);
+            while (task != null) {
+                processedTasks++;
+                processIndexTask(task);
+                task = getNextIndexTask(queue);
+            }
+            pageNumber++;
+        }
     }
 }

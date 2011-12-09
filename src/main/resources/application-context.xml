@@ -37,7 +37,7 @@
    </list>
   </constructor-arg>
  </bean>
-
+ 
  <bean id="xmlNamespaceConfig" class="org.dataone.cn.indexer.XMLNamespaceConfig">
   <constructor-arg name="namespaceList">
    <list>
