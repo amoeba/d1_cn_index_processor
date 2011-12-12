@@ -11,8 +11,6 @@
  <bean id="solrLatitudeConverter" class="org.dataone.cn.indexer.convert.SolrLatitudeConverter" />
  <bean id="solrLongitudeConverter" class="org.dataone.cn.indexer.convert.SolrLongitudeConverter" />
 
- <context:property-placeholder location="classpath:jdbc.properties, classpath:org/dataone/configuration/solr.properties"/>
-
  <bean id="documentParsers" class="java.util.ArrayList" autowire="byName">
   <constructor-arg>
    <list>
@@ -147,9 +145,11 @@
 	</bean>
  
  
+ <!-- <context:property-placeholder location="classpath:jdbc.properties, classpath:org/dataone/configuration/solr.properties"/> -->
 	<import resource="classpath:task-index-context.xml"/>
-	<bean id="indexTaskProcessor" class="org.dataone.cn.index.processor.IndexTaskProcessor" />
-	<bean id="indexTaskProcessorScheduler" class="org.dataone.cn.index.processor.IndexTaskProcessorScheduler"/>
+	<bean id="indexTaskProcessor" class="org.dataone.cn.index.processor.IndexTaskProcessor" >
+		<property name="solrQueryUri" value="${solr.query.uri}" />
+	</bean>
+	 <bean id="indexTaskProcessorScheduler" class="org.dataone.cn.index.processor.IndexTaskProcessorScheduler"/>
 	<bean id="indexTaskProcessorJob" class="org.dataone.cn.index.processor.IndexTaskProcessorJob" />
-	
 </beans>

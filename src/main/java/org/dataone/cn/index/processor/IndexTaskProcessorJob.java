@@ -16,16 +16,19 @@ public class IndexTaskProcessorJob implements Job {
     private static ApplicationContext context;
     private static IndexTaskProcessor processor;
 
-    static {
-        context = new ClassPathXmlApplicationContext("application-context.xml");
-        processor = (IndexTaskProcessor) context.getBean("indexTaskProcessor");
-    }
-
     public IndexTaskProcessorJob() {
     }
 
     public void execute(JobExecutionContext arg0) throws JobExecutionException {
         logger.info("executing index task processor...");
+        setContext();
         processor.processIndexTaskQueue();
+    }
+
+    private static void setContext() {
+        if (context == null || processor == null) {
+            context = new ClassPathXmlApplicationContext("processor-daemon-context.xml");
+            processor = (IndexTaskProcessor) context.getBean("indexTaskProcessor");
+        }
     }
 }

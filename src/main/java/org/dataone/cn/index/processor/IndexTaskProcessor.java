@@ -51,8 +51,7 @@ public class IndexTaskProcessor {
     private static final String HZ_OBJECT_PATH = Settings.getConfiguration().getString(
             "dataone.hazelcast.objectPath");
 
-    private static final String SOLR_QUERY_URI = Settings.getConfiguration().getString(
-            "solr.query.uri");
+    private String solrQueryUri;
 
     private IMap<Identifier, String> objectPaths;
 
@@ -179,7 +178,7 @@ public class IndexTaskProcessor {
     private boolean areAllReferencedDocsIndexed(List<String> referencedIds) {
         List<SolrDoc> updateDocuments = null;
         try {
-            updateDocuments = httpService.getDocuments(SOLR_QUERY_URI, referencedIds);
+            updateDocuments = httpService.getDocuments(this.solrQueryUri, referencedIds);
         } catch (XPathExpressionException e) {
             logger.error(e.getMessage(), e);
             return false;
@@ -298,5 +297,9 @@ public class IndexTaskProcessor {
             }
             pageNumber++;
         }
+    }
+
+    public void setSolrQueryUri(String uri) {
+        this.solrQueryUri = uri;
     }
 }

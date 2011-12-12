@@ -16,7 +16,7 @@ public class IndexTaskProcessorDaemon implements Daemon {
     @Override
     public void start() throws Exception {
         logger.info("starting index task processor daemon...");
-        context = new ClassPathXmlApplicationContext("application-context.xml");
+        context = new ClassPathXmlApplicationContext("processor-daemon-context.xml");
         scheduler = (IndexTaskProcessorScheduler) context.getBean("indexTaskProcessorScheduler");
         scheduler.start();
     }

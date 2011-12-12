@@ -37,13 +37,17 @@ import com.hazelcast.core.IMap;
  * 
  * @author sroseboo
  * 
+ *         This test class is an integration test, not a unit test. It relies
+ *         upon the index generator, processor and configuration of solr,
+ *         postgres, hazelcast
+ * 
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "test-context.xml" })
-public class IndexTaskFullTest {
+public class IndexTaskProcessingIntegrationTest {
 
-    private static Logger logger = Logger.getLogger(IndexTaskFullTest.class.getName());
+    private static Logger logger = Logger.getLogger(IndexTaskProcessingIntegrationTest.class.getName());
 
     private HazelcastInstance hzMember;
     private IMap<Identifier, SystemMetadata> sysMetaMap;

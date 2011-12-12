@@ -2,5 +2,4 @@
 <!-- Apache Commons Configuration -->
 <configuration>
   <properties fileName="quartz.properties"/>
-  <properties fileName="solr.properties"/>
 </configuration>
