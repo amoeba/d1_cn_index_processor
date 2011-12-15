@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:context="http://www.springframework.org/schema/context"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans 
+ http://www.springframework.org/schema/beans/spring-beans.xsd
+ http://www.springframework.org/schema/context  
+ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+ <bean id="dateConverter" class="org.dataone.cn.indexer.convert.SolrDateConverter" />
+ <bean id="solrLatitudeConverter" class="org.dataone.cn.indexer.convert.SolrLatitudeConverter" />
+ <bean id="solrLongitudeConverter" class="org.dataone.cn.indexer.convert.SolrLongitudeConverter" />
+
+ <bean id="documentParsers" class="java.util.ArrayList" autowire="byName">
+  <constructor-arg>
+   <list>
+    <bean class="org.dataone.cn.indexer.XPathDocumentParser">
+     <constructor-arg name="fields" ref="xpath_system_metadata_064">
+     </constructor-arg>
+     <constructor-arg name="xmlNamespaceConfig" ref="xmlNamespaceConfig" />
+     <property name="solrBaseUri" value="${solr.base.uri}" />
+     <property name="output_encoding" value="UTF-8" />
+     <property name="input_encoding" value="UTF-8" />
+     <property name="httpService" ref="httpService" />
+     <property name="subprocessors">
+      <list>
+       <ref bean="eml200Subprocessor" />
+       <ref bean="eml201Subprocessor" />
+       <ref bean="eml210Subprocessor" />
+       <ref bean="eml211Subprocessor" />
+       <ref bean="resourceMapSubprocessor" />
+      </list>
+     </property>
+    </bean>
+   </list>
+  </constructor-arg>
+ </bean>
+ 
+ <bean id="xmlNamespaceConfig" class="org.dataone.cn.indexer.XMLNamespaceConfig">
+  <constructor-arg name="namespaceList">
+   <list>
+    <bean class="org.dataone.cn.indexer.XMLNamespace">
+     <constructor-arg name="namespace"
+      value="http://ns.dataone.org/service/types/v1" />
+     <constructor-arg name="prefix" value="d064" />
+    </bean>
+    <bean class="org.dataone.cn.indexer.XMLNamespace">
+     <constructor-arg name="namespace"
+      value="eml://ecoinformatics.org/eml-2.0.0" />
+     <constructor-arg name="prefix" value="eml200" />
+    </bean>
+    <bean class="org.dataone.cn.indexer.XMLNamespace">
+     <constructor-arg name="namespace"
+      value="eml://ecoinformatics.org/eml-2.0.1" />
+     <constructor-arg name="prefix" value="eml201" />
+    </bean>
+    <bean class="org.dataone.cn.indexer.XMLNamespace">
+     <constructor-arg name="namespace"
+      value="eml://ecoinformatics.org/eml-2.1.0" />
+     <constructor-arg name="prefix" value="eml210" />
+    </bean>
+    <bean class="org.dataone.cn.indexer.XMLNamespace">
+     <constructor-arg name="namespace"
+      value="eml://ecoinformatics.org/eml-2.1.1" />
+     <constructor-arg name="prefix" value="eml211" />
+    </bean>
+   </list>
+  </constructor-arg>
+ </bean>
+
+ <bean id="xmlNamespaceResource" class="org.dataone.cn.indexer.XMLNamespaceConfig">
+  <constructor-arg name="namespaceList">
+   <list>
+    <bean class="org.dataone.cn.indexer.XMLNamespace">
+     <constructor-arg name="prefix" value="cito" />
+     <constructor-arg name="namespace" value="http://purl.org/spar/cito/" />
+    </bean>
+    <bean class="org.dataone.cn.indexer.XMLNamespace">
+     <constructor-arg name="prefix" value="dc" />
+     <constructor-arg name="namespace"
+      value="http://purl.org/dc/elements/1.1/" />
+    </bean>
+    <bean class="org.dataone.cn.indexer.XMLNamespace">
+     <constructor-arg name="prefix" value="dcterms" />
+     <constructor-arg name="namespace" value="http://purl.org/dc/terms/" />
+    </bean>
+    <bean class="org.dataone.cn.indexer.XMLNamespace">
+     <constructor-arg name="prefix" value="foaf" />
+     <constructor-arg name="namespace" value="http://xmlns.com/foaf/0.1/" />
+    </bean>
+    <bean class="org.dataone.cn.indexer.XMLNamespace">
+     <constructor-arg name="prefix" value="ore" />
+     <constructor-arg name="namespace"
+      value="http://www.openarchives.org/ore/terms/" />
+    </bean>
+    <bean class="org.dataone.cn.indexer.XMLNamespace">
+     <constructor-arg name="prefix" value="rdf" />
+     <constructor-arg name="namespace"
+      value="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+    </bean>
+    <bean class="org.dataone.cn.indexer.XMLNamespace">
+     <constructor-arg name="prefix" value="rdfs1" />
+     <constructor-arg name="namespace"
+      value="http://www.w3.org/2001/01/rdf-schema#" />
+    </bean>
+   </list>
+  </constructor-arg>
+ </bean>
+
+ <!-- <import resource="application-context-sciencemetadata.xml"/> -->
+
+ <import resource="application-context-eml-base.xml" />
+ <import resource="application-context-eml200.xml" />
+ <import resource="application-context-eml201.xml" />
+ <import resource="application-context-eml210.xml" />
+ <import resource="application-context-eml211.xml" />
+ <import resource="application-context-resourcemap.xml" />
+ <import resource="application-context-systemmeta064.xml" />
+
+ <bean id="booleanPublicConverter" class="org.dataone.cn.indexer.convert.BooleanMatchConverter">
+  <constructor-arg value="public" />
+ </bean>
+
+
+<!-- <bean id="nodeRegistryMap" class="org.dataone.cn.indexer.NodeRegistryMap"> -->
+<!-- </bean> -->
+  
+<bean id="nodeRegistryMap" class="org.springframework.beans.factory.config.MapFactoryBean">
+  <property name="sourceMap">
+      <map>
+        <entry key="c3p0" value="https://cn-dev.dataone.org/cn/v1/object/" />
+        <entry key="c0t2" value="https://cn-dev-2.dataone.org/cn/v1/object/" />
+        <entry key="m0t1" value="https://knb-test-1.test.dataone.org/knb/d1/mn" />
+        <entry key="DEMO1" value="https://demo1.test.dataone.org/knb/d1/mn/v1/object/" />
+        <entry key="DEMO2" value="https://demo2.test.dataone.org/knb/d1/mn/v1/object/" />
+        <entry key="DEMO3" value="https://demo3.test.dataone.org/knb/d1/mn/v1/object/" />
+        <entry key="DEMO4" value="https://demo4.test.dataone.org/knb/d1/mn/v1/object/" />
+        <entry key="r2d2" value="https://gmn-dev.test.dataone.org/mn/v1/object/" />
+      </map>
+  </property>
+</bean>  
+
+	<bean id="httpService" class="org.dataone.cn.indexer.solrhttp.HTTPService">
+		<property name="solrSchemaPath" value="${solr.schema.path}" />
+	</bean>
+ 
+ 
+	<import resource="classpath:task-index-context.xml"/>
+	<bean id="indexTaskProcessor" class="org.dataone.cn.index.processor.IndexTaskProcessor" >
+		<property name="solrQueryUri" value="${solr.query.uri}" />
+	</bean>
+	 <bean id="indexTaskProcessorScheduler" class="org.dataone.cn.index.processor.IndexTaskProcessorScheduler"/>
+	<bean id="indexTaskProcessorJob" class="org.dataone.cn.index.processor.IndexTaskProcessorJob" />
+</beans>

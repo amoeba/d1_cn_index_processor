@@ -21,8 +21,6 @@ import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.configuration.Settings;
 import org.dataone.service.types.v1.Identifier;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -263,40 +261,6 @@ public class IndexTaskProcessor {
                     + task.getObjectPath());
         }
         return docObject;
-    }
-
-    // no paging, no single query - just ask for the next single task and try to
-    // process
-    // more queries - less worry about consistant views of data
-
-    private List<IndexTask> getIndexTaskQueueWithPaging(int pageNumber) {
-        List<IndexTask> queue = new ArrayList<IndexTask>();
-        Page<IndexTask> page = repo.findByStatusOrderByPriorityAscTaskModifiedDateAsc(
-                IndexTask.STATUS_NEW, new PageRequest(pageNumber, 1000));
-        queue.addAll(page.getContent());
-        return queue;
-    }
-
-    // unused proposed paging solution...does not guarentee consistent data
-    // view of pages.
-    private void processIndexTaskQueueWithPaging() {
-        startHazelClient();
-        int pageNumber = 0;
-        int processedTasks = 0;
-        while (processedTasks < 1000) {
-            List<IndexTask> queue = getIndexTaskQueueWithPaging(pageNumber);
-            if (queue.size() == 0) {
-                logger.info("processed " + processedTasks + " index tasks.");
-                processedTasks = 1000;
-            }
-            IndexTask task = getNextIndexTask(queue);
-            while (task != null) {
-                processedTasks++;
-                processIndexTask(task);
-                task = getNextIndexTask(queue);
-            }
-            pageNumber++;
-        }
     }
 
     public void setSolrQueryUri(String uri) {

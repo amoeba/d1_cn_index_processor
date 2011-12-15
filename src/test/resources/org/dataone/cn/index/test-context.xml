@@ -9,7 +9,7 @@ xmlns:context="http://www.springframework.org/schema/context"
 
     <context:property-placeholder location="classpath:org/dataone/configuration/jdbc.properties, classpath:org/dataone/configuration/solr.properties"/>
 
-    <import resource="classpath:application-context.xml"/>
+    <import resource="classpath:index-processor-context.xml"/>
     
     <!-- 
     This import overrides default postgres datasource for testing.
