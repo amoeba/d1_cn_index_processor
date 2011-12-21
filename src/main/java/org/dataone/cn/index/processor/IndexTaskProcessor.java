@@ -11,6 +11,7 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.log4j.Logger;
+import org.dataone.client.ObjectFormatCache;
 import org.dataone.cn.hazelcast.HazelcastClientInstance;
 import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.index.task.IndexTaskRepository;
@@ -19,7 +20,9 @@ import org.dataone.cn.indexer.resourcemap.ResourceMap;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.configuration.Settings;
+import org.dataone.service.exceptions.NotFound;
 import org.dataone.service.types.v1.Identifier;
+import org.dataone.service.types.v1.ObjectFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.w3c.dom.Document;
@@ -41,6 +44,7 @@ public class IndexTaskProcessor {
     @Autowired
     private HTTPService httpService;
 
+    private static final String FORMAT_TYPE_DATA = "DATA";
     private static final String RESOURCE_MAP_FORMAT = "http://www.openarchives.org/ore/terms";
     private static final String CHAR_ENCODING = "UTF-8";
 
@@ -199,7 +203,7 @@ public class IndexTaskProcessor {
     // if object path is available, update task and process
     private boolean isObjectPathReady(IndexTask task) {
         boolean ok = true;
-        if (task.getObjectPath() == null) {
+        if (task.getObjectPath() == null && !isDataObject(task)) {
             String objectPath = retrieveObjectPath(task.getPid());
             if (objectPath == null) {
                 ok = false;
@@ -207,6 +211,16 @@ public class IndexTaskProcessor {
             task.setObjectPath(objectPath);
         }
         return ok;
+    }
+
+    private boolean isDataObject(IndexTask task) {
+        ObjectFormat format = null;
+        try {
+            format = ObjectFormatCache.getInstance().getFormat(task.getFormatId());
+        } catch (NotFound e) {
+            e.printStackTrace();
+        }
+        return FORMAT_TYPE_DATA.equals(format.getFormatType());
     }
 
     private String retrieveObjectPath(String pid) {

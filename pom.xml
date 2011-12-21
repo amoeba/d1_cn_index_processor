@@ -14,9 +14,11 @@
 	<properties>
 	  	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	  	<spring.version>3.0.6.RELEASE</spring.version>
+	  	<hazelcast.version>1.9.4.4</hazelcast.version>
 	  	<d1_cn_index_common_version>0.0.1-SNAPSHOT</d1_cn_index_common_version>
 	  	<d1_cn_index_generator_version>0.0.1-SNAPSHOT</d1_cn_index_generator_version>
 	  	<d1_cn_common_version>1.0.0-SNAPSHOT</d1_cn_common_version>
+	  	<d1_libclient_version>1.0.1-SNAPSHOT</d1_libclient_version>
  	</properties>
 
  <repositories>
@@ -40,6 +42,11 @@
 			<type>jar</type>
 		</dependency>
 		<dependency>
+        	<groupId>org.dataone</groupId>
+        	<artifactId>d1_libclient_java</artifactId>
+        	<version>${d1_libclient_version}</version>
+        </dependency>
+		<dependency>
 			<groupId>org.dataone</groupId>
 			<artifactId>d1_cn_index_common</artifactId>
 			<version>${d1_cn_index_common_version}</version>
@@ -56,10 +63,37 @@
 			<artifactId>commons-daemon</artifactId>
 			<version>1.0.1</version>
 		</dependency>
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast</artifactId>
+            <version>${hazelcast.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast-spring</artifactId>
+            <version>${hazelcast.version}</version>
+            <scope>compile</scope>
+        </dependency>
 		<dependency>
 		    <groupId>org.quartz-scheduler</groupId>
 		    <artifactId>quartz</artifactId>
 		    <version>2.1.1</version>
+		</dependency>
+		<dependency>
+    		<groupId>org.hibernate</groupId>
+    		<artifactId>hibernate-core</artifactId>
+    		<version>4.0.0.CR6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>4.0.0.CR6</version>
+		</dependency>	
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>8.4-702.jdbc4</version>
 		</dependency>
 		<dependency>
 			 <groupId>junit</groupId>
@@ -68,23 +102,55 @@
 			 <scope>test</scope>
 		</dependency>
 		<dependency>
-			 <groupId>org.springframework</groupId>
-			 <artifactId>spring-core</artifactId>
-			 <version>${spring.version}</version>
-			 <scope>compile</scope>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
 		</dependency>
-  <dependency>
-   <groupId>org.springframework</groupId>
-   <artifactId>spring-context</artifactId>
-   <version>${spring.version}</version>
-   <scope>compile</scope>
-  </dependency>
-  <dependency>
-   <groupId>org.springframework</groupId>
-   <artifactId>spring-test</artifactId>
-   <version>${spring.version}</version>
-   <type>jar</type>
-  </dependency>
+		 <dependency>
+		   <groupId>org.springframework</groupId>
+		   <artifactId>spring-beans</artifactId>
+		   <version>${spring.version}</version>
+		 </dependency>
+		 <dependency>
+		   <groupId>org.springframework</groupId>
+		   <artifactId>spring-context</artifactId>
+		   <version>${spring.version}</version>
+		 </dependency>
+		 <dependency>
+		   <groupId>org.springframework</groupId>
+		   <artifactId>spring-aop</artifactId>
+		   <version>${spring.version}</version>
+		 </dependency>
+		 <dependency>
+		   <groupId>org.springframework</groupId>
+		   <artifactId>spring-context-support</artifactId>
+		   <version>${spring.version}</version>
+		 </dependency>
+		 <dependency>
+		   <groupId>org.springframework</groupId>
+		   <artifactId>spring-tx</artifactId>
+		   <version>${spring.version}</version>
+		 </dependency>
+		 <dependency>
+		   <groupId>org.springframework</groupId>
+		   <artifactId>spring-orm</artifactId>
+		   <version>${spring.version}</version>
+		 </dependency>
+		 <dependency>
+		   <groupId>org.springframework</groupId>
+		   <artifactId>spring-jdbc</artifactId>
+		   <version>${spring.version}</version>
+		 </dependency>
+		 <dependency>
+		   <groupId>org.springframework</groupId>
+		   <artifactId>spring-test</artifactId>
+		   <version>${spring.version}</version>
+		 </dependency>
+		<dependency>
+		    <groupId>org.springframework.data</groupId>
+		    <artifactId>spring-data-jpa</artifactId>
+		    <version>1.0.1.RELEASE</version>
+		</dependency>
 
   <dependency>
    <groupId>commons-io</groupId>
