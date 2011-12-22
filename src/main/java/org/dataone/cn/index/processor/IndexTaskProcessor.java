@@ -219,6 +219,7 @@ public class IndexTaskProcessor {
             format = ObjectFormatCache.getInstance().getFormat(task.getFormatId());
         } catch (NotFound e) {
             e.printStackTrace();
+            return false;
         }
         return FORMAT_TYPE_DATA.equals(format.getFormatType());
     }

@@ -2,4 +2,5 @@
 <!-- Apache Commons Configuration -->
 <configuration>
   <properties fileName="quartz.properties"/>
+  <properties fileName="index-processor.properties" />
 </configuration>
