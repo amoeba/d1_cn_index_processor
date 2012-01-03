@@ -3,4 +3,6 @@
 <configuration>
   <properties fileName="quartz.properties"/>
   <properties fileName="index-processor.properties" />
+  <properties fileName="ldapService.properties"/>
+  <properties fileName="registryLdap.properties"/>
 </configuration>

@@ -176,7 +176,7 @@
           <constructor-arg name="xpath"
             value="/d064:systemMetadata/identifier/text()" />
           <constructor-arg name="nodesXPath" value="//replica[replicationStatus/text()='completed']/replicaMemberNode/text()" />
-          <constructor-arg name="nodeMap" ref="nodeRegistryMap" />
+          <property name="nodeRegistryService" ref="nodeRegistryService" />
           <property name="onlyReferenceCNs" value="true" />
           <property name="multivalue" value="true" />
         </bean>
@@ -186,7 +186,7 @@
           <constructor-arg name="xpath"
             value="/d064:systemMetadata/identifier/text()" />
           <constructor-arg name="nodesXPath" value="//replica[replicationStatus/text()='completed']/replicaMemberNode/text()" />
-          <constructor-arg name="nodeMap" ref="nodeRegistryMap" />
+          <property name="nodeRegistryService" ref="nodeRegistryService" />
           <property name="onlyReferenceCNs" value="false" />
           <property name="multivalue" value="false" />
         </bean>

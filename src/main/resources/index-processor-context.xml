@@ -120,30 +120,12 @@
  <bean id="booleanPublicConverter" class="org.dataone.cn.indexer.convert.BooleanMatchConverter">
   <constructor-arg value="public" />
  </bean>
-
-
-<!-- <bean id="nodeRegistryMap" class="org.dataone.cn.indexer.NodeRegistryMap"> -->
-<!-- </bean> -->
-  
-<bean id="nodeRegistryMap" class="org.springframework.beans.factory.config.MapFactoryBean">
-  <property name="sourceMap">
-      <map>
-        <entry key="c3p0" value="https://cn-dev.dataone.org/cn/v1/object/" />
-        <entry key="c0t2" value="https://cn-dev-2.dataone.org/cn/v1/object/" />
-        <entry key="m0t1" value="https://knb-test-1.test.dataone.org/knb/d1/mn" />
-        <entry key="DEMO1" value="https://demo1.test.dataone.org/knb/d1/mn/v1/object/" />
-        <entry key="DEMO2" value="https://demo2.test.dataone.org/knb/d1/mn/v1/object/" />
-        <entry key="DEMO3" value="https://demo3.test.dataone.org/knb/d1/mn/v1/object/" />
-        <entry key="DEMO4" value="https://demo4.test.dataone.org/knb/d1/mn/v1/object/" />
-        <entry key="r2d2" value="https://gmn-dev.test.dataone.org/mn/v1/object/" />
-      </map>
-  </property>
-</bean>  
+ 
+	<bean id="nodeRegistryService" class="org.dataone.service.cn.impl.v1.NodeRegistryService" />
 
 	<bean id="httpService" class="org.dataone.cn.indexer.solrhttp.HTTPService">
 		<property name="solrSchemaPath" value="${solr.schema.path}" />
 	</bean>
- 
  
 	<import resource="classpath:task-index-context.xml"/>
 	<bean id="indexTaskProcessor" class="org.dataone.cn.index.processor.IndexTaskProcessor" >
