@@ -20,6 +20,7 @@
 	  	<d1_cn_common_version>1.0.0-SNAPSHOT</d1_cn_common_version>
 	  	<d1_libclient_version>1.0.1-SNAPSHOT</d1_libclient_version>
 	  	<d1_indexer_api_version>1.0-SNAPSHOT</d1_indexer_api_version>
+	  	<d1_cn_noderegistry_version>1.0.0-SNAPSHOT</d1_cn_noderegistry_version>
  	</properties>
 
  <repositories>
@@ -63,6 +64,11 @@
 		   <groupId>org.dataone.cn.indexer</groupId>
 		   <artifactId>indexerapi</artifactId>
 		   <version>${d1_indexer_api_version}</version>
+		</dependency>
+ 		<dependency>
+			<groupId>org.dataone</groupId>
+		    <artifactId>d1_cn_noderegistry</artifactId>
+			<version>${d1_cn_noderegistry_version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-daemon</groupId>
