@@ -3,15 +3,6 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
-<!-- 	<bean id="eml.abstract" class="org.dataone.cn.indexer.parser.SolrField"> -->
-<!-- 		<constructor-arg name="name" value="abstract" /> -->
- 		<!--TODO: descendants::text() is inefficient use something more precise 
-  			like para::text() see eml schema --> 
-<!-- 		<constructor-arg name="xpath" -->
-<!-- 			value="//dataset/abstract/descendant::text()" /> -->
-<!-- 		<property name="combineNodes" value="true" /> -->
-<!-- 	</bean> -->
-
   <bean id="eml.abstract" class="org.dataone.cn.indexer.parser.MergeSolrField">
     <constructor-arg name="name" value="abstract" />
     <constructor-arg name="xpath"
@@ -106,42 +97,4 @@
     <property name="dedupe" value="true" />
   </bean>
 
-
-	<!--<bean class="org.dataone.cn.indexer.parser.SolrField"> -->
-	<!--<constructor-arg name="name" value="keyConcept"/> -->
-	<!--<constructor-arg name="xpath" value=""/> -->
-	<!--<property name="multivalue" value="true"/> -->
-	<!--</bean> -->
-
-	<!--<bean class="org.dataone.cn.indexer.parser.SolrField"> -->
-	<!--<constructor-arg name="name" value="namedLocation"/> -->
-	<!--<constructor-arg name="xpath" value=""/> -->
-	<!--<property name="multivalue" value="true"/> -->
-	<!--</bean> -->
-	<!--<bean class="org.dataone.cn.indexer.parser.SolrField"> -->
-	<!--<constructor-arg name="name" value="text"/> -->
-	<!--<constructor-arg name="xpath" value=""/> -->
-	<!--<property name="multivalue" value="false"/> -->
-	<!--</bean> -->
-	<!--<bean class="org.dataone.cn.indexer.parser.SolrField"> -->
-	<!--<constructor-arg name="name" value="variableName"/> -->
-	<!--<constructor-arg name="xpath" value=""/> -->
-	<!--<property name="multivalue" value="true"/> -->
-	<!--</bean> -->
-	<!--<bean class="org.dataone.cn.indexer.parser.SolrField"> -->
-	<!--<constructor-arg name="name" value="scientificName"/> -->
-	<!--<constructor-arg name="xpath" value=""/> -->
-	<!--<property name="multivalue" value="true"/> -->
-	<!--</bean> -->
-
-	<!--<bean class="org.dataone.cn.indexer.parser.SolrField"> -->
-	<!--<constructor-arg name="name" value="relatedOrganizations"/> -->
-	<!--<constructor-arg name="xpath" value=""/> -->
-	<!--<property name="multivalue" value="true"/> -->
-	<!--</bean> -->
-	<!--<bean class="org.dataone.cn.indexer.parser.SolrField"> -->
-	<!--<constructor-arg name="name" value="datePublished"/> -->
-	<!--<constructor-arg name="xpath" value=""/> -->
-	<!--<property name="multivalue" value="false"/> -->
-	<!--</bean> -->
 </beans>
