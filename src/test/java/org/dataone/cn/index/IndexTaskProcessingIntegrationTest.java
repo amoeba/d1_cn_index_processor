@@ -31,7 +31,7 @@ import com.hazelcast.core.IMap;
 
 /**
  * This test loads the generator and processor daemons which will open their
- * application context configuration to laod the processor/generator. This means
+ * application context configuration to load the processor/generator. This means
  * that the config found in the main project will be used to run this test.
  * (PostgreSQL) This test also connects to a Solr server for index processing.
  * 
@@ -47,7 +47,8 @@ import com.hazelcast.core.IMap;
 @ContextConfiguration(locations = { "test-context.xml" })
 public class IndexTaskProcessingIntegrationTest {
 
-    private static Logger logger = Logger.getLogger(IndexTaskProcessingIntegrationTest.class.getName());
+    private static Logger logger = Logger.getLogger(IndexTaskProcessingIntegrationTest.class
+            .getName());
 
     private HazelcastInstance hzMember;
     private IMap<Identifier, SystemMetadata> sysMetaMap;

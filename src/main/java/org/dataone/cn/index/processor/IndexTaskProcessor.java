@@ -77,23 +77,23 @@ public class IndexTaskProcessor {
             parser.process(task.getPid(), smdStream, task.getObjectPath());
         } catch (XPathExpressionException e) {
             logger.error(e.getMessage(), e);
-            handleFailedTest(task);
+            handleFailedTask(task);
             return;
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
-            handleFailedTest(task);
+            handleFailedTask(task);
             return;
         } catch (SAXException e) {
             logger.error(e.getMessage(), e);
-            handleFailedTest(task);
+            handleFailedTask(task);
             return;
         } catch (ParserConfigurationException e) {
             logger.error(e.getMessage(), e);
-            handleFailedTest(task);
+            handleFailedTask(task);
             return;
         } catch (EncoderException e) {
             logger.error(e.getMessage(), e);
-            handleFailedTest(task);
+            handleFailedTask(task);
             return;
         }
         repo.delete(task);
@@ -245,7 +245,7 @@ public class IndexTaskProcessor {
         return documentParsers.get(0);
     }
 
-    private void handleFailedTest(IndexTask task) {
+    private void handleFailedTask(IndexTask task) {
         task.markFailed();
         saveTask(task);
     }

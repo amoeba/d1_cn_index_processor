@@ -11,6 +11,16 @@ xmlns:context="http://www.springframework.org/schema/context"
 
     <import resource="classpath:index-processor-context.xml"/>
     
+    	
+	<import resource="classpath:application-context-eml-base.xml" />
+ 	<import resource="classpath:application-context-eml200.xml" />
+ 	<import resource="classpath:application-context-eml201.xml" />
+ 	<import resource="classpath:application-context-eml210.xml" />
+ 	<import resource="classpath:application-context-eml211.xml" />
+ 	<import resource="classpath:application-context-resourcemap.xml" />
+ 	<import resource="classpath:application-context-systemmeta100.xml" />
+ 	
+    
     <!-- 
     This import overrides default postgres datasource for testing.
     	 To test with postgres, comment out the following import 

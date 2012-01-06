@@ -107,14 +107,6 @@
   </constructor-arg>
  </bean>
 
- <import resource="application-context-eml-base.xml" />
- <import resource="application-context-eml200.xml" />
- <import resource="application-context-eml201.xml" />
- <import resource="application-context-eml210.xml" />
- <import resource="application-context-eml211.xml" />
- <import resource="application-context-resourcemap.xml" />
- <import resource="application-context-systemmeta100.xml" />
-
  <bean id="booleanPublicConverter" class="org.dataone.cn.indexer.convert.BooleanMatchConverter">
   <constructor-arg value="public" />
  </bean>
