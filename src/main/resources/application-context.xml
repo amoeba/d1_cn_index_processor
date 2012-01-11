@@ -7,8 +7,9 @@
  http://www.springframework.org/schema/context  
  http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-<!-- This file is replaced by index-processor-context.xml.
-This file should/will be removed. -->
+<!-- This file is replaced by index-processor-context.xml: application-context.xml was too
+ generic a name for a file when combining multiple modules into a large single deployable jar.
+This file should/will be removed when assured it will not break anything. -->
 
 
  <bean id="dateConverter" class="org.dataone.cn.indexer.convert.SolrDateConverter" />
