@@ -149,13 +149,6 @@
 				</bean>
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
         <!--  -->
-					<constructor-arg name="name" value="executePermission" />
-					<constructor-arg name="xpath"
-						value="/d064:systemMetadata/accessPolicy/allow[permission= 'execute']/subject/text()" />
-					<property name="multivalue" value="true" />
-				</bean>
-				<bean class="org.dataone.cn.indexer.parser.SolrField">
-        <!--  -->
 					<constructor-arg name="name" value="changePermission" />
 					<constructor-arg name="xpath"
 						value="/d064:systemMetadata/accessPolicy/allow[permission= 'changePermission']/subject/text()" />

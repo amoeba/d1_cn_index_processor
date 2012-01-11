@@ -204,7 +204,6 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <!--Permissions-->
         <field name="readPermission"    type="string"   indexed="true" stored="true" multiValued="true"/>
         <field name="writePermission"   type="string"   indexed="true" stored="true" multiValued="true"/>
-        <field name="executePermission" type="string"   indexed="true" stored="true" multiValued="true"/>
         <field name="changePermission"  type="string"   indexed="true" stored="true" multiValued="true"/>
         <field name="isPublic"          type="boolean"  indexed="true" stored="false" />
         
@@ -223,23 +222,15 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <field name="endDate"                  type="date"      multiValued="false" indexed="true" stored="true" />
         <field name="text"                     type="text"      multiValued="true" indexed="true" stored="false" />
         <field name="title"                    type="string"    multiValued="false" indexed="true" stored="true" />
-        <field name="variableName"             type="string"    multiValued="true" indexed="true" stored="true" />
         <field name="scientificName"           type="string"    multiValued="true" indexed="true" stored="true" />
         <field name="relatedOrganizations"     type="string"    multiValued="true" indexed="true" stored="true" />
         <field name="datePublished"            type="date"      multiValued="false" indexed="true" stored="true" />
 
-        <field name="distribution" type="string" indexed="true" stored="true" multiValued="true"/>
-        <field name="distributionText" type="text" indexed="true" stored="true" multiValued="true"/>
 		<field name="investigator" type="string" indexed="true" stored="true" multiValued="true"/>
 		<field name="investigatorText" type="text" indexed="true" stored="true" multiValued="true"/>
         <field name="ogc_url" type="text" indexed="true" stored="true"/>
         <field name="sku" type="textTight" indexed="true" stored="true"/>
         <field name="identifier" type="textTight" indexed="true" stored="true"/>
-        <field name="name" type="text" indexed="true" stored="true"/>
-        <field name="manu" type="text" indexed="true" stored="true"/>
-        <field name="cat" type="text_ws" indexed="true" stored="true" multiValued="true"/>
-        <field name="features" type="text" indexed="true" stored="true" multiValued="true"/>
-        <field name="includes" type="text" indexed="true" stored="true"/>
         <field name="LTERSite" type="string" indexed="true" stored="true"/>
         <field name="origin" type="string" indexed="true" stored="true" multiValued="true"/>
         <field name="originText" type="text" indexed="true" stored="true" multiValued="true"/>
@@ -301,10 +292,6 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
 
         <field name="fileID" type="string" indexed="true" stored="true"/>
 
-        <!-- non-tokenized version of manufacturer to make it easier to sort or group
-results by manufacturer.  copied from "manu" via copyField -->
-        <field name="manu_exact" type="string" indexed="true" stored="false"/>
-
 <!-- ======================================================================= -->
         <!-- Dynamic field definitions.  If a field name is not found, dynamicFields
 will be used if the name matches any of the patterns.
@@ -342,17 +329,9 @@ ways, or to add multiple fields to the same field for easier/faster searching.  
     <copyField source="id" dest="identifier"/>
     <copyfield source="replica_mn" dest="datasource" />
 
-    <copyField source="cat" dest="text"/>
-    <copyField source="name" dest="text"/>
-    <copyField source="manu" dest="text"/>
-    <copyField source="features" dest="text"/>
-    <copyField source="includes" dest="text"/>
-
     <copyField source="title" dest="text"/>
     <copyField source="title" dest="titlestr"/>
     <copyField source="title" dest="titleText"/>
-
-    <copyField source="distribution" dest="distributionText"/>
 
     <copyField source="origin" dest="originText"/>
     <copyField source="contactOrganization" dest="contactOrganizationText"/>
@@ -403,8 +382,6 @@ ways, or to add multiple fields to the same field for easier/faster searching.  
 
 
     <copyField source="fileID" dest="text"/>
-
-    <copyField source="manu" dest="manu_exact"/>
 
     <copyField source="datePublished" dest="pubDate" />
     <copyField source="dateuploaded" dest="update_date" /> 
