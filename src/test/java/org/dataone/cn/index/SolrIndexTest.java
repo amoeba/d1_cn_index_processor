@@ -45,13 +45,11 @@ public class SolrIndexTest extends SolrJettyTestBase {
 
     private ArrayList<XPathDocumentParser> documentParsers;
 
-    // TODO: test resource map / data package index properties?
+    // TODO: test resource map / data packaging index properties?
 
     @Test
     public void testSystemMetadataAndEml210ScienceData() throws Exception {
-        Assert.assertTrue(true);
-
-        // peggym.130.4 system metadata - peggym.130.4 is a science metadata
+        // peggym.130.4 system metadata document for eml2.1.0 science metadata
         // document
         String pid = "peggym.130.4";
         Resource systemMetadataResource = (Resource) context.getBean("systemMetadataResource4");
@@ -63,7 +61,7 @@ public class SolrIndexTest extends SolrJettyTestBase {
         // retrieve solrDocument for peggym130.4 from solr server by pid
         SolrDocument result = getSolrDocument(pid);
 
-        // test science meta data fields in eml210 config match actual fields in
+        // test science metadata fields in eml210 config match actual fields in
         // solr index document
         ScienceMetadataDocumentSubprocessor eml210 = (ScienceMetadataDocumentSubprocessor) context
                 .getBean("eml210Subprocessor");
@@ -75,7 +73,7 @@ public class SolrIndexTest extends SolrJettyTestBase {
             processFields(result, scienceMetadataDoc, field);
         }
 
-        // test system meta data fields in system meta data config match those
+        // test system metadata fields in system metadata config match those
         // in solr index document
         Document systemMetadataDoc = getXPathDocumentParser().generateSystemMetadataDoc(
                 systemMetadataResource.getInputStream());
@@ -159,6 +157,7 @@ public class SolrIndexTest extends SolrJettyTestBase {
         SystemMetadata smd = TypeMarshaller.unmarshalTypeFromStream(SystemMetadata.class,
                 sysMetaFile.getInputStream());
 
+        // path to actual science metadata document
         String path = StringUtils.remove(sysMetaFile.getFile().getPath(), "/SystemMetadata");
         parser.process(smd.getIdentifier().getValue(), sysMetaFile.getInputStream(), path);
     }
@@ -197,6 +196,10 @@ public class SolrIndexTest extends SolrJettyTestBase {
         }
     }
 
+    // method is copied in from SolrJettyTestBase in order to set the port
+    // number to match solr.properties (8983) for XPathDocumentParser to connect
+    // to same solr server. If left unset, the port number is a random open
+    // port.
     public static JettySolrRunner createJetty(String solrHome, String configFile, String context)
             throws Exception {
         // creates the data dir
