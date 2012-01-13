@@ -65,12 +65,12 @@ public class IndexTaskProcessor {
         List<IndexTask> queue = getIndexTaskQueue();
         IndexTask task = getNextIndexTask(queue);
         while (task != null) {
-            processIndexTask(task);
+            processAddUpdateIndexTask(task);
             task = getNextIndexTask(queue);
         }
     }
 
-    private void processIndexTask(IndexTask task) {
+    private void processAddUpdateIndexTask(IndexTask task) {
         XPathDocumentParser parser = getXPathDocumentParser();
         InputStream smdStream = new ByteArrayInputStream(task.getSysMetadata().getBytes());
         try {
@@ -100,14 +100,19 @@ public class IndexTaskProcessor {
     }
 
     private IndexTask getNextIndexTask(List<IndexTask> queue) {
-        int queueIndex = 0;
         IndexTask task = null;
-        while (task == null && queueIndex < queue.size()) {
-            task = queue.remove(queueIndex++);
-            queueIndex++;
+        while (task == null && queue.isEmpty() == false) {
+            task = queue.remove(0);
 
             task.markInProgress();
             task = saveTask(task);
+
+            if (task != null && task.isDeleteTask()) {
+                processDeleteIndexTask(task);
+                repo.delete(task);
+                task = null;
+                continue;
+            }
 
             if (task != null && !isObjectPathReady(task)) {
                 task.markNew();
@@ -121,6 +126,10 @@ public class IndexTaskProcessor {
             }
         }
         return task;
+    }
+
+    private void processDeleteIndexTask(IndexTask task) {
+        httpService.sendSolrDelete(task.getPid(), CHAR_ENCODING);
     }
 
     private boolean isResourceMapReadyToIndex(IndexTask task, List<IndexTask> queue) {
@@ -140,18 +149,9 @@ public class IndexTaskProcessor {
                 } catch (XPathExpressionException e) {
                     logger.error(e.getMessage(), e);
                 }
-                List<IndexTask> referencedDocsIndexTasks = new ArrayList<IndexTask>();
                 List<String> referencedIds = rm.getAllDocumentIDs();
                 referencedIds.remove(task.getPid());
-                // find tasks for referenced objects to delete
-                for (String refPid : referencedIds) {
-                    referencedDocsIndexTasks.addAll(repo.findByPidAndStatus(refPid,
-                            IndexTask.STATUS_NEW));
-                }
-                if (areAllReferencedDocsIndexed(referencedIds)) {
-                    repo.deleteInBatch(referencedDocsIndexTasks);
-                    removeTasksFromQueue(queue, referencedDocsIndexTasks);
-                } else {
+                if (areAllReferencedDocsIndexed(referencedIds) == false) {
                     logger.info("Not all map resource references indexed for map: " + task.getPid()
                             + ".  Marking new and continuing...");
                     task.markNew();
@@ -161,20 +161,6 @@ public class IndexTaskProcessor {
             }
         }
         return ready;
-    }
-
-    private void removeTasksFromQueue(List<IndexTask> queue,
-            List<IndexTask> referencedDocsIndexTasks) {
-        List<IndexTask> toRemove = new ArrayList<IndexTask>();
-        for (IndexTask indexTask : referencedDocsIndexTasks) {
-            for (IndexTask queueTask : queue) {
-                if (indexTask.getPid().equals(queueTask.getPid())) {
-                    toRemove.add(queueTask);
-                    break;
-                }
-            }
-        }
-        queue.removeAll(toRemove);
     }
 
     private boolean areAllReferencedDocsIndexed(List<String> referencedIds) {
