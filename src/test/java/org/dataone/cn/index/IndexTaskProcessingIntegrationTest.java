@@ -67,51 +67,70 @@ public class IndexTaskProcessingIntegrationTest {
     @Autowired
     private Resource systemMetadataResource3;
     @Autowired
-    private Resource systemMetadataResource4;
+    private Resource peggym1304Sys;
+    @Autowired
+    private Resource peggym1304SysDeleted;
+
     @Autowired
     private Resource systemMetadataResource5;
 
+    // TODO: NEED test for add then update and verify changes test
+    // TODO: CONVERT to DataONESolrJetty test to verify index changes
     @Test
-    public void testGenerateAndProcessIndexTasks() {
+    public void testDeleteArchivedFromIndex() throws Exception {
 
         // creating these deamon instance from class loader overrides spring
         // config for jpa repository so postgres is assumed/used.
         IndexTaskGeneratorDaemon generatorDaemon = new IndexTaskGeneratorDaemon();
         IndexTaskProcessorDaemon processorDaemon = new IndexTaskProcessorDaemon();
 
-        try {
-            generatorDaemon.start();
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
+        generatorDaemon.start();
+
+        addSystemMetadata(peggym1304Sys);
+
+        Thread.sleep(1000);
+
+        processorDaemon.start();
+        Thread.sleep(10000);
+        processorDaemon.stop();
+
+        addSystemMetadata(peggym1304SysDeleted);
+        Thread.sleep(1000);
+
+        processorDaemon.start();
+        Thread.sleep(1000);
+        generatorDaemon.stop();
+        processorDaemon.stop();
+
+        Assert.assertTrue(true);
+    }
+
+    @Test
+    public void testGenerateAndProcessIndexTasks() throws Exception {
+        // creating these deamon instance from class loader overrides spring
+        // config for jpa repository so postgres is assumed/used.
+        IndexTaskGeneratorDaemon generatorDaemon = new IndexTaskGeneratorDaemon();
+        IndexTaskProcessorDaemon processorDaemon = new IndexTaskProcessorDaemon();
+
+        generatorDaemon.start();
 
         addSystemMetadata(systemMetadataResource1);
         addSystemMetadata(systemMetadataResource2);
         addSystemMetadata(systemMetadataResource3);
-        addSystemMetadata(systemMetadataResource4);
+        addSystemMetadata(peggym1304Sys);
         addSystemMetadata(systemMetadataResource5);
+
+        Thread.sleep(5000);
 
         // Starting processor daemon here to avoid waiting for scheduling
         // interval (2 minutes)
-        try {
-            processorDaemon.start();
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
+        processorDaemon.start();
 
-        try {
-            // processing time
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            logger.error(e.getMessage(), e);
-        }
+        // processing time
+        Thread.sleep(10000);
 
-        try {
-            generatorDaemon.stop();
-            processorDaemon.stop();
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
+        generatorDaemon.stop();
+        processorDaemon.stop();
 
         Assert.assertTrue(true);
     }
@@ -132,7 +151,8 @@ public class IndexTaskProcessingIntegrationTest {
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }
-        sysMetaMap.putAsync(sysmeta.getIdentifier(), sysmeta);
+        sysMetaMap.put(sysmeta.getIdentifier(), sysmeta);
+        sysMetaMap.put(sysmeta.getIdentifier(), sysmeta);
         objectPaths.putAsync(sysmeta.getIdentifier(), path);
     }
 

@@ -115,6 +115,7 @@
 
 	<bean id="httpService" class="org.dataone.cn.indexer.solrhttp.HTTPService">
 		<property name="solrSchemaPath" value="${solr.schema.path}" />
+		<property name="solrIndexUri" value="${solr.index.uri}" />
 	</bean>
  
 	<import resource="classpath:task-index-context.xml"/>

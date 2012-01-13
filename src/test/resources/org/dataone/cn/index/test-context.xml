@@ -24,8 +24,8 @@ xmlns:context="http://www.springframework.org/schema/context"
     <!-- 
     This import overrides default postgres datasource for testing.
     	 To test with postgres, comment out the following import 
-	-->
 	<import resource="classpath:org/dataone/configuration/hsql-datasource.xml" />
+	-->
 	
 	<bean id="systemMetadataResource1" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String" 
@@ -40,11 +40,15 @@ xmlns:context="http://www.springframework.org/schema/context"
         value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.129.1"/>
     </bean>
     
-	<bean id="systemMetadataResource4" class="org.springframework.core.io.ClassPathResource" >
+	<bean id="peggym1304Sys" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String" 
         value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.130.4"/>
     </bean>
-	<bean id="scienceMetadataResource4" class="org.springframework.core.io.ClassPathResource" >
+    	<bean id="peggym1304SysDeleted" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.130.4"/>
+    </bean>
+	<bean id="peggym1304Sci" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String" 
         value="org/dataone/cn/index/resources/d1_testdocs/eml210/peggym.130.4"/>
     </bean>
