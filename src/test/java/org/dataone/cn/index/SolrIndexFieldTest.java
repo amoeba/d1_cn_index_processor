@@ -9,6 +9,8 @@ import org.apache.log4j.Logger;
 import org.apache.solr.common.SolrDocument;
 import org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.SolrField;
+import org.dataone.cn.indexer.solrhttp.HTTPService;
+import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.service.util.DateTimeMarshaller;
 import org.junit.Assert;
@@ -42,6 +44,11 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
 
         // retrieve solrDocument for peggym130.4 from solr server by pid
         SolrDocument result = assertPresentInSolrIndex(pid);
+
+        HTTPService httpService = (HTTPService) context.getBean("httpService");
+
+        SolrDoc solrDoc = httpService.retrieveDocumentFromSolrServer(pid,
+                "http://localhost:8983/solr/select/");
 
         // test science metadata fields in eml210 config match actual fields in
         // solr index document

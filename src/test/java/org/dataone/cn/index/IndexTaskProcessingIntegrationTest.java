@@ -91,14 +91,14 @@ public class IndexTaskProcessingIntegrationTest {
         Thread.sleep(1000);
 
         processorDaemon.start();
-        Thread.sleep(10000);
+        Thread.sleep(3000);
         processorDaemon.stop();
 
         addSystemMetadata(peggym1304SysDeleted);
         Thread.sleep(1000);
 
         processorDaemon.start();
-        Thread.sleep(1000);
+        Thread.sleep(3000);
         generatorDaemon.stop();
         processorDaemon.stop();
 

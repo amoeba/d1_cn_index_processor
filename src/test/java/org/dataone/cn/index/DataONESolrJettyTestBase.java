@@ -56,6 +56,13 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
         return result;
     }
 
+    protected void assertNotPresentInSolrIndex(String pid) throws SolrServerException {
+        ModifiableSolrParams solrParams = new ModifiableSolrParams();
+        solrParams.set("q", "id:" + pid);
+        QueryResponse qr = getSolrServer().query(solrParams);
+        Assert.assertTrue(qr.getResults().isEmpty());
+    }
+
     protected SolrDocumentList getAllSolrDocuments() throws SolrServerException {
         ModifiableSolrParams solrParams = new ModifiableSolrParams();
         solrParams.set("q", "*:*");
