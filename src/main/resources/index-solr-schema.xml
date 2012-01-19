@@ -187,7 +187,6 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <field name="pref_rep_mn"     type="string"   indexed="true" stored="true" multiValued="true"/>
         <field name="blocked_rep_mn"  type="string"   indexed="true" stored="true" multiValued="true"/>
         <field name="obsoletes"       type="string"   indexed="true" stored="true" multiValued="false"/>
-        <field name="obsoletedby"     type="string"   indexed="true" stored="true" multiValued="false"/>
         <field name="dateuploaded"    type="date"     indexed="true" stored="true" multiValued="false"/>
         <field name="datemodified"    type="date"     indexed="true" stored="true" multiValued="false"/>
         <field name="datasource"       type="string"  indexed="true" stored="true" multiValued="false"/>
@@ -196,10 +195,9 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <field name="replica_verified" type="date"    indexed="true" stored="true" multiValued="true"/>
 
         <!-- Object relationships -->
-        <field name="resourcemap"     type="string"   indexed="true" stored="true" multiValued="true"/>
-        <field name="contains"     type="string"   indexed="true" stored="true" multiValued="true"/>
-        <field name="documents"     type="string"   indexed="true" stored="true" multiValued="true"/>
-        <field name="isDocumentedBy"     type="string"   indexed="true" stored="true" multiValued="true"/>
+        <field name="resourcemap"		type="string"   indexed="true" stored="true" multiValued="true"/>
+        <field name="documents"			type="string"   indexed="true" stored="true" multiValued="true"/>
+        <field name="isDocumentedBy"	type="string"   indexed="true" stored="true" multiValued="true"/>
 
         <!--Permissions-->
         <field name="readPermission"    type="string"   indexed="true" stored="true" multiValued="true"/>

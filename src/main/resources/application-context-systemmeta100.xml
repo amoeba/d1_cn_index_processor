@@ -79,12 +79,6 @@
 				</bean>
 
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
-					<constructor-arg name="name" value="obsoletedby" />
-					<constructor-arg name="xpath"
-						value="/d100:systemMetadata/obsoletedBy/text()" />
-				</bean>
-
-				<bean class="org.dataone.cn.indexer.parser.SolrField">
 					<constructor-arg name="name" value="dateuploaded" />
 					<constructor-arg name="xpath"
 						value="/d100:systemMetadata/dateUploaded/text()" />
