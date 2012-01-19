@@ -19,8 +19,6 @@
      </constructor-arg>
      <constructor-arg name="xmlNamespaceConfig" ref="xmlNamespaceConfig" />
      <property name="solrBaseUri" value="${solr.base.uri}" />
-     <property name="output_encoding" value="UTF-8" />
-     <property name="input_encoding" value="UTF-8" />
      <property name="httpService" ref="httpService" />
      <property name="subprocessors">
       <list>
@@ -113,12 +111,22 @@
  
 	<bean id="nodeRegistryService" class="org.dataone.service.cn.impl.v1.NodeRegistryService" />
 
+    <bean id="httpClientFactory" class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory" />
+
 	<bean id="httpService" class="org.dataone.cn.indexer.solrhttp.HTTPService">
+		<constructor-arg ref="httpClientFactory" />
 		<property name="solrSchemaPath" value="${solr.schema.path}" />
 		<property name="solrIndexUri" value="${solr.index.uri}" />
 	</bean>
  
 	<import resource="classpath:task-index-context.xml"/>
+
+	<bean id="updateProcessor" class="org.dataone.cn.index.processor.IndexTaskUpdateProcessor" />
+	<bean id="deleteProcessor" class="org.dataone.cn.index.processor.IndexTaskDeleteProcessor">
+		<property name="solrQueryUri" value="${solr.query.uri}" />
+		<property name="solrIndexUri" value="${solr.index.uri}" />
+	</bean>
+
 	<bean id="indexTaskProcessor" class="org.dataone.cn.index.processor.IndexTaskProcessor" >
 		<property name="solrQueryUri" value="${solr.query.uri}" />
 	</bean>

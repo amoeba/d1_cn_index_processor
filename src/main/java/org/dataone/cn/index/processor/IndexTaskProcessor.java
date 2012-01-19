@@ -1,15 +1,10 @@
 package org.dataone.cn.index.processor;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
-import org.apache.commons.codec.EncoderException;
 import org.apache.log4j.Logger;
 import org.dataone.client.ObjectFormatCache;
 import org.dataone.cn.hazelcast.HazelcastClientInstance;
@@ -23,10 +18,10 @@ import org.dataone.configuration.Settings;
 import org.dataone.service.exceptions.NotFound;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.ObjectFormat;
+import org.dataone.service.types.v1.SystemMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
@@ -42,20 +37,28 @@ public class IndexTaskProcessor {
     private ArrayList<XPathDocumentParser> documentParsers;
 
     @Autowired
+    private IndexTaskProcessingStrategy deleteProcessor;
+
+    @Autowired
+    private IndexTaskProcessingStrategy updateProcessor;
+
+    @Autowired
     private HTTPService httpService;
 
     private static final String FORMAT_TYPE_DATA = "DATA";
-    private static final String RESOURCE_MAP_FORMAT = "http://www.openarchives.org/ore/terms";
-    private static final String CHAR_ENCODING = "UTF-8";
 
     private HazelcastInstance hzClient;
 
     private static final String HZ_OBJECT_PATH = Settings.getConfiguration().getString(
             "dataone.hazelcast.objectPath");
 
-    private String solrQueryUri;
+    private static final String HZ_SYSTEM_METADATA = Settings.getConfiguration().getString(
+            "dataone.hazelcast.systemMetadata");
 
     private IMap<Identifier, String> objectPaths;
+    private IMap<Identifier, SystemMetadata> systemMetadata;
+
+    private String solrQueryUri;
 
     public IndexTaskProcessor() {
     }
@@ -65,38 +68,29 @@ public class IndexTaskProcessor {
         List<IndexTask> queue = getIndexTaskQueue();
         IndexTask task = getNextIndexTask(queue);
         while (task != null) {
-            processAddUpdateIndexTask(task);
+            processTask(task);
             task = getNextIndexTask(queue);
         }
     }
 
-    private void processAddUpdateIndexTask(IndexTask task) {
-        XPathDocumentParser parser = getXPathDocumentParser();
-        InputStream smdStream = new ByteArrayInputStream(task.getSysMetadata().getBytes());
+    private void processTask(IndexTask task) {
         try {
-            parser.process(task.getPid(), smdStream, task.getObjectPath());
-        } catch (XPathExpressionException e) {
-            logger.error(e.getMessage(), e);
-            handleFailedTask(task);
-            return;
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-            handleFailedTask(task);
-            return;
-        } catch (SAXException e) {
-            logger.error(e.getMessage(), e);
-            handleFailedTask(task);
-            return;
-        } catch (ParserConfigurationException e) {
-            logger.error(e.getMessage(), e);
-            handleFailedTask(task);
-            return;
-        } catch (EncoderException e) {
+            if (task.isDeleteTask()) {
+                deleteProcessor.process(task);
+            } else {
+                updateProcessor.process(task);
+            }
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             handleFailedTask(task);
             return;
         }
         repo.delete(task);
+    }
+
+    private void handleFailedTask(IndexTask task) {
+        task.markFailed();
+        saveTask(task);
     }
 
     private IndexTask getNextIndexTask(List<IndexTask> queue) {
@@ -108,10 +102,7 @@ public class IndexTaskProcessor {
             task = saveTask(task);
 
             if (task != null && task.isDeleteTask()) {
-                processDeleteIndexTask(task);
-                repo.delete(task);
-                task = null;
-                continue;
+                return task;
             }
 
             if (task != null && !isObjectPathReady(task)) {
@@ -128,10 +119,6 @@ public class IndexTaskProcessor {
         return task;
     }
 
-    private void processDeleteIndexTask(IndexTask task) {
-        httpService.sendSolrDelete(task.getPid(), CHAR_ENCODING);
-    }
-
     private boolean isResourceMapReadyToIndex(IndexTask task, List<IndexTask> queue) {
         boolean ready = true;
         if (representsResourceMap(task)) {
@@ -140,7 +127,7 @@ public class IndexTaskProcessor {
                 logger.debug("unable to load resource at object path: " + task.getObjectPath()
                         + ".  Marking new and continuing...");
                 task.markNew();
-                repo.save(task);
+                saveTask(task);
                 ready = false;
             } else if (docObject != null) {
                 ResourceMap rm = null;
@@ -165,23 +152,43 @@ public class IndexTaskProcessor {
 
     private boolean areAllReferencedDocsIndexed(List<String> referencedIds) {
         List<SolrDoc> updateDocuments = null;
+        int numberOfIndexedOrRemovedReferences = 0;
         try {
             updateDocuments = httpService.getDocuments(this.solrQueryUri, referencedIds);
-        } catch (XPathExpressionException e) {
-            logger.error(e.getMessage(), e);
-            return false;
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-            return false;
-        } catch (EncoderException e) {
+            numberOfIndexedOrRemovedReferences = updateDocuments.size();
+            if (updateDocuments.size() != referencedIds.size()) {
+                for (String id : referencedIds) {
+                    boolean foundId = false;
+                    for (SolrDoc solrDoc : updateDocuments) {
+                        if (solrDoc.getIdentifier().equals(id)) {
+                            foundId = true;
+                            break;
+                        }
+                    }
+                    if (foundId == false) {
+                        Identifier pid = new Identifier();
+                        pid.setValue(id);
+                        SystemMetadata smd = systemMetadata.get(pid);
+                        if (notVisibleInIndex(smd)) {
+                            numberOfIndexedOrRemovedReferences++;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return false;
         }
-        return updateDocuments != null && referencedIds.size() == updateDocuments.size();
+        return referencedIds.size() == numberOfIndexedOrRemovedReferences;
+    }
+
+    private boolean notVisibleInIndex(SystemMetadata smd) {
+        return (smd.getObsoletedBy() != null && smd.getObsoletedBy().getValue() != null)
+                || (smd.getArchived() != null && smd.getArchived().booleanValue());
     }
 
     private boolean representsResourceMap(IndexTask task) {
-        return RESOURCE_MAP_FORMAT.equals(task.getFormatId());
+        return ResourceMap.representsResourceMap(task.getFormatId());
     }
 
     // if objectPath is not filled, attempt to fill it via hazelclient.
@@ -220,6 +227,7 @@ public class IndexTaskProcessor {
         if (this.hzClient == null) {
             this.hzClient = HazelcastClientInstance.getHazelcastClient();
             this.objectPaths = this.hzClient.getMap(HZ_OBJECT_PATH);
+            this.systemMetadata = this.hzClient.getMap(HZ_SYSTEM_METADATA);
         }
     }
 
@@ -229,11 +237,6 @@ public class IndexTaskProcessor {
 
     private XPathDocumentParser getXPathDocumentParser() {
         return documentParsers.get(0);
-    }
-
-    private void handleFailedTask(IndexTask task) {
-        task.markFailed();
-        saveTask(task);
     }
 
     private IndexTask saveTask(IndexTask task) {
@@ -249,12 +252,8 @@ public class IndexTaskProcessor {
     private Document loadDocument(IndexTask task) {
         Document docObject = null;
         try {
-            docObject = getXPathDocumentParser().loadDocument(task.getObjectPath(), CHAR_ENCODING);
-        } catch (ParserConfigurationException e) {
-            logger.error(e.getMessage(), e);
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        } catch (SAXException e) {
+            docObject = getXPathDocumentParser().loadDocument(task.getObjectPath());
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
         if (docObject == null) {
