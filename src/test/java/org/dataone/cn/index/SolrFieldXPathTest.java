@@ -1,5 +1,6 @@
 package org.dataone.cn.index;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.SolrField;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,54 +37,57 @@ public class SolrFieldXPathTest {
     @Autowired
     private ArrayList<XPathDocumentParser> documentParsers;
 
-    SolrDateConverter dateConverter = new SolrDateConverter();
+    private SolrDateConverter dateConverter = new SolrDateConverter();
 
     // solr/rule field name (from spring context fields) mapped to actual value
     // from xml documents (system and science metadata docs)
-    private HashMap<String, String> eml210Expected = new HashMap<String, String>() {
-        {
-            // science metadata
-            put("abstract", "");
-            put("keywords",
-                    "SANParks, South Africa##Augrabies Falls National Park,South Africa##Census data");
-            put("title", "Augrabies falls National Park census data.");
-            put("southBoundCoord", "1.1875");
-            put("northBoundCoord", "1.1875");
-            put("westBoundCoord", "26.0");
-            put("eastBoundCoord", "26.0");
-            put("beginDate", dateConverter.convert("1998"));
-            put("endDate", dateConverter.convert("2004-02-13"));
-            put("author", "SANParks ");
-            put("author_lname", "SANParks");
-            put("contactOrganization", "SANParks");
+    private HashMap<String, String> eml210Expected = new HashMap<String, String>();
 
-            // system metadata
-            put("id", "peggym.130.4");
-            put("objectformat", "eml://ecoinformatics.org/eml-2.1.0");
-            put("size", "36281");
-            put("checksum", "24426711d5385a9ffa583a13d07af2502884932f");
-            put("checksumAlgorithm", "SHA-1");
-            put("submitter", "dataone_integration_test_user");
-            put("rightsholder", "dataone_integration_test_user");
-            put("rep_allowed", "true");
-            put("n_replicas", "");
-            put("pref_rep_mn", "");
-            put("blocked_rep_mn", "");
-            put("obsoletes", "");
-            put("dateuploaded", dateConverter.convert("2011-08-31T15:59:50.071163"));
-            put("datemodified", dateConverter.convert("2011-08-31T15:59:50.072921"));
-            put("datasource", "test_documents");
-            put("auth_mn", "test_documents");
-            put("replica_mn", "");
-            put("replica_verified", "");
-            put("readPermission", "dataone_test_user##dataone_public_user");
-            put("writePermission", "dataone_integration_test_user");
-            put("changePermission", "");
-            put("isPublic", "");
-            put("web_url", "");
-            put("data_url", "");
-        }
-    };
+    @Before
+    public void setUp() throws Exception {
+        String hostname = InetAddress.getLocalHost().getHostName();
+        // science metadata
+        eml210Expected.put("abstract", "");
+        eml210Expected.put("keywords",
+                "SANParks, South Africa##Augrabies Falls National Park,South Africa##Census data");
+        eml210Expected.put("title", "Augrabies falls National Park census data.");
+        eml210Expected.put("southBoundCoord", "1.1875");
+        eml210Expected.put("northBoundCoord", "1.1875");
+        eml210Expected.put("westBoundCoord", "26.0");
+        eml210Expected.put("eastBoundCoord", "26.0");
+        eml210Expected.put("beginDate", dateConverter.convert("1998"));
+        eml210Expected.put("endDate", dateConverter.convert("2004-02-13"));
+        eml210Expected.put("author", "SANParks ");
+        eml210Expected.put("author_lname", "SANParks");
+        eml210Expected.put("contactOrganization", "SANParks");
+        eml210Expected.put("fileID", "https://" + hostname + "/cn/v1/resolve/peggym.130.4");
+
+        // system metadata
+        eml210Expected.put("id", "peggym.130.4");
+        eml210Expected.put("objectformat", "eml://ecoinformatics.org/eml-2.1.0");
+        eml210Expected.put("size", "36281");
+        eml210Expected.put("checksum", "24426711d5385a9ffa583a13d07af2502884932f");
+        eml210Expected.put("checksumAlgorithm", "SHA-1");
+        eml210Expected.put("submitter", "dataone_integration_test_user");
+        eml210Expected.put("rightsholder", "dataone_integration_test_user");
+        eml210Expected.put("rep_allowed", "true");
+        eml210Expected.put("n_replicas", "");
+        eml210Expected.put("pref_rep_mn", "");
+        eml210Expected.put("blocked_rep_mn", "");
+        eml210Expected.put("obsoletes", "");
+        eml210Expected.put("dateuploaded", dateConverter.convert("2011-08-31T15:59:50.071163"));
+        eml210Expected.put("datemodified", dateConverter.convert("2011-08-31T15:59:50.072921"));
+        eml210Expected.put("datasource", "test_documents");
+        eml210Expected.put("auth_mn", "test_documents");
+        eml210Expected.put("replica_mn", "");
+        eml210Expected.put("replica_verified", "");
+        eml210Expected.put("readPermission", "dataone_test_user##dataone_public_user");
+        eml210Expected.put("writePermission", "dataone_integration_test_user");
+        eml210Expected.put("changePermission", "");
+        eml210Expected.put("isPublic", "");
+        eml210Expected.put("web_url", "");
+        eml210Expected.put("data_url", "https://" + hostname + "/cn/v1/resolve/peggym.130.4");
+    }
 
     /**
      * Testing that the Xpath expressions used by XPathParser and associates are
