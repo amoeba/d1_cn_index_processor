@@ -183,8 +183,7 @@ public class IndexTaskProcessor {
     }
 
     private boolean notVisibleInIndex(SystemMetadata smd) {
-        return (smd.getObsoletedBy() != null && smd.getObsoletedBy().getValue() != null)
-                || (smd.getArchived() != null && smd.getArchived().booleanValue());
+        return !SolrDoc.visibleInIndex(smd);
     }
 
     private boolean representsResourceMap(IndexTask task) {

@@ -58,6 +58,49 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     private Resource peggymResourcemapSys;
     private Resource peggymResourcemapSysArchived;
 
+    /**
+     * Unit test of the HTTPService.sendSolrDelete(pid) method. Inserts record
+     * into solr index using XPathDocumentParser. Does not use index task
+     * generation/processing.
+     **/
+    @Test
+    public void testHttpServiceSolrDelete() throws Exception {
+        String pid = "peggym.130.4";
+        Resource systemMetadataResource = (Resource) context.getBean("peggym1304Sys");
+        addToSolrIndex(systemMetadataResource);
+        assertPresentInSolrIndex(pid);
+        HTTPService httpService = (HTTPService) context.getBean("httpService");
+        httpService.sendSolrDelete(pid);
+        Assert.assertTrue(getAllSolrDocuments().size() == 0);
+    }
+
+    /**
+     * Adds and removes a single science metadata document to the solr index.
+     * Uses index task processing/generation to process add/delete.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testDeleteSingleDocFromIndex() throws Exception {
+        String pid = "peggym.130.4";
+        addSystemMetadata(peggym1304Sys);
+        processor.processIndexTaskQueue();
+        assertPresentInSolrIndex(pid);
+        addSystemMetadata(peggym1304SysArchived);
+        processor.processIndexTaskQueue();
+        assertNotPresentInSolrIndex(pid);
+    }
+
+    /**
+     * Adds a data package (see indexTestDataPackage) to solr index and then
+     * removes a science data document from the package and verifies the state
+     * of the data package is correct with respect to hiding the archived data
+     * doc. The resource map document is then updated and the package is
+     * verified to ensure science data document is still not present in the
+     * package.
+     * 
+     * @throws Exception
+     */
     @Test
     public void testArchiveDataInPackage() throws Exception {
         // create/index data package
@@ -77,6 +120,12 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         verifyDataPackageNo1271();
     }
 
+    /**
+     * Same scenario as testArchiveDataInPackage, but this time the file removed
+     * is the science metadata document.
+     * 
+     * @throws Exception
+     */
     @Test
     public void testArchiveScienceMetadataInPackage() throws Exception {
         // create/index data package
@@ -96,6 +145,13 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         verifyDataPackageNo1304();
     }
 
+    /**
+     * Same scenario as testArchiveDataInPackage, but this time the data package
+     * document itself is removed. This time the science metadata document is
+     * updated and then the contents of the archived are verified.
+     * 
+     * @throws Exception
+     */
     @Test
     public void testArchiveDataPackage() throws Exception {
         // create/index data package
@@ -133,31 +189,6 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         assertNotPresentInSolrIndex("peggym.resourcemap");
     }
 
-    @Test
-    public void testSimpleDeleteFromSolrIndex() throws Exception {
-
-        String pid = "peggym.130.4";
-        Resource systemMetadataResource = (Resource) context.getBean("peggym1304Sys");
-        addToSolrIndex(systemMetadataResource);
-        assertPresentInSolrIndex(pid);
-
-        HTTPService httpService = (HTTPService) context.getBean("httpService");
-        httpService.sendSolrDelete(pid);
-
-        Assert.assertTrue(getAllSolrDocuments().size() == 0);
-    }
-
-    @Test
-    public void testDeleteArchivedFromIndex() throws Exception {
-        String pid = "peggym.130.4";
-        addSystemMetadata(peggym1304Sys);
-        processor.processIndexTaskQueue();
-        assertPresentInSolrIndex(pid);
-        addSystemMetadata(peggym1304SysArchived);
-        processor.processIndexTaskQueue();
-        assertNotPresentInSolrIndex(pid);
-    }
-
     private void verifyDataPackageNo1304() throws Exception {
         assertPresentInSolrIndex("peggym.127.1");
 
@@ -172,15 +203,6 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         assertPresentInSolrIndex("peggym.129.1");
         assertNotPresentInSolrIndex("peggym.130.4");
         assertPresentInSolrIndex("peggym.resourcemap");
-    }
-
-    private void indexTestDataPackage() {
-        addSystemMetadata(peggym1271Sys);
-        addSystemMetadata(peggym1281Sys);
-        addSystemMetadata(peggym1291Sys);
-        addSystemMetadata(peggym1304Sys);
-        addSystemMetadata(peggymResourcemapSys);
-        processor.processIndexTaskQueue();
     }
 
     private void verifyDataPackageNo1271() throws Exception {
@@ -214,6 +236,15 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         Assert.assertTrue(documentsCollection.contains("peggym.129.1"));
 
         assertPresentInSolrIndex("peggym.resourcemap");
+    }
+
+    private void indexTestDataPackage() {
+        addSystemMetadata(peggym1271Sys);
+        addSystemMetadata(peggym1281Sys);
+        addSystemMetadata(peggym1291Sys);
+        addSystemMetadata(peggym1304Sys);
+        addSystemMetadata(peggymResourcemapSys);
+        processor.processIndexTaskQueue();
     }
 
     private void verifyTestDataPackageIndexed() throws Exception {
