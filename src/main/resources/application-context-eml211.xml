@@ -20,6 +20,7 @@
     <ref bean="eml.author" />
     <ref bean="eml.author_lname" />
     <ref bean="eml.contactOrganization" />
+    <ref bean="eml.fileID" />
    </list>
   </property>
  </bean>

@@ -3,15 +3,14 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
-  <bean id="eml.abstract" class="org.dataone.cn.indexer.parser.MergeSolrField">
-    <constructor-arg name="name" value="abstract" />
-    <constructor-arg name="xpath"
-      value="//dataset/abstract/descendant::text()" />
-    <constructor-arg name="delimiter" value=" " />
-    <property name="multivalue" value="false" />
-    <property name="dedupe" value="false" />
-  </bean>
-
+	<bean id="eml.abstract" class="org.dataone.cn.indexer.parser.MergeSolrField">
+	  <constructor-arg name="name" value="abstract" />
+	  <constructor-arg name="xpath"
+	    value="//dataset/abstract/descendant::text()" />
+	  <constructor-arg name="delimiter" value=" " />
+	  <property name="multivalue" value="false" />
+	  <property name="dedupe" value="false" />
+	</bean>
 
 	<bean id="eml.keywords" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="keywords" />
@@ -88,13 +87,17 @@
 		<property name="multivalue" value="true" />
 	</bean>
 
-  <bean id="eml.contactOrganization" class="org.dataone.cn.indexer.parser.MergeSolrField">
-    <constructor-arg name="name" value="contactOrganization" />
-    <constructor-arg name="xpath"
-      value="//dataset/creator/organizationName/text()" />
-    <constructor-arg name="delimiter" value="; " />
-    <property name="multivalue" value="false" />
-    <property name="dedupe" value="true" />
-  </bean>
+	<bean id="eml.contactOrganization" class="org.dataone.cn.indexer.parser.MergeSolrField">
+		<constructor-arg name="name" value="contactOrganization" />
+		<constructor-arg name="xpath"
+		  value="//dataset/creator/organizationName/text()" />
+		<constructor-arg name="delimiter" value="; " />
+		<property name="multivalue" value="false" />
+		<property name="dedupe" value="true" />
+	</bean>
+	
+	<bean id="eml.fileID" class="org.dataone.cn.indexer.parser.FileIdSolrField">
+		<constructor-arg name="name" value="fileID" />
+	</bean>
 
 </beans>
