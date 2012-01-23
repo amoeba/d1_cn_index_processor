@@ -15,9 +15,7 @@ import org.dataone.configuration.Settings;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.Resource;
 
@@ -71,7 +69,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         assertPresentInSolrIndex(pid);
         HTTPService httpService = (HTTPService) context.getBean("httpService");
         httpService.sendSolrDelete(pid);
-        Assert.assertTrue(getAllSolrDocuments().size() == 0);
+        assertNotPresentInSolrIndex(pid);
     }
 
     /**
@@ -302,14 +300,12 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         generator.processSystemMetaDataUpdate(sysmeta, path);
     }
 
-    @Before
     public void setUp() throws Exception {
         super.setUp();
         configureSpringResources();
         configureHazelCast();
     }
 
-    @After
     public void tearDown() throws Exception {
         super.tearDown();
         Hazelcast.shutdownAll();

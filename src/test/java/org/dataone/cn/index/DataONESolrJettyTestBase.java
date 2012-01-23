@@ -14,9 +14,7 @@ import org.apache.solr.common.params.ModifiableSolrParams;
 import org.dataone.cn.indexer.XPathDocumentParser;
 import org.dataone.service.types.v1.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
@@ -70,14 +68,12 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
         return qr.getResults();
     }
 
-    @Before
     public void setUp() throws Exception {
         super.setUp();
         loadSpringContext();
         startJettyAndSolr();
     }
 
-    @After
     public void tearDown() throws Exception {
         super.tearDown();
     }
