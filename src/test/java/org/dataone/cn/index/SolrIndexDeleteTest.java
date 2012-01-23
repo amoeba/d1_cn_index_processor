@@ -65,11 +65,22 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     public void testHttpServiceSolrDelete() throws Exception {
         String pid = "peggym.130.4";
         Resource systemMetadataResource = (Resource) context.getBean("peggym1304Sys");
+        deleteAll();
+        deleteAll();
         addToSolrIndex(systemMetadataResource);
         assertPresentInSolrIndex(pid);
         HTTPService httpService = (HTTPService) context.getBean("httpService");
         httpService.sendSolrDelete(pid);
         assertNotPresentInSolrIndex(pid);
+    }
+
+    private void deleteAll() {
+        HTTPService httpService = (HTTPService) context.getBean("httpService");
+        httpService.sendSolrDelete("peggym.130.4");
+        httpService.sendSolrDelete("peggym.127.1");
+        httpService.sendSolrDelete("peggym.128.1");
+        httpService.sendSolrDelete("peggym.129.1");
+        httpService.sendSolrDelete("peggym.resourcemap");
     }
 
     /**
@@ -81,6 +92,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     @Test
     public void testDeleteSingleDocFromIndex() throws Exception {
         String pid = "peggym.130.4";
+        deleteAll();
         addSystemMetadata(peggym1304Sys);
         processor.processIndexTaskQueue();
         assertPresentInSolrIndex(pid);
@@ -102,6 +114,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     @Test
     public void testArchiveDataInPackage() throws Exception {
         // create/index data package
+        deleteAll();
         indexTestDataPackage();
         // verify in index correct
         verifyTestDataPackageIndexed();
@@ -127,6 +140,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     @Test
     public void testArchiveScienceMetadataInPackage() throws Exception {
         // create/index data package
+        deleteAll();
         indexTestDataPackage();
         // verify in index correct
         verifyTestDataPackageIndexed();
@@ -153,6 +167,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     @Test
     public void testArchiveDataPackage() throws Exception {
         // create/index data package
+        deleteAll();
         indexTestDataPackage();
         // verify in index correct
         verifyTestDataPackageIndexed();
