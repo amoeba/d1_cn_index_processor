@@ -1,8 +1,7 @@
 <?xml version="1.0" ?>
 <!-- 
-A copy of the official d1-cn-index solr schmema.xml.
-
-Official copy is index-solr-schema.xml
+A TESTING COPY OF THE DataONE Index Solr Schema definition file.  
+This schema is copied into the dataone-cn-index buildout for deployment on cn nodes.
 
 The Solr schema file. This file should be named "schema.xml" and
  should be in the conf directory under the solr home
@@ -12,6 +11,7 @@ The Solr schema file. This file should be named "schema.xml" and
  For more information, on how to customize this file, please see...
  http://wiki.apache.org/solr/SchemaXml
 -->
+
 <schema name="dataone" version="1.1">
     <types>
         <!-- field type definitions. The "name" attribute is
@@ -187,7 +187,6 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <field name="pref_rep_mn"     type="string"   indexed="true" stored="true" multiValued="true"/>
         <field name="blocked_rep_mn"  type="string"   indexed="true" stored="true" multiValued="true"/>
         <field name="obsoletes"       type="string"   indexed="true" stored="true" multiValued="false"/>
-        <field name="obsoletedby"     type="string"   indexed="true" stored="true" multiValued="false"/>
         <field name="dateuploaded"    type="date"     indexed="true" stored="true" multiValued="false"/>
         <field name="datemodified"    type="date"     indexed="true" stored="true" multiValued="false"/>
         <field name="datasource"       type="string"  indexed="true" stored="true" multiValued="false"/>
@@ -196,10 +195,9 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <field name="replica_verified" type="date"    indexed="true" stored="true" multiValued="true"/>
 
         <!-- Object relationships -->
-        <field name="resourcemap"     type="string"   indexed="true" stored="true" multiValued="true"/>
-        <field name="contains"     type="string"   indexed="true" stored="true" multiValued="true"/>
-        <field name="documents"     type="string"   indexed="true" stored="true" multiValued="true"/>
-        <field name="isDocumentedBy"     type="string"   indexed="true" stored="true" multiValued="true"/>
+        <field name="resourcemap"		type="string"   indexed="true" stored="true" multiValued="true"/>
+        <field name="documents"			type="string"   indexed="true" stored="true" multiValued="true"/>
+        <field name="isDocumentedBy"	type="string"   indexed="true" stored="true" multiValued="true"/>
 
         <!--Permissions-->
         <field name="readPermission"    type="string"   indexed="true" stored="true" multiValued="true"/>
