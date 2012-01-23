@@ -45,7 +45,7 @@ public class SolrFieldXPathTest {
 
     @Before
     public void setUp() throws Exception {
-        String hostname = InetAddress.getLocalHost().getHostName();
+        String hostname = InetAddress.getLocalHost().getCanonicalHostName();
         // science metadata
         eml210Expected.put("abstract", "");
         eml210Expected.put("keywords",
