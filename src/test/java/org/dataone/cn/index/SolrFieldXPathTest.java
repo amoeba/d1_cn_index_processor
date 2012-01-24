@@ -51,14 +51,18 @@ public class SolrFieldXPathTest {
         eml210Expected.put("keywords",
                 "SANParks, South Africa##Augrabies Falls National Park,South Africa##Census data");
         eml210Expected.put("title", "Augrabies falls National Park census data.");
+        eml210Expected.put("project", "");
         eml210Expected.put("southBoundCoord", "1.1875");
         eml210Expected.put("northBoundCoord", "1.1875");
         eml210Expected.put("westBoundCoord", "26.0");
         eml210Expected.put("eastBoundCoord", "26.0");
         eml210Expected.put("beginDate", dateConverter.convert("1998"));
         eml210Expected.put("endDate", dateConverter.convert("2004-02-13"));
+        eml210Expected.put("pubDate", "");
         eml210Expected.put("author", "SANParks ");
         eml210Expected.put("author_lname", "SANParks");
+        eml210Expected.put("investigator", "SANParks");
+        eml210Expected.put("origin", " SANParks");
         eml210Expected.put("contactOrganization", "SANParks");
         eml210Expected.put("fileID", "https://" + hostname + "/cn/v1/resolve/peggym.130.4");
 

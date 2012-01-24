@@ -66,12 +66,25 @@
 		<property name="multivalue" value="false" />
 		<property name="converter" ref="dateConverter" />
 	</bean>
+	
+	<bean id="eml.pubDate" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="pubDate" />
+		<constructor-arg name="xpath" value="//dataset/pubDate/text()" />
+		<property name="multivalue" value="false" />
+		<property name="converter" ref="dateConverter" />
+	</bean>
 
 	<bean id="eml.title" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="title" />
 		<constructor-arg name="xpath" value="//dataset/title/text()" />
 		<property name="multivalue" value="false" />
 	</bean>
+	
+	<bean id="eml.project" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="project" />
+		<constructor-arg name="xpath" value="//dataset/project/title/text()" />
+		<property name="multivalue" value="false" />
+	</bean>	
 
 	<bean id="eml.author" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="author" />
@@ -79,12 +92,26 @@
 			value="concat (//dataset/creator/individualName/surName/text(),' ',//dataset/creator/individualName/givenName/text())" />
 		<property name="multivalue" value="false" />
 	</bean>
-
+	
 	<bean id="eml.author_lname" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="author_lname" />
 		<constructor-arg name="xpath"
 			value="//dataset/creator/individualName/surName/text()" />
 		<property name="multivalue" value="true" />
+	</bean>
+	
+	<bean id="eml.investigator" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="investigator" />
+		<constructor-arg name="xpath"
+			value="//dataset/creator/individualName/surName/text()" />
+		<property name="multivalue" value="true" />
+	</bean>
+	
+	<bean id="eml.origin" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="origin" />
+		<constructor-arg name="xpath"
+			value="concat (//dataset/creator/individualName/givenName/text(),' ',//dataset/creator/individualName/surName/text())" />
+		<property name="multivalue" value="false" />		
 	</bean>
 
 	<bean id="eml.contactOrganization" class="org.dataone.cn.indexer.parser.MergeSolrField">
