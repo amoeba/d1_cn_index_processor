@@ -29,7 +29,6 @@ import org.springframework.core.io.Resource;
 public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
 
     protected ApplicationContext context;
-
     protected ArrayList<XPathDocumentParser> documentParsers;
 
     protected void addToSolrIndex(Resource sysMetaFile) throws Exception {
