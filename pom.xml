@@ -253,7 +253,22 @@
           <header>src/license-header.txt</header>
         </configuration>
       </plugin>
-      
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <doCheck>false</doCheck>
+                    <doUpdate>false</doUpdate>
+                </configuration>
+            </plugin>      
            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -286,13 +301,38 @@
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/spring.schemas</resource>
                                 </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>buildInfo/buildInfo.properties</resource>
+                                </transformer>
                             </transformers>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>      
     </plugins>
+		<resources>
+	      <resource>
+	        <directory>src/main/resources</directory>
+	        <filtering>true</filtering>
+	        <includes>
+	          <include>buildInfo/buildInfo.properties</include>
+	        </includes>
+	      </resource>
+	      <resource>
+	        <directory>src/main/resources</directory>
+	        <filtering>false</filtering>
+	        <includes>
+	          <include>**/*.*</include>
+	        </includes>
+	      </resource>
+		</resources>
   </build>
+    <scm>
+	    <url>https://repository.dataone.org/software/cicore</url>
+	    <connection>scm:svn:https://repository.dataone.org/software/cicore</connection>
+	    <developerConnection>scm:svn:https://repository.dataone.org/software/cicore</developerConnection>
+	    <tag>HEAD</tag>
+    </scm>
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
