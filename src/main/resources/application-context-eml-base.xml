@@ -1,6 +1,10 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/context  
+    					http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 
 	<bean id="eml.abstract" class="org.dataone.cn.indexer.parser.MergeSolrField">
@@ -107,13 +111,44 @@
 		<property name="multivalue" value="true" />
 	</bean>
 	
-	<bean id="eml.origin" class="org.dataone.cn.indexer.parser.SolrField">
+	<bean id="eml.origin" class="org.dataone.cn.indexer.parser.CommonRootSolrField"
+		p:multivalue="true"
+		p:root-ref="originRoot">
 		<constructor-arg name="name" value="origin" />
-		<constructor-arg name="xpath"
-			value="concat (//dataset/creator/individualName/givenName/text(),' ',//dataset/creator/individualName/surName/text())" />
-		<property name="multivalue" value="false" />		
 	</bean>
-
+	
+	<bean id="originRoot" class="org.dataone.cn.indexer.parser.utility.RootElement"
+		p:name="origin"
+		p:xPath="//dataset/creator" 
+		p:template="[individualName]||[organizationName]">
+		<property name="leafs"><list><ref bean="organizationNameLeaf"/></list></property>
+		<property name="subRoots"><list><ref bean="individualNameRoot" /></list></property>
+	</bean>
+		
+	<bean id="organizationNameLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+		p:name="organizationName"
+		p:xPath="organizationName/text()" />
+		
+	<bean id="individualNameRoot" class="org.dataone.cn.indexer.parser.utility.RootElement"
+		p:name="individualName"
+		p:xPath="individualName"
+		p:template="[givenName] [surName]">
+		<property name="leafs">
+			<list>
+				<ref bean="givenNameLeaf"/>
+				<ref bean="surNameLeaf"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="givenNameLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+		p:name="givenName"
+		p:xPath="givenName/text()" />
+		
+	<bean id="surNameLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+		p:name="surName"
+		p:xPath="surName/text()"/>
+	
 	<bean id="eml.contactOrganization" class="org.dataone.cn.indexer.parser.MergeSolrField">
 		<constructor-arg name="name" value="contactOrganization" />
 		<constructor-arg name="xpath"

@@ -60,11 +60,13 @@ public class SolrFieldXPathTest {
         eml210Expected.put("endDate", dateConverter.convert("2004-02-13"));
         eml210Expected.put("pubDate", "");
         eml210Expected.put("author", "SANParks Steve");
-        eml210Expected.put("author_lname", "SANParks#Freeman");
-        eml210Expected.put("investigator", "SANParks#Freeman");
-        eml210Expected.put("origin", "Steve SANParks");
-        eml210Expected.put("contactOrganization", "SANParks; ");
+        eml210Expected.put("author_lname", "SANParks#Garcia#Freeman");
+        eml210Expected.put("investigator", "SANParks#Garcia#Freeman");
+        eml210Expected.put("contactOrganization", "SANParks; The Awesome Store");
         eml210Expected.put("fileID", "https://" + hostname + "/cn/v1/resolve/peggym.130.4");
+
+        eml210Expected.put("origin",
+                "Steve SANParks Freddy Garcia#Gordon Freeman#The Awesome Store");
 
         // system metadata
         eml210Expected.put("id", "peggym.130.4");
