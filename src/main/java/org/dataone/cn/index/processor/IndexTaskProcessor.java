@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.w3c.dom.Document;
 
-import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.core.IMap;
 
 public class IndexTaskProcessor {
@@ -47,7 +47,7 @@ public class IndexTaskProcessor {
 
     private static final String FORMAT_TYPE_DATA = "DATA";
 
-    private HazelcastInstance hzClient;
+    private HazelcastClient hzClient;
 
     private static final String HZ_OBJECT_PATH = Settings.getConfiguration().getString(
             "dataone.hazelcast.objectPath");
