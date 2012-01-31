@@ -158,9 +158,8 @@
 					<property name="multivalue" value="true" />
 		        </bean>
 		        
-		        <bean class="org.dataone.cn.indexer.parser.DataUrlSolrField">
+		        <bean class="org.dataone.cn.indexer.parser.ResolveSolrField">
 					<constructor-arg name="name" value="data_url" />
-					<constructor-arg name="xpath" value="/d100:systemMetadata/identifier/text()" />
 		        </bean>
 			</list>
 		</constructor-arg>

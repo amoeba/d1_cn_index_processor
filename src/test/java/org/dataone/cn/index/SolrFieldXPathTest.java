@@ -110,7 +110,8 @@ public class SolrFieldXPathTest {
         Document scienceMetadataDoc = getXPathDocumentParser().generateSystemMetadataDoc(
                 peggym1304Sci.getInputStream());
         for (SolrField field : eml210Subprocessor.getFieldList()) {
-            boolean compared = compareFields(eml210Expected, scienceMetadataDoc, field);
+            boolean compared = compareFields(eml210Expected, scienceMetadataDoc, field,
+                    "peggym.130.4");
             if (compared) {
                 fieldCount++;
             }
@@ -119,7 +120,8 @@ public class SolrFieldXPathTest {
         Document systemMetadataDoc = getXPathDocumentParser().generateSystemMetadataDoc(
                 peggym1304Sys.getInputStream());
         for (SolrField field : getXPathDocumentParser().getFields()) {
-            boolean compared = compareFields(eml210Expected, systemMetadataDoc, field);
+            boolean compared = compareFields(eml210Expected, systemMetadataDoc, field,
+                    "peggym.130.4");
             if (compared) {
                 fieldCount++;
             }
@@ -130,10 +132,10 @@ public class SolrFieldXPathTest {
     }
 
     private boolean compareFields(HashMap<String, String> expected, Document metadataDoc,
-            SolrField fieldToCompare) throws Exception {
+            SolrField fieldToCompare, String identifier) throws Exception {
 
         boolean fieldsCompared = false;
-        List<SolrElementField> fields = fieldToCompare.getFields(metadataDoc);
+        List<SolrElementField> fields = fieldToCompare.getFields(metadataDoc, identifier);
         if (fields.isEmpty() == false) {
             if (fields.size() > 1) {
                 ArrayList<String> actualValues = new ArrayList<String>();

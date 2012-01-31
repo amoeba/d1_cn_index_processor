@@ -59,7 +59,7 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
         Document scienceMetadataDoc = getXPathDocumentParser().generateSystemMetadataDoc(
                 scienceMetadataResource.getInputStream());
         for (SolrField field : eml210.getFieldList()) {
-            compareFields(result, scienceMetadataDoc, field);
+            compareFields(result, scienceMetadataDoc, field, pid);
         }
 
         // test system metadata fields in system metadata config match those
@@ -67,13 +67,13 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
         Document systemMetadataDoc = getXPathDocumentParser().generateSystemMetadataDoc(
                 systemMetadataResource.getInputStream());
         for (SolrField field : getXPathDocumentParser().getFields()) {
-            compareFields(result, systemMetadataDoc, field);
+            compareFields(result, systemMetadataDoc, field, pid);
         }
     }
 
     private void compareFields(SolrDocument solrResult, Document metadataDoc,
-            SolrField fieldToCompare) throws Exception {
-        List<SolrElementField> fields = fieldToCompare.getFields(metadataDoc);
+            SolrField fieldToCompare, String identifier) throws Exception {
+        List<SolrElementField> fields = fieldToCompare.getFields(metadataDoc, identifier);
         if (fields.isEmpty() == false) {
             SolrElementField docField = fields.get(0);
             Object solrValueObject = solrResult.getFieldValue(docField.getName());
