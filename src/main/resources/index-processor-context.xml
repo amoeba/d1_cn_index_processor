@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:p="http://www.springframework.org/schema/p"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xmlns:context="http://www.springframework.org/schema/context"
  xsi:schemaLocation="http://www.springframework.org/schema/beans 
@@ -111,7 +112,17 @@
  
 	<bean id="nodeRegistryService" class="org.dataone.service.cn.impl.v1.NodeRegistryService" />
 
-    <bean id="httpClientFactory" class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory" />
+    <bean id="httpConnectionManager" class="org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager"
+    	p:defaultMaxPerRoute="2" p:maxTotal="6" />
+    
+    <bean id="httpClient" class="org.apache.http.impl.client.DefaultHttpClient">
+    	<constructor-arg ref="httpConnectionManager"/>
+    </bean>
+
+    <bean id="httpClientFactory" class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory"
+    	p:connectTimeout="5000" >
+    	<constructor-arg ref="httpClient" />
+    </bean>
 
 	<bean id="httpService" class="org.dataone.cn.indexer.solrhttp.HTTPService">
 		<constructor-arg ref="httpClientFactory" />
