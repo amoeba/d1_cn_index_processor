@@ -112,8 +112,8 @@
  
 	<bean id="nodeRegistryService" class="org.dataone.service.cn.impl.v1.NodeRegistryService" />
 
-    <bean id="httpConnectionManager" class="org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager"
-    	p:defaultMaxPerRoute="2" p:maxTotal="6" />
+    <bean id="httpConnectionManager" class="org.apache.http.impl.conn.SingleClientConnManager"
+    	 />
     
     <bean id="httpClient" class="org.apache.http.impl.client.DefaultHttpClient">
     	<constructor-arg ref="httpConnectionManager"/>
