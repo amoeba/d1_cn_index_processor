@@ -218,11 +218,12 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <field name="namedLocation"            type="string"    multiValued="true" indexed="true" stored="true" />
         <field name="beginDate"                type="date"      multiValued="false" indexed="true" stored="true" />
         <field name="endDate"                  type="date"      multiValued="false" indexed="true" stored="true" />
-        <field name="text"                     type="text"      multiValued="true" indexed="true" stored="false" />
-        <field name="title"                    type="string"    multiValued="false" indexed="true" stored="true" />
+        
+        <field name="title"                    type="text"    multiValued="false" indexed="true" stored="true" />
         <field name="scientificName"           type="string"    multiValued="true" indexed="true" stored="true" />
         <field name="relatedOrganizations"     type="string"    multiValued="true" indexed="true" stored="true" />
         <field name="datePublished"            type="date"      multiValued="false" indexed="true" stored="true" />
+        <field name="pubDate" 				   type="date" 							indexed="true" stored="true"/>
 
 		<field name="investigator" type="string" indexed="true" stored="true" multiValued="true"/>
 		<field name="investigatorText" type="text" indexed="true" stored="true" multiValued="true"/>
@@ -232,14 +233,11 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <field name="LTERSite" type="string" indexed="true" stored="true"/>
         <field name="origin" type="string" indexed="true" stored="true" multiValued="true"/>
         <field name="originText" type="text" indexed="true" stored="true" multiValued="true"/>
-        <field name="pubDate" type="date" indexed="true" stored="true"/>
         <field name="titlestr" type="string" indexed="true" stored="true"/>
-        <field name="titleText" type="string" indexed="true" stored="true"/>
         <field name="geoform" type="string" indexed="true" stored="true"/>
         <field name="presentationCat" type="string" indexed="true" stored="true"/>
         <field name="purpose" type="text" indexed="true" stored="true"/>
         <field name="update_date" type="date" indexed="true" stored="true"/>
-        <field name="fullText" type="text" indexed="true" stored="false"/>
         <field name="edition" type="text" indexed="true" stored="true"/>
         <field name="data_url" type="string" indexed="true" stored="true"/>
         <field name="originator" type="string" indexed="true" stored="true" multiValued="true"/>
@@ -254,8 +252,7 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
 
         <field name="web_url" type="string" indexed="true" stored="true" multiValued="true"/>
 
-        <field name="contactOrganization" type="string" indexed="true" stored="true"/>
-        <field name="contactOrganizationText" type="text" indexed="true" stored="true"/>
+        <field name="contactOrganization" type="text" indexed="true" stored="true"/>
 
         <field name="keywordsText" type="text" indexed="true" stored="true" multiValued="true"/>
         <field name="placeKey" type="text" indexed="true" stored="true" multiValued="true"/>
@@ -290,6 +287,9 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
 
         <field name="fileID" type="string" indexed="true" stored="true"/>
 
+        <field name="fullText"                 type="text"      multiValued="true" indexed="true" stored="false" />
+        <field name="text"					   type="text"      multiValued="true"	indexed="true" stored="true" />
+   
 <!-- ======================================================================= -->
         <!-- Dynamic field definitions.  If a field name is not found, dynamicFields
 will be used if the name matches any of the patterns.
@@ -327,62 +327,89 @@ ways, or to add multiple fields to the same field for easier/faster searching.  
     <copyField source="id" dest="identifier"/>
     <copyfield source="replica_mn" dest="datasource" />
 
+    <copyField source="title" dest="fullText"/>
     <copyField source="title" dest="text"/>
     <copyField source="title" dest="titlestr"/>
-    <copyField source="title" dest="titleText"/>
 
     <copyField source="origin" dest="originText"/>
-    <copyField source="contactOrganization" dest="contactOrganizationText"/>
-
-    <copyField source="datasource" dest="text"/>
-    <copyField source="LTERSite" dest="text"/>
+    <copyField source="origin" dest="originatorText"/>
+    <copyField source="origin" dest="fullText"/>
     <copyField source="origin" dest="text"/>
-    <copyField source="geoform" dest="text"/>
-    <copyField source="presentationCat" dest="text"/>
-    <copyField source="purpose" dest="text"/>
-    <copyField source="fullText" dest="text"/>
-    <copyField source="originator" dest="originatorText"/>
-    <copyField source="originatorText" dest="text"/>
+
+    <copyField source="contactOrganization" dest="fullText"/>
     <copyField source="contactOrganization" dest="text"/>
+
+    <copyField source="datasource" dest="fullText"/>
+    <copyField source="datasource" dest="text"/>
+    
+    <copyField source="LTERSite" dest="fullText"/>
+    <copyField source="LTERSite" dest="text"/>
+    
+    <copyField source="geoform" dest="fullText"/>
+    <copyField source="geoform" dest="text"/>
+    
+    <copyField source="presentationCat" dest="fullText"/>
+    <copyField source="presentationCat" dest="text"/>
+    
+    <copyField source="purpose" dest="fullText"/>
+    <copyField source="purpose" dest="text"/>
+    
+    <copyField source="placeKey" dest="fullText"/>
     <copyField source="placeKey" dest="text"/>
+    
+    <copyField source="decade" dest="fullText"/>
     <copyField source="decade" dest="text"/>
+    
+    <copyField source="gcmdKeyword" dest="fullText"/>
     <copyField source="gcmdKeyword" dest="text"/>
 
     <!--
     these are ornldaac related fields, but need to be here for indexing purpose
     -->
     <copyField source="project" dest="projectText"/>
+    <copyField source="projectText" dest="fullText"/>
     <copyField source="projectText" dest="text"/>
 
     <copyField source="site" dest="siteText"/>
-    <copyField source="siteText" dest="text"/>
+    <copyField source="site" dest="fullText"/>
+    <copyField source="site" dest="text"/>
 
     <copyField source="parameter" dest="parameterText"/>
-    <copyField source="parameterText" dest="text"/>
+    <copyField source="parameter" dest="fullText"/>
+    <copyField source="parameter" dest="text"/>
 
     <copyField source="sensor" dest="sensorText"/>
-    <copyField source="sensorText" dest="text"/>
+    <copyField source="sensor" dest="fullText"/>
+    <copyField source="sensor" dest="text"/>
 
     <copyField source="source" dest="sourceText"/>
-    <copyField source="sourceText" dest="text"/>
+    <copyField source="source" dest="fullText"/>
+    <copyField source="source" dest="text"/>
 
     <copyField source="term" dest="termText"/>
-    <copyField source="termText" dest="text"/>
+    <copyField source="term" dest="fullText"/>
+    <copyField source="term" dest="text"/>
 
     <copyField source="topic" dest="topicText"/>
-    <copyField source="topicText" dest="text"/>
+    <copyField source="topic" dest="fullText"/>
+    <copyField source="topic" dest="text"/>
 
     <copyField source="investigator" dest="investigatorText"/>
-    <copyField source="investigatorText" dest="text"/>
+    <copyField source="investigator" dest="fullText"/>
+    <copyField source="investigator" dest="text"/>
 
     <copyField source="keywords" dest="keywordsText"/>
-    <copyField source="keywordsText" dest="text"/>
+    <copyField source="keywords" dest="fullText"/>
+	<copyField source="keywords" dest="text"/>
 
-
+    <copyField source="abstract" dest="fullText" />
+    <copyField source="abstract" dest="text" />
+    
+    <copyField source="fileID" dest="fullText"/>
     <copyField source="fileID" dest="text"/>
 
-    <copyField source="datePublished" dest="pubDate" />
-    <copyField source="dateuploaded" dest="update_date" /> 
+    <copyField source="pubDate" dest="datePublished" />
+    <copyField source="dateuploaded" dest="update_date" />
     <!-- end dataone copy fields -->
 
     <!-- Similarity is the scoring routine for each document vs a query.
