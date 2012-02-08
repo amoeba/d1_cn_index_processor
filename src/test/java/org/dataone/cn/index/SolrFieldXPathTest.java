@@ -47,7 +47,9 @@ public class SolrFieldXPathTest {
     public void setUp() throws Exception {
         String hostname = InetAddress.getLocalHost().getCanonicalHostName();
         // science metadata
-        eml210Expected.put("abstract", "");
+        eml210Expected
+                .put("abstract",
+                        "This metadata record describes a test data document.  This is a test.  If this was not a test, an abstract would be present in this location.");
         eml210Expected.put("keywords",
                 "SANParks, South Africa##Augrabies Falls National Park,South Africa##Census data");
         eml210Expected.put("title", "Augrabies falls National Park census data.");
