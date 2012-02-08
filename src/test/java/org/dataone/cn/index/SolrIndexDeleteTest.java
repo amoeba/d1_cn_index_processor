@@ -66,21 +66,11 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         String pid = "peggym.130.4";
         Resource systemMetadataResource = (Resource) context.getBean("peggym1304Sys");
         deleteAll();
-        deleteAll();
         addToSolrIndex(systemMetadataResource);
         assertPresentInSolrIndex(pid);
         HTTPService httpService = (HTTPService) context.getBean("httpService");
         httpService.sendSolrDelete(pid);
         assertNotPresentInSolrIndex(pid);
-    }
-
-    private void deleteAll() {
-        HTTPService httpService = (HTTPService) context.getBean("httpService");
-        httpService.sendSolrDelete("peggym.130.4");
-        httpService.sendSolrDelete("peggym.127.1");
-        httpService.sendSolrDelete("peggym.128.1");
-        httpService.sendSolrDelete("peggym.129.1");
-        httpService.sendSolrDelete("peggym.resourcemap");
     }
 
     /**
@@ -216,6 +206,15 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         assertPresentInSolrIndex("peggym.129.1");
         assertNotPresentInSolrIndex("peggym.130.4");
         assertPresentInSolrIndex("peggym.resourcemap");
+    }
+
+    private void deleteAll() {
+        HTTPService httpService = (HTTPService) context.getBean("httpService");
+        httpService.sendSolrDelete("peggym.130.4");
+        httpService.sendSolrDelete("peggym.127.1");
+        httpService.sendSolrDelete("peggym.128.1");
+        httpService.sendSolrDelete("peggym.129.1");
+        httpService.sendSolrDelete("peggym.resourcemap");
     }
 
     private void verifyDataPackageNo1271() throws Exception {
