@@ -15,9 +15,10 @@ import org.dataone.cn.indexer.resourcemap.ResourceMap;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.configuration.Settings;
-import org.dataone.service.exceptions.NotFound;
+import org.dataone.service.exceptions.BaseException;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.ObjectFormat;
+import org.dataone.service.types.v1.ObjectFormatIdentifier;
 import org.dataone.service.types.v1.SystemMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
@@ -208,9 +209,11 @@ public class IndexTaskProcessor {
     private boolean isDataObject(IndexTask task) {
         ObjectFormat format = null;
         try {
-            format = ObjectFormatCache.getInstance().getFormat(task.getFormatId());
-        } catch (NotFound e) {
-            e.printStackTrace();
+            ObjectFormatIdentifier formatId = new ObjectFormatIdentifier();
+            formatId.setValue(task.getFormatId());
+            format = ObjectFormatCache.getInstance().getFormat(formatId);
+        } catch (BaseException e) {
+            logger.error(e.getMessage(), e);
             return false;
         }
         return FORMAT_TYPE_DATA.equals(format.getFormatType());

@@ -7,7 +7,6 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 
 @DisallowConcurrentExecution
 public class IndexTaskProcessorJob implements Job {
@@ -16,7 +15,6 @@ public class IndexTaskProcessorJob implements Job {
 
     private static ApplicationContext context;
     private static IndexTaskProcessor processor;
-    private static HttpComponentsClientHttpRequestFactory httpRequestFactory;
 
     public IndexTaskProcessorJob() {
     }
@@ -25,15 +23,12 @@ public class IndexTaskProcessorJob implements Job {
         logger.info("executing index task processor...");
         setContext();
         processor.processIndexTaskQueue();
-        httpRequestFactory.destroy();
     }
 
     private static void setContext() {
         if (context == null || processor == null) {
             context = new ClassPathXmlApplicationContext("processor-daemon-context.xml");
             processor = (IndexTaskProcessor) context.getBean("indexTaskProcessor");
-            httpRequestFactory = (HttpComponentsClientHttpRequestFactory) context
-                    .getBean("httpClientFactory");
         }
     }
 }

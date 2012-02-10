@@ -40,6 +40,7 @@ import com.hazelcast.core.IMap;
  *         postgres, hazelcast
  * 
  */
+// TODO: CONVERT to DataONESolrJetty test to verify index changes
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "test-context.xml" })
@@ -77,7 +78,6 @@ public class IndexTaskProcessingIntegrationTest {
     }
 
     // TODO: NEED test for add then update and verify changes test
-    // TODO: CONVERT to DataONESolrJetty test to verify index changes
     // @Test
     public void testDeleteArchivedFromIndex() throws Exception {
 
@@ -161,19 +161,21 @@ public class IndexTaskProcessingIntegrationTest {
     // @Before
     public void setUp() throws Exception {
 
-        Config hzConfig = new ClasspathXmlConfig("org/dataone/configuration/hazelcast.xml");
+        if (hzMember == null) {
+            Config hzConfig = new ClasspathXmlConfig("org/dataone/configuration/hazelcast.xml");
 
-        System.out.println("Hazelcast Group Config:\n" + hzConfig.getGroupConfig());
-        System.out.print("Hazelcast Maps: ");
-        for (String mapName : hzConfig.getMapConfigs().keySet()) {
-            System.out.print(mapName + " ");
+            System.out.println("Hazelcast Group Config:\n" + hzConfig.getGroupConfig());
+            System.out.print("Hazelcast Maps: ");
+            for (String mapName : hzConfig.getMapConfigs().keySet()) {
+                System.out.print(mapName + " ");
+            }
+            System.out.println();
+            hzMember = Hazelcast.init(hzConfig);
+            System.out.println("Hazelcast member hzMember name: " + hzMember.getName());
+
+            sysMetaMap = hzMember.getMap(systemMetadataMapName);
+            objectPaths = hzMember.getMap(objectPathName);
         }
-        System.out.println();
-        hzMember = Hazelcast.init(hzConfig);
-        System.out.println("Hazelcast member hzMember name: " + hzMember.getName());
-
-        sysMetaMap = hzMember.getMap(systemMetadataMapName);
-        objectPaths = hzMember.getMap(objectPathName);
     }
 
     // @After
