@@ -49,7 +49,7 @@ public class SolrFieldXPathTest {
         // science metadata
         eml210Expected
                 .put("abstract",
-                        "This metadata record describes a test data document.  This is a test.  If this was not a test, an abstract would be present in this location.");
+                        "This metadata record fred, describes a 12-34 TT-12 long-term data document can't frank.  This is a test.  If this was not a lower, an abstract would be present in UPPER (parenthized) this location.");
         eml210Expected.put("keywords",
                 "SANParks, South Africa##Augrabies Falls National Park,South Africa##Census data");
         eml210Expected.put("title", "Augrabies falls National Park census data.");

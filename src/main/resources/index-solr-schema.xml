@@ -79,7 +79,8 @@ lexicographic ordering isn't equal to the numeric ordering) -->
         <!-- Standard analyzer commonly used by Lucene developers
         -->
         <!-- Standard analyzer commonly used by Lucene developers -->
-        <fieldtype name="text_lu" class="solr.TextField" positionIncrementGap="100">
+<!--
+         <fieldtype name="text_lu" class="solr.TextField" positionIncrementGap="100">
             <analyzer>
                 <tokenizer class="solr.StandardTokenizerFactory"/>
                 <filter class="solr.StandardFilterFactory"/>
@@ -87,7 +88,8 @@ lexicographic ordering isn't equal to the numeric ordering) -->
                 <filter class="solr.StopFilterFactory"/>
                 <filter class="solr.EnglishPorterFilterFactory"/>
             </analyzer>
-        </fieldtype>
+        </fieldtype> 
+-->
         <!-- One could also specify an existing Analyzer implementation in Java
              via the class attribute on the analyzer element:
         <fieldtype name="text_lu" class="solr.TextField">
@@ -102,33 +104,40 @@ lexicographic ordering isn't equal to the numeric ordering) -->
             </analyzer>
         </fieldtype>
 
-        <!-- A text field that uses WordDelimiterFilter to enable splitting and matching of
-words on case-change, alpha numeric boundaries, and non-alphanumeric chars
-so that a query of "wifi" or "wi fi" could match a document containing "Wi-Fi".
-Synonyms and stopwords are customized by external files, and stemming is enabled -->
         <fieldtype name="text" class="solr.TextField" positionIncrementGap="100">
             <analyzer type="index">
                 <tokenizer class="solr.WhitespaceTokenizerFactory"/>
-                <!-- in this example, we will only use synonyms at query time
-                <filter class="solr.SynonymFilterFactory" synonyms="index_synonyms.txt" ignoreCase="true" expand="false"/>
-                -->
-                <!--filter class="solr.WordDelimiterFilterFactory" generateWordParts="1"/-->
-                <filter class="solr.StopFilterFactory" ignoreCase="true"/>
+                
+                <filter class="solr.WordDelimiterFilterFactory" 
+                	generateWordParts="1"
+                	catenateWords="1"
+                	generateNumberParts="1"
+                	splitOnNumerics="0"/>
+                
                 <filter class="solr.LowerCaseFilterFactory"/>
+                <filter class="solr.StopFilterFactory" />
             </analyzer>
             <analyzer type="query">
                 <tokenizer class="solr.WhitespaceTokenizerFactory"/>
-                <filter class="solr.StopFilterFactory" ignoreCase="true"/>
+                
+                <filter class="solr.WordDelimiterFilterFactory" 
+                	generateWordParts="1"
+                	catenateWords="0"
+                	generateNumberParts="1"
+                	splitOnNumerics="0"/>
+                
                 <filter class="solr.LowerCaseFilterFactory"/>
+                <filter class="solr.StopFilterFactory"/>
             </analyzer>
         </fieldtype>
 
-        <fieldtype name="text_all" class="solr.TextField" positionIncrementGap="100">
+<!--
+         <fieldtype name="text_all" class="solr.TextField" positionIncrementGap="100">
             <analyzer type="index">
                 <tokenizer class="solr.WhitespaceTokenizerFactory"/>
-                <!-- in this example, we will only use synonyms at query time
+                in this example, we will only use synonyms at query time
                 <filter class="solr.SynonymFilterFactory" synonyms="index_synonyms.txt" ignoreCase="true" expand="false"/>
-                -->
+               
                 <filter class="solr.StopFilterFactory" ignoreCase="true"/>
                 <filter class="solr.WordDelimiterFilterFactory" generateWordParts="1" generateNumberParts="1"
                         catenateWords="1" catenateNumbers="1" catenateAll="0"/>
@@ -145,10 +154,11 @@ Synonyms and stopwords are customized by external files, and stemming is enabled
                 <filter class="solr.EnglishPorterFilterFactory" protected="protwords.txt"/>
             </analyzer>
         </fieldtype>
+ -->
 
         <!-- Less flexible matching, but less false matches.  Probably not ideal for product names
 but may be good for SKUs.  Can insert dashes in the wrong place and still match. -->
-        <fieldtype name="textTight" class="solr.TextField" positionIncrementGap="100">
+         <fieldtype name="textTight" class="solr.TextField" positionIncrementGap="100">
             <analyzer>
                 <tokenizer class="solr.WhitespaceTokenizerFactory"/>
                 <filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="false"/>
@@ -158,8 +168,7 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
                 <filter class="solr.LowerCaseFilterFactory"/>
                 <filter class="solr.EnglishPorterFilterFactory" protected="protwords.txt"/>
             </analyzer>
-        </fieldtype>
-
+        </fieldtype> 
     </types>
 
 

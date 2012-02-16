@@ -1,6 +1,7 @@
 package org.dataone.cn.index;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
@@ -51,6 +52,17 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
         String id = (String) result.getFieldValue("id");
         Assert.assertEquals(pid, id);
         return result;
+    }
+
+    protected SolrDocumentList findByField(String field, String value) throws SolrServerException {
+        ModifiableSolrParams solrParams = new ModifiableSolrParams();
+        solrParams.set("q", field + ":" + value);
+        QueryResponse qr = getSolrServer().query(solrParams);
+        return qr.getResults();
+    }
+
+    public void sendSolrDeleteAll() throws SolrServerException, IOException {
+        getSolrServer().deleteByQuery("*:*");
     }
 
     protected void assertNotPresentInSolrIndex(String pid) throws SolrServerException {
