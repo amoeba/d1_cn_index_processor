@@ -1,6 +1,5 @@
 package org.dataone.cn.index;
 
-import org.apache.log4j.Logger;
 import org.apache.solr.common.SolrDocumentList;
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,10 +12,8 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
     private Resource peggym1291Sys;
     private Resource peggym1304Sys;
 
-    private static Logger logger = Logger.getLogger(SolrTokenenizerTest.class.getName());
-
     @Test
-    public void testPuncuationTokenizingPeriod() throws Exception {
+    public void testTokenizingPeriod() throws Exception {
         String pid = "peggym.130.4";
         sendSolrDeleteAll();
         addAllToSolr();
@@ -27,7 +24,7 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
     }
 
     @Test
-    public void testPuncuationTokenizingComma() throws Exception {
+    public void testTokenizingComma() throws Exception {
         String pid = "peggym.130.4";
         sendSolrDeleteAll();
         addAllToSolr();
@@ -38,7 +35,7 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
     }
 
     @Test
-    public void testPuncuationTokenizingParenthesis() throws Exception {
+    public void testTokenizingParentheses() throws Exception {
         String pid = "peggym.130.4";
         sendSolrDeleteAll();
         addAllToSolr();
@@ -51,7 +48,20 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
     }
 
     @Test
-    public void testPuncuationTokenizingContractionPreserved() throws Exception {
+    public void testQuotations() throws Exception {
+        String pid = "peggym.130.4";
+        sendSolrDeleteAll();
+        addAllToSolr();
+        assertPresentInSolrIndex(pid);
+        SolrDocumentList sdl = null;
+        sdl = findByField("fullText", "double");
+        Assert.assertEquals(1, sdl.size());
+        sdl = findByField("fullText", "single");
+        Assert.assertEquals(1, sdl.size());
+    }
+
+    @Test
+    public void testTokenizingContractionPreserved() throws Exception {
         String pid = "peggym.130.4";
         sendSolrDeleteAll();
         addAllToSolr();
@@ -64,7 +74,7 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
     }
 
     @Test
-    public void testPuncuationTokenizingCaseSensitive() throws Exception {
+    public void testTokenizingCaseSensitive() throws Exception {
         String pid = "peggym.130.4";
         sendSolrDeleteAll();
         addAllToSolr();
@@ -81,7 +91,7 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
     }
 
     @Test
-    public void testPuncuationTokenizingHyphen() throws Exception {
+    public void testTokenizingHyphen() throws Exception {
         String pid = "peggym.130.4";
         sendSolrDeleteAll();
         addAllToSolr();
