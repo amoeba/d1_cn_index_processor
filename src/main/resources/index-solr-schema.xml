@@ -348,9 +348,6 @@ ways, or to add multiple fields to the same field for easier/faster searching.  
     <copyField source="contactOrganization" dest="fullText"/>
     <copyField source="contactOrganization" dest="text"/>
 
-    <copyField source="datasource" dest="fullText"/>
-    <copyField source="datasource" dest="text"/>
-    
     <copyField source="LTERSite" dest="fullText"/>
     <copyField source="LTERSite" dest="text"/>
     
