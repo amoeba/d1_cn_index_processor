@@ -54,10 +54,10 @@ public class SolrFieldXPathTest {
                 "SANParks, South Africa##Augrabies Falls National Park,South Africa##Census data");
         eml210Expected.put("title", "Augrabies falls National Park census data.");
         eml210Expected.put("project", "");
-        eml210Expected.put("southBoundCoord", "1.1875");
-        eml210Expected.put("northBoundCoord", "1.1875");
-        eml210Expected.put("westBoundCoord", "26.0");
-        eml210Expected.put("eastBoundCoord", "26.0");
+        eml210Expected.put("southBoundCoord", "26.0");
+        eml210Expected.put("northBoundCoord", "26.0");
+        eml210Expected.put("westBoundCoord", "-120.31121");
+        eml210Expected.put("eastBoundCoord", "-120.31121");
         eml210Expected.put("beginDate", dateConverter.convert("1998"));
         eml210Expected.put("endDate", dateConverter.convert("2004-02-13"));
         eml210Expected.put("pubDate", "");

@@ -55,8 +55,12 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
     }
 
     protected SolrDocumentList findByField(String field, String value) throws SolrServerException {
+        return findByQueryString(field + ":" + value);
+    }
+
+    protected SolrDocumentList findByQueryString(String query) throws SolrServerException {
         ModifiableSolrParams solrParams = new ModifiableSolrParams();
-        solrParams.set("q", field + ":" + value);
+        solrParams.set("q", query);
         QueryResponse qr = getSolrServer().query(solrParams);
         return qr.getResults();
     }
