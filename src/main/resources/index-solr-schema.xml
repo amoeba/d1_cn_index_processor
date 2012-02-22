@@ -220,10 +220,10 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <field name="author_lname"             type="string"    multiValued="true" indexed="true" stored="true" />
         <field name="keywords"                 type="string"    multiValued="true" indexed="true" stored="true" />
         <field name="keyConcept"               type="string"    multiValued="true" indexed="true" stored="true" />
-        <field name="southBoundCoord"          type="float"     multiValued="false" indexed="true" stored="true"/>
-        <field name="northBoundCoord"          type="float"     multiValued="false" indexed="true" stored="true"/>
-        <field name="westBoundCoord"           type="float"     multiValued="false" indexed="true" stored="true"/>
-        <field name="eastBoundCoord"           type="float"     multiValued="false" indexed="true" stored="true"/>
+        <field name="southBoundCoord"          type="sfloat"     multiValued="false" indexed="true" stored="true"/>
+        <field name="northBoundCoord"          type="sfloat"     multiValued="false" indexed="true" stored="true"/>
+        <field name="westBoundCoord"           type="sfloat"     multiValued="false" indexed="true" stored="true"/>
+        <field name="eastBoundCoord"           type="sfloat"     multiValued="false" indexed="true" stored="true"/>
         <field name="namedLocation"            type="string"    multiValued="true" indexed="true" stored="true" />
         <field name="beginDate"                type="date"      multiValued="false" indexed="true" stored="true" />
         <field name="endDate"                  type="date"      multiValued="false" indexed="true" stored="true" />
@@ -411,9 +411,6 @@ ways, or to add multiple fields to the same field for easier/faster searching.  
     <copyField source="abstract" dest="fullText" />
     <copyField source="abstract" dest="text" />
     
-    <copyField source="fileID" dest="fullText"/>
-    <copyField source="fileID" dest="text"/>
-
     <copyField source="pubDate" dest="datePublished" />
     <copyField source="dateuploaded" dest="update_date" />
     <!-- end dataone copy fields -->
