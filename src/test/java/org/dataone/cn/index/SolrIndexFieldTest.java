@@ -80,7 +80,9 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
 
             System.out.println("Comparing value for field " + docField.getName());
             if (solrValueObject == null) {
-                Assert.assertTrue(docField.getValue() == null || "".equals(docField.getValue()));
+                if (!"text".equals(docField.getName())) {
+                    Assert.assertTrue(docField.getValue() == null || "".equals(docField.getValue()));
+                }
             } else if (solrValueObject instanceof String) {
                 String solrValue = (String) solrValueObject;
                 String docValue = docField.getValue();

@@ -25,6 +25,7 @@
     <ref bean="eml.origin" />
     <ref bean="eml.contactOrganization" />
     <ref bean="eml.fileID" />
+    <ref bean="eml.fullText" />
    </list>
   </property>
  </bean>
