@@ -116,6 +116,7 @@ lexicographic ordering isn't equal to the numeric ordering) -->
                 
                 <filter class="solr.LowerCaseFilterFactory"/>
                 <filter class="solr.StopFilterFactory" />
+                <filter class="solr.SnowballPorterFilterFactory" />
             </analyzer>
             <analyzer type="query">
                 <tokenizer class="solr.WhitespaceTokenizerFactory"/>
@@ -128,6 +129,7 @@ lexicographic ordering isn't equal to the numeric ordering) -->
                 
                 <filter class="solr.LowerCaseFilterFactory"/>
                 <filter class="solr.StopFilterFactory"/>
+                <filter class="solr.SnowballPorterFilterFactory" />
             </analyzer>
         </fieldtype>
 

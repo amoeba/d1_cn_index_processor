@@ -19,7 +19,7 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
         addAllToSolr();
         assertPresentInSolrIndex(pid);
         SolrDocumentList sdl = null;
-        sdl = findByField("fullText", "frank");
+        sdl = findByField("text", "frank");
         Assert.assertEquals(1, sdl.size());
     }
 
@@ -30,7 +30,7 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
         addAllToSolr();
         assertPresentInSolrIndex(pid);
         SolrDocumentList sdl = null;
-        sdl = findByField("fullText", "fred");
+        sdl = findByField("text", "fred");
         Assert.assertEquals(1, sdl.size());
     }
 
@@ -41,9 +41,9 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
         addAllToSolr();
         assertPresentInSolrIndex(pid);
         SolrDocumentList sdl = null;
-        sdl = findByField("fullText", "parenthized");
+        sdl = findByField("text", "parenthized");
         Assert.assertEquals(1, sdl.size());
-        sdl = findByField("fullText", "(parenthized)");
+        sdl = findByField("text", "(parenthized)");
         Assert.assertEquals(1, sdl.size());
     }
 
@@ -54,9 +54,9 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
         addAllToSolr();
         assertPresentInSolrIndex(pid);
         SolrDocumentList sdl = null;
-        sdl = findByField("fullText", "double");
+        sdl = findByField("text", "double");
         Assert.assertEquals(1, sdl.size());
-        sdl = findByField("fullText", "single");
+        sdl = findByField("text", "single");
         Assert.assertEquals(1, sdl.size());
     }
 
@@ -67,9 +67,9 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
         addAllToSolr();
         assertPresentInSolrIndex(pid);
         SolrDocumentList sdl = null;
-        sdl = findByField("fullText", "can't"); // exact match
+        sdl = findByField("text", "can't"); // exact match
         Assert.assertEquals(1, sdl.size());
-        sdl = findByField("fullText", "cant"); // slop match
+        sdl = findByField("text", "cant"); // slop match
         Assert.assertEquals(1, sdl.size());
     }
 
@@ -80,13 +80,13 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
         addAllToSolr();
         assertPresentInSolrIndex(pid);
         SolrDocumentList sdl = null;
-        sdl = findByField("fullText", "upper");
+        sdl = findByField("text", "upper");
         Assert.assertEquals(1, sdl.size());
-        sdl = findByField("fullText", "UPPER");
+        sdl = findByField("text", "UPPER");
         Assert.assertEquals(1, sdl.size());
-        sdl = findByField("fullText", "LOWER");
+        sdl = findByField("text", "LOWER");
         Assert.assertEquals(1, sdl.size());
-        sdl = findByField("fullText", "lower");
+        sdl = findByField("text", "lower");
         Assert.assertEquals(1, sdl.size());
     }
 
@@ -97,21 +97,21 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
         addAllToSolr();
         assertPresentInSolrIndex(pid);
         SolrDocumentList sdl = null;
-        sdl = findByField("fullText", "TT-12");
+        sdl = findByField("text", "TT-12");
         Assert.assertEquals(1, sdl.size());
-        sdl = findByField("fullText", "TT12");
+        sdl = findByField("text", "TT12");
         Assert.assertEquals(0, sdl.size()); // not the same, should not return
 
-        sdl = findByField("fullText", "long-term"); // exact match
+        sdl = findByField("text", "long-term"); // exact match
         Assert.assertEquals(1, sdl.size());
-        sdl = findByField("fullText", "longterm"); // slop match
+        sdl = findByField("text", "longterm"); // slop match
         Assert.assertEquals(1, sdl.size());
-        sdl = findByField("fullText", "term"); // word part match
+        sdl = findByField("text", "term"); // word part match
         Assert.assertEquals(1, sdl.size());
 
-        sdl = findByField("fullText", "12-34");
+        sdl = findByField("text", "12-34");
         Assert.assertEquals(1, sdl.size());
-        sdl = findByField("fullText", "1234");
+        sdl = findByField("text", "1234");
         Assert.assertEquals(0, sdl.size()); // not the same, should not match
     }
 
