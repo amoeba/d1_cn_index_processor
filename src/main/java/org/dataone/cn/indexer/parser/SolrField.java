@@ -2,7 +2,9 @@ package org.dataone.cn.indexer.parser;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
@@ -39,6 +41,7 @@ public class SolrField implements ISolrField {
     // values in the app
     private boolean escapeXML = false;
     private boolean combineNodes = false;
+    protected boolean dedupe = false;
 
     public SolrField() {
     }
@@ -129,7 +132,7 @@ public class SolrField implements ISolrField {
             throws XPathExpressionException, IOException, SAXException,
             ParserConfigurationException {
         List<SolrElementField> fields = new ArrayList<SolrElementField>();
-
+        Set<String> usedValues = new HashSet<String>();
         try {
             if (multiValued) {
                 NodeList values = (NodeList) expression.evaluate(doc, XPathConstants.NODESET);
@@ -144,7 +147,10 @@ public class SolrField implements ISolrField {
                         if (xmlEscape) {
                             nodeValue = StringEscapeUtils.escapeXml(nodeValue);
                         }
-                        fields.add(new SolrElementField(name, nodeValue));
+                        if (!dedupe || (dedupe & !usedValues.contains(nodeValue))) {
+                            fields.add(new SolrElementField(name, nodeValue));
+                            usedValues.add(nodeValue);
+                        }
                     }
                 }
             } else {
@@ -159,7 +165,11 @@ public class SolrField implements ISolrField {
                         }
                         Node nText = nodeSet.item(i);
                         if (nText.getNodeValue() != null) {
-                            sb.append(nText.getNodeValue().trim());
+                            if (!dedupe
+                                    || (dedupe && !usedValues.contains(nText.getNodeValue().trim()))) {
+                                sb.append(nText.getNodeValue().trim());
+                                usedValues.add(nText.getNodeValue().trim());
+                            }
                         }
                     }
                     value = sb.toString().trim();
@@ -196,5 +206,9 @@ public class SolrField implements ISolrField {
      */
     public void setCombineNodes(boolean combineNodes) {
         this.combineNodes = combineNodes;
+    }
+
+    public void setDedupe(boolean dedupe) {
+        this.dedupe = dedupe;
     }
 }

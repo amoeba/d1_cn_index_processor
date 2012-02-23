@@ -29,7 +29,6 @@ import org.xml.sax.SAXException;
 public class MergeSolrField extends SolrField {
 
     private String delimiter = " ";
-    private boolean dedupe = false;
 
     public MergeSolrField(String name, String xpath) {
         super(name, xpath);
@@ -78,9 +77,4 @@ public class MergeSolrField extends SolrField {
         }
         return fields;
     }
-
-    public void setDedupe(boolean dedupe) {
-        this.dedupe = dedupe;
-    }
-
 }
