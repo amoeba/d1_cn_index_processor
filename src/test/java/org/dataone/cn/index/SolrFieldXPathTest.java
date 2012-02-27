@@ -89,10 +89,10 @@ public class SolrFieldXPathTest {
         eml210Expected.put("auth_mn", "test_documents");
         eml210Expected.put("replica_mn", "");
         eml210Expected.put("replica_verified", "");
-        eml210Expected.put("readPermission", "dataone_test_user##dataone_public_user");
+        eml210Expected.put("readPermission", "public#dataone_test_user##dataone_public_user");
         eml210Expected.put("writePermission", "dataone_integration_test_user");
         eml210Expected.put("changePermission", "");
-        eml210Expected.put("isPublic", "");
+        eml210Expected.put("isPublic", "true");
         eml210Expected.put("web_url", "");
         eml210Expected.put("data_url", "https://" + hostname + "/cn/v1/resolve/peggym.130.4");
 

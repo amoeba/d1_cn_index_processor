@@ -200,23 +200,23 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         -->
 
         <field name="id"              type="string"   indexed="true" stored="true" multiValued="false"/>
-        <field name="objectformat"    type="string"   indexed="true" stored="true" multiValued="false"/>
-        <field name="size"            type="long"     indexed="true" stored="true" multiValued="false"/>
-        <field name="checksum"        type="string"   indexed="true" stored="true" multiValued="false"/>
-        <field name="checksumAlgorithm" type="string" indexed="true" stored="true"/>
+        <field name="objectformat"    type="string"   indexed="false" stored="true" multiValued="false"/>
+        <field name="size"            type="long"     indexed="false" stored="true" multiValued="false"/>
+        <field name="checksum"        type="string"   indexed="false" stored="true" multiValued="false"/>
+        <field name="checksumAlgorithm" type="string" indexed="false" stored="true"/>
         <field name="submitter"       type="string"   indexed="true" stored="true" multiValued="false"/>
         <field name="rightsholder"    type="string"   indexed="true" stored="true" multiValued="false"/>
-        <field name="rep_allowed"     type="boolean"  indexed="true" stored="true" multiValued="false"/>
-        <field name="n_replicas"      type="integer"  indexed="true" stored="true" multiValued="false"/>
-        <field name="pref_rep_mn"     type="string"   indexed="true" stored="true" multiValued="true"/>
-        <field name="blocked_rep_mn"  type="string"   indexed="true" stored="true" multiValued="true"/>
-        <field name="obsoletes"       type="string"   indexed="true" stored="true" multiValued="false"/>
+        <field name="rep_allowed"     type="boolean"  indexed="false" stored="true" multiValued="false"/>
+        <field name="n_replicas"      type="integer"  indexed="false" stored="true" multiValued="false"/>
+        <field name="pref_rep_mn"     type="string"   indexed="false" stored="true" multiValued="true"/>
+        <field name="blocked_rep_mn"  type="string"   indexed="false" stored="true" multiValued="true"/>
+        <field name="obsoletes"       type="string"   indexed="false" stored="true" multiValued="false"/>
         <field name="dateuploaded"    type="date"     indexed="true" stored="true" multiValued="false"/>
         <field name="datemodified"    type="date"     indexed="true" stored="true" multiValued="false"/>
         <field name="datasource"       type="string"  indexed="true" stored="true" multiValued="false"/>
-        <field name="auth_mn"         type="string"   indexed="true" stored="true" multiValued="false"/>
-        <field name="replica_mn"      type="string"   indexed="true" stored="true" multiValued="true"/>
-        <field name="replica_verified" type="date"    indexed="true" stored="true" multiValued="true"/>
+        <field name="auth_mn"         type="string"   indexed="false" stored="true" multiValued="false"/>
+        <field name="replica_mn"      type="string"   indexed="false" stored="true" multiValued="true"/>
+        <field name="replica_verified" type="date"    indexed="false" stored="true" multiValued="true"/>
 
         <!-- Object relationships -->
         <field name="resourcemap"		type="string"   indexed="true" stored="true" multiValued="true"/>
@@ -227,7 +227,7 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <field name="readPermission"    type="string"   indexed="true" stored="true" multiValued="true"/>
         <field name="writePermission"   type="string"   indexed="true" stored="true" multiValued="true"/>
         <field name="changePermission"  type="string"   indexed="true" stored="true" multiValued="true"/>
-        <field name="isPublic"          type="boolean"  indexed="true" stored="false" />
+        <field name="isPublic"          type="boolean"  indexed="true" stored="true" />
         
         <!-- Science metadata properties -->
         <field name="abstract"                 type="text"      multiValued="false" indexed="true" stored="true" />
@@ -251,7 +251,7 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
 
 		<field name="investigator" 		type="string" 	indexed="true" stored="true" multiValued="true"/>
 		<field name="investigatorText" 	type="text" 	indexed="true" stored="false" multiValued="true"/>
-        <field name="ogc_url" 			type="text" 	indexed="true" stored="true"/>
+        <field name="ogc_url" 			type="text" 	indexed="false" stored="true"/>
         <field name="sku" 				type="textTight" indexed="true" stored="true"/>
         <field name="identifier" 		type="textTight" indexed="true" stored="true"/>
         <field name="LTERSite"	 		type="string" 	indexed="true" stored="true"/>
@@ -263,7 +263,7 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <field name="purpose" 			type="text" 	indexed="true" stored="true"/>
         <field name="update_date" 		type="date" 	indexed="true" stored="true"/>
         <field name="edition" 			type="text" 	indexed="true" stored="true"/>
-        <field name="data_url" 			type="string" 	indexed="true" stored="true"/>
+        <field name="data_url" 			type="string" 	indexed="false" stored="true"/>
         <field name="originator" 		type="string" 	indexed="true" stored="true" multiValued="true"/>
         <field name="originatorText" 	type="text"	  	indexed="true" stored="false" multiValued="true"/>
         <field name="family" 			type="string" 	indexed="true" stored="true" multiValued="true"/>
@@ -274,7 +274,7 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <field name="order" 			type="string" 	indexed="true" stored="true" multiValued="true"/>
         <field name="class" 			type="string" 	indexed="true" stored="true" multiValued="true"/>
 
-        <field name="web_url" 			type="string" 	indexed="true" stored="true" multiValued="true"/>
+        <field name="web_url" 			type="string" 	indexed="false" stored="true" multiValued="true"/>
 
         <field name="contactOrganization" 		type="string" indexed="true" stored="true" multiValued="true"/>
         <field name="contactOrganizationText" 	type="text"   indexed="true" stored="false" multiValued="true"/>
