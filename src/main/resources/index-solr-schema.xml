@@ -200,7 +200,7 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         -->
 
         <field name="id"              type="string"   indexed="true" stored="true" multiValued="false"/>
-        <field name="objectformat"    type="string"   indexed="false" stored="true" multiValued="false"/>
+        <field name="objectformat"    type="string"   indexed="true" stored="true" multiValued="false"/>
         <field name="size"            type="long"     indexed="false" stored="true" multiValued="false"/>
         <field name="checksum"        type="string"   indexed="false" stored="true" multiValued="false"/>
         <field name="checksumAlgorithm" type="string" indexed="false" stored="true"/>
@@ -210,7 +210,7 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <field name="n_replicas"      type="integer"  indexed="false" stored="true" multiValued="false"/>
         <field name="pref_rep_mn"     type="string"   indexed="false" stored="true" multiValued="true"/>
         <field name="blocked_rep_mn"  type="string"   indexed="false" stored="true" multiValued="true"/>
-        <field name="obsoletes"       type="string"   indexed="false" stored="true" multiValued="false"/>
+        <field name="obsoletes"       type="string"   indexed="true" stored="true" multiValued="false"/>
         <field name="dateuploaded"    type="date"     indexed="true" stored="true" multiValued="false"/>
         <field name="datemodified"    type="date"     indexed="true" stored="true" multiValued="false"/>
         <field name="datasource"       type="string"  indexed="true" stored="true" multiValued="false"/>

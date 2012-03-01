@@ -266,7 +266,11 @@ public class HTTPService {
         List<String> ids = new ArrayList<String>();
         ids.add(id);
         List<SolrDoc> indexedDocuments = getDocuments(solrQueryUri, ids);
-        return indexedDocuments.get(0);
+        if (indexedDocuments.size() > 0) {
+            return indexedDocuments.get(0);
+        } else {
+            return null;
+        }
     }
 
     private List<SolrDoc> parseResults(Document document) throws XPathExpressionException {

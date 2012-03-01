@@ -148,9 +148,13 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
             IOException, EncoderException {
         SolrDoc dataPackageIndexDoc = httpService.retrieveDocumentFromSolrServer(task.getPid(),
                 solrQueryUri);
-        String resourceMapId = dataPackageIndexDoc
-                .getFirstFieldValue(SolrElementField.FIELD_RESOURCEMAP);
-        return StringUtils.isNotEmpty(resourceMapId);
+        if (dataPackageIndexDoc != null) {
+            String resourceMapId = dataPackageIndexDoc
+                    .getFirstFieldValue(SolrElementField.FIELD_RESOURCEMAP);
+            return StringUtils.isNotEmpty(resourceMapId);
+        } else {
+            return false;
+        }
     }
 
     private XPathDocumentParser getXPathDocumentParser() {
