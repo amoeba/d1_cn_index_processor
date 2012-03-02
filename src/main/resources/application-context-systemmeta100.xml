@@ -124,6 +124,7 @@
 					<constructor-arg name="xpath"
 						value="/d100:systemMetadata/accessPolicy/allow[permission= 'read']/subject/text()" />
 					<property name="multivalue" value="true" />
+					<property name="dedupe" value="true" />
 				</bean>
 
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
@@ -131,6 +132,7 @@
 					<constructor-arg name="xpath"
 						value="/d100:systemMetadata/accessPolicy/allow[permission= 'write']/subject/text()" />
 					<property name="multivalue" value="true" />
+					<property name="dedupe" value="true" />
 				</bean>
 				
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
@@ -138,6 +140,7 @@
 					<constructor-arg name="xpath"
 						value="/d100:systemMetadata/accessPolicy/allow[permission= 'changePermission']/subject/text()" />
 					<property name="multivalue" value="true" />
+					<property name="dedupe" value="true" />
 				</bean>
 
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
