@@ -144,7 +144,6 @@
 					<constructor-arg name="name" value="isPublic" />
 					<constructor-arg name="xpath"
 						value="/d100:systemMetadata/accessPolicy/allow[permission= 'read']/subject[text()='public']/text()" />
-					<property name="multivalue" value="true" />
 					<property name="converter" ref="booleanPublicConverter" />
 				</bean>
 
