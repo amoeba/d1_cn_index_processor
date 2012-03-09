@@ -9,6 +9,7 @@ import org.apache.solr.SolrJettyTestBase;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.embedded.JettySolrRunner;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.params.ModifiableSolrParams;
@@ -45,7 +46,8 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
 
     protected SolrDocument assertPresentInSolrIndex(String pid) throws SolrServerException {
         ModifiableSolrParams solrParams = new ModifiableSolrParams();
-        solrParams.set("q", "id:" + pid);
+        solrParams.set("q", "id:" + ClientUtils.escapeQueryChars(pid));
+
         QueryResponse qr = getSolrServer().query(solrParams);
         Assert.assertFalse(qr.getResults().isEmpty());
         SolrDocument result = qr.getResults().get(0);

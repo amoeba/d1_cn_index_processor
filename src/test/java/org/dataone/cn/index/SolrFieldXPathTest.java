@@ -93,7 +93,6 @@ public class SolrFieldXPathTest {
         eml210Expected.put("writePermission", "dataone_integration_test_user");
         eml210Expected.put("changePermission", "");
         eml210Expected.put("isPublic", "true");
-        eml210Expected.put("web_url", "");
         eml210Expected.put("data_url", "https://" + hostname + "/cn/v1/resolve/peggym.130.4");
 
         eml210Expected
