@@ -30,13 +30,6 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
     private static Logger logger = Logger.getLogger(SolrIndexFieldTest.class.getName());
 
     // TODO: test resource map / data packaging index properties?
-    @Test
-    public void testIllegalXMLChar() throws Exception {
-        Resource systemMetadataResource = (Resource) context.getBean("illegalXmlCharSysMetaData");
-
-        addToSolrIndex(systemMetadataResource);
-        assertPresentInSolrIndex("testMNodeTier3:2012679267486_common-bmp-doc-example-ฉันกินกระจกได้");
-    }
 
     @Test
     public void testSystemMetadataAndEml210ScienceData() throws Exception {
