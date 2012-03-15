@@ -1,5 +1,6 @@
 package org.dataone.cn.index.processor;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -196,12 +197,27 @@ public class IndexTaskProcessor {
     // if object path is available, update task and process
     private boolean isObjectPathReady(IndexTask task) {
         boolean ok = true;
-        if (task.getObjectPath() == null && !isDataObject(task)) {
+        boolean isDataObject = isDataObject(task);
+        if (task.getObjectPath() == null && !isDataObject) {
             String objectPath = retrieveObjectPath(task.getPid());
             if (objectPath == null) {
                 ok = false;
             }
             task.setObjectPath(objectPath);
+        }
+
+        if (task.getObjectPath() != null && !isDataObject) {
+            File objectPathFile = new File(task.getObjectPath());
+            if (!objectPathFile.exists()) {
+                // object path is present but doesnt correspond to a file
+                // this task is not ready to index.
+                ok = false;
+                logger.error("Object path exists for pid: "
+                        + task.getPid()
+                        + " however the file location: "
+                        + task.getObjectPath()
+                        + " does not exist.  Marking not ready - task will be marked new and retried.");
+            }
         }
         return ok;
     }
