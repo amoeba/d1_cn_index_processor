@@ -369,13 +369,11 @@ public class XPathDocumentParser {
         return doc;
     }
 
-    public Document generateSystemMetadataDoc(InputStream smdStream) {
+    public Document generateSystemMetadataDoc(InputStream smdStream) throws SAXException {
         Document doc = null;
 
         try {
             doc = builder.parse(smdStream);
-        } catch (SAXException e) {
-            log.error(e.getMessage(), e);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
