@@ -110,10 +110,7 @@
   <constructor-arg value="public" />
  </bean>
  
-	<bean id="nodeRegistryService" class="org.dataone.service.cn.impl.v1.NodeRegistryService" />
-
-    <bean id="httpConnectionManager" class="org.apache.http.impl.conn.SingleClientConnManager"
-    	 />
+    <bean id="httpConnectionManager" class="org.apache.http.impl.conn.SingleClientConnManager"/>
     
     <bean id="httpClient" class="org.apache.http.impl.client.DefaultHttpClient">
     	<constructor-arg ref="httpConnectionManager"/>

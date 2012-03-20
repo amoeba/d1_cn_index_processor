@@ -1,6 +1,6 @@
 package org.dataone.cn.indexer.parser.utility;
 
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 public class LogicalOrPostProcessor {
 
@@ -16,9 +16,9 @@ public class LogicalOrPostProcessor {
             if (partition.length > 2) {
                 // only handling a single logical or at this time.
                 return value;
-            } else if (!partition[0].isEmpty()) {
+            } else if (partition.length > 0 && !partition[0].isEmpty()) {
                 return partition[0];
-            } else if (!partition[1].isEmpty()) {
+            } else if (partition.length > 1 && !partition[1].isEmpty()) {
                 return partition[1];
             } else {
                 return value;
