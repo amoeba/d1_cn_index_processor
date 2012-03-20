@@ -15,7 +15,6 @@
 	  	<hazelcast.version>1.9.4.6</hazelcast.version>
 	  	<d1_cn_common_version>1.0.0-RC5-SNAPSHOT</d1_cn_common_version>
 	  	<d1_libclient_version>1.0.1-RC6-SNAPSHOT</d1_libclient_version>
-	  	<d1_cn_noderegistry_version>1.0.0-RC5-SNAPSHOT</d1_cn_noderegistry_version>
 	  	<d1_cn_index_common_version>1.0.0-RC5-SNAPSHOT</d1_cn_index_common_version>
 	  	<d1_cn_index_generator_version>1.0.0-RC5-SNAPSHOT</d1_cn_index_generator_version>
  	</properties>
@@ -100,11 +99,6 @@
 			<artifactId>d1_cn_index_generator</artifactId>
 			<version>${d1_cn_index_generator_version}</version>
 			<scope>test</scope>
-		</dependency>
- 		<dependency>
-			<groupId>org.dataone</groupId>
-		    <artifactId>d1_cn_noderegistry</artifactId>
-			<version>${d1_cn_noderegistry_version}</version>
 		</dependency>
         <dependency>
             <groupId>com.hazelcast</groupId>
