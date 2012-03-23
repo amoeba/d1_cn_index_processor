@@ -33,8 +33,7 @@
 		<ref bean="fgdc.title" />
 		<ref bean="fgdc.web_url" />
 		<ref bean="fgdc.fileID" />
-		
-<!--     <ref bean="eml.fullText" />  -->
+     	<ref bean="fgdc.fullText" />
    </list>
   </property>
  </bean>

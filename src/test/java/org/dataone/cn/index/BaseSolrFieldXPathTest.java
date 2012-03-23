@@ -53,6 +53,7 @@ public abstract class BaseSolrFieldXPathTest {
                 SolrElementField docField = fields.get(0);
                 if (expected.containsKey(docField.getName())) {
                     String expectedValue = expected.get(docField.getName());
+                    expectedValue = expectedValue.replace("\n", "");
                     fieldsCompared = true;
                     System.out.println("Comparing value for field " + docField.getName());
                     if (expectedValue == null) {
@@ -60,11 +61,12 @@ public abstract class BaseSolrFieldXPathTest {
                                 || "".equals(docField.getValue()));
                     } else {
                         String docValue = docField.getValue();
+                        docValue = docValue.replace("\n", "");
                         System.out.println("Doc Value:      " + docValue);
                         System.out.println("Expected Value: " + expectedValue);
                         System.out.println(" ");
                         Assert.assertEquals("Comparing field: " + docField.getName(),
-                                expectedValue, docField.getValue());
+                                expectedValue, docValue);
                     }
                 } else {
                     System.out
