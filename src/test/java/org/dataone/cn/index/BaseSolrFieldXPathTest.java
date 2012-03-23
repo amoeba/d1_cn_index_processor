@@ -7,11 +7,13 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.dataone.cn.indexer.XPathDocumentParser;
+import org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.SolrField;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Document;
@@ -22,6 +24,33 @@ public abstract class BaseSolrFieldXPathTest {
 
     @Autowired
     private ArrayList<XPathDocumentParser> documentParsers;
+
+    protected void testXPathParsing(ScienceMetadataDocumentSubprocessor docProcessor,
+            Resource sysMetadata, Resource sciMetadata, HashMap<String, String> expectedValues,
+            String pid) throws Exception {
+        Integer fieldCount = Integer.valueOf(0);
+
+        Document scienceMetadataDoc = getXPathDocumentParser().generateXmlDocument(
+                sciMetadata.getInputStream());
+        for (SolrField field : docProcessor.getFieldList()) {
+            boolean compared = compareFields(expectedValues, scienceMetadataDoc, field, pid);
+            if (compared) {
+                fieldCount++;
+            }
+        }
+
+        Document systemMetadataDoc = getXPathDocumentParser().generateXmlDocument(
+                sysMetadata.getInputStream());
+        for (SolrField field : getXPathDocumentParser().getFields()) {
+            boolean compared = compareFields(expectedValues, systemMetadataDoc, field, pid);
+            if (compared) {
+                fieldCount++;
+            }
+        }
+        // if field count is off, some field did not get compared that should
+        // have.
+        Assert.assertEquals(expectedValues.keySet().size(), fieldCount.intValue());
+    }
 
     protected boolean compareFields(HashMap<String, String> expected, Document metadataDoc,
             SolrField fieldToCompare, String identifier) throws Exception {

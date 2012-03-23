@@ -56,7 +56,7 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
                 .getBean("eml210Subprocessor");
 
         Resource scienceMetadataResource = (Resource) context.getBean("peggym1304Sci");
-        Document scienceMetadataDoc = getXPathDocumentParser().generateSystemMetadataDoc(
+        Document scienceMetadataDoc = getXPathDocumentParser().generateXmlDocument(
                 scienceMetadataResource.getInputStream());
         for (SolrField field : eml210.getFieldList()) {
             compareFields(result, scienceMetadataDoc, field, pid);
@@ -64,7 +64,7 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
 
         // test system metadata fields in system metadata config match those
         // in solr index document
-        Document systemMetadataDoc = getXPathDocumentParser().generateSystemMetadataDoc(
+        Document systemMetadataDoc = getXPathDocumentParser().generateXmlDocument(
                 systemMetadataResource.getInputStream());
         for (SolrField field : getXPathDocumentParser().getFields()) {
             compareFields(result, systemMetadataDoc, field, pid);

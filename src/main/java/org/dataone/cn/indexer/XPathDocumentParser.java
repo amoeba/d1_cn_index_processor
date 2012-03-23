@@ -200,7 +200,7 @@ public class XPathDocumentParser {
             XPathExpressionException, EncoderException {
 
         // Load the System Metadata document
-        Document sysMetaDoc = generateSystemMetadataDoc(systemMetaDataStream);
+        Document sysMetaDoc = generateXmlDocument(systemMetaDataStream);
         if (sysMetaDoc == null) {
             log.error("Could not load System metadata for ID: " + id);
             return null;
@@ -369,7 +369,7 @@ public class XPathDocumentParser {
         return doc;
     }
 
-    public Document generateSystemMetadataDoc(InputStream smdStream) throws SAXException {
+    public Document generateXmlDocument(InputStream smdStream) throws SAXException {
         Document doc = null;
 
         try {

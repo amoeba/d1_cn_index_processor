@@ -5,8 +5,6 @@ import java.util.HashMap;
 
 import org.dataone.cn.indexer.convert.SolrDateConverter;
 import org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor;
-import org.dataone.cn.indexer.parser.SolrField;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.w3c.dom.Document;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "test-context.xml" })
@@ -100,30 +97,7 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
      */
     @Test
     public void testEml210ScienceMetadataFields() throws Exception {
-
-        Integer fieldCount = Integer.valueOf(0);
-
-        Document scienceMetadataDoc = getXPathDocumentParser().generateSystemMetadataDoc(
-                peggym1304Sci.getInputStream());
-        for (SolrField field : eml210Subprocessor.getFieldList()) {
-            boolean compared = compareFields(eml210Expected, scienceMetadataDoc, field,
-                    "peggym.130.4");
-            if (compared) {
-                fieldCount++;
-            }
-        }
-
-        Document systemMetadataDoc = getXPathDocumentParser().generateSystemMetadataDoc(
-                peggym1304Sys.getInputStream());
-        for (SolrField field : getXPathDocumentParser().getFields()) {
-            boolean compared = compareFields(eml210Expected, systemMetadataDoc, field,
-                    "peggym.130.4");
-            if (compared) {
-                fieldCount++;
-            }
-        }
-        // if field count is off, some field did not get compared that should
-        // have.
-        Assert.assertEquals(eml210Expected.keySet().size(), fieldCount.intValue());
+        testXPathParsing(eml210Subprocessor, peggym1304Sys, peggym1304Sci, eml210Expected,
+                "peggym.130.4");
     }
 }

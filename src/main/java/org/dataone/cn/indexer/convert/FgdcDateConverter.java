@@ -42,11 +42,8 @@ public class FgdcDateConverter implements IConverter {
         Date date = textToDate(data);
         SimpleDateFormat sdf = new SimpleDateFormat(OUTPUT_DATE_FORMAT);
         sdf.setTimeZone(OUTPUT_TIMEZONE);
-
         String outputDateFormat = sdf.format(date.getTime());
-
         return outputDateFormat;
-
     }
 
     public Date textToDate(String dateString) {
@@ -155,5 +152,4 @@ public class FgdcDateConverter implements IConverter {
         }
         return convertedDate;
     }
-
 }

@@ -7,8 +7,6 @@ import org.dataone.cn.indexer.convert.FgdcDateConverter;
 import org.dataone.cn.indexer.convert.IConverter;
 import org.dataone.cn.indexer.convert.SolrDateConverter;
 import org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor;
-import org.dataone.cn.indexer.parser.SolrField;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.w3c.dom.Document;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "test-context.xml" })
@@ -199,55 +196,13 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
      */
     @Test
     public void testCsiroScienceMetadataFields() throws Exception {
-
-        Integer fieldCount = Integer.valueOf(0);
-
-        Document scienceMetadataDoc = getXPathDocumentParser().generateSystemMetadataDoc(
-                fdgc01111999SciMeta.getInputStream());
-        for (SolrField field : fgdcstd00111999Subprocessor.getFieldList()) {
-            boolean compared = compareFields(csiroExpected, scienceMetadataDoc, field, csiro_pid);
-            if (compared) {
-                fieldCount++;
-            }
-        }
-
-        Document systemMetadataDoc = getXPathDocumentParser().generateSystemMetadataDoc(
-                fdgc01111999SysMeta.getInputStream());
-        for (SolrField field : getXPathDocumentParser().getFields()) {
-            boolean compared = compareFields(csiroExpected, systemMetadataDoc, field, csiro_pid);
-            if (compared) {
-                fieldCount++;
-            }
-        }
-        // if field count is off, some field did not get compared that should
-        // have.
-        Assert.assertEquals(csiroExpected.keySet().size(), fieldCount.intValue());
+        testXPathParsing(fgdcstd00111999Subprocessor, fdgc01111999SysMeta, fdgc01111999SciMeta,
+                csiroExpected, csiro_pid);
     }
 
     @Test
     public void testFgdcNasaScienceMetadataFields() throws Exception {
-
-        Integer fieldCount = Integer.valueOf(0);
-
-        Document scienceMetadataDoc = getXPathDocumentParser().generateSystemMetadataDoc(
-                fgdcNasaSciMeta.getInputStream());
-        for (SolrField field : fgdcstd00111999Subprocessor.getFieldList()) {
-            boolean compared = compareFields(fgdcNasaExpected, scienceMetadataDoc, field, nasa_pid);
-            if (compared) {
-                fieldCount++;
-            }
-        }
-
-        Document systemMetadataDoc = getXPathDocumentParser().generateSystemMetadataDoc(
-                fgdcNasaSysMeta.getInputStream());
-        for (SolrField field : getXPathDocumentParser().getFields()) {
-            boolean compared = compareFields(fgdcNasaExpected, systemMetadataDoc, field, nasa_pid);
-            if (compared) {
-                fieldCount++;
-            }
-        }
-        // if field count is off, some field did not get compared that should
-        // have.
-        Assert.assertEquals(fgdcNasaExpected.keySet().size(), fieldCount.intValue());
+        testXPathParsing(fgdcstd00111999Subprocessor, fgdcNasaSysMeta, fgdcNasaSciMeta,
+                fgdcNasaExpected, nasa_pid);
     }
 }
