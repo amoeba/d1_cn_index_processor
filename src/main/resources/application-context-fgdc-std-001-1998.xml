@@ -9,6 +9,32 @@
   <property name="fieldList">
    <list>
 	    <ref bean="fgdc.abstract" />
+	    <ref bean="fgdc.beginDate"/>
+	    <ref bean="fgdc.class" />
+		<ref bean="fgdc.contactOrganization"/>
+		<ref bean="fgdc.eastBoundCoord"/>
+		<ref bean="fgdc.westBoundCoord" />
+		<ref bean="fgdc.northBoundCoord" />
+		<ref bean="fgdc.southBoundCoord" />
+		<ref bean="fgdc.edition" />
+		<ref bean="fgdc.endDate" />
+		<ref bean="fgdc.gcmdKeyword"/>
+		<ref bean="fgdc.keywords"/>
+		<ref bean="fgdc.geoform" />
+		<ref bean="fgdc.genus" />
+		<ref bean="fgdc.kingdom" />
+		<ref bean="fgdc.order" />
+		<ref bean="fgdc.phylum" />
+		<ref bean="fgdc.species" />
+		<ref bean="fgdc.origin" />
+		<ref bean="fgdc.placeKey" />
+		<ref bean="fgdc.pubDate" />
+		<ref bean="fgdc.purpose" />
+		<ref bean="fgdc.title" />
+		<ref bean="fgdc.web_url" />
+		<ref bean="fgdc.fileID" />
+		
+<!--     <ref bean="eml.fullText" />  -->
    </list>
   </property>
  </bean>
