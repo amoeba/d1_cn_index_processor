@@ -1,0 +1,15 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+ <bean id="fgdcstd00121999Subprocessor"
+  class="org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor">
+  <property name="matchDocument"
+   value="/d100:systemMetadata/formatId[text() = 'FGDC-STD-001.2-1999']"></property>
+  <property name="fieldList">
+   <list>
+    	<ref bean="fgdc.abstract" />
+   </list>
+  </property>
+ </bean>
+</beans>

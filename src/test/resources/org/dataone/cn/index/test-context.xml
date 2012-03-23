@@ -21,6 +21,12 @@ xmlns:context="http://www.springframework.org/schema/context"
  	<import resource="classpath:application-context-resourcemap.xml" />
  	<import resource="classpath:application-context-systemmeta100.xml" />
  	
+ 	<import resource="classpath:application-context-fgdc-std-001-1998.xml" />
+ 	<import resource="classpath:application-context-fgdc-std-0011-1999.xml" />
+ 	<import resource="classpath:application-context-fgdc-std-0012-1999.xml" />
+ 	<import resource="classpath:application-context-fgdc-base.xml" />
+ 
+ 	
     
     <!-- 
     This import overrides default postgres datasource for testing.
@@ -70,8 +76,29 @@ xmlns:context="http://www.springframework.org/schema/context"
         value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap"/>
     </bean>
     
-    <bean id="illegalXmlCharSysMetaData" class="org.springframework.core.io.ClassPathResource">
+    <bean id="commonBMPCharSetExample" class="org.springframework.core.io.ClassPathResource">
     	<constructor-arg type="java.lang.String"
-    	value="org/dataone/cn/index/resources/d1_testdocs/IllegalXmlChar.xml"/>
+    	value="org/dataone/cn/index/resources/d1_testdocs/testMNodeTier3:2012679267486_common-bmp-doc-example-ฉันกินกระจกได้.xml"/>
     </bean>
+    
+    <bean id="fdgc01111999SciMeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/fgdc/csiro_d_abayadultprawns.xml"/>
+    </bean>
+    
+    <bean id="fdgc01111999SysMeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/fgdc/csiro_d_abayadultprawnsSysmeta.xml"/>
+    </bean>
+    
+     <bean id="fgdcNasaSciMeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/fgdc/nasa_d_FEDGPS1293.xml"/>
+    </bean>
+    
+    <bean id="fgdcNasaSysMeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/fgdc/nasa_d_FEDGPS1293Sysmeta.xml"/>
+    </bean>
+
 </beans>

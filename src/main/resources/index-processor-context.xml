@@ -9,6 +9,7 @@
  http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
  <bean id="dateConverter" class="org.dataone.cn.indexer.convert.SolrDateConverter" />
+ <bean id="fgdcDateConverter" class="org.dataone.cn.indexer.convert.FgdcDateConverter"/>
  <bean id="solrLatitudeConverter" class="org.dataone.cn.indexer.convert.SolrLatitudeConverter" />
  <bean id="solrLongitudeConverter" class="org.dataone.cn.indexer.convert.SolrLongitudeConverter" />
 
@@ -28,6 +29,9 @@
        <ref bean="eml210Subprocessor" />
        <ref bean="eml211Subprocessor" />
        <ref bean="resourceMapSubprocessor" />
+       <ref bean="fgdcstd0011998Subprocessor" />
+       <ref bean="fgdcstd00111999Subprocessor" />
+       <ref bean="fgdcstd00121999Subprocessor" />
       </list>
      </property>
     </bean>
