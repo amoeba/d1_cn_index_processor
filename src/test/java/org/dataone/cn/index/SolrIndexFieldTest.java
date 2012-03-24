@@ -30,7 +30,6 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
     private static Logger logger = Logger.getLogger(SolrIndexFieldTest.class.getName());
 
     // TODO: test resource map / data packaging index properties?
-
     @Test
     public void testSystemMetadataAndEml210ScienceData() throws Exception {
         // peggym.130.4 system metadata document for eml2.1.0 science metadata
@@ -40,7 +39,7 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
 
         // add peggym.130.4 to solr index, using XPathDocumentParser (used by
         // index-task-processor)
-        addToSolrIndex(systemMetadataResource);
+        addEmlToSolrIndex(systemMetadataResource);
 
         // retrieve solrDocument for peggym130.4 from solr server by pid
         SolrDocument result = assertPresentInSolrIndex(pid);
@@ -59,6 +58,39 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
         Document scienceMetadataDoc = getXPathDocumentParser().generateXmlDocument(
                 scienceMetadataResource.getInputStream());
         for (SolrField field : eml210.getFieldList()) {
+            compareFields(result, scienceMetadataDoc, field, pid);
+        }
+
+        // test system metadata fields in system metadata config match those
+        // in solr index document
+        Document systemMetadataDoc = getXPathDocumentParser().generateXmlDocument(
+                systemMetadataResource.getInputStream());
+        for (SolrField field : getXPathDocumentParser().getFields()) {
+            compareFields(result, systemMetadataDoc, field, pid);
+        }
+    }
+
+    @Test
+    public void testSystemMetadataAndFgdcScienceData() throws Exception {
+        String pid = "www.nbii.gov_metadata_mdata_CSIRO_csiro_d_abayadultprawns";
+        Resource systemMetadataResource = (Resource) context.getBean("fdgc01111999SysMeta");
+        Resource sciMetadataResource = (Resource) context.getBean("fdgc01111999SciMeta");
+        addFgdcToSolrIndex(systemMetadataResource, sciMetadataResource);
+
+        SolrDocument result = assertPresentInSolrIndex(pid);
+
+        HTTPService httpService = (HTTPService) context.getBean("httpService");
+
+        SolrDoc solrDoc = httpService.retrieveDocumentFromSolrServer(pid,
+                "http://localhost:8983/solr/select/");
+
+        ScienceMetadataDocumentSubprocessor fgdcSubProcessor = (ScienceMetadataDocumentSubprocessor) context
+                .getBean("fgdcstd00111999Subprocessor");
+
+        Resource scienceMetadataResource = (Resource) context.getBean("fdgc01111999SciMeta");
+        Document scienceMetadataDoc = getXPathDocumentParser().generateXmlDocument(
+                scienceMetadataResource.getInputStream());
+        for (SolrField field : fgdcSubProcessor.getFieldList()) {
             compareFields(result, scienceMetadataDoc, field, pid);
         }
 
@@ -92,6 +124,12 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
             } else if (solrValueObject instanceof Boolean) {
                 Boolean solrValue = (Boolean) solrValueObject;
                 Boolean docValue = Boolean.valueOf(docField.getValue());
+                System.out.println("Doc Value:  " + docValue);
+                System.out.println("Solr Value: " + solrValue);
+                Assert.assertEquals(docValue, solrValue);
+            } else if (solrValueObject instanceof Integer) {
+                Integer solrValue = (Integer) solrValueObject;
+                Integer docValue = Integer.valueOf(docField.getValue());
                 System.out.println("Doc Value:  " + docValue);
                 System.out.println("Solr Value: " + solrValue);
                 Assert.assertEquals(docValue, solrValue);

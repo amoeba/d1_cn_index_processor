@@ -33,7 +33,7 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
     protected ApplicationContext context;
     protected ArrayList<XPathDocumentParser> documentParsers;
 
-    protected void addToSolrIndex(Resource sysMetaFile) throws Exception {
+    protected void addEmlToSolrIndex(Resource sysMetaFile) throws Exception {
         XPathDocumentParser parser = getXPathDocumentParser();
 
         SystemMetadata smd = TypeMarshaller.unmarshalTypeFromStream(SystemMetadata.class,
@@ -42,6 +42,17 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
         // path to actual science metadata document
         String path = StringUtils.remove(sysMetaFile.getFile().getPath(), "/SystemMetadata");
         parser.process(smd.getIdentifier().getValue(), sysMetaFile.getInputStream(), path);
+    }
+
+    protected void addFgdcToSolrIndex(Resource sysMeta, Resource sciMeta) throws Exception {
+        XPathDocumentParser parser = getXPathDocumentParser();
+
+        SystemMetadata smd = TypeMarshaller.unmarshalTypeFromStream(SystemMetadata.class,
+                sysMeta.getInputStream());
+
+        // path to actual science metadata document
+        String path = sciMeta.getFile().getAbsolutePath();
+        parser.process(smd.getIdentifier().getValue(), sysMeta.getInputStream(), path);
     }
 
     protected SolrDocument assertPresentInSolrIndex(String pid) throws SolrServerException {

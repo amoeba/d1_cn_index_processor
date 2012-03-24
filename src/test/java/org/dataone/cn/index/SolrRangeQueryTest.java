@@ -41,7 +41,7 @@ public class SolrRangeQueryTest extends DataONESolrJettyTestBase {
     private void loadTestResource() throws Exception, SolrServerException {
         String pid = "peggym.130.4";
         peggym1304Sys = (Resource) context.getBean("peggym1304Sys");
-        addToSolrIndex(peggym1304Sys);
+        addEmlToSolrIndex(peggym1304Sys);
         assertPresentInSolrIndex(pid);
     }
 }

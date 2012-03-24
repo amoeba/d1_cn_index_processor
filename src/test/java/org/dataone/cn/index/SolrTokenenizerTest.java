@@ -120,9 +120,9 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
         peggym1281Sys = (Resource) context.getBean("peggym1281Sys");
         peggym1291Sys = (Resource) context.getBean("peggym1291Sys");
         peggym1304Sys = (Resource) context.getBean("peggym1304Sys");
-        addToSolrIndex(peggym1271Sys);
-        addToSolrIndex(peggym1281Sys);
-        addToSolrIndex(peggym1291Sys);
-        addToSolrIndex(peggym1304Sys);
+        addEmlToSolrIndex(peggym1271Sys);
+        addEmlToSolrIndex(peggym1281Sys);
+        addEmlToSolrIndex(peggym1291Sys);
+        addEmlToSolrIndex(peggym1304Sys);
     }
 }

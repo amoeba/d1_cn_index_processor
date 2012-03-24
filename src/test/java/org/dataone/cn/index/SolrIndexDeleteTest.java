@@ -66,7 +66,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         String pid = "peggym.130.4";
         Resource systemMetadataResource = (Resource) context.getBean("peggym1304Sys");
         deleteAll();
-        addToSolrIndex(systemMetadataResource);
+        addEmlToSolrIndex(systemMetadataResource);
         assertPresentInSolrIndex(pid);
         HTTPService httpService = (HTTPService) context.getBean("httpService");
         httpService.sendSolrDelete(pid);

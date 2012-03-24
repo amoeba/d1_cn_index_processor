@@ -40,10 +40,14 @@ public class FgdcDateConverter implements IConverter {
 
     public String convert(String data) {
         Date date = textToDate(data);
-        SimpleDateFormat sdf = new SimpleDateFormat(OUTPUT_DATE_FORMAT);
-        sdf.setTimeZone(OUTPUT_TIMEZONE);
-        String outputDateFormat = sdf.format(date.getTime());
-        return outputDateFormat;
+        if (date != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat(OUTPUT_DATE_FORMAT);
+            sdf.setTimeZone(OUTPUT_TIMEZONE);
+            String outputDateFormat = sdf.format(date.getTime());
+            return outputDateFormat;
+        } else {
+            return "";
+        }
     }
 
     public Date textToDate(String dateString) {
