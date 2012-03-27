@@ -75,7 +75,7 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
         String pid = "www.nbii.gov_metadata_mdata_CSIRO_csiro_d_abayadultprawns";
         Resource systemMetadataResource = (Resource) context.getBean("fdgc01111999SysMeta");
         Resource sciMetadataResource = (Resource) context.getBean("fdgc01111999SciMeta");
-        addFgdcToSolrIndex(systemMetadataResource, sciMetadataResource);
+        addSysAndSciMetaToSolrIndex(systemMetadataResource, sciMetadataResource);
 
         SolrDocument result = assertPresentInSolrIndex(pid);
 

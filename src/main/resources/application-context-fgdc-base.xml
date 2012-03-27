@@ -121,8 +121,9 @@
 		<property name="multivalue" value="true" />
 	</bean>
 	
-	<bean id="fgdc.phylum" class="org.dataone.cn.indexer.parser.SolrField">
+	<bean id="fgdc.phylum" class="org.dataone.cn.indexer.parser.MergeSolrField">
 		<constructor-arg name="name" value="phylum" />
+		<constructor-arg name="delimiter" value=" " />
 		<constructor-arg name="xpath" value='//taxoncl/taxonrv[../taxonrn="Phylum"]/text() | //taxoncl/taxonrv[../taxonrn="Division"]/text()' />
 		<property name="multivalue" value="true" />
 	</bean>
@@ -161,7 +162,7 @@
 	  <property name="multivalue" value="false" />
 	  <property name="dedupe" value="false" />
 	</bean>
-	
+
 	<bean id="fgdc.title" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="title" />
 		<constructor-arg name="xpath" value='//metadata/idinfo/citation/citeinfo/title/text()' />
@@ -184,5 +185,40 @@
 			value="//metadata//text()" />
 		<property name="multivalue" value="false" />
 		<property name="combineNodes" value="true"/>
+	</bean>
+	
+	<bean id="fgdc.project" class="org.dataone.cn.indexer.parser.MergeSolrField">
+	  <constructor-arg name="name" value="project" />
+	  <constructor-arg name="xpath"
+	    value="//metadata/idinfo/descript/purpose/descendant::text()" />
+	  <constructor-arg name="delimiter" value=" " />
+	  <property name="multivalue" value="false" />
+	  <property name="dedupe" value="false" />
+	</bean>
+	
+	
+	<bean id="fgdc.presentationCat" class="org.dataone.cn.indexer.parser.MergeSolrField">
+		<constructor-arg name="name" value="presentationCat" />
+		<constructor-arg name="xpath" value='//distinfo/stdorder/digform/digtinfo/formname/text() | //metadata/idinfo/citation/citeinfo/geoform/text()' />
+		<property name="multivalue" value="false" />
+		<constructor-arg name="delimiter" value=" " />
+	</bean>
+	
+	<bean id="fgdc.author" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="author" />
+		<constructor-arg name="xpath" value='//metadata/idinfo/citation/citeinfo/origin/text()' />
+		<property name="multivalue" value="false" />
+	</bean>
+
+	<bean id="fgdc.investigator" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="investigator" />
+		<constructor-arg name="xpath" value='//metadata/idinfo/citation/citeinfo/origin/text()' />
+		<property name="multivalue" value="true" />
+	</bean>
+	
+	<bean id="fgdc.site" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="site" />
+		<constructor-arg name="xpath" value='//metadata/idinfo/spdom/descgeog/text()' />
+		<property name="multivalue" value="true" />
 	</bean>
 </beans>

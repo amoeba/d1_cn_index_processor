@@ -35,22 +35,17 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
 
     protected void addEmlToSolrIndex(Resource sysMetaFile) throws Exception {
         XPathDocumentParser parser = getXPathDocumentParser();
-
         SystemMetadata smd = TypeMarshaller.unmarshalTypeFromStream(SystemMetadata.class,
                 sysMetaFile.getInputStream());
-
         // path to actual science metadata document
         String path = StringUtils.remove(sysMetaFile.getFile().getPath(), "/SystemMetadata");
         parser.process(smd.getIdentifier().getValue(), sysMetaFile.getInputStream(), path);
     }
 
-    protected void addFgdcToSolrIndex(Resource sysMeta, Resource sciMeta) throws Exception {
+    protected void addSysAndSciMetaToSolrIndex(Resource sysMeta, Resource sciMeta) throws Exception {
         XPathDocumentParser parser = getXPathDocumentParser();
-
         SystemMetadata smd = TypeMarshaller.unmarshalTypeFromStream(SystemMetadata.class,
                 sysMeta.getInputStream());
-
-        // path to actual science metadata document
         String path = sciMeta.getFile().getAbsolutePath();
         parser.process(smd.getIdentifier().getValue(), sysMeta.getInputStream(), path);
     }
@@ -58,7 +53,6 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
     protected SolrDocument assertPresentInSolrIndex(String pid) throws SolrServerException {
         ModifiableSolrParams solrParams = new ModifiableSolrParams();
         solrParams.set("q", "id:" + ClientUtils.escapeQueryChars(pid));
-
         QueryResponse qr = getSolrServer().query(solrParams);
         Assert.assertFalse(qr.getResults().isEmpty());
         SolrDocument result = qr.getResults().get(0);

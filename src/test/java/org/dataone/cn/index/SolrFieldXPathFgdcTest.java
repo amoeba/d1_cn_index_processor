@@ -63,18 +63,28 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         csiroExpected.put("endDate", dateConverter.convert("19920401"));
         csiroExpected.put("gcmdKeyword", "");
         csiroExpected.put("genus", "");
+        csiroExpected.put("site", "Australia, Gulf of Carpentaria");
+        csiroExpected.put("presentationCat", "maps data");
         csiroExpected.put("geoform", "maps data");
         csiroExpected.put("kingdom", "Animalia");
         csiroExpected.put("order", "Decapoda");
-        csiroExpected.put("phylum", "Arthropoda");
+        csiroExpected.put("phylum", "Arthropoda Test");
         csiroExpected.put("species", "");
         csiroExpected.put("placeKey", "Australlia#Gulf of Carpentaria#Albatross Bay");
         csiroExpected.put("origin",
+                "CSIRO Marine Research (formerly CSIRO Division of Fisheries/Fisheries Research)");
+        csiroExpected.put("author",
+                "CSIRO Marine Research (formerly CSIRO Division of Fisheries/Fisheries Research)");
+        csiroExpected.put("investigator",
                 "CSIRO Marine Research (formerly CSIRO Division of Fisheries/Fisheries Research)");
         csiroExpected.put("pubDate", dateConverter.convert("1993"));
         csiroExpected
                 .put("purpose",
                         "The purpose of the dataset is to provide information about adult prawn species in Albatross Bay, Gulf of Carpentaria.");
+        csiroExpected
+                .put("project",
+                        "The purpose of the dataset is to provide information about adult prawn species in Albatross Bay, Gulf of Carpentaria.");
+
         csiroExpected.put("title", "Albatross Bay Adult Prawn Data 1986-1992");
         csiroExpected.put("web_url", "");
 
@@ -83,8 +93,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         csiroExpected.put("fileID", "https://" + hostname + "/cn/v1/resolve/" + csiro_pid);
         csiroExpected
                 .put("text",
-                        "http://www.nbii.gov/metadata/mdata/CSIRO/csiro_d_abayadultprawns.xml     CSIRO Marine Research (formerly CSIRO Division of Fisheries/Fisheries Research)  1993  Albatross Bay Adult Prawn Data 1986-1992  maps data   Australia  CSIRO Division of Marine Research      Adult prawn species, size, sex, reproductive stage, moult stage, and parasites were measured at 20 stations in Albatross Bay, Gulf of Carpentaria. Sampling was carried out monthly between 1986 and 1992. This metadata record is sourced from 'MarLIN', the CSIRO Marine Laboratories Information Network.  The purpose of the dataset is to provide information about adult prawn species in Albatross Bay, Gulf of Carpentaria.  Information was obtained from http://www.marine.csiro.au/marine/mcdd/data/CSIRODMR/CSIRODMR_datasets.html.The previous online linkage was determined to be broken in October 2010 and moved here.  The previous online linkage was:http://www.marine.csiro.au/marine/mcdd/data/CSIRODMR/Albatross_Bay_Adult_Prawn_Data_1986_1992.HTML      19860301  19920401    ground condition    Complete  None planned    Australia, Gulf of Carpentaria   141.5  142  -12.5  -13      none  adult prawn data  size  sex  reproductive stage  moult stage  parasites    none  Australlia  Gulf of Carpentaria  Albatross Bay      none  prawns  shrimps  crustaceans       Agencies listed below  2002  Integrated Taxonomic Information System  Database   Washington, D.C.  U.S. Department of Agriculture   Department of Commerce, National Oceanic and Atmospheric Administration (NOAA),  Department of Interior (DOI), Geological Survey (USGS), Environmental Protection Agency (EPA), Department of Agriculture (USDA), Agriculture Research Service (ARS) Natural Resources Conservation Service (NRCS) Smithsonian Institution National Museum of Natural History (NMNH).  http://www.itis.usda.gov/       Kingdom  Animalia  animals   Phylum  Arthropoda  arthropods   Subphylum  Crustacea  crustaceans   Class  Malacostraca   Subclass  Eumalacostraca   Superorder  Eucarida   Order  Decapoda  crabs  crayfishes  lobsters  prawns  shrimp          Release with the permission of the custodian.  None     Peter Crocos  CSIRO Division of Marine Research-Cleveland    mailing address  P.O. Box 120  Cleveland  Queensland  4163  Australia   unknown  unknown  peter.crocos@csiro.au      CSIRO Division of Marine Research  Unknown  Albatross Bay Chlorophyll Data 1986-1992  unknown   Australia  CSIRO Division of Marine Research       Stephen Blaber, David Brewer, John Salini, J. Kerr  Unknown  Albatross Bay Fish Data 1986-1988  unknown   Australia  CSIRO Division of Marine Research       Stever Blaber, CSIRO Division of Marine Research  Unknown  Albatross Bay Nearshore Fish Study 1991-1992  unknown   Australia  CSIRO Division of Marine Research       CSIRO Division of Marine Research  Unknown  Albatross Bay Nutrient Data 1992  unknown   Australia  CSIRO Division of Marine Research       Chris Jackson, CSIRO Division of Marine Research  Unknown  Albatross Bay Phytoplankton Data 1986-1992  unknown   Queensland, Australia  CSIRO Division of Marine Research       CSIRO Division of Marine Research  Unknown  Albatross Bay Prawn Larval Data  unknown   Queensland, Australia  CSIRO Division of Marine Research       CSIRO Division of Marine Research  Unknown  Albatross Bay Primary Productivity  unknown   Queensland, Australia  CSIRO Division of Marine Research       not applicable  Twenty stations were sampled.    Field  unknown    unknown  Unknown      Point     Entity - Adult Prawn in Albatross Bay, Gulf of Carpentaria, Australia; Attributes - size, sex, reproductive stage, moult stage, parasites  unknown        Tony Rees  CSIRO Division of Marine Research-Hobart    mailing address  Hobart  Australia   unknown  unknown  Tony.Rees@csiro.au    You accept all risks and responsibility for losses, damages, costs and other consequences resulting directly or indirectly from using this site and andinformation or material available from it. To the maximum permitted by law, CSIRO excludes all liability to any person arising directly or indirectly from using this site and any information or material available from it.  Please contact distributor.    19980710  20020930  20030930     Cheryl Solomon  Science Systems and Applications, Inc.   Metadata specialist   mailing and physical address  10210 Greenbelt Road, Suite 500  Lanham  Maryland  20706   301 867-2080  301-867-2149.  solomon@gcmd.nasa.gov    FGDC Biological Data Profile of the Content Standard for Digital Geospatial Metadata  FGDC-STD-001.1-1999");
-
+                        "http://www.nbii.gov/metadata/mdata/CSIRO/csiro_d_abayadultprawns.xml     CSIRO Marine Research (formerly CSIRO Division of Fisheries/Fisheries Research)  1993  Albatross Bay Adult Prawn Data 1986-1992  maps data   Australia  CSIRO Division of Marine Research      Adult prawn species, size, sex, reproductive stage, moult stage, and parasites were measured at 20 stations in Albatross Bay, Gulf of Carpentaria. Sampling was carried out monthly between 1986 and 1992. This metadata record is sourced from 'MarLIN', the CSIRO Marine Laboratories Information Network.  The purpose of the dataset is to provide information about adult prawn species in Albatross Bay, Gulf of Carpentaria.  Information was obtained from http://www.marine.csiro.au/marine/mcdd/data/CSIRODMR/CSIRODMR_datasets.html.The previous online linkage was determined to be broken in October 2010 and moved here.  The previous online linkage was:http://www.marine.csiro.au/marine/mcdd/data/CSIRODMR/Albatross_Bay_Adult_Prawn_Data_1986_1992.HTML      19860301  19920401    ground condition    Complete  None planned    Australia, Gulf of Carpentaria   141.5  142  -12.5  -13      none  adult prawn data  size  sex  reproductive stage  moult stage  parasites    none  Australlia  Gulf of Carpentaria  Albatross Bay      none  prawns  shrimps  crustaceans       Agencies listed below  2002  Integrated Taxonomic Information System  Database   Washington, D.C.  U.S. Department of Agriculture   Department of Commerce, National Oceanic and Atmospheric Administration (NOAA),  Department of Interior (DOI), Geological Survey (USGS), Environmental Protection Agency (EPA), Department of Agriculture (USDA), Agriculture Research Service (ARS) Natural Resources Conservation Service (NRCS) Smithsonian Institution National Museum of Natural History (NMNH).  http://www.itis.usda.gov/       Kingdom  Animalia  animals   Phylum  Arthropoda  arthropods   Division  Test  arthropods   Subphylum  Crustacea  crustaceans   Class  Malacostraca   Subclass  Eumalacostraca   Superorder  Eucarida   Order  Decapoda  crabs  crayfishes  lobsters  prawns  shrimp           Release with the permission of the custodian.  None     Peter Crocos  CSIRO Division of Marine Research-Cleveland    mailing address  P.O. Box 120  Cleveland  Queensland  4163  Australia   unknown  unknown  peter.crocos@csiro.au      CSIRO Division of Marine Research  Unknown  Albatross Bay Chlorophyll Data 1986-1992  unknown   Australia  CSIRO Division of Marine Research       Stephen Blaber, David Brewer, John Salini, J. Kerr  Unknown  Albatross Bay Fish Data 1986-1988  unknown   Australia  CSIRO Division of Marine Research       Stever Blaber, CSIRO Division of Marine Research  Unknown  Albatross Bay Nearshore Fish Study 1991-1992  unknown   Australia  CSIRO Division of Marine Research       CSIRO Division of Marine Research  Unknown  Albatross Bay Nutrient Data 1992  unknown   Australia  CSIRO Division of Marine Research       Chris Jackson, CSIRO Division of Marine Research  Unknown  Albatross Bay Phytoplankton Data 1986-1992  unknown   Queensland, Australia  CSIRO Division of Marine Research       CSIRO Division of Marine Research  Unknown  Albatross Bay Prawn Larval Data  unknown   Queensland, Australia  CSIRO Division of Marine Research       CSIRO Division of Marine Research  Unknown  Albatross Bay Primary Productivity  unknown   Queensland, Australia  CSIRO Division of Marine Research       not applicable  Twenty stations were sampled.    Field  unknown    unknown  Unknown      Point     Entity - Adult Prawn in Albatross Bay, Gulf of Carpentaria, Australia; Attributes - size, sex, reproductive stage, moult stage, parasites  unknown        Tony Rees  CSIRO Division of Marine Research-Hobart    mailing address  Hobart  Australia   unknown  unknown  Tony.Rees@csiro.au    You accept all risks and responsibility for losses, damages, costs and other consequences resulting directly or indirectly from using this site and andinformation or material available from it. To the maximum permitted by law, CSIRO excludes all liability to any person arising directly or indirectly from using this site and any information or material available from it.  Please contact distributor.    19980710  20020930  20030930     Cheryl Solomon  Science Systems and Applications, Inc.   Metadata specialist   mailing and physical address  10210 Greenbelt Road, Suite 500  Lanham  Maryland  20706   301 867-2080  301-867-2149.  solomon@gcmd.nasa.gov    FGDC Biological Data Profile of the Content Standard for Digital Geospatial Metadata  FGDC-STD-001.1-1999");
         // system metadata
         csiroExpected.put("id", csiro_pid);
         csiroExpected.put("objectformat", "FGDC-STD-001.1-1999");
@@ -138,15 +147,29 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         fgdcNasaExpected.put("phylum", "");
         fgdcNasaExpected.put("species", "");
         fgdcNasaExpected
+                .put("site",
+                        "The study site is located 56 km north of Bangor, Maine in Penobscot County (45 12'N, 68 44'W). The area is within the 7000 ha Northern Experimental Forest (NEF) owned by International Paper.");
+        fgdcNasaExpected.put("presentationCat", "Maps and Data ARC/INFO");
+        fgdcNasaExpected
                 .put("placeKey",
                         "CONTINENT > NORTH AMERICA#CONTINENT > NORTH AMERICA > UNITED STATES OF AMERICA > MAINE");
         fgdcNasaExpected
                 .put("origin",
                         "Elizabeth M. Nel; NASA Goddard Space Flight Center, Forest Ecosystem Dynamics Project");
+        fgdcNasaExpected
+                .put("author",
+                        "Elizabeth M. Nel; NASA Goddard Space Flight Center, Forest Ecosystem Dynamics Project");
+        fgdcNasaExpected
+                .put("investigator",
+                        "Elizabeth M. Nel; NASA Goddard Space Flight Center, Forest Ecosystem Dynamics Project");
         fgdcNasaExpected.put("pubDate", dateConverter.convert("1994"));
         fgdcNasaExpected
                 .put("purpose",
                         "The field measurements component of the FED project was initiated to acquire data which are needed to: improve our understanding of vegetation, soil, and energy dynamics, and other biotic and abiotic processes within forested ecosystems so that the models can be parameterized, updated and modified; and to acquire in situ field observations for comparison with model results and conceptual model refinement.");
+        fgdcNasaExpected
+                .put("project",
+                        "The field measurements component of the FED project was initiated to acquire data which are needed to: improve our understanding of vegetation, soil, and energy dynamics, and other biotic and abiotic processes within forested ecosystems so that the models can be parameterized, updated and modified; and to acquire in situ field observations for comparison with model results and conceptual model refinement.");
+
         fgdcNasaExpected
                 .put("title",
                         "Global Positioning System Ground Control Points Acquired 1993 for the Forest Ecosystem Dynamics Project Spatial Data Archive");
