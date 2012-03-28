@@ -6,11 +6,6 @@
 		<property name="matchDocument"
 			value="/d100:systemMetadata/formatId[text()='http://www.openarchives.org/ore/terms'] | /d100:systemMetadata/formatId[text()='http://www.w3.org/TR/rdf-syntax-grammar']" />
 		<property name="httpService" ref="httpService"></property>
-		<property name="documentSource">
-			<bean id="resourceMapDataSource"
-				class="org.dataone.cn.indexer.resourcemap.ResourceMapFileDataSource">
-			</bean>
-		</property>
 		<property name="solrQueryUri" value="${solr.query.uri}"></property>
 	</bean>
 
