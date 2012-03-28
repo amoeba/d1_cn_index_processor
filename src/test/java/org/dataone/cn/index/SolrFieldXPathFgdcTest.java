@@ -81,9 +81,9 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         csiroExpected
                 .put("purpose",
                         "The purpose of the dataset is to provide information about adult prawn species in Albatross Bay, Gulf of Carpentaria.");
-        csiroExpected
-                .put("project",
-                        "The purpose of the dataset is to provide information about adult prawn species in Albatross Bay, Gulf of Carpentaria.");
+        // csiroExpected
+        // .put("project",
+        // "The purpose of the dataset is to provide information about adult prawn species in Albatross Bay, Gulf of Carpentaria.");
 
         csiroExpected.put("title", "Albatross Bay Adult Prawn Data 1986-1992");
         csiroExpected.put("web_url", "");
@@ -166,9 +166,9 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         fgdcNasaExpected
                 .put("purpose",
                         "The field measurements component of the FED project was initiated to acquire data which are needed to: improve our understanding of vegetation, soil, and energy dynamics, and other biotic and abiotic processes within forested ecosystems so that the models can be parameterized, updated and modified; and to acquire in situ field observations for comparison with model results and conceptual model refinement.");
-        fgdcNasaExpected
-                .put("project",
-                        "The field measurements component of the FED project was initiated to acquire data which are needed to: improve our understanding of vegetation, soil, and energy dynamics, and other biotic and abiotic processes within forested ecosystems so that the models can be parameterized, updated and modified; and to acquire in situ field observations for comparison with model results and conceptual model refinement.");
+        // fgdcNasaExpected
+        // .put("project",
+        // "The field measurements component of the FED project was initiated to acquire data which are needed to: improve our understanding of vegetation, soil, and energy dynamics, and other biotic and abiotic processes within forested ecosystems so that the models can be parameterized, updated and modified; and to acquire in situ field observations for comparison with model results and conceptual model refinement.");
 
         fgdcNasaExpected
                 .put("title",
