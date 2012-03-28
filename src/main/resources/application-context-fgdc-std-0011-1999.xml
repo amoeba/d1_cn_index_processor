@@ -34,7 +34,7 @@
 		<ref bean="fgdc.web_url" />
 		<ref bean="fgdc.fileID" />
      	<ref bean="fgdc.fullText" />
-		<ref bean="fgdc.purpose" />
+		<ref bean="fgdc.project" />
 		<ref bean="fgdc.presentationCat" />
 		<ref bean="fgdc.author"/>
 		<ref bean="fgdc.investigator" />
