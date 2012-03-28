@@ -149,7 +149,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         fgdcNasaExpected
                 .put("site",
                         "The study site is located 56 km north of Bangor, Maine in Penobscot County (45 12'N, 68 44'W). The area is within the 7000 ha Northern Experimental Forest (NEF) owned by International Paper.");
-        fgdcNasaExpected.put("presentationCat", "Maps and Data ARC/INFO");
+        fgdcNasaExpected.put("presentationCat", "Maps and Data");
         fgdcNasaExpected
                 .put("placeKey",
                         "CONTINENT > NORTH AMERICA#CONTINENT > NORTH AMERICA > UNITED STATES OF AMERICA > MAINE");
