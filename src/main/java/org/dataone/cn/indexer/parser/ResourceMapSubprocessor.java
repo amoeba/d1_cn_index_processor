@@ -32,7 +32,6 @@ import org.xml.sax.SAXException;
 public class ResourceMapSubprocessor extends AbstractDocumentSubprocessor implements
         IDocumentSubprocessor {
 
-    private IDocumentProvider documentSource = null;
     private HTTPService httpService = null;
     private String solrQueryUri = null;
 
@@ -59,14 +58,6 @@ public class ResourceMapSubprocessor extends AbstractDocumentSubprocessor implem
         List<SolrDoc> mergedDocuments = resourceMap.mergeIndexedDocuments(updateDocuments);
         mergedDocuments.add(indexDocument);
         return mergedDocuments;
-    }
-
-    public IDocumentProvider getDocumentSource() {
-        return documentSource;
-    }
-
-    public void setDocumentSource(IDocumentProvider documentSource) {
-        this.documentSource = documentSource;
     }
 
     public HTTPService getHttpService() {
