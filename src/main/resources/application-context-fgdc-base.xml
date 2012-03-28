@@ -197,11 +197,10 @@
 	</bean>
 	
 	
-	<bean id="fgdc.presentationCat" class="org.dataone.cn.indexer.parser.MergeSolrField">
+	<bean id="fgdc.presentationCat" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="presentationCat" />
-		<constructor-arg name="xpath" value='//distinfo/stdorder/digform/digtinfo/formname/text() | //metadata/idinfo/citation/citeinfo/geoform/text()' />
+		<constructor-arg name="xpath" value='//metadata/idinfo/citation/citeinfo/geoform/text()' />
 		<property name="multivalue" value="false" />
-		<constructor-arg name="delimiter" value=" " />
 	</bean>
 	
 	<bean id="fgdc.author" class="org.dataone.cn.indexer.parser.SolrField">
