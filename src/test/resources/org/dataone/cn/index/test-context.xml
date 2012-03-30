@@ -78,7 +78,7 @@ xmlns:context="http://www.springframework.org/schema/context"
     
     <bean id="commonBMPCharSetExample" class="org.springframework.core.io.ClassPathResource">
     	<constructor-arg type="java.lang.String"
-    	value="org/dataone/cn/index/resources/d1_testdocs/testMNodeTier3:2012679267486_common-bmp-doc-example-ฉันกินกระจกได้.xml"/>
+    	value="org/dataone/cn/index/resources/d1_testdocs/CommonBMPCharSetExample.xml"/>
     </bean>
     
     <bean id="fdgc01111999SciMeta" class="org.springframework.core.io.ClassPathResource">
