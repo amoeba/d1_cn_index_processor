@@ -184,7 +184,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     @Test
     public void testDataPackageWithArchivedDoc() throws Exception {
         deleteAll();
-        indexTestDataPackageWithArvhived1271Doc();
+        indexTestDataPackageWithArchived1271Doc();
         verifyDataPackageNo1271();
     }
 
@@ -272,7 +272,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         processor.processIndexTaskQueue();
     }
 
-    private void indexTestDataPackageWithArvhived1271Doc() {
+    private void indexTestDataPackageWithArchived1271Doc() {
         addSystemMetadata(peggym1271SysArchived);
         addSystemMetadata(peggym1281Sys);
         addSystemMetadata(peggym1291Sys);
