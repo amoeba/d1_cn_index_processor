@@ -227,7 +227,8 @@ public class SolrDoc {
         if (smd == null) {
             return false;
         }
-        return !(smd.getObsoletedBy() != null && smd.getObsoletedBy().getValue() != null)
-                || (smd.getArchived() != null && smd.getArchived().booleanValue());
+        // should be quotes around entire || expression
+        return !((smd.getObsoletedBy() != null && smd.getObsoletedBy().getValue() != null) || (smd
+                .getArchived() != null && smd.getArchived().booleanValue()));
     }
 }

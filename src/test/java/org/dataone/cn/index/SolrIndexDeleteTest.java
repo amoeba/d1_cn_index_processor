@@ -175,6 +175,19 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         verifyDataPackageNoResourceMap();
     }
 
+    /**
+     * Verify that a data package will index when one (or more) documents in the
+     * data package are archived.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testDataPackageWithArchivedDoc() throws Exception {
+        deleteAll();
+        indexTestDataPackageWithArvhived1271Doc();
+        verifyDataPackageNo1271();
+    }
+
     private void verifyDataPackageNoResourceMap() throws Exception {
         assertPresentInSolrIndex("peggym.127.1");
 
@@ -252,6 +265,15 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
 
     private void indexTestDataPackage() {
         addSystemMetadata(peggym1271Sys);
+        addSystemMetadata(peggym1281Sys);
+        addSystemMetadata(peggym1291Sys);
+        addSystemMetadata(peggym1304Sys);
+        addSystemMetadata(peggymResourcemapSys);
+        processor.processIndexTaskQueue();
+    }
+
+    private void indexTestDataPackageWithArvhived1271Doc() {
+        addSystemMetadata(peggym1271SysArchived);
         addSystemMetadata(peggym1281Sys);
         addSystemMetadata(peggym1291Sys);
         addSystemMetadata(peggym1304Sys);
