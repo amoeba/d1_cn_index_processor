@@ -200,26 +200,26 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         -->
 
         <field name="id"              type="string"   indexed="true" stored="true" multiValued="false"/>
-        <field name="objectformat"    type="string"   indexed="true" stored="true" multiValued="false"/>
+        <field name="formatId"    type="string"   indexed="true" stored="true" multiValued="false"/>
         <field name="size"            type="long"     indexed="false" stored="true" multiValued="false"/>
         <field name="checksum"        type="string"   indexed="false" stored="true" multiValued="false"/>
         <field name="checksumAlgorithm" type="string" indexed="false" stored="true"/>
+        <field name="dateUploaded"    type="date"     indexed="true" stored="true" multiValued="false"/>
+        <field name="dateModified"    type="date"     indexed="true" stored="true" multiValued="false"/>
         <field name="submitter"       type="string"   indexed="true" stored="true" multiValued="false"/>
-        <field name="rightsholder"    type="string"   indexed="true" stored="true" multiValued="false"/>
-        <field name="rep_allowed"     type="boolean"  indexed="false" stored="true" multiValued="false"/>
-        <field name="n_replicas"      type="integer"  indexed="false" stored="true" multiValued="false"/>
-        <field name="pref_rep_mn"     type="string"   indexed="false" stored="true" multiValued="true"/>
-        <field name="blocked_rep_mn"  type="string"   indexed="false" stored="true" multiValued="true"/>
-        <field name="obsoletes"       type="string"   indexed="true" stored="true" multiValued="false"/>
-        <field name="dateuploaded"    type="date"     indexed="true" stored="true" multiValued="false"/>
-        <field name="datemodified"    type="date"     indexed="true" stored="true" multiValued="false"/>
+        <field name="rightsHolder"    type="string"   indexed="true" stored="true" multiValued="false"/>
+        <field name="authoritativeMN"         type="string"   indexed="false" stored="true" multiValued="false"/>
+        <field name="replicationAllowed"     type="boolean"  indexed="false" stored="true" multiValued="false"/>
+        <field name="numberReplicas"      type="integer"  indexed="false" stored="true" multiValued="false"/>
+        <field name="preferredReplicationMN"     type="string"   indexed="false" stored="true" multiValued="true"/>
+        <field name="blockedReplicationMN"  type="string"   indexed="false" stored="true" multiValued="true"/>
+        <field name="replicaMN"      type="string"   indexed="false" stored="true" multiValued="true"/>
+        <field name="replicaVerifiedDate" type="date"    indexed="false" stored="true" multiValued="true"/>
         <field name="datasource"       type="string"  indexed="true" stored="true" multiValued="false"/>
-        <field name="auth_mn"         type="string"   indexed="false" stored="true" multiValued="false"/>
-        <field name="replica_mn"      type="string"   indexed="false" stored="true" multiValued="true"/>
-        <field name="replica_verified" type="date"    indexed="false" stored="true" multiValued="true"/>
+        <field name="obsoletes"       type="string"   indexed="true" stored="true" multiValued="false"/>
 
         <!-- Object relationships -->
-        <field name="resourcemap"		type="string"   indexed="true" stored="true" multiValued="true"/>
+        <field name="resourceMap"		type="string"   indexed="true" stored="true" multiValued="true"/>
         <field name="documents"			type="string"   indexed="true" stored="true" multiValued="true"/>
         <field name="isDocumentedBy"	type="string"   indexed="true" stored="true" multiValued="true"/>
 
@@ -232,7 +232,7 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <!-- Science metadata properties -->
         <field name="abstract"                 type="text"      multiValued="false" indexed="true" stored="true" />
         <field name="author"                   type="string"    multiValued="false" indexed="true" stored="true" />
-        <field name="author_lname"             type="string"    multiValued="true" indexed="true" stored="true" />
+        <field name="authorLastName"             type="string"    multiValued="true" indexed="true" stored="true" />
         <field name="keywords"                 type="string"    multiValued="true" indexed="true" stored="true" />
         <field name="keyConcept"               type="string"    multiValued="true" indexed="true" stored="true" />
         <field name="southBoundCoord"          type="sfloat"     multiValued="false" indexed="true" stored="true"/>
@@ -251,7 +251,7 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
 
 		<field name="investigator" 		type="string" 	indexed="true" stored="true" multiValued="true"/>
 		<field name="investigatorText" 	type="text" 	indexed="true" stored="false" multiValued="true"/>
-        <field name="ogc_url" 			type="text" 	indexed="false" stored="true"/>
+        <field name="ogcUrl" 			type="text" 	indexed="false" stored="true"/>
         <field name="sku" 				type="textTight" indexed="true" stored="true"/>
         <field name="identifier" 		type="textTight" indexed="true" stored="true"/>
         <field name="LTERSite"	 		type="string" 	indexed="true" stored="true"/>
@@ -261,9 +261,9 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <field name="geoform" 			type="string" 	indexed="true" stored="true"/>
         <field name="presentationCat" 	type="string" 	indexed="true" stored="true"/>
         <field name="purpose" 			type="text" 	indexed="true" stored="true"/>
-        <field name="update_date" 		type="date" 	indexed="true" stored="true"/>
+        <field name="updateDate" 		type="date" 	indexed="true" stored="true"/>
         <field name="edition" 			type="text" 	indexed="true" stored="true"/>
-        <field name="data_url" 			type="string" 	indexed="false" stored="true"/>
+        <field name="dataUrl" 			type="string" 	indexed="false" stored="true"/>
         <field name="originator" 		type="string" 	indexed="true" stored="true" multiValued="true"/>
         <field name="originatorText" 	type="text"	  	indexed="true" stored="false" multiValued="true"/>
         <field name="family" 			type="string" 	indexed="true" stored="true" multiValued="true"/>
@@ -274,7 +274,7 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <field name="order" 			type="string" 	indexed="true" stored="true" multiValued="true"/>
         <field name="class" 			type="string" 	indexed="true" stored="true" multiValued="true"/>
 
-        <field name="web_url" 			type="string" 	indexed="false" stored="true" multiValued="true"/>
+        <field name="webUrl" 			type="string" 	indexed="false" stored="true" multiValued="true"/>
 
         <field name="contactOrganization" 		type="string" indexed="true" stored="true" multiValued="true"/>
         <field name="contactOrganizationText" 	type="text"   indexed="true" stored="false" multiValued="true"/>
@@ -311,7 +311,8 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <field name="topicText" 		type="text" 	indexed="true" stored="false" multiValued="true"/>
 
         <field name="fileID" 			type="string" 	indexed="true" stored="true"/>
-   		<field name="text"       		type="text"  	indexed="true" stored="true" multiValued="false"/>
+   		<field name="fullText"     		type="text"  	indexed="true" stored="true" multiValued="false"/>
+   		<field name="text"				type="text"		indexed="true" stored="true" multiValued="true" />
 <!-- ======================================================================= -->
         <!-- Dynamic field definitions.  If a field name is not found, dynamicFields
 will be used if the name matches any of the patterns.
@@ -347,7 +348,9 @@ ways, or to add multiple fields to the same field for easier/faster searching.  
 
     <copyField source="id" dest="sku"/>
     <copyField source="id" dest="identifier"/>
-    <copyfield source="replica_mn" dest="datasource" />
+    <copyField source="id" dest="text" />
+    <copyField source="fullText" dest="text" />
+    <copyfield source="replicaMN" dest="datasource" />
 
     <copyField source="title" dest="titlestr"/>
 
@@ -365,71 +368,9 @@ ways, or to add multiple fields to the same field for easier/faster searching.  
     <copyField source="investigator" dest="investigatorText"/>
     <copyField source="keywords" dest="keywordsText"/>
     <copyField source="pubDate" dest="datePublished" />
-    <copyField source="dateuploaded" dest="update_date" />
+    <copyField source="dateUploaded" dest="updateDate" />
     <copyField source="contactOrganization" dest="contactOrganizationText"/>
   
-<!--     
-    <copyField source="title" dest="fullText"/>
-    <copyField source="title" dest="text"/>
-    
-    <copyField source="origin" dest="fullText"/>
-    <copyField source="origin" dest="text"/>
-
-    <copyField source="contactOrganization" dest="fullText"/>
-    <copyField source="contactOrganization" dest="text"/>
-
-    <copyField source="LTERSite" dest="fullText"/>
-    <copyField source="LTERSite" dest="text"/>
-    
-    <copyField source="geoform" dest="fullText"/>
-    <copyField source="geoform" dest="text"/>
-    
-    <copyField source="presentationCat" dest="fullText"/>
-    <copyField source="presentationCat" dest="text"/>
-    
-    <copyField source="purpose" dest="fullText"/>
-    <copyField source="purpose" dest="text"/>
-    
-    <copyField source="placeKey" dest="fullText"/>
-    <copyField source="placeKey" dest="text"/>
-    
-    <copyField source="decade" dest="fullText"/>
-    <copyField source="decade" dest="text"/>
-    
-    <copyField source="gcmdKeyword" dest="fullText"/>
-    <copyField source="gcmdKeyword" dest="text"/>
-
-    <copyField source="projectText" dest="fullText"/>
-    <copyField source="projectText" dest="text"/>
-    
-    <copyField source="site" dest="fullText"/>
-    <copyField source="site" dest="text"/>
-
-    <copyField source="parameter" dest="fullText"/>
-    <copyField source="parameter" dest="text"/>
-
-    <copyField source="sensor" dest="fullText"/>
-    <copyField source="sensor" dest="text"/>
-
-    <copyField source="source" dest="fullText"/>
-    <copyField source="source" dest="text"/>
-
-    <copyField source="term" dest="fullText"/>
-    <copyField source="term" dest="text"/>
-
-    <copyField source="topic" dest="fullText"/>
-    <copyField source="topic" dest="text"/>
-
-    <copyField source="investigator" dest="fullText"/>
-    <copyField source="investigator" dest="text"/>
-
-    <copyField source="keywords" dest="fullText"/>
-	<copyField source="keywords" dest="text"/>
-
-    <copyField source="abstract" dest="fullText" />
-    <copyField source="abstract" dest="text" />
-  -->   
-    <!-- end dataone copy fields -->
 
     <!-- Similarity is the scoring routine for each document vs a query.
 A custom similarity may be specified here, but the default is fine
@@ -437,4 +378,3 @@ for most applications.  -->
     <!-- <similarity class="org.apache.lucene.search.DefaultSimilarity"/> -->
 
 </schema>
-

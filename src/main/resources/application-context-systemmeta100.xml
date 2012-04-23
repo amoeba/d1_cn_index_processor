@@ -11,7 +11,7 @@
 				</bean>
 				
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
-					<constructor-arg name="name" value="objectformat" />
+					<constructor-arg name="name" value="formatId" />
 					<constructor-arg name="xpath"
 						value="/d100:systemMetadata/formatId/text()" />
 				</bean>
@@ -41,32 +41,32 @@
 				</bean>
 				
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
-					<constructor-arg name="name" value="rightsholder" />
+					<constructor-arg name="name" value="rightsHolder" />
 					<constructor-arg name="xpath"
 						value="/d100:systemMetadata/rightsHolder/text()" />
 				</bean>
 
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
-					<constructor-arg name="name" value="rep_allowed" />
+					<constructor-arg name="name" value="replicationAllowed" />
 					<constructor-arg name="xpath"
 						value="/d100:systemMetadata/replicationPolicy/@replicationAllowed" />
 				</bean>
 				
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
-					<constructor-arg name="name" value="n_replicas" />
+					<constructor-arg name="name" value="numberReplicas" />
 					<constructor-arg name="xpath"
 						value="/d100:systemMetadata/replicationPolicy/@numberReplicas" />
 				</bean>
 
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
-					<constructor-arg name="name" value="pref_rep_mn" />
+					<constructor-arg name="name" value="preferredReplicationMN" />
 					<constructor-arg name="xpath"
 						value="/d100:systemMetadata/replicationPolicy/preferredMemberNode/text()" />
 					<property name="multivalue" value="true" />
 				</bean>
 				
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
-					<constructor-arg name="name" value="blocked_rep_mn" />
+					<constructor-arg name="name" value="blockedReplicationMN" />
 					<constructor-arg name="xpath"
 						value="/d100:systemMetadata/replicationPolicy/blockedMemberNode/text()" />
 					<property name="multivalue" value="true" />
@@ -79,14 +79,14 @@
 				</bean>
 
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
-					<constructor-arg name="name" value="dateuploaded" />
+					<constructor-arg name="name" value="dateUploaded" />
 					<constructor-arg name="xpath"
 						value="/d100:systemMetadata/dateUploaded/text()" />
 					<property name="converter" ref="dateConverter" />
 				</bean>
 
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
-					<constructor-arg name="name" value="datemodified" />
+					<constructor-arg name="name" value="dateModified" />
 					<constructor-arg name="xpath"
 						value="/d100:systemMetadata/dateSysMetadataModified/text()" />
 					<property name="converter" ref="dateConverter" />
@@ -99,20 +99,20 @@
 				</bean>
 
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
-					<constructor-arg name="name" value="auth_mn" />
+					<constructor-arg name="name" value="authoritativeMN" />
 					<constructor-arg name="xpath"
 						value="/d100:systemMetadata/authoritativeMemberNode/text()" />
 				</bean>
 
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
-					<constructor-arg name="name" value="replica_mn" />
+					<constructor-arg name="name" value="replicaMN" />
 					<constructor-arg name="xpath"
 						value="/d100:systemMetadata/replica/replicaMemberNode/text()" />
 					<property name="multivalue" value="true" />
 				</bean>
 				
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
-					<constructor-arg name="name" value="replica_verified" />
+					<constructor-arg name="name" value="replicaVerifiedDate" />
 					<constructor-arg name="xpath"
 						value="/d100:systemMetadata/replica/replicaVerified/text()" />
 					<property name="multivalue" value="true" />
@@ -151,7 +151,7 @@
 				</bean>
 
 		        <bean class="org.dataone.cn.indexer.parser.ResolveSolrField">
-					<constructor-arg name="name" value="data_url" />
+					<constructor-arg name="name" value="dataUrl" />
 		        </bean>
 			</list>
 		</constructor-arg>

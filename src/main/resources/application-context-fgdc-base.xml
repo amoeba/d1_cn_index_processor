@@ -170,7 +170,7 @@
 	</bean>
 
 	<bean id="fgdc.web_url" class="org.dataone.cn.indexer.parser.SolrField">
-		<constructor-arg name="name" value="web_url" />
+		<constructor-arg name="name" value="webUrl" />
 		<constructor-arg name="xpath" value='//metadata/idinfo/citation/citeinfo/onlink/text()' />
 		<property name="multivalue" value="true" />
 	</bean>
@@ -180,7 +180,7 @@
 	</bean>
 	
 	<bean id="fgdc.fullText" class="org.dataone.cn.indexer.parser.SolrField">
-		<constructor-arg name="name" value="text" />
+		<constructor-arg name="name" value="fullText" />
 		<constructor-arg name="xpath"
 			value="//metadata//text()" />
 		<property name="multivalue" value="false" />

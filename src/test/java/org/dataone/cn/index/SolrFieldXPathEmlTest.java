@@ -50,7 +50,7 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
         eml210Expected.put("endDate", dateConverter.convert("2004-02-13"));
         eml210Expected.put("pubDate", "");
         eml210Expected.put("author", "SANParks Steve");
-        eml210Expected.put("author_lname", "SANParks#Garcia#Freeman");
+        eml210Expected.put("authorLastName", "SANParks#Garcia#Freeman");
         eml210Expected.put("investigator", "SANParks#Garcia#Freeman");
         eml210Expected.put("contactOrganization", "SANParks#The Awesome Store");
         eml210Expected.put("fileID", "https://" + hostname + "/cn/v1/resolve/peggym.130.4");
@@ -60,31 +60,31 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
 
         // system metadata
         eml210Expected.put("id", "peggym.130.4");
-        eml210Expected.put("objectformat", "eml://ecoinformatics.org/eml-2.1.0");
+        eml210Expected.put("formatId", "eml://ecoinformatics.org/eml-2.1.0");
         eml210Expected.put("size", "36281");
         eml210Expected.put("checksum", "24426711d5385a9ffa583a13d07af2502884932f");
         eml210Expected.put("checksumAlgorithm", "SHA-1");
         eml210Expected.put("submitter", "dataone_integration_test_user");
-        eml210Expected.put("rightsholder", "dataone_integration_test_user");
-        eml210Expected.put("rep_allowed", "true");
-        eml210Expected.put("n_replicas", "");
-        eml210Expected.put("pref_rep_mn", "");
-        eml210Expected.put("blocked_rep_mn", "");
+        eml210Expected.put("rightsHolder", "dataone_integration_test_user");
+        eml210Expected.put("replicationAllowed", "true");
+        eml210Expected.put("numberReplicas", "");
+        eml210Expected.put("preferredReplicationMN", "");
+        eml210Expected.put("blockedReplicationMN", "");
         eml210Expected.put("obsoletes", "");
-        eml210Expected.put("dateuploaded", dateConverter.convert("2011-08-31T15:59:50.071163"));
-        eml210Expected.put("datemodified", dateConverter.convert("2011-08-31T15:59:50.072921"));
+        eml210Expected.put("dateUploaded", dateConverter.convert("2011-08-31T15:59:50.071163"));
+        eml210Expected.put("dateModified", dateConverter.convert("2011-08-31T15:59:50.072921"));
         eml210Expected.put("datasource", "test_documents");
-        eml210Expected.put("auth_mn", "test_documents");
-        eml210Expected.put("replica_mn", "");
-        eml210Expected.put("replica_verified", "");
+        eml210Expected.put("authoritativeMN", "test_documents");
+        eml210Expected.put("replicaMN", "");
+        eml210Expected.put("replicaVerifiedDate", "");
         eml210Expected.put("readPermission", "public#dataone_test_user##dataone_public_user");
         eml210Expected.put("writePermission", "dataone_integration_test_user");
         eml210Expected.put("changePermission", "");
         eml210Expected.put("isPublic", "true");
-        eml210Expected.put("data_url", "https://" + hostname + "/cn/v1/resolve/peggym.130.4");
+        eml210Expected.put("dataUrl", "https://" + hostname + "/cn/v1/resolve/peggym.130.4");
 
         eml210Expected
-                .put("text",
+                .put("fullText",
                         "Augrabies falls National Park census data.   SANParks  Steve    Garcia  Freddy   SANParks  Regional Ecologists   Private Bag x402 Skukuza, 1350 South Africa     Freeman  Gordon   SANParks  Regional Ecologists   Private Bag x402 Skukuza, 1350 South Africa    The Awesome Store  Regional Ecologists   Private Bag x402 Skukuza, 1350 South Africa    This metadata record fred, describes a 12-34 TT-12 long-term data document can't frank.  This is a test.  If this was not a lower, an abstract \"double\" or 'single' would be present in UPPER (parenthized) this location.   SANParks, South Africa  Augrabies Falls National Park,South Africa  Census data    Agulhas falls national Park   -120.311210  -120.311210  26.0  26.0       1998    2004-02-13       Genus  Antidorcas   Species  marsupialis  Hartmans Zebra     Genus  Cercopithecus   Species  aethiops  Vervet monkey     Genus  Diceros   Species  bicornis  Baboon     Genus  Equus   Species  hartmannae  Giraffe     Genus  Giraffa   Species  camelopardalis  Kudu     Genus  Oreotragus   Species  oreotragus  Gemsbok     Genus  Oryz   Species  gazella  Eland     Genus  Papio   Species  hamadryas     Genus  Taurotragus   Species  oryx  Black rhino     Genus  Tragelaphus   Species  strepsiceros  Klipspringer      1251095992100");
     }
 

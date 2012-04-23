@@ -98,7 +98,7 @@
 	</bean>
 	
 	<bean id="eml.author_lname" class="org.dataone.cn.indexer.parser.SolrField">
-		<constructor-arg name="name" value="author_lname" />
+		<constructor-arg name="name" value="authorLastName" />
 		<constructor-arg name="xpath"
 			value="//dataset/creator/individualName/surName/text()" />
 		<property name="multivalue" value="true" />
@@ -162,7 +162,7 @@
 	</bean>
 	
 	<bean id="eml.fullText" class="org.dataone.cn.indexer.parser.SolrField">
-		<constructor-arg name="name" value="text" />
+		<constructor-arg name="name" value="fullText" />
 		<constructor-arg name="xpath"
 			value="//dataset/*[not(self::dataTable)]//text()" />
 		<property name="multivalue" value="false" />
