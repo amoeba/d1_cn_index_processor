@@ -33,6 +33,7 @@ import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.w3c.dom.Document;
 
 public class ResolveSolrField extends SolrField {
+
     private static final String RESOLVE_PATH = "/cn/v1/resolve/";
 
     public ResolveSolrField(String name) {

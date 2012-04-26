@@ -311,8 +311,7 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <field name="topicText" 		type="text" 	indexed="true" stored="false" multiValued="true"/>
 
         <field name="fileID" 			type="string" 	indexed="true" stored="true"/>
-   		<field name="fullText"     		type="text"  	indexed="true" stored="true" multiValued="false"/>
-   		<field name="text"				type="text"		indexed="true" stored="true" multiValued="true" />
+   		<field name="text"				type="text"		indexed="true" stored="true" multiValued="false" />
 <!-- ======================================================================= -->
         <!-- Dynamic field definitions.  If a field name is not found, dynamicFields
 will be used if the name matches any of the patterns.
@@ -348,8 +347,6 @@ ways, or to add multiple fields to the same field for easier/faster searching.  
 
     <copyField source="id" dest="sku"/>
     <copyField source="id" dest="identifier"/>
-    <copyField source="id" dest="text" />
-    <copyField source="fullText" dest="text" />
     <copyfield source="replicaMN" dest="datasource" />
 
     <copyField source="title" dest="titlestr"/>

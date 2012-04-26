@@ -179,8 +179,8 @@
 		<constructor-arg name="name" value="fileID" />
 	</bean>
 	
-	<bean id="fgdc.fullText" class="org.dataone.cn.indexer.parser.SolrField">
-		<constructor-arg name="name" value="fullText" />
+	<bean id="fgdc.fullText" class="org.dataone.cn.indexer.parser.FullTextSolrField">
+		<constructor-arg name="name" value="text" />
 		<constructor-arg name="xpath"
 			value="//metadata//text()" />
 		<property name="multivalue" value="false" />

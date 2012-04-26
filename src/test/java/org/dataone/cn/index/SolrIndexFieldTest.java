@@ -174,17 +174,17 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
                 System.out.println("Solr Value: " + solrValue);
                 Assert.assertEquals(docValue.getTime(), solrValue.getTime());
             } else if (solrValueObject instanceof ArrayList) {
-                if (!fieldToCompare.getName().equals("text")) {
-                    ArrayList solrValueArray = (ArrayList) solrValueObject;
-                    ArrayList documentValueArray = new ArrayList();
-                    for (SolrElementField sef : fields) {
-                        documentValueArray.add(sef.getValue());
-                    }
-                    System.out.println("Doc Value:  " + documentValueArray);
-                    System.out.println("Solr Value: " + solrValueArray);
-                    Assert.assertTrue(CollectionUtils.isEqualCollection(documentValueArray,
-                            solrValueArray));
+                // if (!fieldToCompare.getName().equals("text")) {
+                ArrayList solrValueArray = (ArrayList) solrValueObject;
+                ArrayList documentValueArray = new ArrayList();
+                for (SolrElementField sef : fields) {
+                    documentValueArray.add(sef.getValue());
                 }
+                System.out.println("Doc Value:  " + documentValueArray);
+                System.out.println("Solr Value: " + solrValueArray);
+                Assert.assertTrue(CollectionUtils.isEqualCollection(documentValueArray,
+                        solrValueArray));
+                // }
             } else {
                 Assert.assertTrue(
                         "Unknown solr value object type for field: " + docField.getName(), false);

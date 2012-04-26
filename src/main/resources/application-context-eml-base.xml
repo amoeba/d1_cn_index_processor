@@ -161,8 +161,8 @@
 		<constructor-arg name="name" value="fileID" />
 	</bean>
 	
-	<bean id="eml.fullText" class="org.dataone.cn.indexer.parser.SolrField">
-		<constructor-arg name="name" value="fullText" />
+	<bean id="eml.fullText" class="org.dataone.cn.indexer.parser.FullTextSolrField">
+		<constructor-arg name="name" value="text" />
 		<constructor-arg name="xpath"
 			value="//dataset/*[not(self::dataTable)]//text()" />
 		<property name="multivalue" value="false" />
