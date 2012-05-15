@@ -24,6 +24,14 @@ package org.dataone.cn.index.processor;
 
 import org.dataone.cn.index.task.IndexTask;
 
+/**
+ * Interface for defining IndexTask processing strategies. Allows implementation
+ * of processing strategy to be configurable and external to processing
+ * controller logic.
+ * 
+ * @author sroseboo
+ * 
+ */
 public interface IndexTaskProcessingStrategy {
 
     public void process(IndexTask task) throws Exception;
