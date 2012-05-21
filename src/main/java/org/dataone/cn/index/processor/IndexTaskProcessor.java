@@ -87,8 +87,8 @@ public class IndexTaskProcessor {
     private static final String HZ_OBJECT_PATH = Settings.getConfiguration()
             .getString("dataone.hazelcast.objectPath");
 
-    private static final String HZ_SYSTEM_METADATA = Settings
-            .getConfiguration().getString("dataone.hazelcast.systemMetadata");
+    private static final String HZ_SYSTEM_METADATA = Settings.getConfiguration()
+            .getString("dataone.hazelcast.systemMetadata");
 
     private IMap<Identifier, String> objectPaths;
     private IMap<Identifier, SystemMetadata> systemMetadata;
@@ -160,15 +160,13 @@ public class IndexTaskProcessor {
         return task;
     }
 
-    private boolean isResourceMapReadyToIndex(IndexTask task,
-            List<IndexTask> queue) {
+    private boolean isResourceMapReadyToIndex(IndexTask task, List<IndexTask> queue) {
         boolean ready = true;
         if (representsResourceMap(task)) {
             Document docObject = loadDocument(task);
             if (docObject == null) {
                 logger.debug("unable to load resource at object path: "
-                        + task.getObjectPath()
-                        + ".  Marking new and continuing...");
+                        + task.getObjectPath() + ".  Marking new and continuing...");
                 task.markNew();
                 saveTask(task);
                 ready = false;
@@ -183,8 +181,7 @@ public class IndexTaskProcessor {
                 referencedIds.remove(task.getPid());
                 if (areAllReferencedDocsIndexed(referencedIds) == false) {
                     logger.info("Not all map resource references indexed for map: "
-                            + task.getPid()
-                            + ".  Marking new and continuing...");
+                            + task.getPid() + ".  Marking new and continuing...");
                     task.markNew();
                     saveTask(task);
                     ready = false;
@@ -200,6 +197,10 @@ public class IndexTaskProcessor {
         try {
             updateDocuments = httpService.getDocuments(this.solrQueryUri,
                     referencedIds);
+            if (updateDocuments == null) {
+                logger.error("Unable to retrieve documents for pids: "
+                        + referencedIds.toArray().toString());
+            }
             numberOfIndexedOrRemovedReferences = updateDocuments.size();
             if (updateDocuments.size() != referencedIds.size()) {
                 for (String id : referencedIds) {
@@ -305,8 +306,8 @@ public class IndexTaskProcessor {
         try {
             task = repo.save(task);
         } catch (HibernateOptimisticLockingFailureException e) {
-            logger.debug("Unable to update index task for pid: "
-                    + task.getPid() + ".");
+            logger.debug("Unable to update index task for pid: " + task.getPid()
+                    + ".");
             task = null;
         }
         return task;
@@ -315,14 +316,13 @@ public class IndexTaskProcessor {
     private Document loadDocument(IndexTask task) {
         Document docObject = null;
         try {
-            docObject = getXPathDocumentParser().loadDocument(
-                    task.getObjectPath());
+            docObject = getXPathDocumentParser().loadDocument(task.getObjectPath());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
         if (docObject == null) {
-            logger.error("Could not load OBJECT file for ID,Path="
-                    + task.getPid() + ", " + task.getObjectPath());
+            logger.error("Could not load OBJECT file for ID,Path=" + task.getPid()
+                    + ", " + task.getObjectPath());
         }
         return docObject;
     }
