@@ -192,17 +192,14 @@ public class IndexTaskProcessor {
     }
 
     private boolean areAllReferencedDocsIndexed(List<String> referencedIds) {
+        if (referencedIds == null || referencedIds.size() == 0) {
+            return true; // empty reference map...ok/ready to index.
+        }
         List<SolrDoc> updateDocuments = null;
         int numberOfIndexedOrRemovedReferences = 0;
         try {
             updateDocuments = httpService.getDocuments(this.solrQueryUri,
                     referencedIds);
-            if (updateDocuments == null) {
-                logger.error("Unable to retrieve documents for pids: ");
-                for (String pid : referencedIds) {
-                    logger.error("pid: " + pid);
-                }
-            }
             numberOfIndexedOrRemovedReferences = updateDocuments.size();
             if (updateDocuments.size() != referencedIds.size()) {
                 for (String id : referencedIds) {
