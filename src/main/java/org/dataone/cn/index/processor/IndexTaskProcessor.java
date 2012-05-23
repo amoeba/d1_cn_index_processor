@@ -198,8 +198,10 @@ public class IndexTaskProcessor {
             updateDocuments = httpService.getDocuments(this.solrQueryUri,
                     referencedIds);
             if (updateDocuments == null) {
-                logger.error("Unable to retrieve documents for pids: "
-                        + referencedIds.toArray().toString());
+                logger.error("Unable to retrieve documents for pids: ");
+                for (String pid : referencedIds) {
+                    logger.error("pid: " + pid);
+                }
             }
             numberOfIndexedOrRemovedReferences = updateDocuments.size();
             if (updateDocuments.size() != referencedIds.size()) {

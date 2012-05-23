@@ -41,8 +41,6 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -52,6 +50,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.log4j.Logger;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -76,7 +75,7 @@ public class HTTPService {
     final static String VALUE_INDENT_ON = "on";
     final static String VALUE_INDENT_OFF = "off";
     final static String PARAM_QUERY = "q";
-    private Log log = LogFactory.getLog(HTTPService.class);
+    private static Logger log = Logger.getLogger(HTTPService.class.getName());
     private HttpComponentsClientHttpRequestFactory httpRequestFactory;
 
     private String SOLR_SCHEMA_PATH;
