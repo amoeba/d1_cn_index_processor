@@ -113,6 +113,23 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
     }
 
     @Test
+    public void testWildcardSerach() throws Exception {
+        String pid = "peggym.130.4";
+        sendSolrDeleteAll();
+        addAllToSolr();
+        assertPresentInSolrIndex(pid);
+        SolrDocumentList sdl = null;
+        sdl = findByField("text", "fran*");
+        Assert.assertEquals(1, sdl.size());
+        sdl = findByField("text", "*ank");
+        Assert.assertEquals(1, sdl.size());
+        sdl = findByField("text", "fram*");
+        Assert.assertEquals(0, sdl.size());
+        sdl = findByField("text", "*ang");
+        Assert.assertEquals(0, sdl.size());
+    }
+
+    @Test
     public void testTokenizingHyphen() throws Exception {
         String pid = "peggym.130.4";
         sendSolrDeleteAll();
