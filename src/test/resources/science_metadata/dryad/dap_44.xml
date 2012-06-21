@@ -1,0 +1,28 @@
+<DryadDataFile xmlns="http://purl.org/dryad/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://purl.org/dryad/terms/ http://datadryad.org/profile/v3/dryad.xsd">
+  <dcterms:type xmlns:dcterms="http://purl.org/dc/terms/">file</dcterms:type>
+  <status>deposited</status>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Anderson, Jill T.</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Nuttle, Tim</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Saldaña Rojas, Joe S.</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Pendergast, Thomas H.</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Flecker, Alexander S.</dcterms:creator>
+  <dcterms:title xmlns:dcterms="http://purl.org/dc/terms/">Simulation model results</dcterms:title>
+  <dcterms:identifier xmlns:dcterms="http://purl.org/dc/terms/">doi:10.5061/dryad.9028/4/dap</dcterms:identifier>
+  <dcterms:rights xmlns:dcterms="http://purl.org/dc/terms/">http://creativecommons.org/publicdomain/zero/1.0/</dcterms:rights>
+  <dcterms:description xmlns:dcterms="http://purl.org/dc/terms/">This Excel file contains 5 sheets: one for each of the seed species included in the study.  Each sheet has the results of the simulation models, needed to produce the dispersal kernel figures (Figure 1 and Appendix Figure S2). Each simulation model was run for 100,000 iterations.  Included in each sheet are columns for : Seed dispersal distance bins, frequency of dispersal to suitable habitats, proportion of seeds dispersed to suitable habitats, frequency of dispersal to permanent bodies of water, and proportion of seeds dispersed to permanent bodies of water.</dcterms:description>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">dispersal kernel</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">frugivorous fish</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">movement ecology</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">radiotelemetry</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">seed dispersal</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Dryad submission</dcterms:subject>
+  <dwc:scientificName xmlns:dwc="http://rs.tdwg.org/dwc/terms/">Colossoma macropomum</dwc:scientificName>
+  <dcterms:spatial xmlns:dcterms="http://purl.org/dc/terms/">Pacaya-Samiria Reserve</dcterms:spatial>
+  <dcterms:spatial xmlns:dcterms="http://purl.org/dc/terms/">Peruvian Amazon</dcterms:spatial>
+  <dcterms:temporal xmlns:dcterms="http://purl.org/dc/terms/">contemporary</dcterms:temporal>
+  <dcterms:dateSubmitted xmlns:dcterms="http://purl.org/dc/terms/">2011-04-01T16:30:30Z</dcterms:dateSubmitted>
+  <dcterms:available xmlns:dcterms="http://purl.org/dc/terms/">2011-04-01T16:30:30Z</dcterms:available>
+  <dcterms:provenance xmlns:dcterms="http://purl.org/dc/terms/">Made available in DSpace on 2011-04-01T16:30:30Z (GMT). No. of bitstreams: 1
+Simulation model results.xls: 72192 bytes, checksum: 492d5568d2cdf2e72aeae1644298bbe6 (MD5)</dcterms:provenance>
+  <dcterms:isPartOf xmlns:dcterms="http://purl.org/dc/terms/">doi:10.5061/dryad.9028</dcterms:isPartOf>
+</DryadDataFile>

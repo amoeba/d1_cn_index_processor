@@ -1,0 +1,26 @@
+<DryadDataFile xmlns="http://purl.org/dryad/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://purl.org/dryad/terms/ http://datadryad.org/profile/v3/dryad.xsd">
+  <dcterms:type xmlns:dcterms="http://purl.org/dc/terms/">file</dcterms:type>
+  <status>deposited</status>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Remeš, Vladimír</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Székely, Tamás</dcterms:creator>
+  <dcterms:title xmlns:dcterms="http://purl.org/dc/terms/">data_chickens_and_phasianids</dcterms:title>
+  <dcterms:identifier xmlns:dcterms="http://purl.org/dc/terms/">doi:10.5061/dryad.1965/1/dap</dcterms:identifier>
+  <dcterms:description xmlns:dcterms="http://purl.org/dc/terms/">Data used for the analyses of SSD in chicken breeds and wild phasianids (data on separate sheets). Collected from published literature. Column headings either self-explanatory or explained by a note in MS Excel, which was used to create the data file.</dcterms:description>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Birds</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Comparative studies</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Life history evolution</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Sexual selection &amp; conflicts</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Dryad submission</dcterms:subject>
+  <dwc:scientificName xmlns:dwc="http://rs.tdwg.org/dwc/terms/">Phasianidae</dwc:scientificName>
+  <dwc:scientificName xmlns:dwc="http://rs.tdwg.org/dwc/terms/">Gallus gallus</dwc:scientificName>
+  <dcterms:dateSubmitted xmlns:dcterms="http://purl.org/dc/terms/">2010-09-08T15:03:42Z</dcterms:dateSubmitted>
+  <dcterms:available xmlns:dcterms="http://purl.org/dc/terms/">2010-09-08T15:03:42Z</dcterms:available>
+  <dcterms:provenance xmlns:dcterms="http://purl.org/dc/terms/">Submitted by Vladimir Remes (vladimir.remes@upol.cz) on 2010-09-08T10:38:45Z&#xD;
+No. of bitstreams: 1&#xD;
+data_chickens_and_phasianids.xls: 54272 bytes, checksum: c6629fe82de53a2a513871a7e5a4d8ec (MD5)</dcterms:provenance>
+  <dcterms:provenance xmlns:dcterms="http://purl.org/dc/terms/">Approved for entry into archive by Elena Feinstein(elenamfeinstein@gmail.com) on 2010-09-08T15:03:42Z (GMT) No. of bitstreams: 1&#xD;
+data_chickens_and_phasianids.xls: 54272 bytes, checksum: c6629fe82de53a2a513871a7e5a4d8ec (MD5)</dcterms:provenance>
+  <dcterms:provenance xmlns:dcterms="http://purl.org/dc/terms/">Made available in DSpace on 2010-09-08T15:03:42Z (GMT). No. of bitstreams: 1&#xD;
+data_chickens_and_phasianids.xls: 54272 bytes, checksum: c6629fe82de53a2a513871a7e5a4d8ec (MD5)</dcterms:provenance>
+  <dcterms:isPartOf xmlns:dcterms="http://purl.org/dc/terms/">http://datadryad.org/handle/10255/dryad.1965</dcterms:isPartOf>
+</DryadDataFile>

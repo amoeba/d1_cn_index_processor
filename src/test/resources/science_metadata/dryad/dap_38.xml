@@ -1,0 +1,28 @@
+<DryadDataFile xmlns="http://purl.org/dryad/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://purl.org/dryad/terms/ http://datadryad.org/profile/v3/dryad.xsd">
+  <dcterms:type xmlns:dcterms="http://purl.org/dc/terms/">file</dcterms:type>
+  <status>deposited</status>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">He, Gang</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Huang, Kang</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Guo, SongTao</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Ji, WeiHong</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Ren, Yi</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Jin, XueLin</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Li, BaoGuo</dcterms:creator>
+  <dcterms:title xmlns:dcterms="http://purl.org/dc/terms/">Consensus Genotype</dcterms:title>
+  <dcterms:identifier xmlns:dcterms="http://purl.org/dc/terms/">doi:10.5061/dryad.8164/1/dap</dcterms:identifier>
+  <dcterms:rights xmlns:dcterms="http://purl.org/dc/terms/">http://creativecommons.org/publicdomain/zero/1.0/</dcterms:rights>
+  <dcterms:description xmlns:dcterms="http://purl.org/dc/terms/">Genotype file of 26 individuals at 5 SSR loci.</dcterms:description>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Dryad submission</dcterms:subject>
+  <dwc:scientificName xmlns:dwc="http://rs.tdwg.org/dwc/terms/">Rhinopithecus roxellana</dwc:scientificName>
+  <dcterms:spatial xmlns:dcterms="http://purl.org/dc/terms/">Zhouzhi National Nature Reserve</dcterms:spatial>
+  <dcterms:spatial xmlns:dcterms="http://purl.org/dc/terms/">Xi'an City</dcterms:spatial>
+  <dcterms:spatial xmlns:dcterms="http://purl.org/dc/terms/">Shaanxi Province</dcterms:spatial>
+  <dcterms:spatial xmlns:dcterms="http://purl.org/dc/terms/">People's Republic of China</dcterms:spatial>
+  <dcterms:spatial xmlns:dcterms="http://purl.org/dc/terms/">33°45′-33°50′N</dcterms:spatial>
+  <dcterms:spatial xmlns:dcterms="http://purl.org/dc/terms/">108°14′-108°18′E</dcterms:spatial>
+  <dcterms:dateSubmitted xmlns:dcterms="http://purl.org/dc/terms/">2010-12-20T19:33:50Z</dcterms:dateSubmitted>
+  <dcterms:available xmlns:dcterms="http://purl.org/dc/terms/">2010-12-20T19:33:50Z</dcterms:available>
+  <dcterms:provenance xmlns:dcterms="http://purl.org/dc/terms/">Made available in DSpace on 2010-12-20T19:33:50Z (GMT). No. of bitstreams: 1
+Consensus Genotype.txt: 1178 bytes, checksum: e4058e1bc35913ca543f5311c82f5e7a (MD5)</dcterms:provenance>
+  <dcterms:isPartOf xmlns:dcterms="http://purl.org/dc/terms/">http://datadryad.org/handle/10255/dryad.8164</dcterms:isPartOf>
+</DryadDataFile>

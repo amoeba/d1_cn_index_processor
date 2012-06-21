@@ -1,0 +1,25 @@
+<DryadDataFile xmlns="http://purl.org/dryad/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://purl.org/dryad/terms/ http://datadryad.org/profile/v3/dryad.xsd">
+  <dcterms:type xmlns:dcterms="http://purl.org/dc/terms/">file</dcterms:type>
+  <status>deposited</status>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Krist, Miloš</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Remeš, Vladimír</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Uvírová, Lenka</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Nádvorník, Petr</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Bureš, Stanislav</dcterms:creator>
+  <dcterms:title xmlns:dcterms="http://purl.org/dc/terms/">dataset.csv</dcterms:title>
+  <dcterms:identifier xmlns:dcterms="http://purl.org/dc/terms/">doi:10.5061/dryad.1758/1/dap</dcterms:identifier>
+  <dcterms:rights xmlns:dcterms="http://purl.org/dc/terms/">http://creativecommons.org/publicdomain/zero/1.0/</dcterms:rights>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">egg size</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">intraclutch</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">offspring fitness</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">growth</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">extra-pair</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Dryad submission</dcterms:subject>
+  <dwc:scientificName xmlns:dwc="http://rs.tdwg.org/dwc/terms/">Ficedula albicollis</dwc:scientificName>
+  <dcterms:spatial xmlns:dcterms="http://purl.org/dc/terms/">Czech Republic</dcterms:spatial>
+  <dcterms:spatial xmlns:dcterms="http://purl.org/dc/terms/">Europe</dcterms:spatial>
+  <dcterms:dateSubmitted xmlns:dcterms="http://purl.org/dc/terms/">2010-07-13T15:50:55Z</dcterms:dateSubmitted>
+  <dcterms:available xmlns:dcterms="http://purl.org/dc/terms/">2010-07-13T15:50:55Z</dcterms:available>
+  <dcterms:provenance xmlns:dcterms="http://purl.org/dc/terms/">Made available in DSpace on 2010-07-13T15:50:55Z (GMT). No. of bitstreams: 0</dcterms:provenance>
+  <dcterms:isPartOf xmlns:dcterms="http://purl.org/dc/terms/">http://hdl.handle.net/10255/dryad.1758</dcterms:isPartOf>
+</DryadDataFile>

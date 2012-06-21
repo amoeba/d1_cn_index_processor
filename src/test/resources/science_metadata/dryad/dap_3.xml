@@ -1,0 +1,27 @@
+<DryadDataFile xmlns="http://purl.org/dryad/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://purl.org/dryad/terms/ http://datadryad.org/profile/v3/dryad.xsd">
+  <dcterms:type xmlns:dcterms="http://purl.org/dc/terms/">file</dcterms:type>
+  <status>deposited</status>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Sensenig, Andrew</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Blackledge, Todd</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Agnarsson, Ingi</dcterms:creator>
+  <dcterms:title xmlns:dcterms="http://purl.org/dc/terms/">Silk tensile and web architecture measurements for 280 individuals and 22 species of Araneidae</dcterms:title>
+  <dcterms:identifier xmlns:dcterms="http://purl.org/dc/terms/">doi:10.5061/dryad.1827/1/dap</dcterms:identifier>
+  <dcterms:rights xmlns:dcterms="http://purl.org/dc/terms/">http://creativecommons.org/publicdomain/zero/1.0/</dcterms:rights>
+  <dcterms:description xmlns:dcterms="http://purl.org/dc/terms/">This excel file contains measurements from single webs spun by ~280 individual spiders, representing ~22 different species of orb weavers (Araneidae). Abbreviations include n,s,e,w (North, South, East, West sides of the orb web), g (glue silk), eng or Eg(engineering).</dcterms:description>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Comparative studies</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Molecular evolution</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Insects</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">silk biomechanics</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Dryad submission</dcterms:subject>
+  <dwc:scientificName xmlns:dwc="http://rs.tdwg.org/dwc/terms/">Araneidae</dwc:scientificName>
+  <dcterms:spatial xmlns:dcterms="http://purl.org/dc/terms/">Ohio</dcterms:spatial>
+  <dcterms:spatial xmlns:dcterms="http://purl.org/dc/terms/">Florida</dcterms:spatial>
+  <dcterms:spatial xmlns:dcterms="http://purl.org/dc/terms/">Slovenia</dcterms:spatial>
+  <dcterms:spatial xmlns:dcterms="http://purl.org/dc/terms/">Madagascar</dcterms:spatial>
+  <dcterms:temporal xmlns:dcterms="http://purl.org/dc/terms/">Present</dcterms:temporal>
+  <dcterms:dateSubmitted xmlns:dcterms="http://purl.org/dc/terms/">2010-08-05T16:33:26Z</dcterms:dateSubmitted>
+  <dcterms:available xmlns:dcterms="http://purl.org/dc/terms/">2010-08-05T16:33:26Z</dcterms:available>
+  <dcterms:provenance xmlns:dcterms="http://purl.org/dc/terms/">Made available in DSpace on 2010-08-05T16:33:26Z (GMT). No. of bitstreams: 1&#xD;
+excelfileofJEvBmainprojectforsubmissiontoDryad.xls: 1280512 bytes, checksum: a3a7aa3aa7d05f5cf62fa94fc80381cd (MD5)</dcterms:provenance>
+  <dcterms:isPartOf xmlns:dcterms="http://purl.org/dc/terms/">http://hdl.handle.net/10255/dryad.1827</dcterms:isPartOf>
+</DryadDataFile>

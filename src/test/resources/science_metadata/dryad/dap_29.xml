@@ -1,0 +1,36 @@
+<DryadDataFile xmlns="http://purl.org/dryad/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://purl.org/dryad/terms/ http://datadryad.org/profile/v3/dryad.xsd">
+  <dcterms:type xmlns:dcterms="http://purl.org/dc/terms/">file</dcterms:type>
+  <status>deposited</status>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Tsagkogeorga, Georgia</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Turon, Xavier</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Hopcroft, Russell R.</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Tilak, Marie-Ka</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Feldstein, Tamar</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Shenkar, Noa</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Loya, Yossi</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Huchon, Dorothée</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Douzery, Emmanuel J. P.</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Delsuc, Frédéric</dcterms:creator>
+  <dcterms:title xmlns:dcterms="http://purl.org/dc/terms/">Tsagkogeorga-BMCEvolBiol2010-Tunicata_18S_88taxa</dcterms:title>
+  <dcterms:identifier xmlns:dcterms="http://purl.org/dc/terms/">doi:10.5061/dryad.8333/1/dap</dcterms:identifier>
+  <dcterms:rights xmlns:dcterms="http://purl.org/dc/terms/">http://creativecommons.org/publicdomain/zero/1.0/</dcterms:rights>
+  <dcterms:description xmlns:dcterms="http://purl.org/dc/terms/">Secondary structure-based 18S rRNA alignment for 88 taxa</dcterms:description>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Urochordates</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Tunicates</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">18S rRNA</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Molecular phylogeny</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Evolutionary rate</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Secondary structure</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Mixture models</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Dryad submission</dcterms:subject>
+  <dwc:scientificName xmlns:dwc="http://rs.tdwg.org/dwc/terms/">Tunicata</dwc:scientificName>
+  <dwc:scientificName xmlns:dwc="http://rs.tdwg.org/dwc/terms/">Urochordata</dwc:scientificName>
+  <dwc:scientificName xmlns:dwc="http://rs.tdwg.org/dwc/terms/">Aplousobranchia</dwc:scientificName>
+  <dcterms:spatial xmlns:dcterms="http://purl.org/dc/terms/">Worldwide</dcterms:spatial>
+  <dcterms:temporal xmlns:dcterms="http://purl.org/dc/terms/">Mesozoic</dcterms:temporal>
+  <dcterms:dateSubmitted xmlns:dcterms="http://purl.org/dc/terms/">2011-01-14T17:04:41Z</dcterms:dateSubmitted>
+  <dcterms:available xmlns:dcterms="http://purl.org/dc/terms/">2011-01-14T17:04:41Z</dcterms:available>
+  <dcterms:provenance xmlns:dcterms="http://purl.org/dc/terms/">Made available in DSpace on 2011-01-14T17:04:41Z (GMT). No. of bitstreams: 1
+Tsagkogeorga-BMCEvolBiol2010-Tunicata_18S_88taxa.nex: 184737 bytes, checksum: 138bf63d4d52551ce4a750d92d79373e (MD5)</dcterms:provenance>
+  <dcterms:isPartOf xmlns:dcterms="http://purl.org/dc/terms/">http://datadryad.org/handle/10255/dryad.8333</dcterms:isPartOf>
+</DryadDataFile>

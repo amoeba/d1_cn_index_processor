@@ -1,0 +1,25 @@
+<DryadDataFile xmlns="http://purl.org/dryad/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://purl.org/dryad/terms/ http://datadryad.org/profile/v3/dryad.xsd">
+  <dcterms:type xmlns:dcterms="http://purl.org/dc/terms/">file</dcterms:type>
+  <status>deposited</status>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Brown, Kirsten M.</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Burk, Lisa M.</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Henagan, Loren M.</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Noor, Mohamed A.F.</dcterms:creator>
+  <dcterms:title xmlns:dcterms="http://purl.org/dc/terms/">BackcrossGenotypes.zip</dcterms:title>
+  <dcterms:identifier xmlns:dcterms="http://purl.org/dc/terms/">doi:10.5061/dryad.1150/1/dap</dcterms:identifier>
+  <dcterms:rights xmlns:dcterms="http://purl.org/dc/terms/">http://creativecommons.org/publicdomain/zero/1.0/</dcterms:rights>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">chromosomal inversions</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">hybrid sterility</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">speciation</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">recombination</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Dryad submission</dcterms:subject>
+  <dwc:scientificName xmlns:dwc="http://rs.tdwg.org/dwc/terms/">Drosophila pseudoobscura</dwc:scientificName>
+  <dwc:scientificName xmlns:dwc="http://rs.tdwg.org/dwc/terms/">Drosophila persimilis</dwc:scientificName>
+  <dwc:scientificName xmlns:dwc="http://rs.tdwg.org/dwc/terms/">Drosophila pseudoobscura bogotana</dwc:scientificName>
+  <dcterms:dateSubmitted xmlns:dcterms="http://purl.org/dc/terms/">2009-12-18T20:29:04Z</dcterms:dateSubmitted>
+  <dcterms:available xmlns:dcterms="http://purl.org/dc/terms/">2009-12-18T20:29:04Z</dcterms:available>
+  <dcterms:provenance xmlns:dcterms="http://purl.org/dc/terms/">Made available in DSpace on 2009-12-18T20:29:04Z (GMT). No. of bitstreams: 2&#xD;
+BackcrossGenotypes.zip: 29781 bytes, checksum: 308f1326e2c8baac41df48ce6f063012 (MD5)&#xD;
+README.txt: 2665 bytes, checksum: 27731f1c7184176d9859530150c46b48 (MD5)</dcterms:provenance>
+  <dcterms:isPartOf xmlns:dcterms="http://purl.org/dc/terms/">http://hdl.handle.net/10255/dryad.1150</dcterms:isPartOf>
+</DryadDataFile>

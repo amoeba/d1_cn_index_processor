@@ -1,0 +1,27 @@
+<DryadDataFile xmlns="http://purl.org/dryad/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://purl.org/dryad/terms/ http://datadryad.org/profile/v3/dryad.xsd">
+  <dcterms:type xmlns:dcterms="http://purl.org/dc/terms/">file</dcterms:type>
+  <status>deposited</status>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Nunes, Flavia</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Norris, Richard</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Knowlton, Nancy</dcterms:creator>
+  <dcterms:title xmlns:dcterms="http://purl.org/dc/terms/">Genotypes</dcterms:title>
+  <dcterms:identifier xmlns:dcterms="http://purl.org/dc/terms/">doi:10.5061/dryad.1723/5/dap</dcterms:identifier>
+  <dcterms:rights xmlns:dcterms="http://purl.org/dc/terms/">http://creativecommons.org/publicdomain/zero/1.0/</dcterms:rights>
+  <dcterms:description xmlns:dcterms="http://purl.org/dc/terms/">Genotype over all loci for each sampled individual.</dcterms:description>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">coral</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">connectivity</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">genetic diversity</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">peripheral population</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">dispersal</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Dryad submission</dcterms:subject>
+  <dwc:scientificName xmlns:dwc="http://rs.tdwg.org/dwc/terms/">Montastraea cavernosa</dwc:scientificName>
+  <dcterms:spatial xmlns:dcterms="http://purl.org/dc/terms/">Brazil</dcterms:spatial>
+  <dcterms:spatial xmlns:dcterms="http://purl.org/dc/terms/">Caribbean</dcterms:spatial>
+  <dcterms:spatial xmlns:dcterms="http://purl.org/dc/terms/">Gulf of Guinea</dcterms:spatial>
+  <dcterms:spatial xmlns:dcterms="http://purl.org/dc/terms/">Bermuda</dcterms:spatial>
+  <dcterms:dateSubmitted xmlns:dcterms="http://purl.org/dc/terms/">2010-07-03T20:57:50Z</dcterms:dateSubmitted>
+  <dcterms:available xmlns:dcterms="http://purl.org/dc/terms/">2010-07-03T20:57:50Z</dcterms:available>
+  <dcterms:provenance xmlns:dcterms="http://purl.org/dc/terms/">Made available in DSpace on 2010-07-03T20:57:50Z (GMT). No. of bitstreams: 1&#xD;
+SuppTable2.xls: 61440 bytes, checksum: d3310227a831ae5e1f71e0410870e377 (MD5)</dcterms:provenance>
+  <dcterms:isPartOf xmlns:dcterms="http://purl.org/dc/terms/">http://hdl.handle.net/10255/dryad.1723</dcterms:isPartOf>
+</DryadDataFile>

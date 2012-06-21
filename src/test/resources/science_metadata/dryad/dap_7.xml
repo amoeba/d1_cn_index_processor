@@ -1,0 +1,34 @@
+<DryadDataFile xmlns="http://purl.org/dryad/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://purl.org/dryad/terms/ http://datadryad.org/profile/v3/dryad.xsd">
+  <dcterms:type xmlns:dcterms="http://purl.org/dc/terms/">file</dcterms:type>
+  <status>deposited</status>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Dsouli, Najla</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Delsuc, Frédéric</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Michaux, Johan</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">De Stordeur, Eric</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Couloux, Arnaud</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Veuille, Michel</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Duvallet, Gérard</dcterms:creator>
+  <dcterms:title xmlns:dcterms="http://purl.org/dc/terms/">Dsouli-InfectGenetEvol11 phylogram</dcterms:title>
+  <dcterms:identifier xmlns:dcterms="http://purl.org/dc/terms/">doi:10.5061/dryad.9025/2/dap</dcterms:identifier>
+  <dcterms:rights xmlns:dcterms="http://purl.org/dc/terms/">http://creativecommons.org/publicdomain/zero/1.0/</dcterms:rights>
+  <dcterms:description xmlns:dcterms="http://purl.org/dc/terms/">This phylogram is the 50% majority&#xD;
+rule consensus tree presented in Figure 1. It was obtained with Bayesian inference using MrBayes under the GTR + G model. Numbers at nodes indicate posterior probabilities (PP).</dcterms:description>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Stomoxys flies</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Phylogenetic relationship</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Molecular dating</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">Dryad submission</dcterms:subject>
+  <dwc:scientificName xmlns:dwc="http://rs.tdwg.org/dwc/terms/">Stomoxyini</dwc:scientificName>
+  <dwc:scientificName xmlns:dwc="http://rs.tdwg.org/dwc/terms/">Stomoxys</dwc:scientificName>
+  <dwc:scientificName xmlns:dwc="http://rs.tdwg.org/dwc/terms/">Prostomoxys</dwc:scientificName>
+  <dwc:scientificName xmlns:dwc="http://rs.tdwg.org/dwc/terms/">Diptera</dwc:scientificName>
+  <dwc:scientificName xmlns:dwc="http://rs.tdwg.org/dwc/terms/">Muscidae</dwc:scientificName>
+  <dwc:scientificName xmlns:dwc="http://rs.tdwg.org/dwc/terms/">Haematobia</dwc:scientificName>
+  <dwc:scientificName xmlns:dwc="http://rs.tdwg.org/dwc/terms/">Haematobosca</dwc:scientificName>
+  <dcterms:spatial xmlns:dcterms="http://purl.org/dc/terms/">Worldwide</dcterms:spatial>
+  <dcterms:temporal xmlns:dcterms="http://purl.org/dc/terms/">Cenozoic</dcterms:temporal>
+  <dcterms:dateSubmitted xmlns:dcterms="http://purl.org/dc/terms/">2011-03-31T15:44:56Z</dcterms:dateSubmitted>
+  <dcterms:available xmlns:dcterms="http://purl.org/dc/terms/">2011-03-31T15:44:56Z</dcterms:available>
+  <dcterms:provenance xmlns:dcterms="http://purl.org/dc/terms/">Made available in DSpace on 2011-03-31T15:44:56Z (GMT). No. of bitstreams: 1
+Dsouli-InfectGenetEvol11.tre: 3271 bytes, checksum: a766bee375dcbc2e9cb9bb75c039e7a6 (MD5)</dcterms:provenance>
+  <dcterms:isPartOf xmlns:dcterms="http://purl.org/dc/terms/">doi:10.5061/dryad.9025</dcterms:isPartOf>
+</DryadDataFile>
