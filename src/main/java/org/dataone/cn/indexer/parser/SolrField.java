@@ -198,6 +198,7 @@ public class SolrField implements ISolrField {
 
                 } else {
                     value = (String) expression.evaluate(doc, XPathConstants.STRING);
+                    value = value.trim();
                 }
 
                 if (converter != null) {
