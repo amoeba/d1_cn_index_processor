@@ -34,6 +34,9 @@ public class TemplateStringProcessor {
                 result = result.replaceAll("\\[" + key + "\\]", value);
             }
         }
+        if (result != null) {
+            result = result.trim();
+        }
         return result;
     }
 }

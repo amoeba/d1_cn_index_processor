@@ -90,11 +90,22 @@
 		<property name="multivalue" value="false" />
 	</bean>	
 
-	<bean id="eml.author" class="org.dataone.cn.indexer.parser.SolrField">
-		<constructor-arg name="name" value="author" />
-		<constructor-arg name="xpath"
-			value="concat (//dataset/creator/individualName/surName/text(),' ',//dataset/creator/individualName/givenName/text())" />
-		<property name="multivalue" value="false" />
+	<bean id="eml.author" class="org.dataone.cn.indexer.parser.CommonRootSolrField"
+			p:multivalue="false"
+			p:root-ref="authorNameRoot">
+			<constructor-arg name="name" value="author" />
+	</bean>
+	
+	<bean id="authorNameRoot" class="org.dataone.cn.indexer.parser.utility.RootElement"
+		p:name="author"
+		p:xPath="//dataset/creator/individualName"
+		p:template="[givenName] [surName]">
+		<property name="leafs">
+			<list>
+				<ref bean="givenNameLeaf"/>
+				<ref bean="surNameLeaf"/>
+			</list>
+		</property>
 	</bean>
 	
 	<bean id="eml.author_lname" class="org.dataone.cn.indexer.parser.SolrField">
