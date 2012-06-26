@@ -200,24 +200,24 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
                        (this disables length normalization and index-time boosting for the field)
         -->
 
-        <field name="id"              type="string"   indexed="true" stored="true" multiValued="false"/>
-        <field name="formatId"    type="string"   indexed="true" stored="true" multiValued="false"/>
-        <field name="size"            type="long"     indexed="false" stored="true" multiValued="false"/>
-        <field name="checksum"        type="string"   indexed="false" stored="true" multiValued="false"/>
+        <field name="id"              	type="string"   indexed="true" stored="true" multiValued="false"/>
+        <field name="formatId"    		type="string"   indexed="true" stored="true" multiValued="false"/>
+        <field name="size"            	type="slong"     indexed="true" stored="true" multiValued="false"/>
+        <field name="checksum"        	type="string"   indexed="false" stored="true" multiValued="false"/>
         <field name="checksumAlgorithm" type="string" indexed="false" stored="true"/>
         <field name="dateUploaded"    type="date"     indexed="true" stored="true" multiValued="false"/>
         <field name="dateModified"    type="date"     indexed="true" stored="true" multiValued="false"/>
         <field name="submitter"       type="string"   indexed="true" stored="true" multiValued="false"/>
         <field name="rightsHolder"    type="string"   indexed="true" stored="true" multiValued="false"/>
-        <field name="authoritativeMN"         type="string"   indexed="false" stored="true" multiValued="false"/>
-        <field name="replicationAllowed"     type="boolean"  indexed="false" stored="true" multiValued="false"/>
-        <field name="numberReplicas"      type="integer"  indexed="false" stored="true" multiValued="false"/>
-        <field name="preferredReplicationMN"     type="string"   indexed="false" stored="true" multiValued="true"/>
-        <field name="blockedReplicationMN"  type="string"   indexed="false" stored="true" multiValued="true"/>
-        <field name="replicaMN"      type="string"   indexed="false" stored="true" multiValued="true"/>
-        <field name="replicaVerifiedDate" type="date"    indexed="false" stored="true" multiValued="true"/>
-        <field name="datasource"       type="string"  indexed="true" stored="true" multiValued="false"/>
-        <field name="obsoletes"       type="string"   indexed="true" stored="true" multiValued="false"/>
+        <field name="authoritativeMN"       	type="string"   indexed="false" stored="true" multiValued="false"/>
+        <field name="replicationAllowed"     	type="boolean"  indexed="false" stored="true" multiValued="false"/>
+        <field name="numberReplicas"      		type="integer"  indexed="false" stored="true" multiValued="false"/>
+        <field name="preferredReplicationMN"   	type="string"   indexed="false" stored="true" multiValued="true"/>
+        <field name="blockedReplicationMN"  	type="string"   indexed="false" stored="true" multiValued="true"/>
+        <field name="replicaMN"      		type="string"   indexed="false" stored="true" multiValued="true"/>
+        <field name="replicaVerifiedDate" 	type="date"    indexed="false" stored="true" multiValued="true"/>
+        <field name="datasource"       		type="string"  indexed="true" stored="true" multiValued="false"/>
+        <field name="obsoletes"       		type="string"   indexed="true" stored="true" multiValued="false"/>
 
         <!-- Object relationships -->
         <field name="resourceMap"		type="string"   indexed="true" stored="true" multiValued="true"/>
