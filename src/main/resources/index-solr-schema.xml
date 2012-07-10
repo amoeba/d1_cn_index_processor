@@ -202,7 +202,7 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
 
         <field name="id"              	type="string"   indexed="true" stored="true" multiValued="false"/>
         <field name="formatId"    		type="string"   indexed="true" stored="true" multiValued="false"/>
-        <field name="size"            	type="slong"     indexed="true" stored="true" multiValued="false"/>
+        <field name="size"            	type="long"     indexed="false" stored="true" multiValued="false"/>
         <field name="checksum"        	type="string"   indexed="false" stored="true" multiValued="false"/>
         <field name="checksumAlgorithm" type="string" indexed="false" stored="true"/>
         <field name="dateUploaded"    type="date"     indexed="true" stored="true" multiValued="false"/>
