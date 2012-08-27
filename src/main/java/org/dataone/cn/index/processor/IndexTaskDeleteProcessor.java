@@ -31,6 +31,7 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.dataone.cn.hazelcast.HazelcastClientInstance;
 import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.index.task.IndexTaskRepository;
 import org.dataone.cn.indexer.XPathDocumentParser;
@@ -40,9 +41,15 @@ import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementAdd;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
+import org.dataone.configuration.Settings;
+import org.dataone.service.types.v1.Identifier;
+import org.dataone.service.types.v1.SystemMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.w3c.dom.Document;
+
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IMap;
 
 public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
 
@@ -57,10 +64,22 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
     @Autowired
     private ArrayList<XPathDocumentParser> documentParsers;
 
+    private HazelcastInstance hzClient;
+
+    private static final String HZ_OBJECT_PATH = Settings.getConfiguration().getString(
+            "dataone.hazelcast.objectPath");
+
+    private static final String HZ_SYSTEM_METADATA = Settings.getConfiguration().getString(
+            "dataone.hazelcast.systemMetadata");
+
+    private IMap<Identifier, String> objectPaths;
+    private IMap<Identifier, SystemMetadata> systemMetadata;
+
     private String solrQueryUri;
     private String solrIndexUri;
 
     public void process(IndexTask task) throws Exception {
+        startHazelClient();
         if (isDataPackage(task)) {
             removeDataPackage(task);
         } else if (isPartOfDataPackage(task)) {
@@ -71,6 +90,10 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
     }
 
     private void removeDataPackage(IndexTask task) throws Exception {
+        if (task.getObjectPath() == null) {
+            String objectPath = retrieveObjectPath(task.getPid());
+            task.setObjectPath(objectPath);
+        }
         if (task.getObjectPath() != null) {
             Document resourceMapDoc = getXPathDocumentParser().loadDocument(task.getObjectPath());
             if (resourceMapDoc != null) {
@@ -194,5 +217,19 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
             task = null;
         }
         return task;
+    }
+
+    private String retrieveObjectPath(String pid) {
+        Identifier PID = new Identifier();
+        PID.setValue(pid);
+        return objectPaths.get(PID);
+    }
+
+    private void startHazelClient() {
+        if (this.hzClient == null) {
+            this.hzClient = HazelcastClientInstance.getHazelcastClient();
+            this.objectPaths = this.hzClient.getMap(HZ_OBJECT_PATH);
+            this.systemMetadata = hzClient.getMap(HZ_SYSTEM_METADATA);
+        }
     }
 }
