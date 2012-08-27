@@ -62,8 +62,7 @@ import com.hazelcast.core.IMap;
  */
 public class IndexTaskProcessor {
 
-    private static Logger logger = Logger.getLogger(IndexTaskProcessor.class
-            .getName());
+    private static Logger logger = Logger.getLogger(IndexTaskProcessor.class.getName());
 
     @Autowired
     private IndexTaskRepository repo;
@@ -84,11 +83,11 @@ public class IndexTaskProcessor {
 
     private HazelcastClient hzClient;
 
-    private static final String HZ_OBJECT_PATH = Settings.getConfiguration()
-            .getString("dataone.hazelcast.objectPath");
+    private static final String HZ_OBJECT_PATH = Settings.getConfiguration().getString(
+            "dataone.hazelcast.objectPath");
 
-    private static final String HZ_SYSTEM_METADATA = Settings.getConfiguration()
-            .getString("dataone.hazelcast.systemMetadata");
+    private static final String HZ_SYSTEM_METADATA = Settings.getConfiguration().getString(
+            "dataone.hazelcast.systemMetadata");
 
     private IMap<Identifier, String> objectPaths;
     private IMap<Identifier, SystemMetadata> systemMetadata;
@@ -165,8 +164,8 @@ public class IndexTaskProcessor {
         if (representsResourceMap(task)) {
             Document docObject = loadDocument(task);
             if (docObject == null) {
-                logger.debug("unable to load resource at object path: "
-                        + task.getObjectPath() + ".  Marking new and continuing...");
+                logger.debug("unable to load resource at object path: " + task.getObjectPath()
+                        + ".  Marking new and continuing...");
                 task.markNew();
                 saveTask(task);
                 ready = false;
@@ -180,8 +179,8 @@ public class IndexTaskProcessor {
                 List<String> referencedIds = rm.getAllDocumentIDs();
                 referencedIds.remove(task.getPid());
                 if (areAllReferencedDocsIndexed(referencedIds) == false) {
-                    logger.info("Not all map resource references indexed for map: "
-                            + task.getPid() + ".  Marking new and continuing...");
+                    logger.info("Not all map resource references indexed for map: " + task.getPid()
+                            + ".  Marking new and continuing...");
                     task.markNew();
                     saveTask(task);
                     ready = false;
@@ -198,8 +197,7 @@ public class IndexTaskProcessor {
         List<SolrDoc> updateDocuments = null;
         int numberOfIndexedOrRemovedReferences = 0;
         try {
-            updateDocuments = httpService.getDocuments(this.solrQueryUri,
-                    referencedIds);
+            updateDocuments = httpService.getDocuments(this.solrQueryUri, referencedIds);
             numberOfIndexedOrRemovedReferences = updateDocuments.size();
             if (updateDocuments.size() != referencedIds.size()) {
                 for (String id : referencedIds) {
@@ -228,7 +226,7 @@ public class IndexTaskProcessor {
     }
 
     private boolean notVisibleInIndex(SystemMetadata smd) {
-        return !SolrDoc.visibleInIndex(smd);
+        return (!SolrDoc.visibleInIndex(smd) && smd != null);
     }
 
     private boolean representsResourceMap(IndexTask task) {
@@ -293,8 +291,7 @@ public class IndexTaskProcessor {
     }
 
     private List<IndexTask> getIndexTaskQueue() {
-        return repo
-                .findByStatusOrderByPriorityAscTaskModifiedDateAsc(IndexTask.STATUS_NEW);
+        return repo.findByStatusOrderByPriorityAscTaskModifiedDateAsc(IndexTask.STATUS_NEW);
     }
 
     private XPathDocumentParser getXPathDocumentParser() {
@@ -305,8 +302,7 @@ public class IndexTaskProcessor {
         try {
             task = repo.save(task);
         } catch (HibernateOptimisticLockingFailureException e) {
-            logger.debug("Unable to update index task for pid: " + task.getPid()
-                    + ".");
+            logger.debug("Unable to update index task for pid: " + task.getPid() + ".");
             task = null;
         }
         return task;
@@ -320,8 +316,8 @@ public class IndexTaskProcessor {
             logger.error(e.getMessage(), e);
         }
         if (docObject == null) {
-            logger.error("Could not load OBJECT file for ID,Path=" + task.getPid()
-                    + ", " + task.getObjectPath());
+            logger.error("Could not load OBJECT file for ID,Path=" + task.getPid() + ", "
+                    + task.getObjectPath());
         }
         return docObject;
     }
