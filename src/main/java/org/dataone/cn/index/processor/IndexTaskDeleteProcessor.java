@@ -143,10 +143,10 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
                 httpService.sendUpdate(solrIndexUri, addCommand);
             }
         } else if (task.getObjectPath() == null) {
-            task.markNew();
+            task.markFailed();
             saveTask(task);
             logger.info("Unable to process delete task for pid: " + task.getPid()
-                    + ".  Object path not available, marking task new and continuing.");
+                    + ".  Object path not available, marking task FAILED and continuing.");
         }
     }
 
