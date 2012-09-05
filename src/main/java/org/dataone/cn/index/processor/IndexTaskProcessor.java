@@ -173,7 +173,7 @@ public class IndexTaskProcessor {
         if (representsResourceMap(task)) {
             Document docObject = loadDocument(task);
             if (docObject == null) {
-                logger.debug("unable to load resource at object path: " + task.getObjectPath()
+                logger.info("unable to load resource at object path: " + task.getObjectPath()
                         + ".  Marking new and continuing...");
                 ready = false;
             } else if (docObject != null) {
@@ -248,6 +248,7 @@ public class IndexTaskProcessor {
             String objectPath = retrieveObjectPath(task.getPid());
             if (objectPath == null) {
                 ok = false;
+                logger.info("Object path for pid: " + task.getPid() + " is not available.");
             }
             task.setObjectPath(objectPath);
         }
@@ -258,7 +259,7 @@ public class IndexTaskProcessor {
                 // object path is present but doesnt correspond to a file
                 // this task is not ready to index.
                 ok = false;
-                logger.error("Object path exists for pid: "
+                logger.info("Object path exists for pid: "
                         + task.getPid()
                         + " however the file location: "
                         + task.getObjectPath()
@@ -312,7 +313,7 @@ public class IndexTaskProcessor {
         try {
             task = repo.save(task);
         } catch (HibernateOptimisticLockingFailureException e) {
-            logger.debug("Unable to update index task for pid: " + task.getPid() + ".");
+            logger.error("Unable to update index task for pid: " + task.getPid() + ".");
             task = null;
         }
         return task;

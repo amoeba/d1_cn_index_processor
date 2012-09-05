@@ -202,7 +202,7 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
         try {
             task = repo.save(task);
         } catch (HibernateOptimisticLockingFailureException e) {
-            logger.debug("Unable to update index task for pid: " + task.getPid() + ".");
+            logger.error("Unable to update index task for pid: " + task.getPid() + ".");
             task = null;
         }
         return task;
