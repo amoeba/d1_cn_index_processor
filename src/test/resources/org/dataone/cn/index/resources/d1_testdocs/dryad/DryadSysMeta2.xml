@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<systemMetadata xsi:schemaLocation="http://ns.dataone.org/service/types/v1 http://ns.dataone.org/service/types/v1" xmlns="http://ns.dataone.org/service/types/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<d1:systemMetadata xsi:schemaLocation="http://ns.dataone.org/service/types/v1 http://ns.dataone.org/service/types/v1" xmlns:d1="http://ns.dataone.org/service/types/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <identifier>http:/dx.doi.org/10.5061/dryad.9025/1</identifier>
   <dateSysMetadataModified>Mar 31, 2011 11:44:56 AM</dateSysMetadataModified>
   <formatId>http://purl.org/dryad/terms/</formatId>
@@ -15,4 +15,4 @@
   </accessPolicy>
   <authoritativeMemberNode>http://datadryad.org/mn/</authoritativeMemberNode>
   <originMemberNode>http://datadryad.org/mn/</originMemberNode>
-</systemMetadata>
+</d1:systemMetadata>

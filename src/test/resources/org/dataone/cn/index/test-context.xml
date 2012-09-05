@@ -26,7 +26,7 @@ xmlns:context="http://www.springframework.org/schema/context"
  	<import resource="classpath:application-context-fgdc-std-0012-1999.xml" />
  	<import resource="classpath:application-context-fgdc-base.xml" />
  
- 	
+ 	<import resource="classpath:application-context-dryad-base.xml" />
     
     <!-- 
     This import overrides default postgres datasource for testing.
@@ -100,5 +100,22 @@ xmlns:context="http://www.springframework.org/schema/context"
         <constructor-arg type="java.lang.String" 
         value="org/dataone/cn/index/resources/d1_testdocs/fgdc/nasa_d_FEDGPS1293Sysmeta.xml"/>
     </bean>
+    
+     <bean id="dryadSciMeta1" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/dryad/DryadMetadata1.xml"/>
+    </bean>
+    <bean id="dryadSysMeta1" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/dryad/DryadSystemMetadata1.xml"/>
+    </bean>    
 
+     <bean id="dryadSciMeta2" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/dryad/DryadMetadata2.xml"/>
+    </bean>
+    <bean id="dryadSysMeta2" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/dryad/DryadSysMeta2.xml"/>
+    </bean> 
 </beans>
