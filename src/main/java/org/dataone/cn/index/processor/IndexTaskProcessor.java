@@ -111,6 +111,13 @@ public class IndexTaskProcessor {
             processTask(task);
             task = getNextIndexTask(queue);
         }
+
+        List<IndexTask> retryQueue = getIndexTaskRetryQueue();
+        task = getNextIndexTask(retryQueue);
+        while (task != null) {
+            processTask(task);
+            task = getNextIndexTask(queue);
+        }
     }
 
     private void processTask(IndexTask task) {
@@ -120,7 +127,7 @@ public class IndexTaskProcessor {
             } else {
                 updateProcessor.process(task);
             }
-        } catch (Throwable e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             handleFailedTask(task);
             return;
@@ -141,10 +148,6 @@ public class IndexTaskProcessor {
             task.markInProgress();
             task = saveTask(task);
 
-            if (task != null && task.isDeleteTask()) {
-                return task;
-            }
-
             if (task != null && !isObjectPathReady(task)) {
                 task.markNew();
                 saveTask(task);
@@ -152,7 +155,13 @@ public class IndexTaskProcessor {
                 continue;
             }
 
+            if (task != null && task.isDeleteTask()) {
+                return task;
+            }
+
             if (task != null && !isResourceMapReadyToIndex(task, queue)) {
+                task.markNew();
+                saveTask(task);
                 task = null;
             }
         }
@@ -164,10 +173,8 @@ public class IndexTaskProcessor {
         if (representsResourceMap(task)) {
             Document docObject = loadDocument(task);
             if (docObject == null) {
-                logger.debug("unable to load resource at object path: " + task.getObjectPath()
+                logger.info("unable to load resource at object path: " + task.getObjectPath()
                         + ".  Marking new and continuing...");
-                task.markNew();
-                saveTask(task);
                 ready = false;
             } else if (docObject != null) {
                 ResourceMap rm = null;
@@ -181,8 +188,6 @@ public class IndexTaskProcessor {
                 if (areAllReferencedDocsIndexed(referencedIds) == false) {
                     logger.info("Not all map resource references indexed for map: " + task.getPid()
                             + ".  Marking new and continuing...");
-                    task.markNew();
-                    saveTask(task);
                     ready = false;
                 }
             }
@@ -243,6 +248,7 @@ public class IndexTaskProcessor {
             String objectPath = retrieveObjectPath(task.getPid());
             if (objectPath == null) {
                 ok = false;
+                logger.info("Object path for pid: " + task.getPid() + " is not available.");
             }
             task.setObjectPath(objectPath);
         }
@@ -253,7 +259,7 @@ public class IndexTaskProcessor {
                 // object path is present but doesnt correspond to a file
                 // this task is not ready to index.
                 ok = false;
-                logger.error("Object path exists for pid: "
+                logger.info("Object path exists for pid: "
                         + task.getPid()
                         + " however the file location: "
                         + task.getObjectPath()
@@ -294,6 +300,11 @@ public class IndexTaskProcessor {
         return repo.findByStatusOrderByPriorityAscTaskModifiedDateAsc(IndexTask.STATUS_NEW);
     }
 
+    private List<IndexTask> getIndexTaskRetryQueue() {
+        return repo.findByStatusAndNextExecutionLessThan(IndexTask.STATUS_FAILED,
+                System.currentTimeMillis());
+    }
+
     private XPathDocumentParser getXPathDocumentParser() {
         return documentParsers.get(0);
     }
@@ -302,7 +313,7 @@ public class IndexTaskProcessor {
         try {
             task = repo.save(task);
         } catch (HibernateOptimisticLockingFailureException e) {
-            logger.debug("Unable to update index task for pid: " + task.getPid() + ".");
+            logger.error("Unable to update index task for pid: " + task.getPid() + ".");
             task = null;
         }
         return task;
