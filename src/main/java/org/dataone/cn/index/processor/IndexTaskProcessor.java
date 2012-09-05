@@ -127,7 +127,7 @@ public class IndexTaskProcessor {
             } else {
                 updateProcessor.process(task);
             }
-        } catch (Throwable e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             handleFailedTask(task);
             return;
