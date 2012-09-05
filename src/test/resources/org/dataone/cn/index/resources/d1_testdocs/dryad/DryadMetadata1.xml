@@ -1,0 +1,54 @@
+<DryadMetadata xmlns="http://purl.org/dryad/terms/" xmlns:dwc="http://rs.tdwg.org/dwc/terms/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:bibo="http://purl.org/ontology/bibo/">
+  <DryadPublication xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://purl.org/dryad/terms/ http://datadryad.org/profile/v3/dryad.xsd">
+    <dcterms:type>publication</dcterms:type>
+    <status>deposited</status>
+    <bibo:status>published</bibo:status>
+    <dcterms:creator>Dsouli, Najla</dcterms:creator>
+    <dcterms:creator>Delsuc, Frédéric</dcterms:creator>
+    <dcterms:creator>Michaux, Johan</dcterms:creator>
+    <dcterms:creator>De Stordeur, Eric</dcterms:creator>
+    <dcterms:creator>Couloux, Arnaud</dcterms:creator>
+    <dcterms:creator>Veuille, Michel</dcterms:creator>
+    <dcterms:creator>Duvallet, Gérard</dcterms:creator>
+    <dcterms:issued>2011-02-13</dcterms:issued>
+    <dcterms:title>Phylogenetic analyses of mitochondrial and nuclear data in haematophagous flies support the paraphyly of the genus Stomoxys (Diptera: Muscidae)</dcterms:title>
+    <bibo:Journal>Infection, Genetics and Evolution</bibo:Journal>
+    <bibo:volume />
+    <dcterms:identifier />
+    <bibo:doi>doi:10.1016/j.meegid.2011.02.004</bibo:doi>
+    <dcterms:isReferencedBy>doi:10.5061/dryad.9025</dcterms:isReferencedBy>
+  </DryadPublication>
+  <DryadDataPackage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://purl.org/dryad/terms/ http://datadryad.org/profile/v3/dryad.xsd">
+    <dcterms:type>package</dcterms:type>
+    <status>deposited</status>
+    <dcterms:creator>Dsouli, Najla</dcterms:creator>
+    <dcterms:creator>Delsuc, Frédéric</dcterms:creator>
+    <dcterms:creator>Michaux, Johan</dcterms:creator>
+    <dcterms:creator>De Stordeur, Eric</dcterms:creator>
+    <dcterms:creator>Couloux, Arnaud</dcterms:creator>
+    <dcterms:creator>Veuille, Michel</dcterms:creator>
+    <dcterms:creator>Duvallet, Gérard</dcterms:creator>
+    <dcterms:dateSubmitted>2011-03-31T15:39:44Z</dcterms:dateSubmitted>
+    <dcterms:available>2011-03-31T15:39:44Z</dcterms:available>
+    <dcterms:title>Data from: Phylogenetic analyses of mitochondrial and nuclear data in haematophagous flies support the paraphyly of the genus Stomoxys (Diptera: Muscidae)</dcterms:title>
+    <dcterms:identifier>doi:10.5061/dryad.9025</dcterms:identifier>
+    <dcterms:description>The genus Stomoxys Geoffroy (Diptera; Muscidae) contains species of parasitic flies that are of medical and economic importance. We conducted a phylogenetic analysis including 10 representative species of the genus including multiple exemplars, together with the closely related genera Prostomoxys Zumpt, Haematobosca Bezzi, and Haematobia Lepeletier &amp; Serville. Phylogenetic relationships were inferred using maximum likelihood and Bayesian methods from DNA fragments from the cytochrome c oxidase subunit I (COI, 753 bp) and cytochrome b (CytB, 587 bp) mitochondrial genes, and the nuclear ribosomal internal transcribed spacer 2 (ITS2, 426 bp). The combination of mitochondrial and nuclear data strongly supports the paraphyly of the genus Stomoxys because of the inclusion of Prostomoxys saegerae Zumpt. This unexpected result suggests that Prostomoxys should be renamed into Stomoxys. Also, the deep molecular divergence observed between the subspecies Stomoxys niger niger Macquart and S. niger bilineatus Grünbreg led us to propose that they should rather be considered as distinct species, in agreement with ecological data. Bayesian phylogenetic analyses support three distinct lineages within the genus Stomoxys with a strong biogeographical component. The first lineage consists solely of the divergent Asian species S. indicus Picard which appears as the sister-group to all remaining Stomoxys species. The second clade groups the strictly African species Stomoxys inornatus Grünbreg, Stomoxys transvittatus Villeneuve, Stomoxys omega Newstead, and Stomoxys pallidus Roubaud. Finally, the third clade includes both African occurring and more widespread species such as the livestock pest Stomoxys calcitrans Linnaeus. Divergence time estimates indicate that the genus Stomoxys originated in the late Oligocene around 30 million years ago, with the major lineages diversifying in the Early Miocene between 20 and 15 million years ago at a time when temperate forests developed in the Northern Hemisphere.</dcterms:description>
+    <dcterms:subject>Stomoxys flies</dcterms:subject>
+    <dcterms:subject>Phylogenetic relationship</dcterms:subject>
+    <dcterms:subject>Molecular dating</dcterms:subject>
+    <dcterms:subject>Dryad submission</dcterms:subject>
+    <dwc:scientificName>Stomoxyini</dwc:scientificName>
+    <dwc:scientificName>Stomoxys</dwc:scientificName>
+    <dwc:scientificName>Prostomoxys</dwc:scientificName>
+    <dwc:scientificName>Diptera</dwc:scientificName>
+    <dwc:scientificName>Muscidae</dwc:scientificName>
+    <dwc:scientificName>Haematobia</dwc:scientificName>
+    <dwc:scientificName>Haematobosca</dwc:scientificName>
+    <dcterms:spatial>Worldwide</dcterms:spatial>
+    <dcterms:spatial>Everywhere</dcterms:spatial>
+    <dcterms:temporal>Cenozoic</dcterms:temporal>
+    <dcterms:references>doi:10.1016/j.meegid.2011.02.004</dcterms:references>
+    <dcterms:hasPart>doi:10.5061/dryad.9025/1</dcterms:hasPart>
+    <dcterms:hasPart>doi:10.5061/dryad.9025/2</dcterms:hasPart>
+  </DryadDataPackage>
+</DryadMetadata>
