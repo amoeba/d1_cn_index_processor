@@ -22,6 +22,7 @@
 
 package org.dataone.cn.index.processor;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +95,19 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
             String objectPath = retrieveObjectPath(task.getPid());
             task.setObjectPath(objectPath);
         }
+        boolean resourceMapFileExists = false;
         if (task.getObjectPath() != null) {
+            File objectPathFile = new File(task.getObjectPath());
+            if (objectPathFile.exists()) {
+                resourceMapFileExists = true;
+            } else {
+                logger.info("Object path exists: " + task.getObjectPath() + " for pid: "
+                        + task.getPid() + " but file location does not yet exist.");
+            }
+        } else {
+            logger.info("Object path not yet set for pid: " + task.getPid());
+        }
+        if (resourceMapFileExists) {
             Document resourceMapDoc = getXPathDocumentParser().loadDocument(task.getObjectPath());
             if (resourceMapDoc != null) {
                 ResourceMap resourceMap = new ResourceMap(resourceMapDoc);
@@ -142,11 +155,9 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
                 SolrElementAdd addCommand = new SolrElementAdd(docsToUpdate);
                 httpService.sendUpdate(solrIndexUri, addCommand);
             }
-        } else if (task.getObjectPath() == null) {
+        } else {
             task.markFailed();
             saveTask(task);
-            logger.info("Unable to process delete task for pid: " + task.getPid()
-                    + ".  Object path not available, marking task FAILED and continuing.");
         }
     }
 
