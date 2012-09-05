@@ -111,6 +111,13 @@ public class IndexTaskProcessor {
             processTask(task);
             task = getNextIndexTask(queue);
         }
+
+        List<IndexTask> retryQueue = getIndexTaskRetryQueue();
+        task = getNextIndexTask(retryQueue);
+        while (task != null) {
+            processTask(task);
+            task = getNextIndexTask(queue);
+        }
     }
 
     private void processTask(IndexTask task) {
@@ -141,10 +148,6 @@ public class IndexTaskProcessor {
             task.markInProgress();
             task = saveTask(task);
 
-            if (task != null && task.isDeleteTask()) {
-                return task;
-            }
-
             if (task != null && !isObjectPathReady(task)) {
                 task.markNew();
                 saveTask(task);
@@ -152,7 +155,13 @@ public class IndexTaskProcessor {
                 continue;
             }
 
+            if (task != null && task.isDeleteTask()) {
+                return task;
+            }
+
             if (task != null && !isResourceMapReadyToIndex(task, queue)) {
+                task.markNew();
+                saveTask(task);
                 task = null;
             }
         }
@@ -166,8 +175,6 @@ public class IndexTaskProcessor {
             if (docObject == null) {
                 logger.debug("unable to load resource at object path: " + task.getObjectPath()
                         + ".  Marking new and continuing...");
-                task.markNew();
-                saveTask(task);
                 ready = false;
             } else if (docObject != null) {
                 ResourceMap rm = null;
@@ -181,8 +188,6 @@ public class IndexTaskProcessor {
                 if (areAllReferencedDocsIndexed(referencedIds) == false) {
                     logger.info("Not all map resource references indexed for map: " + task.getPid()
                             + ".  Marking new and continuing...");
-                    task.markNew();
-                    saveTask(task);
                     ready = false;
                 }
             }
@@ -292,6 +297,11 @@ public class IndexTaskProcessor {
 
     private List<IndexTask> getIndexTaskQueue() {
         return repo.findByStatusOrderByPriorityAscTaskModifiedDateAsc(IndexTask.STATUS_NEW);
+    }
+
+    private List<IndexTask> getIndexTaskRetryQueue() {
+        return repo.findByStatusAndNextExecutionLessThan(IndexTask.STATUS_FAILED,
+                System.currentTimeMillis());
     }
 
     private XPathDocumentParser getXPathDocumentParser() {

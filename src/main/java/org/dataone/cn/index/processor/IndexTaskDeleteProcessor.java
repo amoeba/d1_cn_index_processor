@@ -22,7 +22,6 @@
 
 package org.dataone.cn.index.processor;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -91,74 +90,51 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
     }
 
     private void removeDataPackage(IndexTask task) throws Exception {
-        if (task.getObjectPath() == null) {
-            String objectPath = retrieveObjectPath(task.getPid());
-            task.setObjectPath(objectPath);
-        }
-        boolean resourceMapFileExists = false;
-        if (task.getObjectPath() != null) {
-            File objectPathFile = new File(task.getObjectPath());
-            if (objectPathFile.exists()) {
-                resourceMapFileExists = true;
-            } else {
-                logger.info("Object path exists: " + task.getObjectPath() + " for pid: "
-                        + task.getPid() + " but file location does not yet exist.");
+        Document resourceMapDoc = getXPathDocumentParser().loadDocument(task.getObjectPath());
+        ResourceMap resourceMap = new ResourceMap(resourceMapDoc);
+        List<String> documentIds = resourceMap.getAllDocumentIDs();
+        List<SolrDoc> indexDocuments = httpService.getDocuments(solrQueryUri, documentIds);
+        removeFromIndex(task);
+        List<SolrDoc> docsToUpdate = new ArrayList<SolrDoc>();
+        // for each document in data package:
+        for (SolrDoc indexDoc : indexDocuments) {
+
+            if (indexDoc.getIdentifier().equals(task.getPid())) {
+                continue; // skipping the resource map, no need update
+                          // it.
+                          // will
+                          // be removed.
             }
-        } else {
-            logger.info("Object path not yet set for pid: " + task.getPid());
-        }
-        if (resourceMapFileExists) {
-            Document resourceMapDoc = getXPathDocumentParser().loadDocument(task.getObjectPath());
-            if (resourceMapDoc != null) {
-                ResourceMap resourceMap = new ResourceMap(resourceMapDoc);
-                List<String> documentIds = resourceMap.getAllDocumentIDs();
-                List<SolrDoc> indexDocuments = httpService.getDocuments(solrQueryUri, documentIds);
-                removeFromIndex(task);
-                List<SolrDoc> docsToUpdate = new ArrayList<SolrDoc>();
-                // for each document in data package:
-                for (SolrDoc indexDoc : indexDocuments) {
 
-                    if (indexDoc.getIdentifier().equals(task.getPid())) {
-                        continue; // skipping the resource map, no need update
-                                  // it.
-                                  // will
-                                  // be removed.
+            // Remove resourceMap reference
+            indexDoc.removeFieldsWithValue(SolrElementField.FIELD_RESOURCEMAP,
+                    resourceMap.getIdentifier());
+
+            // // Remove documents/documentedby values for this resource
+            // map
+            for (ResourceEntry entry : resourceMap.getMappedReferences()) {
+                if (indexDoc.getIdentifier().equals(entry.getIdentifier())) {
+                    for (String documentedBy : entry.getDocumentedBy()) {
+                        // Using removeOneFieldWithValue in-case same
+                        // documents
+                        // are in more than one data package. just
+                        // remove
+                        // one
+                        // instance of data package info.
+                        indexDoc.removeOneFieldWithValue(SolrElementField.FIELD_ISDOCUMENTEDBY,
+                                documentedBy);
                     }
-
-                    // Remove resourceMap reference
-                    indexDoc.removeFieldsWithValue(SolrElementField.FIELD_RESOURCEMAP,
-                            resourceMap.getIdentifier());
-
-                    // // Remove documents/documentedby values for this resource
-                    // map
-                    for (ResourceEntry entry : resourceMap.getMappedReferences()) {
-                        if (indexDoc.getIdentifier().equals(entry.getIdentifier())) {
-                            for (String documentedBy : entry.getDocumentedBy()) {
-                                // Using removeOneFieldWithValue in-case same
-                                // documents
-                                // are in more than one data package. just
-                                // remove
-                                // one
-                                // instance of data package info.
-                                indexDoc.removeOneFieldWithValue(
-                                        SolrElementField.FIELD_ISDOCUMENTEDBY, documentedBy);
-                            }
-                            for (String documents : entry.getDocuments()) {
-                                indexDoc.removeOneFieldWithValue(SolrElementField.FIELD_DOCUMENTS,
-                                        documents);
-                            }
-                            break;
-                        }
+                    for (String documents : entry.getDocuments()) {
+                        indexDoc.removeOneFieldWithValue(SolrElementField.FIELD_DOCUMENTS,
+                                documents);
                     }
-                    docsToUpdate.add(indexDoc);
+                    break;
                 }
-                SolrElementAdd addCommand = new SolrElementAdd(docsToUpdate);
-                httpService.sendUpdate(solrIndexUri, addCommand);
             }
-        } else {
-            task.markFailed();
-            saveTask(task);
+            docsToUpdate.add(indexDoc);
         }
+        SolrElementAdd addCommand = new SolrElementAdd(docsToUpdate);
+        httpService.sendUpdate(solrIndexUri, addCommand);
     }
 
     private void removeFromDataPackage(IndexTask task) throws Exception {
