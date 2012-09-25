@@ -445,7 +445,7 @@ public class XPathDocumentParser {
 
     public void setSolrBaseUri(String solrBaseUri) {
         this.solrBaseUri = solrBaseUri;
-        setSolrQueryUri(solrBaseUri + "/select/");
+        setSolrQueryUri(solrBaseUri + "/adminSelect/");
         setSolrindexUri(solrBaseUri + "/update?commit=true");
     }
 
