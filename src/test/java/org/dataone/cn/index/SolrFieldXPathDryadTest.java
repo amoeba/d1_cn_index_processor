@@ -7,6 +7,7 @@ import org.dataone.cn.indexer.convert.IConverter;
 import org.dataone.cn.indexer.convert.SolrDateConverter;
 import org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor;
 import org.junit.Before;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 
@@ -42,6 +43,11 @@ public class SolrFieldXPathDryadTest extends BaseSolrFieldXPathTest {
 
     private String dryad2Pid = "http:/dx.doi.org/10.5061/dryad.9025/1";
     private String dryad2PidEncoded = "http%3A%2Fdx.doi.org%2F10.5061%2Fdryad.9025%2F1";
+
+    @Test
+    public void emptyTest() {
+
+    }
 
     @Before
     public void setUp() throws Exception {
