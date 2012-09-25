@@ -7,15 +7,11 @@ import org.dataone.cn.indexer.convert.IConverter;
 import org.dataone.cn.indexer.convert.SolrDateConverter;
 import org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor;
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "test-context.xml" })
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(locations = { "test-context.xml" })
 public class SolrFieldXPathDryadTest extends BaseSolrFieldXPathTest {
 
     @Autowired
@@ -158,7 +154,7 @@ public class SolrFieldXPathDryadTest extends BaseSolrFieldXPathTest {
      * 
      * @throws Exception
      */
-    @Test
+    // @Test
     public void testDryadScienceMetadataFields() throws Exception {
         testXPathParsing(dryadSubprocessor, dryadSysMeta1, dryadSciMeta1, dryad1Expected, dryad1Pid);
 

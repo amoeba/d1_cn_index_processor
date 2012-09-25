@@ -32,7 +32,7 @@
        <ref bean="fgdcstd0011998Subprocessor" />
        <ref bean="fgdcstd00111999Subprocessor" />
        <ref bean="fgdcstd00121999Subprocessor" />
-       <ref bean="dryadSubprocessor" />
+  <!--      <ref bean="dryadSubprocessor" />   -->
       </list>
      </property>
     </bean>
