@@ -30,11 +30,9 @@ import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.dataone.cn.indexer.convert.IConverter;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -59,14 +57,12 @@ public class MergeSolrField extends SolrField {
     }
 
     @Override
-    public List<SolrElementField> processField(Document doc, XPathExpression expression,
-            String name, IConverter converter, boolean multiValued, boolean xmlEscape)
-            throws XPathExpressionException, IOException, SAXException,
-            ParserConfigurationException {
+    public List<SolrElementField> processField(Document doc) throws XPathExpressionException,
+            IOException, SAXException, ParserConfigurationException {
         List<SolrElementField> fields = new ArrayList<SolrElementField>();
 
         try {
-            NodeList values = (NodeList) expression.evaluate(doc, XPathConstants.NODESET);
+            NodeList values = (NodeList) xPathExpression.evaluate(doc, XPathConstants.NODESET);
             Set<String> usedValues = new HashSet<String>();
             StringBuilder sb = new StringBuilder();
             int imax = values.getLength();
@@ -76,18 +72,20 @@ public class MergeSolrField extends SolrField {
                 if (nodeValue != null) {
                     nodeValue = nodeValue.trim();
                     if ((!dedupe) | (dedupe & !usedValues.contains(nodeValue))) {
-                        sb.append(nodeValue);
-                        if (i < imax - 1) {
-                            sb.append(delimiter);
-                        }
-                        if (dedupe) {
-                            usedValues.add(nodeValue);
+                        if (allowedValue(nodeValue)) {
+                            sb.append(nodeValue);
+                            if (i < imax - 1) {
+                                sb.append(delimiter);
+                            }
+                            if (dedupe) {
+                                usedValues.add(nodeValue);
+                            }
                         }
                     }
                 }
             }
             String nodeValue = sb.toString().trim();
-            if (xmlEscape) {
+            if (escapeXML) {
                 nodeValue = StringEscapeUtils.escapeXml(nodeValue);
             }
             fields.add(new SolrElementField(name, nodeValue));

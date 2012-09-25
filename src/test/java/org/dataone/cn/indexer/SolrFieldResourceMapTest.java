@@ -61,20 +61,7 @@ public class SolrFieldResourceMapTest extends TestCase {
 
     public void testSolrFieldResourceMap() throws ParserConfigurationException {
 
-        // <bean class="org.dataone.cn.indexer.parser.SolrFieldResourceMap">
-        // <constructor-arg name="name" value="resourcemap"/>
-        // <constructor-arg name="xpath"
-        // value="/d063:systemMetadata/objectFormat/fmtid/text()"/>
-        // <constructor-arg name="resourceMapXpath" value=""/>
-        // <constructor-arg name="multivalue" value="false"/>
-        // <constructor-arg name="xmlNamespaceConfig"
-        // ref="xmlNamespaceResource"/>
-        // <property name="resourceValueMatch"
-        // value="http://www.openarchives.org/ore/terms"/>
-        // </bean>
-
         String xpath1 = "/d063:systemMetadata/objectFormat/fmtid/text()";
-        String resourceMapXPath = "/d063:systemMetadata/objectFormat/fmtid/text()";
         ArrayList<XMLNamespace> namespaces = new ArrayList<XMLNamespace>();
         namespaces.add(new XMLNamespace("cito", "http://purl.org/spar/cito/"));
         namespaces.add(new XMLNamespace("dc", "http://purl.org/dc/elements/1.1/"));
@@ -86,7 +73,7 @@ public class SolrFieldResourceMapTest extends TestCase {
 
         XMLNamespaceConfig config = new XMLNamespaceConfig(namespaces);
         SolrFieldResourceMap solrFieldResourceMap = new SolrFieldResourceMap("resourcemap", xpath1,
-                resourceMapXPath, false, config);
+                config);
 
     }
 }

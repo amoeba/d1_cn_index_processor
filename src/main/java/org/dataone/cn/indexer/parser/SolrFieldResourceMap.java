@@ -32,7 +32,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
@@ -48,15 +47,12 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Porter
- * Date: 8/22/11
- * Time: 10:49 AM
- */
-
-/**
+ * Created by IntelliJ IDEA. User: Porter Date: 8/22/11 Time: 10:49 AM
+ * 
  * Extracts resource map information and creates or updates relations in
  * documents in solr index.
+ * 
+ * This class appears to be DEAD CODE? slr, 9-25-12
  * 
  */
 public class SolrFieldResourceMap extends SolrField {
@@ -65,19 +61,16 @@ public class SolrFieldResourceMap extends SolrField {
 
     private XPathFactory xpathFactory = null;
     private XPath xpathEval = null;
-    private XMLNamespaceConfig xmlNamespaceConfig = null;
-    private XPathExpression resourceExpression = null;
 
     String resourceMapRegexMatch = null;
     private String objectFormatXPath = null;
     private String baseUrl = null;
     private String resourceValueMatch = null;
 
-    public SolrFieldResourceMap(String name, String xpath, String resourceMapXpath,
-            boolean multivalue, XMLNamespaceConfig xmlNamespaceConfig)
+    public SolrFieldResourceMap(String name, String xpath, XMLNamespaceConfig xmlNamespaceConfig)
             throws ParserConfigurationException {
-        super(name, xpath, multivalue);
-
+        super(name, xpath, true);
+        this.escapeXML = false;
         xpathFactory = XPathFactory.newInstance();
         xpathEval = xpathFactory.newXPath();
         xpathEval.setNamespaceContext(xmlNamespaceConfig);
@@ -108,7 +101,7 @@ public class SolrFieldResourceMap extends SolrField {
             InputStream responseInputStream = responseEntity.getContent();
             Document resourceDocument = getBuilder().parse(responseInputStream);
 
-            return processField(resourceDocument, resourceExpression, getName(), null, true, false);
+            return processField(resourceDocument);
         }
 
         return new ArrayList<SolrElementField>();

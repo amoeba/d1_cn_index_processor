@@ -45,7 +45,7 @@
 		<property name="converter" ref="solrLongitudeConverter" />
 	</bean>
 	
-		<bean id="fgdc.northBoundCoord" class="org.dataone.cn.indexer.parser.SolrField">
+	<bean id="fgdc.northBoundCoord" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="northBoundCoord" />
 		<constructor-arg name="xpath"
 			value="//metadata/idinfo/spdom/bounding/northbc/text()" />
@@ -53,7 +53,7 @@
 		<property name="converter" ref="solrLongitudeConverter" />
 	</bean>	
 	
-		<bean id="fgdc.southBoundCoord" class="org.dataone.cn.indexer.parser.SolrField">
+	<bean id="fgdc.southBoundCoord" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="southBoundCoord" />
 		<constructor-arg name="xpath"
 			value="//metadata/idinfo/spdom/bounding/southbc/text()" />
@@ -89,12 +89,18 @@
 			value="//metadata/idinfo/keywords/theme[themekt='GCMD Science Keywords']/themekey/text()" />
 		<property name="multivalue" value="true" />
 	</bean>
-	
+ 	
 	<bean id="fgdc.keywords" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="keywords" />
 		<constructor-arg name="xpath"
-			value="//metadata/idinfo/keywords/theme[themekt='none']/themekey/text() | //metadata/idinfo/keywords/theme[themekt='None']/themekey/text()" />
+			value="//metadata/idinfo/keywords/theme/themekey/text() | //metadata/idinfo/keywords/place/placekey/text()" />
 		<property name="multivalue" value="true" />
+		<property name="dedupe" value="true" />
+		<property name="disallowedValues">
+			<list>
+				<value>none</value>
+			</list>
+		</property>
 	</bean>
 
 	<bean id="fgdc.genus" class="org.dataone.cn.indexer.parser.SolrField">
