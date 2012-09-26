@@ -35,6 +35,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.dataone.cn.indexer.convert.IConverter;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.w3c.dom.Document;
@@ -65,6 +66,7 @@ public class SolrField implements ISolrField {
     protected boolean combineNodes = false;
     protected boolean dedupe = false;
     protected List<String> disallowedValues = null;
+    protected String valueSeparator = null;
 
     public SolrField() {
     }
@@ -93,6 +95,159 @@ public class SolrField implements ISolrField {
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * Returns one or more elements of a single SOLR record.
+     */
+    public List<SolrElementField> getFields(Document doc, String identifier) throws Exception {
+        return processField(doc);
+    }
+
+    public List<SolrElementField> processField(Document doc) throws XPathExpressionException,
+            IOException, SAXException, ParserConfigurationException {
+        List<SolrElementField> fields = new ArrayList<SolrElementField>();
+        Set<String> usedValues = new HashSet<String>();
+        try {
+            if (this.multivalue) {
+                NodeList values = (NodeList) this.xPathExpression.evaluate(doc,
+                        XPathConstants.NODESET);
+                for (int i = 0; i < values.getLength(); i++) {
+                    Node n = values.item(i);
+                    String nodeValue = n.getNodeValue();
+                    if (nodeValue != null) {
+                        nodeValue = nodeValue.trim();
+
+                        if (StringUtils.isNotEmpty(this.valueSeparator)
+                                && nodeValue.contains(this.valueSeparator)) {
+                            String[] inlineValues = StringUtils.split(nodeValue,
+                                    this.valueSeparator);
+                            for (int j = 0; j < inlineValues.length; j++) {
+                                String inlineValue = inlineValues[j];
+                                if (inlineValue.equals(this.valueSeparator) == false) {
+                                    processValue(fields, usedValues, inlineValue);
+                                }
+                            }
+                        } else {
+                            processValue(fields, usedValues, nodeValue);
+                        }
+                    }
+                }
+            } else {
+                String value = null;
+                if (combineNodes) {
+                    NodeList nodeSet = (NodeList) xPathExpression.evaluate(doc,
+                            XPathConstants.NODESET);
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < nodeSet.getLength(); i++) {
+                        if (i > 0) {
+                            sb.append(" ");
+                        }
+                        Node nText = nodeSet.item(i);
+                        String nodeValue = nText.getNodeValue();
+                        if (nodeValue != null) {
+                            nodeValue = nodeValue.trim();
+                            if (this.converter != null) {
+                                nodeValue = this.converter.convert(nodeValue);
+                            }
+                            if (this.escapeXML) {
+                                nodeValue = StringEscapeUtils.escapeXml(nodeValue);
+                            }
+                            if (!dedupe || (dedupe && !usedValues.contains(nodeValue))) {
+                                if (allowedValue(value)) {
+                                    sb.append(nodeValue);
+                                    usedValues.add(nodeValue);
+                                }
+                            }
+                        }
+                    }
+                    value = sb.toString().trim();
+                } else {
+                    value = (String) xPathExpression.evaluate(doc, XPathConstants.STRING);
+                    if (value != null) {
+                        value = value.trim();
+                    }
+                    if (converter != null) {
+                        value = converter.convert(value);
+                    }
+                    if (escapeXML) {
+                        value = StringEscapeUtils.escapeXml(value);
+                    }
+                }
+                if (StringUtils.isNotEmpty(value) && allowedValue(value)) {
+                    fields.add(new SolrElementField(name, value));
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return fields;
+    }
+
+    private void processValue(List<SolrElementField> fields, Set<String> usedValues,
+            String nodeValue) {
+        if (StringUtils.isNotEmpty(nodeValue)) {
+            nodeValue = nodeValue.trim();
+            if (this.converter != null) {
+                nodeValue = this.converter.convert(nodeValue);
+            }
+            if (this.escapeXML) {
+                nodeValue = StringEscapeUtils.escapeXml(nodeValue);
+            }
+            if (!dedupe || (dedupe & !usedValues.contains(nodeValue))) {
+                if (allowedValue(nodeValue)) {
+                    fields.add(new SolrElementField(name, nodeValue));
+                    usedValues.add(nodeValue);
+                }
+            }
+        }
+    }
+
+    protected boolean allowedValue(String value) {
+        if (this.disallowedValues == null || this.disallowedValues.isEmpty()) {
+            return true;
+        } else {
+            for (String disallowed : this.disallowedValues) {
+                if (disallowed.equalsIgnoreCase(value)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean isCombineNodes() {
+        return combineNodes;
+    }
+
+    /**
+     * If set results are concatenated together using single space as separator.
+     * this value is ignored if it is a multi value field
+     * 
+     * @param combineNodes
+     */
+    public void setCombineNodes(boolean combineNodes) {
+        this.combineNodes = combineNodes;
+    }
+
+    public void setDedupe(boolean dedupe) {
+        this.dedupe = dedupe;
+    }
+
+    public void setDisallowedValues(List<String> disallowed) {
+        this.disallowedValues = disallowed;
+    }
+
+    public List<String> getDisallwedValues() {
+        return this.disallowedValues;
+    }
+
+    public void setValueSeparator(String valueSeparator) {
+        this.valueSeparator = valueSeparator;
+    }
+
+    public String getValueSeparator() {
+        return this.valueSeparator;
     }
 
     protected XPathExpression getxPathExpression() {
@@ -141,127 +296,5 @@ public class SolrField implements ISolrField {
 
     public void setEscapeXML(boolean escapeXML) {
         this.escapeXML = escapeXML;
-    }
-
-    /**
-     * Returns one or more elements of a single SOLR record.
-     */
-    public List<SolrElementField> getFields(Document doc, String identifier) throws Exception {
-        return processField(doc);
-    }
-
-    public List<SolrElementField> processField(Document doc) throws XPathExpressionException,
-            IOException, SAXException, ParserConfigurationException {
-        List<SolrElementField> fields = new ArrayList<SolrElementField>();
-        Set<String> usedValues = new HashSet<String>();
-        try {
-            if (this.multivalue) {
-                NodeList values = (NodeList) this.xPathExpression.evaluate(doc,
-                        XPathConstants.NODESET);
-                for (int i = 0; i < values.getLength(); i++) {
-                    Node n = values.item(i);
-                    String nodeValue = n.getNodeValue();
-                    if (nodeValue != null) {
-                        nodeValue = nodeValue.trim();
-                        if (this.converter != null) {
-                            nodeValue = this.converter.convert(nodeValue);
-                        }
-                        if (this.escapeXML) {
-                            nodeValue = StringEscapeUtils.escapeXml(nodeValue);
-                        }
-                        if (!dedupe || (dedupe & !usedValues.contains(nodeValue))) {
-                            if (allowedValue(nodeValue)) {
-                                fields.add(new SolrElementField(name, nodeValue));
-                                usedValues.add(nodeValue);
-                            }
-                        }
-                    }
-                }
-            } else {
-
-                String value = null;
-                if (combineNodes) {
-                    NodeList nodeSet = (NodeList) xPathExpression.evaluate(doc,
-                            XPathConstants.NODESET);
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < nodeSet.getLength(); i++) {
-                        if (i > 0) {
-                            sb.append(" ");
-                        }
-                        Node nText = nodeSet.item(i);
-                        if (nText.getNodeValue() != null) {
-                            if (!dedupe
-                                    || (dedupe && !usedValues.contains(nText.getNodeValue().trim()))) {
-                                if (allowedValue(value)) {
-                                    sb.append(nText.getNodeValue().trim());
-                                    usedValues.add(nText.getNodeValue().trim());
-                                }
-                            }
-                        }
-                    }
-                    value = sb.toString().trim();
-
-                } else {
-                    value = (String) xPathExpression.evaluate(doc, XPathConstants.STRING);
-                    if (value != null) {
-                        value = value.trim();
-                    }
-                }
-
-                if (converter != null) {
-                    value = converter.convert(value);
-                }
-                if (escapeXML) {
-                    value = StringEscapeUtils.escapeXml(value);
-                }
-                if (allowedValue(value)) {
-                    fields.add(new SolrElementField(name, value));
-                }
-
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        return fields;
-    }
-
-    protected boolean allowedValue(String value) {
-        if (this.disallowedValues == null || this.disallowedValues.isEmpty()) {
-            return true;
-        } else {
-            for (String disallowed : this.disallowedValues) {
-                if (disallowed.equalsIgnoreCase(value)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public boolean isCombineNodes() {
-        return combineNodes;
-    }
-
-    /**
-     * If set results are concatenated together using single space as separator.
-     * this value is ignored if it is a multi value field
-     * 
-     * @param combineNodes
-     */
-    public void setCombineNodes(boolean combineNodes) {
-        this.combineNodes = combineNodes;
-    }
-
-    public void setDedupe(boolean dedupe) {
-        this.dedupe = dedupe;
-    }
-
-    public void setDisallowedValues(List<String> disallowed) {
-        this.disallowedValues = disallowed;
-    }
-
-    public List<String> getDisallwedValues() {
-        return this.disallowedValues;
     }
 }
