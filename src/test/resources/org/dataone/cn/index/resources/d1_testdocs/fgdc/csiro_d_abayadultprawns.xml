@@ -44,6 +44,14 @@ http://www.marine.csiro.au/marine/mcdd/data/CSIRODMR/Albatross_Bay_Adult_Prawn_D
 </bounding>
 </spdom>
 <keywords>
+      <theme>
+        <themekt>ISO 19115 Topic Category</themekt>
+        <themekey>none</themekey>
+      </theme>
+      <theme>
+        <themekt><![CDATA[Parameter_Sensor_Source]]></themekt>
+        <themekey><![CDATA[BIOMASS|LANDSAT TM|LANDSAT-5]]></themekey>
+      </theme>
 <theme>
 <themekt>none</themekt>
 <themekey>adult prawn data</themekey>
@@ -52,6 +60,7 @@ http://www.marine.csiro.au/marine/mcdd/data/CSIRODMR/Albatross_Bay_Adult_Prawn_D
 <themekey>reproductive stage</themekey>
 <themekey>moult stage</themekey>
 <themekey>parasites</themekey>
+<themekey>NONE</themekey>
 </theme>
 <place>
 <placekt>none</placekt>
