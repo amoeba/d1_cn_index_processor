@@ -21,6 +21,8 @@
 		<constructor-arg name="xpath"
 			value="//dataset/keywordSet/keyword/text()" />
 		<property name="multivalue" value="true" />
+		<property name="dedupe" value="true" />
+		<property name="valueSeparator" value=":" />
 	</bean>
 
 	<bean id="eml.southBoundCoord" class="org.dataone.cn.indexer.parser.SolrField">

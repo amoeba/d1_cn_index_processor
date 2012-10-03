@@ -60,8 +60,9 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
         eml210Expected
                 .put("abstract",
                         "This metadata record fred, describes a 12-34 TT-12 long-term data document can't frank.  This is a test.  If this was not a lower, an abstract \"double\" or 'single' would be present in UPPER (parenthized) this location.");
-        eml210Expected.put("keywords",
-                "SANParks, South Africa##Augrabies Falls National Park,South Africa##Census data");
+        eml210Expected
+                .put("keywords",
+                        "SANParks, South Africa##Augrabies Falls National Park,South Africa##Census data#EARTH SCIENCE#Oceans#Ocean Temperature#Water Temperature");
         eml210Expected.put("title", "Augrabies falls National Park census data.");
         eml210Expected.put("project", "");
         eml210Expected.put("southBoundCoord", "26.0");
@@ -106,7 +107,8 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
 
         eml210Expected
                 .put("text",
-                        "Augrabies falls National Park census data.   SANParks    Garcia  Freddy   SANParks  Regional Ecologists   Private Bag x402 Skukuza, 1350 South Africa     Freeman  Gordon   SANParks  Regional Ecologists   Private Bag x402 Skukuza, 1350 South Africa    The Awesome Store  Regional Ecologists   Private Bag x402 Skukuza, 1350 South Africa    This metadata record fred, describes a 12-34 TT-12 long-term data document can't frank.  This is a test.  If this was not a lower, an abstract \"double\" or 'single' would be present in UPPER (parenthized) this location.   SANParks, South Africa  Augrabies Falls National Park,South Africa  Census data    Agulhas falls national Park   -120.311210  -120.311210  26.0  26.0       1998    2004-02-13       Genus  Antidorcas   Species  marsupialis  Hartmans Zebra     Genus  Cercopithecus   Species  aethiops  Vervet monkey     Genus  Diceros   Species  bicornis  Baboon     Genus  Equus   Species  hartmannae  Giraffe     Genus  Giraffa   Species  camelopardalis  Kudu     Genus  Oreotragus   Species  oreotragus  Gemsbok     Genus  Oryz   Species  gazella  Eland     Genus  Papio   Species  hamadryas     Genus  Taurotragus   Species  oryx  Black rhino     Genus  Tragelaphus   Species  strepsiceros  Klipspringer      1251095992100 peggym.130.4");
+                        "Augrabies falls National Park census data.   SANParks    Garcia  Freddy   SANParks  Regional Ecologists   Private Bag x402 Skukuza, 1350 South Africa     Freeman  Gordon   SANParks  Regional Ecologists   Private Bag x402 Skukuza, 1350 South Africa    The Awesome Store  Regional Ecologists   Private Bag x402 Skukuza, 1350 South Africa    This metadata record fred, describes a 12-34 TT-12 long-term data document can't frank.  This is a test.  If this was not a lower, an abstract \"double\" or 'single' would be present in UPPER (parenthized) this location.   SANParks, South Africa  Augrabies Falls National Park,South Africa  Census data  EARTH SCIENCE : Oceans : Ocean Temperature : Water Temperature    Agulhas falls national Park   -120.311210  -120.311210  26.0  26.0       1998    2004-02-13       Genus  Antidorcas   Species  marsupialis  Hartmans Zebra     Genus  Cercopithecus   Species  aethiops  Vervet monkey     Genus  Diceros   Species  bicornis  Baboon     Genus  Equus   Species  hartmannae  Giraffe     Genus  Giraffa   Species  camelopardalis  Kudu     Genus  Oreotragus   Species  oreotragus  Gemsbok     Genus  Oryz   Species  gazella  Eland     Genus  Papio   Species  hamadryas     Genus  Taurotragus   Species  oryx  Black rhino     Genus  Tragelaphus   Species  strepsiceros  Klipspringer      1251095992100 peggym.130.4");
+
     }
 
     /**
