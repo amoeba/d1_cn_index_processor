@@ -96,7 +96,6 @@
 			value="//metadata/idinfo/keywords/theme/themekey/text() | //metadata/idinfo/keywords/place/placekey/text()" />
 		<property name="multivalue" value="true" />
 		<property name="dedupe" value="true" />
-		<property name="valueSeparator" value=">" />
 		<property name="disallowedValues">
 			<list>
 				<value>none</value>

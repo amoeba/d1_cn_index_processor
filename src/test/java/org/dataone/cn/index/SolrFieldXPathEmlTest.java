@@ -62,7 +62,7 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
                         "This metadata record fred, describes a 12-34 TT-12 long-term data document can't frank.  This is a test.  If this was not a lower, an abstract \"double\" or 'single' would be present in UPPER (parenthized) this location.");
         eml210Expected
                 .put("keywords",
-                        "SANParks, South Africa##Augrabies Falls National Park,South Africa##Census data#EARTH SCIENCE#Oceans#Ocean Temperature#Water Temperature");
+                        "SANParks, South Africa##Augrabies Falls National Park,South Africa##Census data#EARTH SCIENCE : Oceans : Ocean Temperature : Water Temperature");
         eml210Expected.put("title", "Augrabies falls National Park census data.");
         eml210Expected.put("project", "");
         eml210Expected.put("southBoundCoord", "26.0");
