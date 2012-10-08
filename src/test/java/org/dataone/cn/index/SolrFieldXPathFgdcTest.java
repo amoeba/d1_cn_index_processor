@@ -121,6 +121,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         // system metadata
         csiroExpected.put("id", csiro_pid);
         csiroExpected.put("formatId", "FGDC-STD-001.1-1999");
+        csiroExpected.put("formatType", "METADATA");
         csiroExpected.put("size", "9008");
         csiroExpected.put("checksum", "86bc6417ef29b6fbd279160699044e5e");
         csiroExpected.put("checksumAlgorithm", "MD5");
@@ -130,7 +131,8 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         csiroExpected.put("numberReplicas", "3");
         csiroExpected.put("preferredReplicationMN", "");
         csiroExpected.put("blockedReplicationMN", "");
-        csiroExpected.put("obsoletes", "");
+        csiroExpected.put("obsoletes", "csiro_c_abayadultprawns");
+        csiroExpected.put("obsoletedBy", "csiro_e_abayadultprawns");
         csiroExpected.put("dateUploaded", solrDateConverter.convert("2012-03-22T13:55:48.348202"));
         csiroExpected.put("dateModified", solrDateConverter.convert("2012-03-22T13:55:48.360604"));
         csiroExpected.put("datasource", "test_documents");
@@ -210,6 +212,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         // system metadata
         fgdcNasaExpected.put("id", nasa_pid);
         fgdcNasaExpected.put("formatId", "FGDC-STD-001.1-1999");
+        fgdcNasaExpected.put("formatType", "METADATA");
         fgdcNasaExpected.put("size", "14880");
         fgdcNasaExpected.put("checksum", "c72ff66bbe7fa99e5fb399bab8cb6f85");
         fgdcNasaExpected.put("checksumAlgorithm", "MD5");
@@ -220,7 +223,8 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         fgdcNasaExpected.put("numberReplicas", "3");
         fgdcNasaExpected.put("preferredReplicationMN", "");
         fgdcNasaExpected.put("blockedReplicationMN", "");
-        fgdcNasaExpected.put("obsoletes", "");
+        fgdcNasaExpected.put("obsoletes", "nasa_d_FEDGPS1292");
+        fgdcNasaExpected.put("obsoletedBy", "nasa_d_FEDGPS1294");
         fgdcNasaExpected.put("dateUploaded",
                 solrDateConverter.convert("2012-03-22T13:53:02.814057"));
         fgdcNasaExpected.put("dateModified",

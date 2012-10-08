@@ -249,7 +249,6 @@ public class SolrDoc {
         if (smd == null) {
             return false;
         }
-        return !((smd.getObsoletedBy() != null && smd.getObsoletedBy().getValue() != null) || (smd
-                .getArchived() != null && smd.getArchived().booleanValue()));
+        return !(smd.getArchived() != null && smd.getArchived().booleanValue());
     }
 }

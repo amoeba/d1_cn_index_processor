@@ -24,6 +24,8 @@
     </allow>
   </accessPolicy>
   <replicationPolicy numberReplicas="3" replicationAllowed="true"/>
+  <obsoletes>csiro_c_abayadultprawns</obsoletes>
+  <obsoletedBy>csiro_e_abayadultprawns</obsoletedBy>
   <dateUploaded>2012-03-22T13:55:48.348202</dateUploaded>
   <dateSysMetadataModified>2012-03-22T13:55:48.360604</dateSysMetadataModified>
   <originMemberNode>test_documents</originMemberNode>

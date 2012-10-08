@@ -12,6 +12,10 @@
  <bean id="fgdcDateConverter" class="org.dataone.cn.indexer.convert.FgdcDateConverter"/>
  <bean id="solrLatitudeConverter" class="org.dataone.cn.indexer.convert.SolrLatitudeConverter" />
  <bean id="solrLongitudeConverter" class="org.dataone.cn.indexer.convert.SolrLongitudeConverter" />
+ <bean id="booleanPublicConverter" class="org.dataone.cn.indexer.convert.BooleanMatchConverter">
+  <constructor-arg value="public" />
+ </bean>
+ <bean id="formatIdToFormatTypeConverter" class="org.dataone.cn.indexer.convert.FormatIdToFormatTypeConverter" />
 
  <bean id="documentParsers" class="java.util.ArrayList" autowire="byName">
   <constructor-arg>
@@ -109,10 +113,6 @@
   </constructor-arg>
  </bean>
 
- <bean id="booleanPublicConverter" class="org.dataone.cn.indexer.convert.BooleanMatchConverter">
-  <constructor-arg value="public" />
- </bean>
- 
     <bean id="httpConnectionManager" class="org.apache.http.impl.conn.SingleClientConnManager"/>
     
     <bean id="httpClient" class="org.apache.http.impl.client.DefaultHttpClient">

@@ -24,6 +24,8 @@
     </allow>
   </accessPolicy>
   <replicationPolicy numberReplicas="3" replicationAllowed="true"/>
+  <obsoletes>nasa_d_FEDGPS1292</obsoletes>
+  <obsoletedBy>nasa_d_FEDGPS1294</obsoletedBy>
   <dateUploaded>2012-03-22T13:53:02.814057</dateUploaded>
   <dateSysMetadataModified>2012-03-22T13:53:02.821757</dateSysMetadataModified>
   <originMemberNode>test_documents</originMemberNode>

@@ -17,6 +17,12 @@
 				</bean>
 				
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
+					<constructor-arg name="name" value="formatType" />
+					<constructor-arg name="xpath" value="/d100:systemMetadata/formatId/text()" />
+					<property name="converter" ref="formatIdToFormatTypeConverter" />
+				</bean>
+				
+				<bean class="org.dataone.cn.indexer.parser.SolrField">
 					<constructor-arg name="name" value="size" />
 					<constructor-arg name="xpath"
 						value="/d100:systemMetadata/size/text()" />
@@ -76,6 +82,12 @@
 					<constructor-arg name="name" value="obsoletes" />
 					<constructor-arg name="xpath"
 						value="/d100:systemMetadata/obsoletes/text()" />
+				</bean>
+
+				<bean class="org.dataone.cn.indexer.parser.SolrField">
+					<constructor-arg name="name" value="obsoletedBy" />
+					<constructor-arg name="xpath"
+						value="/d100:systemMetadata/obsoletedBy/text()" />
 				</bean>
 
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
