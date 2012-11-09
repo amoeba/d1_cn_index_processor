@@ -192,7 +192,7 @@ public class IndexTaskProcessingIntegrationTest {
                 System.out.print(mapName + " ");
             }
             System.out.println();
-            hzMember = Hazelcast.init(hzConfig);
+            hzMember = Hazelcast.newHazelcastInstance(hzConfig);
             System.out.println("Hazelcast member hzMember name: " + hzMember.getName());
 
             sysMetaMap = hzMember.getMap(systemMetadataMapName);
