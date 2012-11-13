@@ -31,7 +31,7 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.dataone.cn.hazelcast.HazelcastClientInstance;
+import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.index.task.IndexTaskRepository;
 import org.dataone.cn.indexer.XPathDocumentParser;
@@ -45,7 +45,6 @@ import org.dataone.configuration.Settings;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.SystemMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.w3c.dom.Document;
 
 import com.hazelcast.core.HazelcastInstance;
@@ -198,25 +197,9 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
         this.solrIndexUri = uri;
     }
 
-    private IndexTask saveTask(IndexTask task) {
-        try {
-            task = repo.save(task);
-        } catch (HibernateOptimisticLockingFailureException e) {
-            logger.error("Unable to update index task for pid: " + task.getPid() + ".");
-            task = null;
-        }
-        return task;
-    }
-
-    private String retrieveObjectPath(String pid) {
-        Identifier PID = new Identifier();
-        PID.setValue(pid);
-        return objectPaths.get(PID);
-    }
-
     private void startHazelClient() {
         if (this.hzClient == null) {
-            this.hzClient = HazelcastClientInstance.getHazelcastClient();
+            this.hzClient = HazelcastClientFactory.getStorageClient();
             this.objectPaths = this.hzClient.getMap(HZ_OBJECT_PATH);
             this.systemMetadata = hzClient.getMap(HZ_SYSTEM_METADATA);
         }

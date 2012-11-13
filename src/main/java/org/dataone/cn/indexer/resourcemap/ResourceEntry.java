@@ -26,7 +26,7 @@ import java.io.StringWriter;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.dataone.cn.hazelcast.HazelcastClientInstance;
+import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.configuration.Settings;
 import org.dataone.service.types.v1.Identifier;
@@ -223,7 +223,7 @@ public class ResourceEntry {
 
     private void startHazelClient() {
         if (this.hzClient == null) {
-            this.hzClient = HazelcastClientInstance.getHazelcastClient();
+            this.hzClient = HazelcastClientFactory.getStorageClient();
             this.systemMetadata = this.hzClient.getMap(HZ_SYSTEM_METADATA);
         }
     }

@@ -28,7 +28,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
-import org.dataone.cn.hazelcast.HazelcastClientInstance;
+import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.index.task.IndexTaskRepository;
 import org.dataone.cn.indexer.XPathDocumentParser;
@@ -82,7 +82,7 @@ public class IndexTaskUpdateProcessor implements IndexTaskProcessingStrategy {
 
     private void startHazelClient() {
         if (this.hzClient == null) {
-            this.hzClient = HazelcastClientInstance.getHazelcastClient();
+            this.hzClient = HazelcastClientFactory.getStorageClient();
             this.systemMetadata = this.hzClient.getMap(HZ_SYSTEM_METADATA);
         }
     }
