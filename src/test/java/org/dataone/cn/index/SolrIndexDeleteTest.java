@@ -37,7 +37,6 @@ import org.dataone.configuration.Settings;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -373,11 +372,6 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
 
     @BeforeClass
     public static void init() throws Exception {
-        Hazelcast.shutdownAll();
-    }
-
-    @After
-    public void cleanup() throws Exception {
         Hazelcast.shutdownAll();
     }
 
