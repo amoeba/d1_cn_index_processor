@@ -37,6 +37,7 @@ import org.dataone.configuration.Settings;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -63,9 +64,9 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
             "dataone.hazelcast.systemMetadata");
     private static final String objectPathName = Settings.getConfiguration().getString(
             "dataone.hazelcast.objectPath");
-    private HazelcastInstance hzMember;
-    private IMap<Identifier, SystemMetadata> sysMetaMap;
-    private IMap<Identifier, String> objectPaths;
+    private static HazelcastInstance hzMember;
+    private static IMap<Identifier, SystemMetadata> sysMetaMap;
+    private static IMap<Identifier, String> objectPaths;
 
     private IndexTaskProcessor processor;
     private IndexTaskGenerator generator;
@@ -362,17 +363,21 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     public void setUp() throws Exception {
         super.setUp();
         configureSpringResources();
-        configureHazelCast();
     }
 
     public void tearDown() throws Exception {
         super.tearDown();
+    }
+
+    @AfterClass
+    public static void cleanup() throws Exception {
         Hazelcast.shutdownAll();
     }
 
     @BeforeClass
     public static void init() throws Exception {
         Hazelcast.shutdownAll();
+        configureHazelCast();
     }
 
     private void configureSpringResources() {
@@ -389,7 +394,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         peggymResourcemapSysArchived = (Resource) context.getBean("peggymResourcemapSysArchived");
     }
 
-    private void configureHazelCast() {
+    private static void configureHazelCast() {
         Config hzConfig = new ClasspathXmlConfig("org/dataone/configuration/hazelcast.xml");
 
         System.out.println("Hazelcast Group Config:\n" + hzConfig.getGroupConfig());
