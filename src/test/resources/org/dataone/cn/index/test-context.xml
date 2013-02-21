@@ -101,21 +101,21 @@ xmlns:context="http://www.springframework.org/schema/context"
         value="org/dataone/cn/index/resources/d1_testdocs/fgdc/nasa_d_FEDGPS1293Sysmeta.xml"/>
     </bean>
     
-     <bean id="dryadSciMeta1" class="org.springframework.core.io.ClassPathResource">
+     <bean id="dryadDataPackage1" class="org.springframework.core.io.ClassPathResource">
         <constructor-arg type="java.lang.String" 
-        value="org/dataone/cn/index/resources/d1_testdocs/dryad/DryadMetadata1.xml"/>
+        value="org/dataone/cn/index/resources/d1_testdocs/dryad/DryadDataPackage-m4h77.xml"/>
     </bean>
-    <bean id="dryadSysMeta1" class="org.springframework.core.io.ClassPathResource">
+    <bean id="dryadDataPackage1SysMeta" class="org.springframework.core.io.ClassPathResource">
         <constructor-arg type="java.lang.String" 
-        value="org/dataone/cn/index/resources/d1_testdocs/dryad/DryadSystemMetadata1.xml"/>
+        value="org/dataone/cn/index/resources/d1_testdocs/dryad/SystemMetadata-m4h77.xml"/>
     </bean>    
 
-     <bean id="dryadSciMeta2" class="org.springframework.core.io.ClassPathResource">
+     <bean id="dryadDataFile1" class="org.springframework.core.io.ClassPathResource">
         <constructor-arg type="java.lang.String" 
-        value="org/dataone/cn/index/resources/d1_testdocs/dryad/DryadMetadata2.xml"/>
+        value="org/dataone/cn/index/resources/d1_testdocs/dryad/DryadDataFile-m4h771.xml"/>
     </bean>
-    <bean id="dryadSysMeta2" class="org.springframework.core.io.ClassPathResource">
+    <bean id="dryadDataFile1SysMeta" class="org.springframework.core.io.ClassPathResource">
         <constructor-arg type="java.lang.String" 
-        value="org/dataone/cn/index/resources/d1_testdocs/dryad/DryadSysMeta2.xml"/>
+        value="org/dataone/cn/index/resources/d1_testdocs/dryad/SystemMetadata-m4h771.xml"/>
     </bean> 
 </beans>

@@ -1,0 +1,27 @@
+<DryadDataFile xmlns="http://purl.org/dryad/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://purl.org/dryad/terms/ http://datadryad.org/profile/v3.1/dryad.xsd">
+  <dcterms:type xmlns:dcterms="http://purl.org/dc/terms/">file</dcterms:type>
+  <status>deposited</status>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Zanette, Lorenzo Roberto Sgobaro</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Miller, Sophie D. L.</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Faria, Christiana M. A.</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Almond, Edd J.</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Huggins, Tim J.</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Jordan, William C.</dcterms:creator>
+  <dcterms:creator xmlns:dcterms="http://purl.org/dc/terms/">Bourke, Andrew F. G.</dcterms:creator>
+  <dcterms:title xmlns:dcterms="http://purl.org/dc/terms/">Table A1</dcterms:title>
+  <dcterms:identifier xmlns:dcterms="http://purl.org/dc/terms/">http://dx.doi.org/10.5061/dryad.m4h77/1</dcterms:identifier>
+  <dcterms:identifier xmlns:dcterms="http://purl.org/dc/terms/">http://dx.doi.org/10.5061/dryad.m4h77/1</dcterms:identifier>
+  <dcterms:rights xmlns:dcterms="http://purl.org/dc/terms/">http://creativecommons.org/publicdomain/zero/1.0/</dcterms:rights>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">kin selection</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">inclusive fitness theory</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">worker reproduction</dcterms:subject>
+  <dcterms:subject xmlns:dcterms="http://purl.org/dc/terms/">social insect</dcterms:subject>
+  <dwc:scientificName xmlns:dwc="http://rs.tdwg.org/dwc/terms/">Bombus terrestris</dwc:scientificName>
+  <dcterms:spatial xmlns:dcterms="http://purl.org/dc/terms/">United Kingdom</dcterms:spatial>
+  <dcterms:dateSubmitted xmlns:dcterms="http://purl.org/dc/terms/">2012-05-22T19:49:50Z</dcterms:dateSubmitted>
+  <dcterms:available xmlns:dcterms="http://purl.org/dc/terms/">2012-06-27T14:30:34Z</dcterms:available>
+  <dcterms:provenance xmlns:dcterms="http://purl.org/dc/terms/">Made available in DSpace on 2012-05-22T19:49:50Z (GMT). No. of bitstreams: 2&#xD;
+Table A1.txt: 1097 bytes, checksum: 51bb09788be23c41fb1722dd53e84a05 (MD5)&#xD;
+README.txt: 881 bytes, checksum: 676d5b3cb9ad3fc5400431a15bdba044 (MD5)</dcterms:provenance>
+  <dcterms:isPartOf xmlns:dcterms="http://purl.org/dc/terms/">http://dx.doi.org/10.5061/dryad.m4h77</dcterms:isPartOf>
+</DryadDataFile>
