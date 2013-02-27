@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "test-context.xml" })
-public class SolrFieldXPathDryadTest extends BaseSolrFieldXPathTest {
+public class SolrFieldXPathDryad31Test extends BaseSolrFieldXPathTest {
 
     @Autowired
     private Resource dryadDataPackage1;
@@ -31,7 +31,7 @@ public class SolrFieldXPathDryadTest extends BaseSolrFieldXPathTest {
     private Resource dryadDataFile1SysMeta;
 
     @Autowired
-    private ScienceMetadataDocumentSubprocessor dryadSubprocessor;
+    private ScienceMetadataDocumentSubprocessor dryad31Subprocessor;
 
     private IConverter dateConverter = new SolrDateConverter();
 
@@ -126,7 +126,7 @@ public class SolrFieldXPathDryadTest extends BaseSolrFieldXPathTest {
 
         dryadDataFile1Expected
                 .put("text",
-                        "file  deposited  Zanette, Lorenzo Roberto Sgobaro  Miller, Sophie D. L.  Faria, Christiana M. A.  Almond, Edd J.  Huggins, Tim J.  Jordan, William C.  Bourke, Andrew F. G.  Table A1  http://dx.doi.org/10.5061/dryad.m4h77/1    http://creativecommons.org/publicdomain/zero/1.0/  kin selection  inclusive fitness theory  worker reproduction  social insect  Bombus terrestris  United Kingdom  2012-05-22T19:49:50Z  2012-06-27T14:30:34Z  Made available in DSpace on 2012-05-22T19:49:50Z (GMT). No. of bitstreams: 2\r\nTable A1.txt: 1097 bytes, checksum: 51bb09788be23c41fb1722dd53e84a05 (MD5)\r\nREADME.txt: 881 bytes, checksum: 676d5b3cb9ad3fc5400431a15bdba044 (MD5)  http://dx.doi.org/10.5061/dryad.m4h77 http:/dx.doi.org/10.5061/dryad.m4h77/1");
+                        "file  deposited  Zanette, Lorenzo Roberto Sgobaro  Miller, Sophie D. L.  Faria, Christiana M. A.  Almond, Edd J.  Huggins, Tim J.  Jordan, William C.  Bourke, Andrew F. G.  Table A1  http://dx.doi.org/10.5061/dryad.m4h77/1  http://creativecommons.org/publicdomain/zero/1.0/  kin selection  inclusive fitness theory  worker reproduction  social insect  Bombus terrestris  United Kingdom  2012-05-22T19:49:50Z  2012-06-27T14:30:34Z  Made available in DSpace on 2012-05-22T19:49:50Z (GMT). No. of bitstreams: 2\r\nTable A1.txt: 1097 bytes, checksum: 51bb09788be23c41fb1722dd53e84a05 (MD5)\r\nREADME.txt: 881 bytes, checksum: 676d5b3cb9ad3fc5400431a15bdba044 (MD5)  http://dx.doi.org/10.5061/dryad.m4h77 http:/dx.doi.org/10.5061/dryad.m4h77/1");
         // system metadata
         dryadDataFile1Expected.put("id", dryadDataFile1Pid);
         dryadDataFile1Expected.put("formatId", "http://datadryad.org/profile/v3.1");
@@ -166,13 +166,13 @@ public class SolrFieldXPathDryadTest extends BaseSolrFieldXPathTest {
      */
     @Test
     public void testDryadDataPackageMetadataFields() throws Exception {
-        testXPathParsing(dryadSubprocessor, dryadDataPackage1SysMeta, dryadDataPackage1,
+        testXPathParsing(dryad31Subprocessor, dryadDataPackage1SysMeta, dryadDataPackage1,
                 dryadDataPackage1Expected, dryadDataPackage1Pid);
     }
 
     @Test
     public void testDyradDataFileMetadataFields() throws Exception {
-        testXPathParsing(dryadSubprocessor, dryadDataFile1SysMeta, dryadDataFile1,
+        testXPathParsing(dryad31Subprocessor, dryadDataFile1SysMeta, dryadDataFile1,
                 dryadDataFile1Expected, dryadDataFile1Pid);
     }
 

@@ -27,6 +27,8 @@ xmlns:context="http://www.springframework.org/schema/context"
  	<import resource="classpath:application-context-fgdc-base.xml" />
  
  	<import resource="classpath:application-context-dryad-base.xml" />
+ 	<import resource="classpath:application-context-dryad30.xml" />
+ 	<import resource="classpath:application-context-dryad31.xml" />
     
     <!-- 
     This import overrides default postgres datasource for testing.
