@@ -36,6 +36,7 @@
        <ref bean="fgdcstd0011998Subprocessor" />
        <ref bean="fgdcstd00111999Subprocessor" />
        <ref bean="fgdcstd00121999Subprocessor" />
+       <ref bean="fgdcEsri80Subprocessor" />
        <ref bean="dryad30Subprocessor" />
        <ref bean="dryad31Subprocessor" />
       </list>

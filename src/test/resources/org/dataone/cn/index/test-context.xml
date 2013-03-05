@@ -21,10 +21,11 @@ xmlns:context="http://www.springframework.org/schema/context"
  	<import resource="classpath:application-context-resourcemap.xml" />
  	<import resource="classpath:application-context-systemmeta100.xml" />
  	
+ 	<import resource="classpath:application-context-fgdc-base.xml" />
  	<import resource="classpath:application-context-fgdc-std-001-1998.xml" />
  	<import resource="classpath:application-context-fgdc-std-0011-1999.xml" />
  	<import resource="classpath:application-context-fgdc-std-0012-1999.xml" />
- 	<import resource="classpath:application-context-fgdc-base.xml" />
+ 	<import resource="classpath:application-context-fgdc-esri-csdg-80.xml" />
  
  	<import resource="classpath:application-context-dryad-base.xml" />
  	<import resource="classpath:application-context-dryad30.xml" />
@@ -101,6 +102,16 @@ xmlns:context="http://www.springframework.org/schema/context"
     <bean id="fgdcNasaSysMeta" class="org.springframework.core.io.ClassPathResource">
         <constructor-arg type="java.lang.String" 
         value="org/dataone/cn/index/resources/d1_testdocs/fgdc/nasa_d_FEDGPS1293Sysmeta.xml"/>
+    </bean>
+    
+	<bean id="fgdcEsriSysMeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/fgdc/nikkis1801FgdcEsri-SystemMetadata.xml"/>
+    </bean>
+    
+    <bean id="fgdcEsriSciMeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/fgdc/nikkis1801FgdcEsri.xml"/>
     </bean>
     
      <bean id="dryadDataPackage1" class="org.springframework.core.io.ClassPathResource">
