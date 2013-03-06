@@ -5,7 +5,7 @@
 	<bean id="dryad31Subprocessor"
 	  	class="org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor">
 		<property name="matchDocument"
-	   		value="/d100:systemMetadata/formatId[text() = 'http://datadryad.org/profile/v3.1']"></property>
+	   		value="/d100:systemMetadata/formatId[text() = 'http://datadryad.org/profile/v3.1/dryad.xsd']"></property>
 	  	<property name="fieldList">
 		   	<list>
 		    	<ref bean="dryad.abstract" />
