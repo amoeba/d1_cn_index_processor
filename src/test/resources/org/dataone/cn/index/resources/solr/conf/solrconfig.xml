@@ -716,7 +716,7 @@
        <str name="q">*:*</str>
        <str name="fl">abstract,author,authoritativeMN,authorLastName,beginDate,
        blockedReplicationMN,changePermission,checksum,checksumAlgorithm,class,
-       contactOrganization,datasource,dateModified,datePublished,dateUploaded,
+       contactOrganization,datasource,dataUrl,dateModified,datePublished,dateUploaded,
        decade,documents,eastBoundCoord,edition,endDate,family,fileID,formatId,
        formatType,gcmdKeyword,genus,geoform,id,identifier,investigator,
        isDocumentedBy,isPublic,isSpatial,keyConcept,keywords,kingdom,LTERSite,
