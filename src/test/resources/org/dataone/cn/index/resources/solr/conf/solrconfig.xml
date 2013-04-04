@@ -713,6 +713,20 @@
      <lst name="defaults">
        <str name="echoParams">explicit</str>
        <int name="rows">10</int>
+       <str name="q">*:*</str>
+       <str name="fl">abstract,author,authoritativeMN,authorLastName,beginDate,
+       blockedReplicationMN,changePermission,checksum,checksumAlgorithm,class,
+       contactOrganization,datasource,dateModified,datePublished,dateUploaded,
+       decade,documents,eastBoundCoord,edition,endDate,family,fileID,formatId,
+       formatType,gcmdKeyword,genus,geoform,id,identifier,investigator,
+       isDocumentedBy,isPublic,isSpatial,keyConcept,keywords,kingdom,LTERSite,
+       namedLocation,noBoundingBox,northBoundCoord,numberReplicas,obsoletedBy,
+       obsoletes,ogcUrl,order,origin,originator,parameter,phylum,placeKey,
+       preferredReplicationMN,presentationCat,project,pubDate,purpose,readPermission,
+       relatedOrganizations,replicaMN,replicationAllowed,replicaVerifiedDate,
+       resourceMap,rightsHolder,scientificName,sensor,site,size,sku,source,
+       southBoundCoord,species,submitter,term,title,topic,updateDate,webUrl,
+       westBoundCoord,writePermission</str>
      </lst>
     <!-- In addition to defaults, "appends" params can be specified
          to identify values which should be appended to the list of
