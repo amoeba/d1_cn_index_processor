@@ -44,6 +44,7 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -99,8 +100,7 @@ public class HTTPService {
      * @throws IOException
      */
 
-    public void sendUpdate(String uri, SolrElementAdd data, String encoding)
-            throws IOException {
+    public void sendUpdate(String uri, SolrElementAdd data, String encoding) throws IOException {
         InputStream inputStreamResponse = null;
         HttpPost post = null;
         HttpResponse response = null;
@@ -123,8 +123,7 @@ public class HTTPService {
         sendUpdate(uri, data, CHAR_ENCODING);
     }
 
-    private void sendPost(String uri, String data, String encoding)
-            throws IOException {
+    private void sendPost(String uri, String data, String encoding) throws IOException {
         InputStream inputStreamResponse = null;
         HttpPost post = null;
         HttpResponse response = null;
@@ -149,10 +148,9 @@ public class HTTPService {
         // generate request to solr server to remove index record for task.pid
         OutputStream outputStream = new ByteArrayOutputStream();
         try {
-            IOUtils.write("<?xml version=\"1.1\" encoding=\"utf-8\"?>\n",
-                    outputStream, CHAR_ENCODING);
-            IOUtils.write("<delete><id>" + pid + "</id></delete>", outputStream,
+            IOUtils.write("<?xml version=\"1.1\" encoding=\"utf-8\"?>\n", outputStream,
                     CHAR_ENCODING);
+            IOUtils.write("<delete><id>" + pid + "</id></delete>", outputStream, CHAR_ENCODING);
             sendPost(getSolrIndexUri(), outputStream.toString(), CHAR_ENCODING);
         } catch (IOException e) {
             e.printStackTrace();
@@ -172,10 +170,9 @@ public class HTTPService {
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
             // These characters are part of the query syntax and must be escaped
-            if (c == '\\' || c == '+' || c == '-' || c == '!' || c == '('
-                    || c == ')' || c == ':' || c == '^' || c == '[' || c == ']'
-                    || c == '\"' || c == '{' || c == '}' || c == '~' || c == '*'
-                    || c == '?' || c == '|' || c == '&' || c == ';'
+            if (c == '\\' || c == '+' || c == '-' || c == '!' || c == '(' || c == ')' || c == ':'
+                    || c == '^' || c == '[' || c == ']' || c == '\"' || c == '{' || c == '}'
+                    || c == '~' || c == '*' || c == '?' || c == '|' || c == '&' || c == ';'
                     || Character.isWhitespace(c)) {
                 sb.append('\\');
             }
@@ -184,8 +181,8 @@ public class HTTPService {
         return sb.toString();
     }
 
-    private void writeError(Exception ex, SolrElementAdd data,
-            InputStream inputStreamResonse, String uri) throws IOException {
+    private void writeError(Exception ex, SolrElementAdd data, InputStream inputStreamResonse,
+            String uri) throws IOException {
 
         try {
             if (ex != null) {
@@ -207,8 +204,8 @@ public class HTTPService {
         }
     }
 
-    private void writeError(Exception ex, String data,
-            InputStream inputStreamResonse, String uri) throws IOException {
+    private void writeError(Exception ex, String data, InputStream inputStreamResonse, String uri)
+            throws IOException {
 
         try {
             if (ex != null) {
@@ -240,28 +237,45 @@ public class HTTPService {
      * @throws XPathExpressionException
      * @throws EncoderException
      */
-    public List<SolrDoc> getDocuments(String uir, List<String> ids)
-            throws IOException, XPathExpressionException, EncoderException {
+    public List<SolrDoc> getDocuments(String uir, List<String> ids) throws IOException,
+            XPathExpressionException, EncoderException {
+
         if (ids == null || ids.size() <= 0) {
             return null;
-
         }
 
         loadSolrSchemaFields();
 
+        List<SolrDoc> docs = new ArrayList<SolrDoc>();
+
+        int rows = 0;
+        String rowString = "";
         StringBuilder sb = new StringBuilder();
         for (String id : ids) {
             if (sb.length() > 0) {
                 sb.append(" OR ");
             }
             sb.append(SolrElementField.FIELD_ID + ":").append(escapeQueryChars(id));
+            rows++;
+            if (sb.length() > 5000) {
+                rowString = Integer.toString(rows);
+                docs.addAll(doRequest(uir, sb, rowString));
+                rows = 0;
+                sb = new StringBuilder();
+            }
         }
+        if (sb.length() > 0) {
+            docs.addAll(doRequest(uir, sb, rowString));
+        }
+        return docs;
+    }
 
+    private List<SolrDoc> doRequest(String uir, StringBuilder sb, String rows) throws IOException,
+            ClientProtocolException, XPathExpressionException {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-
         params.add(new BasicNameValuePair(PARAM_QUERY, sb.toString()));
         params.add(new BasicNameValuePair(PARAM_START, "0"));
-        params.add(new BasicNameValuePair(PARAM_ROWS, Integer.toString(ids.size())));
+        params.add(new BasicNameValuePair(PARAM_ROWS, rows));
         params.add(new BasicNameValuePair(PARAM_INDENT, VALUE_INDENT_ON));
         String paramString = URLEncodedUtils.format(params, "UTF-8");
 
@@ -275,8 +289,7 @@ public class HTTPService {
         InputStream content = entity.getContent();
         Document document = null;
         try {
-            document = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                    .parse(content);
+            document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(content);
         } catch (SAXException e) {
             log.error(e);
         } catch (ParserConfigurationException e) {
@@ -299,8 +312,7 @@ public class HTTPService {
         }
     }
 
-    private List<SolrDoc> parseResults(Document document)
-            throws XPathExpressionException {
+    private List<SolrDoc> parseResults(Document document) throws XPathExpressionException {
 
         NodeList nodeList = (NodeList) XPathFactory.newInstance().newXPath()
                 .evaluate("/response/result/doc", document, XPathConstants.NODESET);
@@ -331,16 +343,14 @@ public class HTTPService {
             List<String> copyDestinationFields = new ArrayList<String>();
             for (int i = 0; i < nList.getLength(); i++) {
                 Node node = nList.item(i);
-                String destinationField = node.getAttributes().getNamedItem("dest")
-                        .getNodeValue();
+                String destinationField = node.getAttributes().getNamedItem("dest").getNodeValue();
                 copyDestinationFields.add(destinationField);
             }
             nList = doc.getElementsByTagName("field");
             List<String> fields = new ArrayList<String>();
             for (int i = 0; i < nList.getLength(); i++) {
                 Node node = nList.item(i);
-                String fieldName = node.getAttributes().getNamedItem("name")
-                        .getNodeValue();
+                String fieldName = node.getAttributes().getNamedItem("name").getNodeValue();
                 fields.add(fieldName);
             }
             fields.removeAll(copyDestinationFields);

@@ -217,7 +217,7 @@ public class IndexTaskProcessor {
                         Identifier pid = new Identifier();
                         pid.setValue(id);
                         SystemMetadata smd = systemMetadata.get(pid);
-                        if (notVisibleInIndex(smd)) {
+                        if (smd != null && notVisibleInIndex(smd)) {
                             numberOfIndexedOrRemovedReferences++;
                         }
                     }
