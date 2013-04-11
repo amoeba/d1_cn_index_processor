@@ -265,6 +265,7 @@ public class HTTPService {
             }
         }
         if (sb.length() > 0) {
+            rowString = Integer.toString(rows);
             docs.addAll(doRequest(uir, sb, rowString));
         }
         return docs;
