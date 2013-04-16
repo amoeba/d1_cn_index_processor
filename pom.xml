@@ -274,9 +274,6 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-	                         <shadedArtifactId></shadedArtifactId>
- 				             <shadedArtifactAttached>true</shadedArtifactAttached>
-              				<shadedClassifierName>shaded</shadedClassifierName>
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>
