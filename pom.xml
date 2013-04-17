@@ -231,7 +231,6 @@
 		</dependency>
  </dependencies>
  <build>
- 	<finalName>d1_index_task_processor_daemon</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -274,7 +273,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <outputFile>${basedir}/${artifactId}.jar</outputFile>
+                            <outputFile>${basedir}/target/${artifactId}_daemon.jar</outputFile>
                             <outputDirectory>${basedir}</outputDirectory>
                             <filters>
                                 <filter>
