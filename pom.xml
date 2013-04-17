@@ -273,7 +273,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <outputFile>${basedir}/target/${artifactId}_daemon.jar</outputFile>
+                            <outputFile>${basedir}/target/d1_index_task_processor_daemon.jar</outputFile>
                             <outputDirectory>${basedir}</outputDirectory>
                             <filters>
                                 <filter>
