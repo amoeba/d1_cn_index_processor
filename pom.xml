@@ -274,8 +274,8 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
- 				             <shadedArtifactAttached>true</shadedArtifactAttached>
-              				<shadedClassifierName>shaded</shadedClassifierName>
+                            <outputFile>${basedir}/${artifactId}.jar</outputFile>
+                            <outputDirectory>${basedir}</outputDirectory>
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>
