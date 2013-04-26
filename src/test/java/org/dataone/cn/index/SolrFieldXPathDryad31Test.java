@@ -1,6 +1,5 @@
 package org.dataone.cn.index;
 
-import java.net.InetAddress;
 import java.util.HashMap;
 
 import org.dataone.cn.indexer.convert.IConverter;
@@ -49,7 +48,6 @@ public class SolrFieldXPathDryad31Test extends BaseSolrFieldXPathTest {
 
     @Before
     public void setUp() throws Exception {
-        String hostname = InetAddress.getLocalHost().getCanonicalHostName();
         // science metadata
         dryadDataPackage1Expected
                 .put("abstract",

@@ -22,7 +22,6 @@
 
 package org.dataone.cn.index;
 
-import java.net.InetAddress;
 import java.util.HashMap;
 
 import org.dataone.cn.indexer.convert.FgdcDateConverter;
@@ -80,7 +79,6 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
 
     @Before
     public void setUp() throws Exception {
-        String hostname = InetAddress.getLocalHost().getCanonicalHostName();
         // science metadata
         csiroExpected
                 .put("abstract",
