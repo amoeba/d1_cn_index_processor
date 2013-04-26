@@ -3,4 +3,5 @@
 <configuration>
   <properties fileName="quartz.properties"/>
   <properties fileName="index-processor.properties" />
+  <properties fileName="file:/etc/dataone/node.properties" />
 </configuration>
