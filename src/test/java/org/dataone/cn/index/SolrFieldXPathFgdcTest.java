@@ -296,7 +296,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         // system metadata
         esriExpected.put("id", esri_pid);
         esriExpected.put("formatId", "http://www.esri.com/metadata/esriprof80.dtd");
-        esriExpected.put("formatType", "");
+        esriExpected.put("formatType", "METADATA");
         esriExpected.put("size", "12575");
         esriExpected.put("checksum", "19021f947d54c11d1a4bad8725c827d5");
         esriExpected.put("checksumAlgorithm", "MD5");
