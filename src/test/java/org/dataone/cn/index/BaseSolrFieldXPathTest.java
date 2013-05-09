@@ -32,6 +32,7 @@ import org.dataone.cn.indexer.XPathDocumentParser;
 import org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.SolrField;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
+import org.dataone.configuration.Settings;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,8 @@ import org.w3c.dom.Document;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "test-context.xml" })
 public abstract class BaseSolrFieldXPathTest {
+
+    protected final String hostname = Settings.getConfiguration().getString("cn.router.hostname");
 
     @Autowired
     private ArrayList<XPathDocumentParser> documentParsers;

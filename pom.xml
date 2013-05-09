@@ -4,7 +4,7 @@
  <modelVersion>4.0.0</modelVersion>
  <groupId>org.dataone</groupId>
  <artifactId>d1_cn_index_processor</artifactId>
- <version>1.1.0</version>
+ <version>1.1.1</version>
  <packaging>jar</packaging>
  <name>d1_cn_index_processor</name>
  <url>http://maven.apache.org</url>
@@ -231,7 +231,6 @@
 		</dependency>
  </dependencies>
  <build>
- 	<finalName>d1_index_task_processor_daemon</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -274,6 +273,8 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <outputFile>${basedir}/target/d1_index_task_processor_daemon.jar</outputFile>
+                            <outputDirectory>${basedir}</outputDirectory>
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>

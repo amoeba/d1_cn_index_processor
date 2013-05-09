@@ -22,7 +22,6 @@
 
 package org.dataone.cn.indexer.parser;
 
-import java.net.InetAddress;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +29,15 @@ import java.util.List;
 import javax.xml.xpath.XPath;
 
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
+import org.dataone.configuration.Settings;
 import org.w3c.dom.Document;
 
 public class ResolveSolrField extends SolrField {
 
-    private static final String RESOLVE_PATH = "/cn/v1/resolve/";
+    private static final String ROUTER_HOST_NAME = Settings.getConfiguration().getString(
+            "cn.router.hostname", "cn.dataone.org");
+
+    private static final String RESOLVE_PATH = "https://" + ROUTER_HOST_NAME + "/cn/v1/resolve/";
 
     public ResolveSolrField(String name) {
         setName(name);
@@ -43,10 +46,9 @@ public class ResolveSolrField extends SolrField {
     @Override
     public List<SolrElementField> getFields(Document doc, String identifier) throws Exception {
         List<SolrElementField> fields = new ArrayList<SolrElementField>();
-        String hostname = InetAddress.getLocalHost().getCanonicalHostName();
         String pid = identifier;
         pid = URLEncoder.encode(pid, "UTF-8");
-        fields.add(new SolrElementField(getName(), "https://" + hostname + RESOLVE_PATH + pid));
+        fields.add(new SolrElementField(getName(), RESOLVE_PATH + pid));
         return fields;
     }
 

@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--<!DOCTYPE metadata SYSTEM "http://www.esri.com/metadata/esriprof80.dtd">-->
+<metadata xml:lang="en">
+  <Esri>
+    <CreaDate>20100106</CreaDate>
+    <CreaTime>11110600</CreaTime>
+    <SyncOnce>FALSE</SyncOnce>
+    <SyncDate>20100226</SyncDate>
+    <SyncTime>11173900</SyncTime>
+    <ModDate>20100226</ModDate>
+    <ModTime>11173900</ModTime>
+    <MetaID>{57F8DBAE-74A0-4AF4-BD76-9D78053A6627}</MetaID>
+  </Esri>
+  <idinfo>
+    <native Sync="TRUE">Microsoft Windows XP Version 5.1 (Build 2600) Service Pack 3; ESRI ArcCatalog 9.3.0.1770</native>
+    <descript>
+      <langdata Sync="TRUE">en</langdata>
+      <abstract>Shape file created to delineate the boundary of the UNESCO Kruger to Canyons Biosphere Region.</abstract>
+      <purpose>Delinate boundaries based on agreement with stakeholders and municipalities</purpose>
+    </descript>
+    <citation>
+      <citeinfo>
+        <origin>Debby Thomson</origin>
+        <pubdate>March 2008</pubdate>
+        <title Sync="TRUE">K2C_Biosphere</title>
+        <ftname Sync="TRUE">K2C_Biosphere</ftname>
+        <geoform Sync="TRUE">vector digital data</geoform>
+        <onlink Sync="TRUE">\\NSTEVENS-NB1\D$\GIS data\Boundaries\K2C_Biosphere.shp</onlink>
+        <edition>2</edition>
+      </citeinfo>
+    </citation>
+    <timeperd>
+      <current>publication date</current>
+      <timeinfo>
+        <sngdate>
+          <caldate>March 2008</caldate>
+        </sngdate>
+      </timeinfo>
+    </timeperd>
+    <status>
+      <progress>Complete</progress>
+      <update>Irregular</update>
+    </status>
+    <spdom>
+      <bounding>
+        <westbc Sync="TRUE">29.920570</westbc>
+        <eastbc Sync="TRUE">32.041175</eastbc>
+        <northbc Sync="TRUE">-23.726981</northbc>
+        <southbc Sync="TRUE">-25.064201</southbc>
+      </bounding>
+      <lboundng>
+        <leftbc Sync="TRUE">29.920570</leftbc>
+        <rightbc Sync="TRUE">32.041175</rightbc>
+        <bottombc Sync="TRUE">-25.064201</bottombc>
+        <topbc Sync="TRUE">-23.726981</topbc>
+      </lboundng>
+    </spdom>
+    <keywords>
+      <theme>
+        <themekt>REQUIRED: Reference to a formally registered thesaurus or a similar authoritative source of theme keywords.</themekt>
+        <themekey>Ndlovu SAEON Node</themekey>
+        <themekey>SAEON, South Africa</themekey>
+        <themekey>Kruger to Canoyns</themekey>
+        <themekey>biosphere</themekey>
+      </theme>
+      <place>
+        <placekey>k2c</placekey>
+        <placekey>lowveld</placekey>
+      </place>
+    </keywords>
+    <accconst>Freely accessible</accconst>
+    <useconst>REQUIRED: Restrictions and legal prerequisites for using the data set after access is granted.</useconst>
+    <natvform Sync="TRUE">Shapefile</natvform>
+    <ptcontac>
+      <cntinfo>
+        <cntperp>
+          <cntper>Debby Thompson</cntper>
+          <cntorg>Kruger to Canyons Biosphere region</cntorg>
+        </cntperp>
+        <cntpos>Project manager</cntpos>
+        <cntemail>info@bushveldconnections.co.za</cntemail>
+      </cntinfo>
+    </ptcontac>
+    <datacred>Initial map preparation: Prof Willem van der Riet and Craig Beech (GIS Business Soultions August 2000. 
+Final map presentation: Debby Thompson, Hoedspruit Jan 2001
+Update of map: Debby Thompson, Hoedspruit,  March 2008</datacred>
+  </idinfo>
+  <dataIdInfo>
+    <envirDesc Sync="TRUE">Microsoft Windows XP Version 5.1 (Build 2600) Service Pack 3; ESRI ArcCatalog 9.3.0.1770</envirDesc>
+    <dataLang>
+      <languageCode Sync="TRUE" value="en"/>
+    </dataLang>
+    <idCitation>
+      <resTitle Sync="TRUE">K2C_Biosphere</resTitle>
+      <presForm>
+        <PresFormCd Sync="TRUE" value="005"/>
+      </presForm>
+    </idCitation>
+    <spatRpType>
+      <SpatRepTypCd Sync="TRUE" value="001"/>
+    </spatRpType>
+    <dataExt>
+      <geoEle>
+        <GeoBndBox esriExtentType="native">
+          <westBL Sync="TRUE">29.92057</westBL>
+          <eastBL Sync="TRUE">32.041175</eastBL>
+          <northBL Sync="TRUE">-23.726981</northBL>
+          <southBL Sync="TRUE">-25.064201</southBL>
+          <exTypeCode Sync="TRUE">1</exTypeCode>
+        </GeoBndBox>
+      </geoEle>
+    </dataExt>
+    <geoBox esriExtentType="decdegrees">
+      <westBL Sync="TRUE">29.92057</westBL>
+      <eastBL Sync="TRUE">32.041175</eastBL>
+      <northBL Sync="TRUE">-23.726981</northBL>
+      <southBL Sync="TRUE">-25.064201</southBL>
+      <exTypeCode Sync="TRUE">1</exTypeCode>
+    </geoBox>
+  </dataIdInfo>
+  <distinfo>
+    <distrib>
+      <cntinfo>
+        <cntperp>
+          <cntper>Nikki Stevens</cntper>
+        </cntperp>
+        <cntaddr>
+          <addrtype/>
+          <address/>
+          <city/>
+          <state/>
+          <postal/>
+          <country/>
+        </cntaddr>
+        <cntvoice/>
+      </cntinfo>
+    </distrib>
+    <resdesc>nikkis.180.1</resdesc>
+    <distliab/>
+    <stdorder>
+      <digform>
+        <digtinfo>
+          <formname>DBF</formname>
+          <formcont>K2C_Biosphere.dbf</formcont>
+        </digtinfo>
+        <digtopt>
+          <onlinopt>
+            <computer>
+              <networka>
+                <networkr>nikkis.182.1</networkr>
+              </networka>
+            </computer>
+          </onlinopt>
+        </digtopt>
+      </digform>
+      <fees/>
+      <digform>
+        <digtinfo>
+          <formname>SBX</formname>
+          <formcont>K2C_Biosphere.sbx</formcont>
+        </digtinfo>
+        <digtopt>
+          <onlinopt>
+            <computer>
+              <networka>
+                <networkr>nikkis.183.1</networkr>
+              </networka>
+            </computer>
+          </onlinopt>
+        </digtopt>
+      </digform>
+      <digform>
+        <digtinfo>
+          <formname>PRJ</formname>
+          <formcont>K2C_Biosphere.prj</formcont>
+        </digtinfo>
+        <digtopt>
+          <onlinopt>
+            <computer>
+              <networka>
+                <networkr>nikkis.184.1</networkr>
+              </networka>
+            </computer>
+          </onlinopt>
+        </digtopt>
+      </digform>
+      <digform>
+        <digtinfo>
+          <formname>SHP</formname>
+          <formcont>K2C_Biosphere.shp</formcont>
+        </digtinfo>
+        <digtopt>
+          <onlinopt>
+            <computer>
+              <networka>
+                <networkr>nikkis.181.1</networkr>
+              </networka>
+            </computer>
+          </onlinopt>
+        </digtopt>
+      </digform>
+    </stdorder>
+    <custom>K2C_Biosphere.shp.xml</custom>
+  </distinfo>
+  <metainfo>
+    <langmeta Sync="TRUE">en</langmeta>
+    <metstdn Sync="TRUE">FGDC Content Standards for Digital Geospatial Metadata</metstdn>
+    <metstdv Sync="TRUE">FGDC-STD-001-1998</metstdv>
+    <mettc Sync="TRUE">local time</mettc>
+    <metc>
+      <cntinfo>
+        <cntorgp>
+          <cntper>REQUIRED: The person responsible for the metadata information.</cntper>
+          <cntorg>REQUIRED: The organization responsible for the metadata information.</cntorg>
+        </cntorgp>
+        <cntaddr>
+          <addrtype>REQUIRED: The mailing and/or physical address for the organization or individual.</addrtype>
+          <city>REQUIRED: The city of the address.</city>
+          <state>REQUIRED: The state or province of the address.</state>
+          <postal>REQUIRED: The ZIP or other postal code of the address.</postal>
+        </cntaddr>
+        <cntvoice>REQUIRED: The telephone number by which individuals can speak to the organization or individual.</cntvoice>
+      </cntinfo>
+    </metc>
+    <metd Sync="TRUE">20100226</metd>
+    <metextns>
+      <onlink Sync="TRUE">http://www.esri.com/metadata/esriprof80.html</onlink>
+      <metprof Sync="TRUE">ESRI Metadata Profile</metprof>
+    </metextns>
+  </metainfo>
+  <mdLang>
+    <languageCode Sync="TRUE" value="en"/>
+  </mdLang>
+  <mdStanName Sync="TRUE">ISO 19115 Geographic Information - Metadata</mdStanName>
+  <mdStanVer Sync="TRUE">DIS_ESRI1.0</mdStanVer>
+  <mdChar>
+    <CharSetCd Sync="TRUE" value="004"/>
+  </mdChar>
+  <mdHrLv>
+    <ScopeCd Sync="TRUE" value="005"/>
+  </mdHrLv>
+  <mdHrLvName Sync="TRUE">dataset</mdHrLvName>
+  <distinfo>
+    <resdesc Sync="TRUE">Downloadable Data</resdesc>
+    <stdorder>
+      <digform>
+        <digtinfo>
+          <transize Sync="TRUE">0.003</transize>
+          <dssize Sync="TRUE">0.003</dssize>
+        </digtinfo>
+      </digform>
+    </stdorder>
+  </distinfo>
+  <distInfo>
+    <distributor>
+      <distorTran>
+        <onLineSrc>
+          <orDesc Sync="TRUE">002</orDesc>
+          <linkage Sync="TRUE">file://\\NSTEVENS-NB1\D$\GIS data\Boundaries\K2C_Biosphere.shp</linkage>
+          <protocol Sync="TRUE">Local Area Network</protocol>
+        </onLineSrc>
+        <transSize Sync="TRUE">0.003</transSize>
+      </distorTran>
+      <distorFormat>
+        <formatName Sync="TRUE">Shapefile</formatName>
+      </distorFormat>
+    </distributor>
+  </distInfo>
+  <spdoinfo>
+    <direct Sync="TRUE">Vector</direct>
+    <ptvctinf>
+      <esriterm Name="K2C_Biosphere">
+        <efeatyp Sync="TRUE">Simple</efeatyp>
+        <efeageom Sync="TRUE">Polygon</efeageom>
+        <esritopo Sync="TRUE">FALSE</esritopo>
+        <efeacnt Sync="TRUE">1</efeacnt>
+        <spindex Sync="TRUE">TRUE</spindex>
+        <linrefer Sync="TRUE">FALSE</linrefer>
+      </esriterm>
+      <sdtsterm Name="K2C_Biosphere">
+        <sdtstype Sync="TRUE">G-polygon</sdtstype>
+        <ptvctcnt Sync="TRUE">1</ptvctcnt>
+      </sdtsterm>
+    </ptvctinf>
+  </spdoinfo>
+  <spref>
+    <horizsys>
+      <cordsysn>
+        <geogcsn Sync="TRUE">GCS_WGS_1984</geogcsn>
+      </cordsysn>
+      <geograph>
+        <geogunit Sync="TRUE">Decimal degrees</geogunit>
+        <latres Sync="TRUE">0.000000</latres>
+        <longres Sync="TRUE">0.000000</longres>
+      </geograph>
+      <geodetic>
+        <horizdn Sync="TRUE">D_WGS_1984</horizdn>
+        <ellips Sync="TRUE">WGS_1984</ellips>
+        <semiaxis Sync="TRUE">6378137.000000</semiaxis>
+        <denflat Sync="TRUE">298.257224</denflat>
+      </geodetic>
+    </horizsys>
+  </spref>
+  <refSysInfo>
+    <RefSystem>
+      <refSysID>
+        <identCode Sync="TRUE">GCS_WGS_1984</identCode>
+      </refSysID>
+    </RefSystem>
+  </refSysInfo>
+  <spatRepInfo>
+    <VectSpatRep>
+      <topLvl>
+        <TopoLevCd Sync="TRUE" value="001"/>
+      </topLvl>
+      <geometObjs Name="K2C_Biosphere">
+        <geoObjTyp>
+          <GeoObjTypCd Sync="TRUE" value="001"/>
+        </geoObjTyp>
+        <geoObjCnt Sync="TRUE">1</geoObjCnt>
+      </geometObjs>
+    </VectSpatRep>
+  </spatRepInfo>
+  <eainfo>
+    <detailed Name="K2C_Biosphere">
+      <enttyp>
+        <enttypl Sync="TRUE">K2C_Biosphere</enttypl>
+        <enttypt Sync="TRUE">Feature Class</enttypt>
+        <enttypc Sync="TRUE">1</enttypc>
+      </enttyp>
+      <attr>
+        <attrlabl Sync="TRUE">FID</attrlabl>
+        <attalias Sync="TRUE">FID</attalias>
+        <attrtype Sync="TRUE">OID</attrtype>
+        <attwidth Sync="TRUE">4</attwidth>
+        <atprecis Sync="TRUE">0</atprecis>
+        <attscale Sync="TRUE">0</attscale>
+        <attrdef Sync="TRUE">Internal feature number.</attrdef>
+        <attrdefs Sync="TRUE">ESRI</attrdefs>
+        <attrdomv>
+          <udom Sync="TRUE">Sequential unique whole numbers that are automatically generated.</udom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl Sync="TRUE">Shape</attrlabl>
+        <attalias Sync="TRUE">Shape</attalias>
+        <attrtype Sync="TRUE">Geometry</attrtype>
+        <attwidth Sync="TRUE">0</attwidth>
+        <atprecis Sync="TRUE">0</atprecis>
+        <attscale Sync="TRUE">0</attscale>
+        <attrdef Sync="TRUE">Feature geometry.</attrdef>
+        <attrdefs Sync="TRUE">ESRI</attrdefs>
+        <attrdomv>
+          <udom Sync="TRUE">Coordinates defining the features.</udom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl Sync="TRUE">Id</attrlabl>
+        <attalias Sync="TRUE">Id</attalias>
+        <attrtype Sync="TRUE">Number</attrtype>
+        <attwidth Sync="TRUE">6</attwidth>
+      </attr>
+    </detailed>
+  </eainfo>
+  <mdDateSt Sync="TRUE">20100226</mdDateSt>
+  <dataqual>
+    <attracc>
+      <attraccr>Shape file was based rtaced from a georeferenced map. Inaccuracies will occur</attraccr>
+      <qattracc>
+        <attraccv>20m</attraccv>
+      </qattracc>
+    </attracc>
+    <lineage>
+      <procstep>
+        <procdesc Sync="TRUE">Dataset copied.</procdesc>
+        <srcused Sync="TRUE">F:\k2c\K2C_Biosphere</srcused>
+        <procdate Sync="TRUE">20100106</procdate>
+        <proctime Sync="TRUE">11110600</proctime>
+      </procstep>
+    </lineage>
+  </dataqual>
+</metadata>

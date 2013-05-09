@@ -22,7 +22,6 @@
 
 package org.dataone.cn.index;
 
-import java.net.InetAddress;
 import java.util.HashMap;
 
 import org.dataone.cn.indexer.convert.FgdcDateConverter;
@@ -54,7 +53,16 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
     private Resource fgdcNasaSysMeta;
 
     @Autowired
+    private Resource fgdcEsriSysMeta;
+
+    @Autowired
+    private Resource fgdcEsriSciMeta;
+
+    @Autowired
     private ScienceMetadataDocumentSubprocessor fgdcstd00111999Subprocessor;
+
+    @Autowired
+    private ScienceMetadataDocumentSubprocessor fgdcEsri80Subprocessor;
 
     private IConverter dateConverter = new FgdcDateConverter();
     private IConverter solrDateConverter = new SolrDateConverter();
@@ -63,13 +71,14 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
     // from xml documents (system and science metadata docs)
     private HashMap<String, String> csiroExpected = new HashMap<String, String>();
     private HashMap<String, String> fgdcNasaExpected = new HashMap<String, String>();
+    private HashMap<String, String> esriExpected = new HashMap<String, String>();
 
     private String csiro_pid = "www.nbii.gov_metadata_mdata_CSIRO_csiro_d_abayadultprawns";
     private String nasa_pid = "www.nbii.gov_metadata_mdata_NASA_nasa_d_FEDGPS1293";
+    private String esri_pid = "nikkis.180.1";
 
     @Before
     public void setUp() throws Exception {
-        String hostname = InetAddress.getLocalHost().getCanonicalHostName();
         // science metadata
         csiroExpected
                 .put("abstract",
@@ -239,6 +248,79 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         fgdcNasaExpected.put("changePermission", "");
         fgdcNasaExpected.put("isPublic", "true");
         fgdcNasaExpected.put("dataUrl", "https://" + hostname + "/cn/v1/resolve/" + nasa_pid);
+
+        /**
+         * Third test object nikkis.180.1 an example of ESRI variant of FGDC
+         * 
+         */
+        // science metadata
+        esriExpected
+                .put("abstract",
+                        "Shape file created to delineate the boundary of the UNESCO Kruger to Canyons Biosphere Region.");
+        esriExpected.put("beginDate", "");
+        esriExpected.put("class", "");
+        esriExpected.put("contactOrganization", "");
+        esriExpected.put("eastBoundCoord", "32.041175");
+        esriExpected.put("westBoundCoord", "29.92057");
+        esriExpected.put("southBoundCoord", "-25.064201");
+        esriExpected.put("northBoundCoord", "-23.726981");
+        esriExpected.put("edition", "");
+        esriExpected.put("endDate", "");
+        esriExpected.put("gcmdKeyword", "");
+        esriExpected.put("genus", "");
+        esriExpected.put("site", "");
+        esriExpected.put("presentationCat", "vector digital data");
+        esriExpected.put("geoform", "vector digital data");
+        esriExpected.put("kingdom", "");
+        esriExpected.put("order", "");
+        esriExpected.put("phylum", "");
+        esriExpected.put("species", "");
+        esriExpected.put("placeKey", "k2c#lowveld");
+        esriExpected.put("origin", "Debby Thomson");
+        esriExpected.put("author", "Debby Thomson");
+        esriExpected.put("investigator", "Debby Thomson");
+        esriExpected.put("pubDate", dateConverter.convert("March 2008"));
+        esriExpected.put("purpose",
+                "Delinate boundaries based on agreement with stakeholders and municipalities");
+
+        esriExpected.put("title", "K2C_Biosphere");
+        esriExpected.put("webUrl", "\\\\NSTEVENS-NB1\\D$\\GIS data\\Boundaries\\K2C_Biosphere.shp");
+
+        esriExpected.put("keywords",
+                "Ndlovu SAEON Node#SAEON, South Africa#Kruger to Canoyns#biosphere#k2c#lowveld");
+        esriExpected.put("fileID", "https://" + hostname + "/cn/v1/resolve/" + esri_pid);
+        esriExpected
+                .put("text",
+                        "20100106  11110600  FALSE  20100226  11173900  20100226  11173900  {57F8DBAE-74A0-4AF4-BD76-9D78053A6627}    Microsoft Windows XP Version 5.1 (Build 2600) Service Pack 3; ESRI ArcCatalog 9.3.0.1770   en  Shape file created to delineate the boundary of the UNESCO Kruger to Canyons Biosphere Region.  Delinate boundaries based on agreement with stakeholders and municipalities     Debby Thomson  March 2008  K2C_Biosphere  K2C_Biosphere  vector digital data  \\\\NSTEVENS-NB1\\D$\\GIS data\\Boundaries\\K2C_Biosphere.shp  2     publication date    March 2008      Complete  Irregular     29.920570  32.041175  -23.726981  -25.064201    29.920570  32.041175  -25.064201  -23.726981      REQUIRED: Reference to a formally registered thesaurus or a similar authoritative source of theme keywords.  Ndlovu SAEON Node  SAEON, South Africa  Kruger to Canoyns  biosphere    k2c  lowveld    Freely accessible  REQUIRED: Restrictions and legal prerequisites for using the data set after access is granted.  Shapefile     Debby Thompson  Kruger to Canyons Biosphere region   Project manager  info@bushveldconnections.co.za    Initial map preparation: Prof Willem van der Riet and Craig Beech (GIS Business Soultions August 2000. Final map presentation: Debby Thompson, Hoedspruit Jan 2001Update of map: Debby Thompson, Hoedspruit,  March 2008    Microsoft Windows XP Version 5.1 (Build 2600) Service Pack 3; ESRI ArcCatalog 9.3.0.1770      K2C_Biosphere            29.92057  32.041175  -23.726981  -25.064201  1      29.92057  32.041175  -23.726981  -25.064201  1        Nikki Stevens              nikkis.180.1      DBF  K2C_Biosphere.dbf       nikkis.182.1          SBX  K2C_Biosphere.sbx       nikkis.183.1         PRJ  K2C_Biosphere.prj       nikkis.184.1         SHP  K2C_Biosphere.shp       nikkis.181.1        K2C_Biosphere.shp.xml    en  FGDC Content Standards for Digital Geospatial Metadata  FGDC-STD-001-1998  local time     REQUIRED: The person responsible for the metadata information.  REQUIRED: The organization responsible for the metadata information.    REQUIRED: The mailing and/or physical address for the organization or individual.  REQUIRED: The city of the address.  REQUIRED: The state or province of the address.  REQUIRED: The ZIP or other postal code of the address.   REQUIRED: The telephone number by which individuals can speak to the organization or individual.    20100226   http://www.esri.com/metadata/esriprof80.html  ESRI Metadata Profile       ISO 19115 Geographic Information - Metadata  DIS_ESRI1.0        dataset   Downloadable Data     0.003  0.003          002  file://\\\\NSTEVENS-NB1\\D$\\GIS data\\Boundaries\\K2C_Biosphere.shp  Local Area Network   0.003    Shapefile      Vector    Simple  Polygon  FALSE  1  TRUE  FALSE    G-polygon  1        GCS_WGS_1984    Decimal degrees  0.000000  0.000000    D_WGS_1984  WGS_1984  6378137.000000  298.257224        GCS_WGS_1984              1        K2C_Biosphere  Feature Class  1    FID  FID  OID  4  0  0  Internal feature number.  ESRI   Sequential unique whole numbers that are automatically generated.     Shape  Shape  Geometry  0  0  0  Feature geometry.  ESRI   Coordinates defining the features.     Id  Id  Number  6     20100226    Shape file was based rtaced from a georeferenced map. Inaccuracies will occur   20m      Dataset copied.  F:\\k2c\\K2C_Biosphere  20100106  11110600 "
+                                + esri_pid);
+        // system metadata
+        esriExpected.put("id", esri_pid);
+        esriExpected.put("formatId", "http://www.esri.com/metadata/esriprof80.dtd");
+        esriExpected.put("formatType", "METADATA");
+        esriExpected.put("size", "12575");
+        esriExpected.put("checksum", "19021f947d54c11d1a4bad8725c827d5");
+        esriExpected.put("checksumAlgorithm", "MD5");
+        esriExpected.put("submitter", "uid=nikkis,o=SAEON,dc=ecoinformatics,dc=org");
+        esriExpected.put("rightsHolder", "uid=nikkis,o=SAEON,dc=ecoinformatics,dc=org");
+        esriExpected.put("replicationAllowed", "false");
+        esriExpected.put("numberReplicas", "");
+        esriExpected.put("preferredReplicationMN", "");
+        esriExpected.put("blockedReplicationMN", "");
+        esriExpected.put("obsoletes", "");
+        esriExpected.put("obsoletedBy", "");
+        esriExpected
+                .put("dateUploaded", solrDateConverter.convert("2010-02-26T00:00:00.000+00:00"));
+        esriExpected
+                .put("dateModified", solrDateConverter.convert("2012-06-15T02:50:07.060+00:00"));
+        esriExpected.put("datasource", "urn:node:SANPARKS");
+        esriExpected.put("authoritativeMN", "urn:node:SANPARKS");
+        esriExpected.put("replicaMN", "");
+        esriExpected.put("replicaVerifiedDate", "");
+        esriExpected.put("readPermission", "public");
+        esriExpected.put("writePermission", "");
+        esriExpected.put("changePermission", "");
+        esriExpected.put("isPublic", "true");
+        esriExpected.put("dataUrl", "https://" + hostname + "/cn/v1/resolve/" + esri_pid);
     }
 
     /**
@@ -258,5 +340,11 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
     public void testFgdcNasaScienceMetadataFields() throws Exception {
         testXPathParsing(fgdcstd00111999Subprocessor, fgdcNasaSysMeta, fgdcNasaSciMeta,
                 fgdcNasaExpected, nasa_pid);
+    }
+
+    @Test
+    public void testEsriFgdcScienceMetadataFields() throws Exception {
+        testXPathParsing(fgdcEsri80Subprocessor, fgdcEsriSysMeta, fgdcEsriSciMeta, esriExpected,
+                esri_pid);
     }
 }
