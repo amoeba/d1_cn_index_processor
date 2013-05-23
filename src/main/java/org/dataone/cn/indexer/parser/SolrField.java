@@ -88,13 +88,13 @@ public class SolrField implements ISolrField {
     }
 
     public void initExpression(XPath xpathObject) {
-
-        try {
-            setxPathExpression(xpathObject.compile(getXpath()));
-        } catch (XPathExpressionException e) {
-            e.printStackTrace();
+        if (getxPathExpression() == null) {
+            try {
+                setxPathExpression(xpathObject.compile(getXpath()));
+            } catch (XPathExpressionException e) {
+                e.printStackTrace();
+            }
         }
-
     }
 
     /**

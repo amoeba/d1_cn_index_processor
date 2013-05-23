@@ -40,7 +40,7 @@ public class RootElement {
 
     private String name;
     private String xPath;
-    private XPathExpression xPathExpression;
+    private XPathExpression xPathExpression = null;
     private String delimiter = " ";
     private String template;
     private List<LeafElement> leafs = new ArrayList<LeafElement>();
@@ -84,7 +84,9 @@ public class RootElement {
 
     public void initXPathExpressions(XPath xPathObject) {
         try {
-            xPathExpression = xPathObject.compile(xPath);
+            if (xPathExpression == null) {
+                xPathExpression = xPathObject.compile(xPath);
+            }
             for (LeafElement leaf : leafs) {
                 leaf.initXPathExpression(xPathObject);
             }

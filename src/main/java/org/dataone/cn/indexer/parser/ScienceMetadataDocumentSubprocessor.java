@@ -22,10 +22,10 @@
 
 package org.dataone.cn.indexer.parser;
 
+import java.util.Map;
+
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.w3c.dom.Document;
-
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,24 +38,23 @@ import java.util.Map;
  * and fields added to {@link SolrDoc} to be indexed.
  *
  */
-public class ScienceMetadataDocumentSubprocessor extends AbstractDocumentSubprocessor implements IDocumentSubprocessor{
-
-
+public class ScienceMetadataDocumentSubprocessor extends AbstractDocumentSubprocessor implements
+        IDocumentSubprocessor {
 
     private IDocumentProvider documentProvider = null;
 
     @Override
-    public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs, Document doc) throws Exception {
-        SolrDoc systemMeta = docs.get(identifier);
+    public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs,
+            Document doc) throws Exception {
         Document sciMetaDoc = null;
         if (documentProvider == null) {
-          sciMetaDoc = doc;
+            sciMetaDoc = doc;
         } else {
-          sciMetaDoc = documentProvider.GetDocument(identifier);
+            sciMetaDoc = documentProvider.GetDocument(identifier);
         }
         return super.processDocument(identifier, docs, sciMetaDoc);
     }
-   
+
     public IDocumentProvider getDocumentProvider() {
         return documentProvider;
     }

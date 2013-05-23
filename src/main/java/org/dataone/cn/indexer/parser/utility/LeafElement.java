@@ -35,17 +35,19 @@ public class LeafElement {
 
     private String name;
     private String xPath;
-    private XPathExpression xPathExpression;
+    private XPathExpression xPathExpression = null;
     private String delimiter = " ";
 
     public LeafElement() {
     }
 
     public void initXPathExpression(XPath xPathObject) {
-        try {
-            xPathExpression = xPathObject.compile(xPath);
-        } catch (XPathExpressionException e) {
-            e.printStackTrace();
+        if (xPathExpression == null) {
+            try {
+                xPathExpression = xPathObject.compile(xPath);
+            } catch (XPathExpressionException e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -48,4 +48,6 @@ public interface ISolrField {
      * @throws Exception
      */
     public List<SolrElementField> getFields(Document doc, String identifier) throws Exception;
+
+    public String getName();
 }

@@ -53,7 +53,7 @@ public class AbstractDocumentSubprocessor implements IDocumentSubprocessor {
      */
     private String matchDocument = null;
     private XPathExpression matchDocumentExpression = null;
-    private List<SolrField> fieldList = new ArrayList<SolrField>();
+    private List<ISolrField> fieldList = new ArrayList<ISolrField>();
 
     public String getMatchDocument() {
         return matchDocument;
@@ -83,7 +83,7 @@ public class AbstractDocumentSubprocessor implements IDocumentSubprocessor {
 
         SolrDoc metaDocument = docs.get(identifier);
 
-        for (SolrField solrField : fieldList) {
+        for (ISolrField solrField : fieldList) {
             try {
                 metaDocument.getFieldList().addAll(solrField.getFields(doc, identifier));
             } catch (Exception e) {
@@ -110,7 +110,7 @@ public class AbstractDocumentSubprocessor implements IDocumentSubprocessor {
     public void initExpression(XPath xpathObject) {
         try {
             matchDocumentExpression = xpathObject.compile(getMatchDocument());
-            for (SolrField solrField : fieldList) {
+            for (ISolrField solrField : fieldList) {
                 solrField.initExpression(xpathObject);
             }
         } catch (XPathExpressionException e) {
@@ -118,11 +118,11 @@ public class AbstractDocumentSubprocessor implements IDocumentSubprocessor {
         }
     }
 
-    public List<SolrField> getFieldList() {
+    public List<ISolrField> getFieldList() {
         return fieldList;
     }
 
-    public void setFieldList(List<SolrField> fieldList) {
+    public void setFieldList(List<ISolrField> fieldList) {
         this.fieldList = fieldList;
     }
 }
