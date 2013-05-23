@@ -221,4 +221,19 @@
 		<property name="dedupe" value="true" />
 	</bean>
 		
+	<bean id="eml.family" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="family" />
+		<constructor-arg name="xpath" 
+			value='//taxonomicClassification/taxonRankValue[../taxonRankName="Family"]/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="true" />
+	</bean>
+
+	<bean id="eml.class" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="class" />
+		<constructor-arg name="xpath" 
+			value='//taxonomicClassification/taxonRankValue[../taxonRankName="Class"]/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="true" />
+	</bean>
 </beans>

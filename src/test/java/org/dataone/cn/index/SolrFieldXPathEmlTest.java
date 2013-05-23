@@ -83,6 +83,8 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
         eml210Expected.put("kingdom", "");
         eml210Expected.put("order", "");
         eml210Expected.put("phylum", "");
+        eml210Expected.put("family", "");
+        eml210Expected.put("class", "");
         eml210Expected.put("fileID", "https://" + hostname + "/cn/v1/resolve/peggym.130.4");
 
         eml210Expected.put("origin", "SANParks Freddy Garcia#Gordon Freeman#The Awesome Store");

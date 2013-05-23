@@ -10,7 +10,6 @@
    <list>
 	    <ref bean="fgdc.abstract" />
 	    <ref bean="fgdc.beginDate"/>
-	    <ref bean="fgdc.class" />
 		<ref bean="fgdc.contactOrganization"/>
 		<ref bean="fgdc.eastBoundCoord"/>
 		<ref bean="fgdc.westBoundCoord" />
@@ -26,6 +25,8 @@
 		<ref bean="fgdc.order" />
 		<ref bean="fgdc.phylum" />
 		<ref bean="fgdc.species" />
+		<ref bean="fgdc.family" />
+		<ref bean="fgdc.class" />
 		<ref bean="fgdc.origin" />
 		<ref bean="fgdc.placeKey" />
 		<ref bean="fgdc.pubDate" />

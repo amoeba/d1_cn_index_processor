@@ -101,6 +101,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         csiroExpected.put("order", "Decapoda");
         csiroExpected.put("phylum", "Arthropoda Test");
         csiroExpected.put("species", "");
+        csiroExpected.put("family", "");
         csiroExpected.put("placeKey", "Australlia#Gulf of Carpentaria#Albatross Bay");
         csiroExpected.put("origin",
                 "CSIRO Marine Research (formerly CSIRO Division of Fisheries/Fisheries Research)");
@@ -181,6 +182,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         fgdcNasaExpected.put("order", "");
         fgdcNasaExpected.put("phylum", "");
         fgdcNasaExpected.put("species", "");
+        fgdcNasaExpected.put("family", "");
         fgdcNasaExpected
                 .put("site",
                         "The study site is located 56 km north of Bangor, Maine in Penobscot County (45 12'N, 68 44'W). The area is within the 7000 ha Northern Experimental Forest (NEF) owned by International Paper.");
@@ -275,6 +277,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         esriExpected.put("order", "");
         esriExpected.put("phylum", "");
         esriExpected.put("species", "");
+        esriExpected.put("family", "");
         esriExpected.put("placeKey", "k2c#lowveld");
         esriExpected.put("origin", "Debby Thomson");
         esriExpected.put("author", "Debby Thomson");
@@ -296,7 +299,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         // system metadata
         esriExpected.put("id", esri_pid);
         esriExpected.put("formatId", "http://www.esri.com/metadata/esriprof80.dtd");
-        esriExpected.put("formatType", "METADATA");
+        esriExpected.put("formatType", "");
         esriExpected.put("size", "12575");
         esriExpected.put("checksum", "19021f947d54c11d1a4bad8725c827d5");
         esriExpected.put("checksumAlgorithm", "MD5");

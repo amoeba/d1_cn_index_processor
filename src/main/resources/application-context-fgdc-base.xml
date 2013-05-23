@@ -23,12 +23,6 @@
 		<property name="converter" ref="fgdcDateConverter" />
 	</bean>
 	
-	<bean id="fgdc.class" class="org.dataone.cn.indexer.parser.SolrField">
-		<constructor-arg name="name" value="class" />
-		<constructor-arg name="xpath" value='//taxoncl/taxonrv[../taxonrn="Class"]/text()' />
-		<property name="multivalue" value="true" />
-	</bean>	
-
 	<bean id="fgdc.contactOrganization" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="contactOrganization" />
 		<constructor-arg name="xpath"
@@ -137,6 +131,18 @@
 	<bean id="fgdc.species" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="species" />
 		<constructor-arg name="xpath" value='//taxoncl/taxonrv[../taxonrn="Species"]/text()' />
+		<property name="multivalue" value="true" />
+	</bean>
+	
+	<bean id="fgdc.family" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="family" />
+		<constructor-arg name="xpath" value='//taxoncl/taxonrv[../taxonrn="Family"]/text()' />
+		<property name="multivalue" value="true" />
+	</bean>
+	
+	<bean id="fgdc.class" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="class" />
+		<constructor-arg name="xpath" value='//taxoncl/taxonrv[../taxonrn="Class"]/text()' />
 		<property name="multivalue" value="true" />
 	</bean>
 	

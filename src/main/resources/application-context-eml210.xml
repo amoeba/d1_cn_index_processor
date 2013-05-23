@@ -33,6 +33,8 @@
     <ref bean="eml.kingdom" />
     <ref bean="eml.order" />
     <ref bean="eml.phylum" />
+    <ref bean="eml.family" />
+    <ref bean="eml.class" /> 
     <ref bean="eml.fileID" />
     <ref bean="eml.fullText" />
    </list>
