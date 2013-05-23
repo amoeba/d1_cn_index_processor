@@ -74,6 +74,15 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
         eml210Expected.put("authorLastName", "SANParks#Garcia#Freeman");
         eml210Expected.put("investigator", "SANParks#Garcia#Freeman");
         eml210Expected.put("contactOrganization", "SANParks#The Awesome Store");
+        eml210Expected
+                .put("genus",
+                        "Antidorcas#Cercopithecus#Diceros#Equus#Giraffa#Oreotragus#Oryz#Papio#Taurotragus#Tragelaphus");
+        eml210Expected
+                .put("species",
+                        "marsupialis#aethiops#bicornis#hartmannae#camelopardalis#oreotragus#gazella#hamadryas#oryx#strepsiceros");
+        eml210Expected.put("kingdom", "");
+        eml210Expected.put("order", "");
+        eml210Expected.put("phylum", "");
         eml210Expected.put("fileID", "https://" + hostname + "/cn/v1/resolve/peggym.130.4");
 
         eml210Expected.put("origin", "SANParks Freddy Garcia#Gordon Freeman#The Awesome Store");

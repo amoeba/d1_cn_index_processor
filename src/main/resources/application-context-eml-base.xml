@@ -180,5 +180,45 @@
 		<property name="multivalue" value="false" />
 		<property name="combineNodes" value="true"/>
 	</bean>
+	
+	<bean id="eml.genus" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="genus" />
+		<constructor-arg name="xpath" 
+			value='//taxonomicClassification/taxonRankValue[../taxonRankName="Genus"]/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="true" />
+	</bean>
 
+	<bean id="eml.species" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="species" />
+		<constructor-arg name="xpath" 
+			value='//taxonomicClassification/taxonRankValue[../taxonRankName="Species"]/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="true" />
+	</bean>
+
+	<bean id="eml.kingdom" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="kingdom" />
+		<constructor-arg name="xpath" 
+			value='//taxonomicClassification/taxonRankValue[../taxonRankName="Kingdom"]/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="true" />
+	</bean>
+
+	<bean id="eml.order" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="order" />
+		<constructor-arg name="xpath" 
+			value='//taxonomicClassification/taxonRankValue[../taxonRankName="Order"]/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="true" />
+	</bean>
+
+	<bean id="eml.phylum" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="phylum" />
+		<constructor-arg name="xpath" 
+			value='//taxonomicClassification/taxonRankValue[../taxonRankName="Phylum"]/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="true" />
+	</bean>
+		
 </beans>

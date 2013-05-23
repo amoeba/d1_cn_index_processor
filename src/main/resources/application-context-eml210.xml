@@ -28,6 +28,11 @@
     <ref bean="eml.investigator" />
     <ref bean="eml.origin" />
     <ref bean="eml.contactOrganization" />
+    <ref bean="eml.genus" />
+    <ref bean="eml.species" />
+    <ref bean="eml.kingdom" />
+    <ref bean="eml.order" />
+    <ref bean="eml.phylum" />
     <ref bean="eml.fileID" />
     <ref bean="eml.fullText" />
    </list>
