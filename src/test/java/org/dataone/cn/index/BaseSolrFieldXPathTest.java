@@ -29,6 +29,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.dataone.cn.indexer.XPathDocumentParser;
+import org.dataone.cn.indexer.parser.ISolrField;
 import org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.SolrField;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
@@ -57,7 +58,7 @@ public abstract class BaseSolrFieldXPathTest {
 
         Document scienceMetadataDoc = getXPathDocumentParser().generateXmlDocument(
                 sciMetadata.getInputStream());
-        for (SolrField field : docProcessor.getFieldList()) {
+        for (ISolrField field : docProcessor.getFieldList()) {
             boolean compared = compareFields(expectedValues, scienceMetadataDoc, field, pid);
             if (compared) {
                 fieldCount++;
@@ -78,7 +79,7 @@ public abstract class BaseSolrFieldXPathTest {
     }
 
     protected boolean compareFields(HashMap<String, String> expected, Document metadataDoc,
-            SolrField fieldToCompare, String identifier) throws Exception {
+            ISolrField fieldToCompare, String identifier) throws Exception {
 
         boolean fieldsCompared = false;
         List<SolrElementField> fields = fieldToCompare.getFields(metadataDoc, identifier);
@@ -102,6 +103,7 @@ public abstract class BaseSolrFieldXPathTest {
                             CollectionUtils.isEqualCollection(expectedValues, actualValues));
                 } else {
                     System.out.println("Expected does not contain field for: " + docFieldName);
+                    Assert.fail("Expectd does not contain value for field: " + docFieldName);
                 }
             } else {
                 SolrElementField docField = fields.get(0);

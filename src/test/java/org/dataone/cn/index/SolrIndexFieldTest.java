@@ -29,6 +29,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.apache.solr.common.SolrDocument;
+import org.dataone.cn.indexer.parser.ISolrField;
 import org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.SolrField;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
@@ -79,7 +80,7 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
         Resource scienceMetadataResource = (Resource) context.getBean("peggym1304Sci");
         Document scienceMetadataDoc = getXPathDocumentParser().generateXmlDocument(
                 scienceMetadataResource.getInputStream());
-        for (SolrField field : eml210.getFieldList()) {
+        for (ISolrField field : eml210.getFieldList()) {
             compareFields(result, scienceMetadataDoc, field, pid);
         }
 
@@ -112,7 +113,7 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
         Resource scienceMetadataResource = (Resource) context.getBean("fdgc01111999SciMeta");
         Document scienceMetadataDoc = getXPathDocumentParser().generateXmlDocument(
                 scienceMetadataResource.getInputStream());
-        for (SolrField field : fgdcSubProcessor.getFieldList()) {
+        for (ISolrField field : fgdcSubProcessor.getFieldList()) {
             compareFields(result, scienceMetadataDoc, field, pid);
         }
 
@@ -126,7 +127,7 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
     }
 
     private void compareFields(SolrDocument solrResult, Document metadataDoc,
-            SolrField fieldToCompare, String identifier) throws Exception {
+            ISolrField fieldToCompare, String identifier) throws Exception {
         List<SolrElementField> fields = fieldToCompare.getFields(metadataDoc, identifier);
         if (fields.isEmpty() == false) {
             SolrElementField docField = fields.get(0);
