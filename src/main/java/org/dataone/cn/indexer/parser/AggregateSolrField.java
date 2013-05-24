@@ -31,7 +31,7 @@ import org.apache.commons.lang.StringUtils;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.w3c.dom.Document;
 
-public class MultipleSolrField implements ISolrField {
+public class AggregateSolrField implements ISolrField {
 
     private List<ISolrField> solrFields = null;
     private String name = null;
