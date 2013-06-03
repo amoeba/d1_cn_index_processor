@@ -56,6 +56,12 @@
 		<property name="converter" ref="solrLongitudeConverter" />
 	</bean>
 
+	<bean id="eml.site" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="site" />
+		<constructor-arg name="xpath" value='//dataset/coverage/geographicCoverage/geographicDescription/text()' />
+		<property name="multivalue" value="true" />
+	</bean>
+	
 	<bean id="eml.beginDate" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="beginDate" />
 		<constructor-arg name="xpath"
@@ -173,7 +179,7 @@
 		<constructor-arg name="name" value="fileID" />
 	</bean>
 	
-	<bean id="eml.fullText" class="org.dataone.cn.indexer.parser.FullTextSolrField">
+	<bean id="eml.text" class="org.dataone.cn.indexer.parser.FullTextSolrField">
 		<constructor-arg name="name" value="text" />
 		<constructor-arg name="xpath"
 			value="//dataset/*[not(self::dataTable)]//text()" />
@@ -216,7 +222,7 @@
 	<bean id="eml.phylum" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="phylum" />
 		<constructor-arg name="xpath" 
-			value='//taxonomicClassification/taxonRankValue[../taxonRankName="Phylum"]/text()' />
+			value='//taxonomicClassification/taxonRankValue[../taxonRankName="Phylum"]/text() | //taxonomicClassification/taxonRankValue[../taxonRankName="Division"]/text()' />
 		<property name="multivalue" value="true" />
 		<property name="dedupe" value="true" />
 	</bean>
@@ -235,5 +241,30 @@
 			value='//taxonomicClassification/taxonRankValue[../taxonRankName="Class"]/text()' />
 		<property name="multivalue" value="true" />
 		<property name="dedupe" value="true" />
+	</bean>
+	
+	<bean id="eml.parameterDescription" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="parameterDescription" />
+		<constructor-arg name="xpath"
+			value='//dataTable/attributeList/attribute/attributeDefinition/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="true" />
+	</bean>
+	
+	<bean id="eml.parameterUnit" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="parameterUnit" />
+		<constructor-arg name="xpath"
+			value='//dataTable//standardUnit/text() | //dataTable//customUnit/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="true" />
+	</bean>
+	
+	<bean id="eml.fullText" class="org.dataone.cn.indexer.parser.AggregateSolrField" >
+		<property name="name" value="text" />
+		<property name="solrFields">
+	   		<list>
+	       		<ref bean="eml.text" />
+	      	</list>
+	  	</property>
 	</bean>
 </beans>

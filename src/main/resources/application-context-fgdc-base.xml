@@ -208,7 +208,6 @@
 	  <property name="dedupe" value="false" />
 	</bean>
 	
-	
 	<bean id="fgdc.presentationCat" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="presentationCat" />
 		<constructor-arg name="xpath" value='//metadata/idinfo/citation/citeinfo/geoform/text()' />

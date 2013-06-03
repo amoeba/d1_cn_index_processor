@@ -20,6 +20,7 @@
     <ref bean="eml.northBoundCoord" />
     <ref bean="eml.westBoundCoord" />
     <ref bean="eml.eastBoundCoord" />
+    <ref bean="eml.site" />
     <ref bean="eml.beginDate" />
     <ref bean="eml.endDate" />
     <ref bean="eml.pubDate" />
