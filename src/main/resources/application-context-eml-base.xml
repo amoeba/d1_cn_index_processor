@@ -243,16 +243,92 @@
 		<property name="dedupe" value="true" />
 	</bean>
 	
-	<bean id="eml.parameterDescription" class="org.dataone.cn.indexer.parser.SolrField">
-		<constructor-arg name="name" value="parameterDescription" />
+	
+	<bean id="eml.scientificName" class="org.dataone.cn.indexer.parser.CommonRootSolrField"
+			p:multivalue="true"
+			p:root-ref="scientificNameRoot">
+			<constructor-arg name="name" value="scientificName" />
+	</bean>
+	
+	<bean id="scientificNameRoot" class="org.dataone.cn.indexer.parser.utility.RootElement"
+		p:name="scientificName"
+		p:xPath='//taxonomicClassification[../taxonRankName="Genus"]'
+		p:template="[genus] [species]">
+		<property name="leafs">
+			<list>
+				<ref bean="genusLeaf"/>
+				<ref bean="speciesLeaf"/>
+			</list>
+		</property>
+	</bean>	
+	
+	<bean id="genusLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+		p:name="genus"
+		p:xPath='../taxonRankValue/text()' />
+		
+	<bean id="speciesLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+		p:name="species"
+		p:xPath='taxonRankValue/text()' />	
+	
+
+	<bean id="eml.attributeName" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="attributeName" />
+		<constructor-arg name="xpath"
+			value='//dataTable/attributeList/attribute/attributeName/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="false" />
+	</bean>
+	
+	<bean id="eml.attributeLabel" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="attributeLabel" />
+		<constructor-arg name="xpath"
+			value='//dataTable/attributeList/attribute/attributeLabel/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="false" />
+	</bean>
+	
+	<bean id="eml.attributeDescription" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="attributeDescription" />
+		<constructor-arg name="xpath"
+			value='//dataTable/attributeList/attribute/attributeDefinition/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="false" />
+	</bean>
+	
+	<bean id="eml.attributeUnit" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="attributeUnit" />
+		<constructor-arg name="xpath"
+			value='//dataTable//standardUnit/text() | //dataTable//customUnit/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="false" />
+	</bean>
+	
+	<bean id="eml.attributeName.noDupe" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="attributeName_noDupe" />
+		<constructor-arg name="xpath"
+			value='//dataTable/attributeList/attribute/attributeName/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="true" />
+	</bean>
+	
+	<bean id="eml.attributeLabel.noDupe" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="attributeLabel_noDupe" />
+		<constructor-arg name="xpath"
+			value='//dataTable/attributeList/attribute/attributeLabel/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="true" />
+	</bean>
+	
+	<bean id="eml.attributeDescription.noDupe" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="attributeDescription_noDupe" />
 		<constructor-arg name="xpath"
 			value='//dataTable/attributeList/attribute/attributeDefinition/text()' />
 		<property name="multivalue" value="true" />
 		<property name="dedupe" value="true" />
 	</bean>
 	
-	<bean id="eml.parameterUnit" class="org.dataone.cn.indexer.parser.SolrField">
-		<constructor-arg name="name" value="parameterUnit" />
+	<bean id="eml.attributeUnit.noDupe" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="attributeUnit_noDupe" />
 		<constructor-arg name="xpath"
 			value='//dataTable//standardUnit/text() | //dataTable//customUnit/text()' />
 		<property name="multivalue" value="true" />
@@ -264,6 +340,10 @@
 		<property name="solrFields">
 	   		<list>
 	       		<ref bean="eml.text" />
+	       		<ref bean="eml.attributeName.noDupe" />
+	       		<ref bean="eml.attributeLabel.noDupe" />
+	       		<ref bean="eml.attributeDescription.noDupe" />
+	       		<ref bean="eml.attributeUnit.noDupe" />
 	      	</list>
 	  	</property>
 	</bean>

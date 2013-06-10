@@ -32,6 +32,11 @@
     <ref bean="eml.phylum" />
     <ref bean="eml.family" />
     <ref bean="eml.class" /> 
+    <ref bean="eml.scientificName" />
+    <ref bean="eml.attributeName" />
+    <ref bean="eml.attributeLabel" />
+    <ref bean="eml.attributeDescription" />
+    <ref bean="eml.attributeUnit" />
     <ref bean="eml.fileID" />
     <ref bean="eml.fullText" />
    </list>

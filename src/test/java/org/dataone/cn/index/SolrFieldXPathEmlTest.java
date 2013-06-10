@@ -86,11 +86,20 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
         eml210Expected.put("phylum", "");
         eml210Expected.put("family", "");
         eml210Expected.put("class", "");
+        eml210Expected
+                .put("scientificName",
+                        "Antidorcas marsupialis#Cercopithecus aethiops#Diceros bicornis#Equus hartmannae#Giraffa camelopardalis#Oreotragus oreotragus#Oryz gazella#Papio hamadryas#Taurotragus oryx#Tragelaphus strepsiceros");
         eml210Expected.put("origin", "SANParks Freddy Garcia#Gordon Freeman#The Awesome Store");
-        //     eml210Expected
-        //           .put("parameterDescription",
-        //                 "The ID#Lat S#Long E#The date#Stratum#Transect#The name of species#LatS#LongE#The total#Juvenile#L/R#Sum of the total#Sum of juvenile#The sum of total");
-        //  eml210Expected.put("parameterUnit", "dimensionless");
+        eml210Expected
+                .put("attributeName",
+                        "ID#Lat S#Long E#Date#Stratum#Transect#Species#LatS#LongE#Total#Juvenile#L/R#Species#Stratum#Date#SumOfTotal#SumOfJuvenile#Species#Date#SumOfTotal#SumOfJuvenile");
+        eml210Expected.put("attributeLabel", "");
+        eml210Expected
+                .put("attributeDescription",
+                        "The ID#Lat S#Long E#The date#Stratum#Transect#The name of species#LatS#LongE#The total#Juvenile#L/R#The name of species#Stratum#The date#Sum of the total#Sum of juvenile#The name of species#The date#The sum of total#Sum of juvenile");
+        eml210Expected
+                .put("attributeUnit",
+                        "dimensionless#dimensionless#dimensionless#dimensionless#dimensionless#dimensionless#dimensionless#dimensionless#dimensionless#dimensionless#dimensionless#dimensionless#dimensionless#dimensionless#dimensionless");
 
         eml210Expected.put("fileID", "https://" + hostname + "/cn/v1/resolve/peggym.130.4");
 
@@ -123,7 +132,7 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
 
         eml210Expected
                 .put("text",
-                        "Augrabies falls National Park census data.   SANParks    Garcia  Freddy   SANParks  Regional Ecologists   Private Bag x402 Skukuza, 1350 South Africa     Freeman  Gordon   SANParks  Regional Ecologists   Private Bag x402 Skukuza, 1350 South Africa    The Awesome Store  Regional Ecologists   Private Bag x402 Skukuza, 1350 South Africa    This metadata record fred, describes a 12-34 TT-12 long-term data document can't frank.  This is a test.  If this was not a lower, an abstract \"double\" or 'single' would be present in UPPER (parenthized) this location.   SANParks, South Africa  Augrabies Falls National Park,South Africa  Census data  EARTH SCIENCE : Oceans : Ocean Temperature : Water Temperature    Agulhas falls national Park   -120.311210  -120.311210  26.0  26.0       1998    2004-02-13       Genus  Antidorcas   Species  marsupialis  Hartmans Zebra     Genus  Cercopithecus   Species  aethiops  Vervet monkey     Genus  Diceros   Species  bicornis  Baboon     Genus  Equus   Species  hartmannae  Giraffe     Genus  Giraffa   Species  camelopardalis  Kudu     Genus  Oreotragus   Species  oreotragus  Gemsbok     Genus  Oryz   Species  gazella  Eland     Genus  Papio   Species  hamadryas     Genus  Taurotragus   Species  oryx  Black rhino     Genus  Tragelaphus   Species  strepsiceros  Klipspringer      1251095992100 peggym.130.4");
+                        "Augrabies falls National Park census data.   SANParks    Garcia  Freddy   SANParks  Regional Ecologists   Private Bag x402 Skukuza, 1350 South Africa     Freeman  Gordon   SANParks  Regional Ecologists   Private Bag x402 Skukuza, 1350 South Africa    The Awesome Store  Regional Ecologists   Private Bag x402 Skukuza, 1350 South Africa    This metadata record fred, describes a 12-34 TT-12 long-term data document can't frank.  This is a test.  If this was not a lower, an abstract \"double\" or 'single' would be present in UPPER (parenthized) this location.   SANParks, South Africa  Augrabies Falls National Park,South Africa  Census data  EARTH SCIENCE : Oceans : Ocean Temperature : Water Temperature    Agulhas falls national Park   -120.311210  -120.311210  26.0  26.0       1998    2004-02-13       Genus  Antidorcas   Species  marsupialis  Hartmans Zebra     Genus  Cercopithecus   Species  aethiops  Vervet monkey     Genus  Diceros   Species  bicornis  Baboon     Genus  Equus   Species  hartmannae  Giraffe     Genus  Giraffa   Species  camelopardalis  Kudu     Genus  Oreotragus   Species  oreotragus  Gemsbok     Genus  Oryz   Species  gazella  Eland     Genus  Papio   Species  hamadryas     Genus  Taurotragus   Species  oryx  Black rhino     Genus  Tragelaphus   Species  strepsiceros  Klipspringer      1251095992100 peggym.130.4 ID Lat S Long E Date Stratum Transect Species LatS LongE Total Juvenile L/R SumOfTotal SumOfJuvenile The ID Lat S Long E The date Stratum Transect The name of species LatS LongE The total Juvenile L/R Sum of the total Sum of juvenile The sum of total dimensionless");
     }
 
     /**
