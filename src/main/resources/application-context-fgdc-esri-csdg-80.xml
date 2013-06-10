@@ -28,6 +28,7 @@
 		<ref bean="fgdc.family" />
 		<ref bean="fgdc.class" />
 		<ref bean="fgdc.origin" />
+		<ref bean="fgdc.scientificName" />
 		<ref bean="fgdc.placeKey" />
 		<ref bean="fgdc.pubDate" />
 		<ref bean="fgdc.purpose" />

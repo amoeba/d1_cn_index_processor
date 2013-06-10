@@ -151,6 +151,33 @@
 		<constructor-arg name="xpath" value='//metadata/idinfo/citation/citeinfo/origin/text()' />
 		<property name="multivalue" value="true" />
 	</bean>
+	
+	<bean id="fgdc.scientificName" class="org.dataone.cn.indexer.parser.CommonRootSolrField"
+			p:multivalue="true"
+			p:root-ref="fgdc.scientificNameRoot">
+			<constructor-arg name="name" value="scientificName" />
+	</bean>
+	
+	<bean id="fgdc.scientificNameRoot" class="org.dataone.cn.indexer.parser.utility.RootElement"
+		p:name="scientificName"
+		p:xPath='//taxoncl/taxonrv[../taxonrn="Genus"]'
+		p:template="[genus] [species]">
+		<property name="leafs">
+			<list>
+				<ref bean="fgdc.genusLeaf"/>
+				<ref bean="fgdc.speciesLeaf"/>
+			</list>
+		</property>
+	</bean>	
+	
+	<bean id="fgdc.genusLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+		p:name="genus"
+		p:xPath='../taxonrv/text()' />
+		
+	<bean id="fgdc.speciesLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+		p:name="species"
+		p:xPath='taxonrv/text()' />		
+	
 		
 	<bean id="fgdc.placeKey" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="placeKey" />

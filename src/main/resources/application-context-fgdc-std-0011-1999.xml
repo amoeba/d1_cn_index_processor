@@ -27,6 +27,7 @@
 		<ref bean="fgdc.species" />
 		<ref bean="fgdc.family" />
 		<ref bean="fgdc.class" />
+		<ref bean="fgdc.scientificName" />
 		<ref bean="fgdc.origin" />
 		<ref bean="fgdc.placeKey" />
 		<ref bean="fgdc.pubDate" />

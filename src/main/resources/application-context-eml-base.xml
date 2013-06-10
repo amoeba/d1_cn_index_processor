@@ -99,18 +99,18 @@
 
 	<bean id="eml.author" class="org.dataone.cn.indexer.parser.CommonRootSolrField"
 			p:multivalue="false"
-			p:root-ref="authorNameRoot">
+			p:root-ref="eml.authorNameRoot">
 			<constructor-arg name="name" value="author" />
 	</bean>
 	
-	<bean id="authorNameRoot" class="org.dataone.cn.indexer.parser.utility.RootElement"
+	<bean id="eml.authorNameRoot" class="org.dataone.cn.indexer.parser.utility.RootElement"
 		p:name="author"
 		p:xPath="//dataset/creator/individualName"
 		p:template="[givenName] [surName]">
 		<property name="leafs">
 			<list>
-				<ref bean="givenNameLeaf"/>
-				<ref bean="surNameLeaf"/>
+				<ref bean="eml.givenNameLeaf"/>
+				<ref bean="eml.surNameLeaf"/>
 			</list>
 		</property>
 	</bean>
@@ -131,39 +131,39 @@
 	
 	<bean id="eml.origin" class="org.dataone.cn.indexer.parser.CommonRootSolrField"
 		p:multivalue="true"
-		p:root-ref="originRoot">
+		p:root-ref="eml.originRoot">
 		<constructor-arg name="name" value="origin" />
 	</bean>
 	
-	<bean id="originRoot" class="org.dataone.cn.indexer.parser.utility.RootElement"
+	<bean id="eml.originRoot" class="org.dataone.cn.indexer.parser.utility.RootElement"
 		p:name="origin"
 		p:xPath="//dataset/creator" 
 		p:template="[individualName]||[organizationName]">
-		<property name="leafs"><list><ref bean="organizationNameLeaf"/></list></property>
-		<property name="subRoots"><list><ref bean="individualNameRoot" /></list></property>
+		<property name="leafs"><list><ref bean="eml.organizationNameLeaf"/></list></property>
+		<property name="subRoots"><list><ref bean="eml.individualNameRoot" /></list></property>
 	</bean>
 		
-	<bean id="organizationNameLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+	<bean id="eml.organizationNameLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
 		p:name="organizationName"
 		p:xPath="organizationName/text()" />
 		
-	<bean id="individualNameRoot" class="org.dataone.cn.indexer.parser.utility.RootElement"
+	<bean id="eml.individualNameRoot" class="org.dataone.cn.indexer.parser.utility.RootElement"
 		p:name="individualName"
 		p:xPath="individualName"
 		p:template="[givenName] [surName]">
 		<property name="leafs">
 			<list>
-				<ref bean="givenNameLeaf"/>
-				<ref bean="surNameLeaf"/>
+				<ref bean="eml.givenNameLeaf"/>
+				<ref bean="eml.surNameLeaf"/>
 			</list>
 		</property>
 	</bean>
 	
-	<bean id="givenNameLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+	<bean id="eml.givenNameLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
 		p:name="givenName"
 		p:xPath="givenName/text()" />
 		
-	<bean id="surNameLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+	<bean id="eml.surNameLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
 		p:name="surName"
 		p:xPath="surName/text()"/>
 	
@@ -246,27 +246,27 @@
 	
 	<bean id="eml.scientificName" class="org.dataone.cn.indexer.parser.CommonRootSolrField"
 			p:multivalue="true"
-			p:root-ref="scientificNameRoot">
+			p:root-ref="eml.scientificNameRoot">
 			<constructor-arg name="name" value="scientificName" />
 	</bean>
 	
-	<bean id="scientificNameRoot" class="org.dataone.cn.indexer.parser.utility.RootElement"
+	<bean id="eml.scientificNameRoot" class="org.dataone.cn.indexer.parser.utility.RootElement"
 		p:name="scientificName"
 		p:xPath='//taxonomicClassification[../taxonRankName="Genus"]'
 		p:template="[genus] [species]">
 		<property name="leafs">
 			<list>
-				<ref bean="genusLeaf"/>
-				<ref bean="speciesLeaf"/>
+				<ref bean="eml.genusLeaf"/>
+				<ref bean="eml.speciesLeaf"/>
 			</list>
 		</property>
 	</bean>	
 	
-	<bean id="genusLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+	<bean id="eml.genusLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
 		p:name="genus"
 		p:xPath='../taxonRankValue/text()' />
 		
-	<bean id="speciesLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+	<bean id="eml.speciesLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
 		p:name="species"
 		p:xPath='taxonRankValue/text()' />	
 	
