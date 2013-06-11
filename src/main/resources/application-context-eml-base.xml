@@ -302,6 +302,42 @@
 		<property name="multivalue" value="true" />
 		<property name="dedupe" value="false" />
 	</bean>
+
+	<bean id="eml.attributeText" class="org.dataone.cn.indexer.parser.CommonRootSolrField"
+			p:multivalue="true"
+			p:root-ref="eml.attributeTextRoot">
+			<constructor-arg name="name" value="attributeText" />
+	</bean>
+	
+	<bean id="eml.attributeTextRoot" class="org.dataone.cn.indexer.parser.utility.RootElement"
+		p:name="attributeText"
+		p:xPath='//dataTable/attributeList/attribute'
+		p:template="[attributeName] [attributeLabel] [attributeDescription] [attributeUnit]">
+		<property name="leafs">
+			<list>
+				<ref bean="eml.attributeNameLeaf" />
+				<ref bean="eml.attributeLabelLeaf" />
+				<ref bean="eml.attributeDescriptionLeaf" />
+				<ref bean="eml.attributeUnitLeaf" />
+			</list>
+		</property>
+	</bean>	
+	
+	<bean id="eml.attributeNameLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+		p:name="attributeName"
+		p:xPath='attributeName/text()' />
+		
+	<bean id="eml.attributeLabelLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+		p:name="attributeLabel"
+		p:xPath='attributeLabel/text()' />
+	
+	<bean id="eml.attributeDescriptionLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+		p:name="attributeDescription"
+		p:xPath='attributeDefinition/text()' />
+		
+	<bean id="eml.attributeUnitLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+		p:name="attributeUnit"
+		p:xPath='.//standardUnit/text() | .//customUnit/text()' />	
 	
 	<bean id="eml.attributeName.noDupe" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="attributeName_noDupe" />

@@ -227,7 +227,7 @@
         </attrdomv>
       </attr>
       <attr>
-        <attrlabl>GPS_1293#</attrlabl>
+        <attrlabl>GPS_1293</attrlabl>
         <attrdef>Internal feature number</attrdef>
         <attrdefs>Computed</attrdefs>
         <attrdomv>

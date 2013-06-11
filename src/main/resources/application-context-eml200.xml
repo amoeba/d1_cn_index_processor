@@ -37,6 +37,7 @@
     <ref bean="eml.attributeLabel" />
     <ref bean="eml.attributeDescription" />
     <ref bean="eml.attributeUnit" />
+    <ref bean="eml.attributeText" />
     <ref bean="eml.fileID" />
     <ref bean="eml.fullText" />
    </list>

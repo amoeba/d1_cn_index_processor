@@ -218,14 +218,6 @@
 		<constructor-arg name="name" value="fileID" />
 	</bean>
 	
-	<bean id="fgdc.fullText" class="org.dataone.cn.indexer.parser.FullTextSolrField">
-		<constructor-arg name="name" value="text" />
-		<constructor-arg name="xpath"
-			value="//metadata//text()" />
-		<property name="multivalue" value="false" />
-		<property name="combineNodes" value="true"/>
-	</bean>
-	
 	<bean id="fgdc.project" class="org.dataone.cn.indexer.parser.MergeSolrField">
 	  <constructor-arg name="name" value="project" />
 	  <constructor-arg name="xpath"
@@ -257,5 +249,127 @@
 		<constructor-arg name="name" value="site" />
 		<constructor-arg name="xpath" value='//metadata/idinfo/spdom/descgeog/text()' />
 		<property name="multivalue" value="true" />
+	</bean>
+	
+	<bean id="fgdc.attributeName" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="attributeName" />
+		<constructor-arg name="xpath"
+			value='//attr/attrlabl/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="false" />
+	</bean>
+	
+	<bean id="fgdc.attributeLabel" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="attributeLabel" />
+		<constructor-arg name="xpath"
+			value='//attr/attalias/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="false" />
+	</bean>
+	
+	<bean id="fgdc.attributeDescription" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="attributeDescription" />
+		<constructor-arg name="xpath"
+			value='//attr/attrdef/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="false" />
+	</bean>
+	
+	<bean id="fgdc.attributeUnit" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="attributeUnit" />
+		<constructor-arg name="xpath"
+			value='//attr/attrdomv//attrunit/text() | //attr//attrdomv//edomv/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="false" />
+	</bean>
+
+	<bean id="fgdc.attributeName.noDupe" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="attributeName" />
+		<constructor-arg name="xpath"
+			value='//attr/attrlabl/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="true" />
+	</bean>
+	
+	<bean id="fgdc.attributeLabel.noDupe" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="attributeLabel" />
+		<constructor-arg name="xpath"
+			value='//attr/attalias/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="true" />
+	</bean>
+	
+	<bean id="fgdc.attributeDescription.noDupe" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="attributeDescription" />
+		<constructor-arg name="xpath"
+			value='//attr/attrdef/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="true" />
+	</bean>
+	
+	<bean id="fgdc.attributeUnit.noDupe" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="attributeUnit" />
+		<constructor-arg name="xpath"
+			value='//attr/attrdomv//attrunit/text() | //attr//attrdomv//edomv/text()' />
+		<property name="multivalue" value="true" />
+		<property name="dedupe" value="true" />
+	</bean>
+
+	<bean id="fgdc.attributeText" class="org.dataone.cn.indexer.parser.CommonRootSolrField"
+			p:multivalue="true"
+			p:root-ref="fgdc.attributeTextRoot">
+			<constructor-arg name="name" value="attributeText" />
+	</bean>
+	
+	<bean id="fgdc.attributeTextRoot" class="org.dataone.cn.indexer.parser.utility.RootElement"
+		p:name="attributeText"
+		p:xPath='//attr'
+		p:template="[attributeName] [attributeLabel] [attributeDescription] [attributeUnit]">
+		<property name="leafs">
+			<list>
+				<ref bean="fgdc.attributeNameLeaf" />
+				<ref bean="fgdc.attributeLabelLeaf" />
+				<ref bean="fgdc.attributeDescriptionLeaf" />
+				<ref bean="fgdc.attributeUnitLeaf" />
+			</list>
+		</property>
+	</bean>	
+	
+	<bean id="fgdc.attributeNameLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+		p:name="attributeName"
+		p:xPath='attrlabl/text()' />
+		
+	<bean id="fgdc.attributeLabelLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+		p:name="attributeLabel"
+		p:xPath='attalias/text()' />
+	
+	<bean id="fgdc.attributeDescriptionLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+		p:name="attributeDescription"
+		p:xPath='attrdef/text()' />
+		
+	<bean id="fgdc.attributeUnitLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+		p:name="attributeUnit"
+		p:xPath='attrdomv//attrunit/text() | .//attrdomv//edomv/text()' />	
+
+	
+	<bean id="fgdc.text" class="org.dataone.cn.indexer.parser.FullTextSolrField">
+		<constructor-arg name="name" value="text" />
+		<constructor-arg name="xpath"
+			value="//metadata//text()" />
+		<property name="multivalue" value="false" />
+		<property name="combineNodes" value="true"/>
+	</bean>
+	
+	<bean id="fgdc.fullText" class="org.dataone.cn.indexer.parser.AggregateSolrField" >
+		<property name="name" value="text" />
+		<property name="solrFields">
+	   		<list>
+	       		<ref bean="fgdc.text" />
+	       		<ref bean="fgdc.attributeName.noDupe" />
+	       		<ref bean="fgdc.attributeLabel.noDupe" />
+	       		<ref bean="fgdc.attributeDescription.noDupe" />
+	       		<ref bean="fgdc.attributeUnit.noDupe" />
+	      	</list>
+	  	</property>
 	</bean>
 </beans>

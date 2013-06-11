@@ -40,6 +40,11 @@
 		<ref bean="fgdc.author"/>
 		<ref bean="fgdc.investigator" />
 		<ref bean="fgdc.site" />
+	    <ref bean="fgdc.attributeName" />
+	    <ref bean="fgdc.attributeLabel" />
+	    <ref bean="fgdc.attributeDescription" />
+	    <ref bean="fgdc.attributeUnit" />
+	    <ref bean="fgdc.attributeText" />
    </list>
   </property>
  </bean>
