@@ -726,7 +726,7 @@
        relatedOrganizations,replicaMN,replicationAllowed,replicaVerifiedDate,
        resourceMap,rightsHolder,scientificName,sensor,site,size,sku,source,
        southBoundCoord,species,submitter,term,title,topic,updateDate,webUrl,
-       westBoundCoord,writePermission,parameterDescripiton,parameterUnit,attributeName,
+       westBoundCoord,writePermission,attributeName,
        attributeLabel,attributeDescription,attributeUnit,attributeText</str>
      </lst>
     <!-- In addition to defaults, "appends" params can be specified

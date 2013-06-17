@@ -278,10 +278,11 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <field name="class" 			type="string" 	indexed="true" stored="true" multiValued="true"/>
 
 		<field name="attributeName" 	type="string"	indexed="true"	stored="true" 	multiValued="true" />
-		<field name="attributeLabel" 	type="string"	indexed="true"	stored="true"	multiValued="true "/>
+		<field name="attributeLabel" 	type="string"	indexed="true"	stored="true"	multiValued="true" />
 		<field name="attributeDescription" type="text"	indexed="true"	stored="true"	multiValued="true" />
 		<field name="attributeUnit" 	type="string"	indexed="true"	stored="true"	multiValued="true" />
 		<field name="attributeText"		type="text"		indexed="true"	stored="true"	multiValued="true" />
+        
         <field name="webUrl" 			type="string" 	indexed="false" stored="true" multiValued="true"/>
 
         <field name="contactOrganization" 		type="string" indexed="true" stored="true" multiValued="true"/>
@@ -320,9 +321,6 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
 
         <field name="fileID" 			type="string" 	indexed="true" stored="true"/>
    		<field name="text"				type="text"		indexed="true" stored="true" multiValued="false" />
-   		
-   		<field name="parameterDescription" 	type="text" indexed="true" stored="true" multiValued="true" />
-   		<field name="parameterUnit" 		type="text" indexed="true" stored="true" multiValued="true" />
    		
 <!-- ======================================================================= -->
         <!-- Dynamic field definitions.  If a field name is not found, dynamicFields
