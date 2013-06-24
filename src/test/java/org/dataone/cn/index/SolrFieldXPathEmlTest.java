@@ -101,7 +101,7 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
                 .put("attributeUnit",
                         "dimensionless#dimensionless#dimensionless#dimensionless#dimensionless#dimensionless#dimensionless#dimensionless#dimensionless#dimensionless#dimensionless#dimensionless#dimensionless#dimensionless#dimensionless");
         eml210Expected
-                .put("attributeText",
+                .put("attribute",
                         "ID  The ID dimensionless#Lat S  Lat S dimensionless#Long E  Long E dimensionless#Date  The date#Stratum  Stratum dimensionless#Transect  Transect dimensionless#Species  The name of species#LatS  LatS dimensionless#LongE  LongE dimensionless#Total  The total dimensionless#Juvenile  Juvenile dimensionless#L/R  L/R dimensionless#Species  The name of species#Stratum  Stratum dimensionless#Date  The date#SumOfTotal  Sum of the total dimensionless#SumOfJuvenile  Sum of juvenile dimensionless#Species  The name of species#Date  The date#SumOfTotal  The sum of total dimensionless#SumOfJuvenile  Sum of juvenile dimensionless");
 
         eml210Expected.put("fileID", "https://" + hostname + "/cn/v1/resolve/peggym.130.4");

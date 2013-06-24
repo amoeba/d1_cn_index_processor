@@ -318,11 +318,11 @@
 	<bean id="fgdc.attributeText" class="org.dataone.cn.indexer.parser.CommonRootSolrField"
 			p:multivalue="true"
 			p:root-ref="fgdc.attributeTextRoot">
-			<constructor-arg name="name" value="attributeText" />
+			<constructor-arg name="name" value="attribute" />
 	</bean>
 	
 	<bean id="fgdc.attributeTextRoot" class="org.dataone.cn.indexer.parser.utility.RootElement"
-		p:name="attributeText"
+		p:name="attribute"
 		p:xPath='//attr'
 		p:template="[attributeName] [attributeLabel] [attributeDescription] [attributeUnit]">
 		<property name="leafs">
@@ -365,10 +365,6 @@
 		<property name="solrFields">
 	   		<list>
 	       		<ref bean="fgdc.text" />
-	       		<ref bean="fgdc.attributeName.noDupe" />
-	       		<ref bean="fgdc.attributeLabel.noDupe" />
-	       		<ref bean="fgdc.attributeDescription.noDupe" />
-	       		<ref bean="fgdc.attributeUnit.noDupe" />
 	      	</list>
 	  	</property>
 	</bean>

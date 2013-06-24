@@ -281,7 +281,7 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
 		<field name="attributeLabel" 	type="string"	indexed="true"	stored="true"	multiValued="true" />
 		<field name="attributeDescription" type="text"	indexed="true"	stored="true"	multiValued="true" />
 		<field name="attributeUnit" 	type="string"	indexed="true"	stored="true"	multiValued="true" />
-		<field name="attributeText"		type="text"		indexed="true"	stored="true"	multiValued="true" />
+		<field name="attribute"		type="text"		indexed="true"	stored="true"	multiValued="true" />
         <field name="webUrl" 			type="string" 	indexed="false" stored="true" multiValued="true" />
 
         <field name="contactOrganization" 		type="string" indexed="true" stored="true" multiValued="true"/>

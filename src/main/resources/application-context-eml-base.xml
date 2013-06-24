@@ -306,11 +306,11 @@
 	<bean id="eml.attributeText" class="org.dataone.cn.indexer.parser.CommonRootSolrField"
 			p:multivalue="true"
 			p:root-ref="eml.attributeTextRoot">
-			<constructor-arg name="name" value="attributeText" />
+			<constructor-arg name="name" value="attribute" />
 	</bean>
 	
 	<bean id="eml.attributeTextRoot" class="org.dataone.cn.indexer.parser.utility.RootElement"
-		p:name="attributeText"
+		p:name="attribute"
 		p:xPath='//dataTable/attributeList/attribute'
 		p:template="[attributeName] [attributeLabel] [attributeDescription] [attributeUnit]">
 		<property name="leafs">
