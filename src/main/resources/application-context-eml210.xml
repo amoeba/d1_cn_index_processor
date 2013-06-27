@@ -25,6 +25,8 @@
     <ref bean="eml.endDate" />
     <ref bean="eml.pubDate" />
     <ref bean="eml.author" />
+    <ref bean="eml.authorGivenName"/>
+    <ref bean="eml.authorSurName" />
     <ref bean="eml.author_lname" />
     <ref bean="eml.investigator" />
     <ref bean="eml.origin" />

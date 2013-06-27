@@ -16,6 +16,13 @@
 		<property name="multivalue" value="false" />
 	</bean>
 	
+	<bean id="dryad.authorSurName" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="authorSurName" />
+		<constructor-arg name="xpath"
+			value="//dcterms:creator[1]/text()" />
+		<property name="multivalue" value="false" />
+	</bean>
+	
 	<bean id="dryad.keywords" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="keywords" />
 		<constructor-arg name="xpath"
@@ -71,11 +78,9 @@
 	
 	<bean id="dryad.fullText" class="org.dataone.cn.indexer.parser.FullTextSolrField">
 		<constructor-arg name="name" value="text" />
-		<constructor-arg name="xpath"
-			value="//*/text()" />
+		<constructor-arg name="xpath" value="//*/text()" />
 		<property name="multivalue" value="false" />
 		<property name="combineNodes" value="true"/>
-		<property name="dedupe" value="true"/>
 	</bean>
 	
 </beans>

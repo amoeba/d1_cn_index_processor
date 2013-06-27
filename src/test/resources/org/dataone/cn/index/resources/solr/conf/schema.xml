@@ -184,6 +184,15 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
                 <filter class="solr.EnglishPorterFilterFactory" protected="protwords.txt"/>
             </analyzer>
         </fieldtype> 
+
+		<fieldType name="alphaOnlySort" class="solr.TextField" sortMissingLast="true" omitNorms="true">
+			<analyzer>
+				<tokenizer class="solr.KeywordTokenizerFactory"/>
+				<filter class="solr.LowerCaseFilterFactory"/>
+				<filter class="solr.TrimFilterFactory"/>
+				<filter class="solr.PatternReplaceFilterFactory" pattern="([^a-z])" replacement="" replace="all"/>
+			</analyzer>
+		</fieldType>
 		
     </types>
 
@@ -233,9 +242,16 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <field name="isPublic"          type="boolean"  indexed="true" stored="true" />
         
         <!-- Science metadata properties -->
-        <field name="abstract"                 type="text"      multiValued="false" indexed="true" stored="true" />
-        <field name="author"                   type="string"    multiValued="false" indexed="true" stored="true" />
-        <field name="authorLastName"             type="string"    multiValued="true" indexed="true" stored="true" />
+
+        <field name="author"				type="string"			multiValued="false"	indexed="true"	stored="true" />
+        <field name="authorSurName"			type="string"			multiValued="false"	indexed="true"	stored="true" />
+        <field name="authorGivenName"		type="string" 			multiValued="false"	indexed="true"	stored="true" />
+        <field name="authorSurNameSort"		type="alphaOnlySort"	multiValued="false"	indexed="true"	stored="false" />
+        <field name="authorGivenNameSort"	type="alphaOnlySort"	multiValued="false"	indexed="true"	stored="false" />
+        
+        <field name="authorLastName"	type="string"	multiValued="true"	indexed="true" stored="true" />
+        
+        <field name="abstract"			type="text"		multiValued="false"	indexed="true" stored="true" />
         <field name="keywords"                 type="string"    multiValued="true" indexed="true" stored="true" />
         <field name="keyConcept"               type="string"    multiValued="true" indexed="true" stored="true" />
         <field name="southBoundCoord"          type="sfloat"     multiValued="false" indexed="true" stored="true"/>
@@ -277,12 +293,13 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <field name="order" 			type="string" 	indexed="true" stored="true" multiValued="true"/>
         <field name="class" 			type="string" 	indexed="true" stored="true" multiValued="true"/>
 
-		<field name="attributeName" 	type="string"	indexed="true"	stored="true" 	multiValued="true" />
-		<field name="attributeLabel" 	type="string"	indexed="true"	stored="true"	multiValued="true" />
-		<field name="attributeDescription" type="text"	indexed="true"	stored="true"	multiValued="true" />
-		<field name="attributeUnit" 	type="string"	indexed="true"	stored="true"	multiValued="true" />
-		<field name="attribute"		type="text"		indexed="true"	stored="true"	multiValued="true" />
-        <field name="webUrl" 			type="string" 	indexed="false" stored="true" multiValued="true" />
+		<field name="attributeName" 		type="string"	indexed="true"	stored="true" 	multiValued="true" />
+		<field name="attributeLabel" 		type="string"	indexed="true"	stored="true"	multiValued="true" />
+		<field name="attributeDescription" 	type="text"		indexed="true"	stored="true"	multiValued="true" />
+		<field name="attributeUnit" 		type="string"	indexed="true"	stored="true"	multiValued="true" />
+		<field name="attribute"				type="text"		indexed="true"	stored="true"	multiValued="true" />
+        
+        <field name="webUrl" 			type="string" 	indexed="false" stored="true" multiValued="true"/>
 
         <field name="contactOrganization" 		type="string" indexed="true" stored="true" multiValued="true"/>
         <field name="contactOrganizationText" 	type="text"   indexed="true" stored="false" multiValued="true"/>
@@ -356,7 +373,9 @@ ways, or to add multiple fields to the same field for easier/faster searching.  
 
     <copyField source="id" dest="sku"/>
     <copyField source="id" dest="identifier"/>
-    <copyfield source="replicaMN" dest="datasource" />
+
+	<copyfield source="authorSurName" dest="authorSurNameSort" />
+	<copyfield source="authorGivenName" dest="authorGivenNameSort" />
 
     <copyField source="title" dest="titlestr"/>
 

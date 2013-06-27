@@ -239,6 +239,13 @@
 		<property name="multivalue" value="false" />
 	</bean>
 
+	<bean id="fgdc.authorSurName" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="authorSurName" />
+		<constructor-arg name="xpath"
+			value="//metadata/idinfo/citation/citeinfo/origin[1]/text()" />
+		<property name="multivalue" value="false" />
+	</bean>
+	
 	<bean id="fgdc.investigator" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="investigator" />
 		<constructor-arg name="xpath" value='//metadata/idinfo/citation/citeinfo/origin/text()' />

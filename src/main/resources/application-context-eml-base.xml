@@ -97,6 +97,18 @@
 		<property name="multivalue" value="false" />
 	</bean>	
 
+	<bean id="eml.authorSurName" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="authorSurName" />
+		<constructor-arg name="xpath"
+			value="//dataset/creator[1]/individualName[1]/surName/text()" />
+	</bean>
+	
+	<bean id="eml.authorGivenName" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="authorGivenName" />
+		<constructor-arg name="xpath"
+			value="//dataset/creator[1]/individualName[1]/givenName/text()" />
+	</bean>
+
 	<bean id="eml.author" class="org.dataone.cn.indexer.parser.CommonRootSolrField"
 			p:multivalue="false"
 			p:root-ref="eml.authorNameRoot">
@@ -115,6 +127,14 @@
 		</property>
 	</bean>
 	
+	<bean id="eml.givenNameLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+		p:name="givenName"
+		p:xPath="givenName/text()" />
+		
+	<bean id="eml.surNameLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+		p:name="surName"
+		p:xPath="surName/text()"/>
+			
 	<bean id="eml.author_lname" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="authorLastName" />
 		<constructor-arg name="xpath"
@@ -158,14 +178,6 @@
 			</list>
 		</property>
 	</bean>
-	
-	<bean id="eml.givenNameLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
-		p:name="givenName"
-		p:xPath="givenName/text()" />
-		
-	<bean id="eml.surNameLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
-		p:name="surName"
-		p:xPath="surName/text()"/>
 	
 	<bean id="eml.contactOrganization" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="contactOrganization" />

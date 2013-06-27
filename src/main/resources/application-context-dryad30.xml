@@ -10,6 +10,7 @@
 		   	<list>
 		    	<ref bean="dryad.abstract" />
 		    	<ref bean="dryad.author" />
+				<ref bean="dryad.authorSurName" />
 		    	<ref bean="dryad.investigator" />
 		    	<ref bean="dryad.keywords" />
 		    	<ref bean="dryad.origin" />
