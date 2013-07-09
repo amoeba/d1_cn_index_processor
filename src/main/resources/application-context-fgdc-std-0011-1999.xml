@@ -39,6 +39,7 @@
 		<ref bean="fgdc.presentationCat" />
 		<ref bean="fgdc.author"/>
 		<ref bean="fgdc.authorSurName"/>
+		<ref bean="fgdc.authorSurNameSort" />
 		<ref bean="fgdc.investigator" />
 		<ref bean="fgdc.site" />
 	    <ref bean="fgdc.attributeName" />

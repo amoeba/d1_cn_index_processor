@@ -23,6 +23,8 @@
     <ref bean="eml.author" />
     <ref bean="eml.authorGivenName"/>
     <ref bean="eml.authorSurName" />
+    <ref bean="eml.authorGivenNameSort"/>
+    <ref bean="eml.authorSurNameSort" />
     <ref bean="eml.author_lname" />
     <ref bean="eml.investigator" />
     <ref bean="eml.origin" />
