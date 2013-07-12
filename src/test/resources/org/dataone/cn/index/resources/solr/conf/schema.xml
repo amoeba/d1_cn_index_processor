@@ -185,11 +185,12 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
             </analyzer>
         </fieldtype> 
 
-		<fieldType name="alphaOnlySort" class="solr.TextField">
+		<fieldType name="alphaOnlySort" class="solr.TextField" sortMissingLast="true">
 			<analyzer>
 				<tokenizer class="solr.KeywordTokenizerFactory"/>
 				<filter class="solr.LowerCaseFilterFactory"/>
 				<filter class="solr.TrimFilterFactory"/>
+				<filter class="solr.PatternReplaceFilterFactory" pattern="([^a-z])" replacement="" replace="all"/>
 			</analyzer>
 		</fieldType>
 		

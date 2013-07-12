@@ -74,6 +74,8 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
         eml210Expected.put("author", "SANParks");
         eml210Expected.put("authorGivenName", "");
         eml210Expected.put("authorSurName", "SANParks");
+        eml210Expected.put("authorGivenNameSort", "");
+        eml210Expected.put("authorSurNameSort", "SANParks");
         eml210Expected.put("authorLastName", "SANParks#Garcia#Freeman");
         eml210Expected.put("investigator", "SANParks#Garcia#Freeman");
         eml210Expected.put("contactOrganization", "SANParks#The Awesome Store");

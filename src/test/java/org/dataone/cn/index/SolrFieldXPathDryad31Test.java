@@ -58,6 +58,7 @@ public class SolrFieldXPathDryad31Test extends BaseSolrFieldXPathTest {
                         "Zanette, Lorenzo Roberto Sgobaro#Miller, Sophie D. L.#Faria, Christiana M. A.#Almond, Edd J.#Huggins, Tim J.#Jordan, William C.#Bourke, Andrew F. G.");
         dryadDataPackage1Expected.put("author", "Zanette, Lorenzo Roberto Sgobaro");
         dryadDataPackage1Expected.put("authorSurName", "Zanette, Lorenzo Roberto Sgobaro");
+        dryadDataPackage1Expected.put("authorSurNameSort", "Zanette, Lorenzo Roberto Sgobaro");
         dryadDataPackage1Expected
                 .put("investigator",
                         "Zanette, Lorenzo Roberto Sgobaro#Miller, Sophie D. L.#Faria, Christiana M. A.#Almond, Edd J.#Huggins, Tim J.#Jordan, William C.#Bourke, Andrew F. G.");
@@ -113,6 +114,7 @@ public class SolrFieldXPathDryad31Test extends BaseSolrFieldXPathTest {
                         "Zanette, Lorenzo Roberto Sgobaro#Miller, Sophie D. L.#Faria, Christiana M. A.#Almond, Edd J.#Huggins, Tim J.#Jordan, William C.#Bourke, Andrew F. G.");
         dryadDataFile1Expected.put("author", "Zanette, Lorenzo Roberto Sgobaro");
         dryadDataFile1Expected.put("authorSurName", "Zanette, Lorenzo Roberto Sgobaro");
+        dryadDataFile1Expected.put("authorSurNameSort", "Zanette, Lorenzo Roberto Sgobaro");
         dryadDataFile1Expected
                 .put("investigator",
                         "Zanette, Lorenzo Roberto Sgobaro#Miller, Sophie D. L.#Faria, Christiana M. A.#Almond, Edd J.#Huggins, Tim J.#Jordan, William C.#Bourke, Andrew F. G.");

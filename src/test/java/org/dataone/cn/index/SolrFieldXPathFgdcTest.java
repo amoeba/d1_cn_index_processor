@@ -110,6 +110,8 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
                 "CSIRO Marine Research (formerly CSIRO Division of Fisheries/Fisheries Research)");
         csiroExpected.put("authorSurName",
                 "CSIRO Marine Research (formerly CSIRO Division of Fisheries/Fisheries Research)");
+        csiroExpected.put("authorSurNameSort",
+                "CSIRO Marine Research (formerly CSIRO Division of Fisheries/Fisheries Research)");
         csiroExpected.put("investigator",
                 "CSIRO Marine Research (formerly CSIRO Division of Fisheries/Fisheries Research)");
         csiroExpected.put("pubDate", dateConverter.convert("1993"));
@@ -211,6 +213,9 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
                 .put("authorSurName",
                         "Elizabeth M. Nel; NASA Goddard Space Flight Center, Forest Ecosystem Dynamics Project");
         fgdcNasaExpected
+                .put("authorSurNameSort",
+                        "Elizabeth M. Nel; NASA Goddard Space Flight Center, Forest Ecosystem Dynamics Project");
+        fgdcNasaExpected
                 .put("investigator",
                         "Elizabeth M. Nel; NASA Goddard Space Flight Center, Forest Ecosystem Dynamics Project");
         fgdcNasaExpected.put("pubDate", dateConverter.convert("1994"));
@@ -308,6 +313,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         esriExpected.put("origin", "Debby Thomson");
         esriExpected.put("author", "Debby Thomson");
         esriExpected.put("authorSurName", "Debby Thomson");
+        esriExpected.put("authorSurNameSort", "Debby Thomson");
         esriExpected.put("investigator", "Debby Thomson");
         esriExpected.put("pubDate", dateConverter.convert("March 2008"));
         esriExpected.put("purpose",
