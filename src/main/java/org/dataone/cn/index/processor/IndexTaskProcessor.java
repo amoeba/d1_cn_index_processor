@@ -23,6 +23,9 @@
 package org.dataone.cn.index.processor;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +37,9 @@ import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.index.task.IndexTaskRepository;
 import org.dataone.cn.indexer.XPathDocumentParser;
+import org.dataone.cn.indexer.resourcemap.ForesiteResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMap;
+import org.dataone.cn.indexer.resourcemap.XPathResourceMap;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.configuration.Settings;
@@ -43,6 +48,8 @@ import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.ObjectFormat;
 import org.dataone.service.types.v1.ObjectFormatIdentifier;
 import org.dataone.service.types.v1.SystemMetadata;
+import org.dspace.foresite.OREException;
+import org.dspace.foresite.OREParserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.w3c.dom.Document;
@@ -170,28 +177,47 @@ public class IndexTaskProcessor {
 
     private boolean isResourceMapReadyToIndex(IndexTask task, List<IndexTask> queue) {
         boolean ready = true;
-        if (representsResourceMap(task)) {
-            Document docObject = loadDocument(task);
-            if (docObject == null) {
-                logger.info("unable to load resource at object path: " + task.getObjectPath()
-                        + ".  Marking new and continuing...");
-                ready = false;
-            } else if (docObject != null) {
-                ResourceMap rm = null;
-                try {
-                    rm = new ResourceMap(docObject);
-                } catch (XPathExpressionException e) {
-                    logger.error(e.getMessage(), e);
-                }
-                List<String> referencedIds = rm.getAllDocumentIDs();
+        
+        if(representsResourceMap(task)) 
+        {
+        	FileInputStream fileInputStream = null;
+        	ResourceMap rm = null;
+        	
+        	try
+        	{
+        		fileInputStream = new FileInputStream(task.getObjectPath());   
+        		rm = new ForesiteResourceMap(fileInputStream);
+        		
+        		List<String> referencedIds = rm.getAllDocumentIDs();
                 referencedIds.remove(task.getPid());
-                if (areAllReferencedDocsIndexed(referencedIds) == false) {
+        		
+                if(areAllReferencedDocsIndexed(referencedIds) == false) 
+                {
                     logger.info("Not all map resource references indexed for map: " + task.getPid()
                             + ".  Marking new and continuing...");
                     ready = false;
                 }
-            }
+                
+        	}catch(Exception e)
+        	{
+        		ready = false;
+        		
+        		logger.info("unable to load resource at object path: " + task.getObjectPath()
+                        + ".  Marking new and continuing...");
+        		
+        	}finally
+        	{
+        		try 
+        		{
+					fileInputStream.close();
+				}catch (IOException e) 
+				{
+					logger.error(e.getMessage(), e);
+					e.printStackTrace();
+				}
+        	}
         }
+        
         return ready;
     }
 
@@ -235,7 +261,7 @@ public class IndexTaskProcessor {
     }
 
     private boolean representsResourceMap(IndexTask task) {
-        return ResourceMap.representsResourceMap(task.getFormatId());
+        return ForesiteResourceMap.representsResourceMap(task.getFormatId());
     }
 
     // if objectPath is not filled, attempt to fill it via hazelclient.
