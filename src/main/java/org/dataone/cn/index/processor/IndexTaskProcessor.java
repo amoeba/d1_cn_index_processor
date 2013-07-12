@@ -25,11 +25,8 @@ package org.dataone.cn.index.processor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.log4j.Logger;
 import org.dataone.client.ObjectFormatCache;
@@ -39,7 +36,6 @@ import org.dataone.cn.index.task.IndexTaskRepository;
 import org.dataone.cn.indexer.XPathDocumentParser;
 import org.dataone.cn.indexer.resourcemap.ForesiteResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMap;
-import org.dataone.cn.indexer.resourcemap.XPathResourceMap;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.configuration.Settings;
@@ -48,8 +44,6 @@ import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.ObjectFormat;
 import org.dataone.service.types.v1.ObjectFormatIdentifier;
 import org.dataone.service.types.v1.SystemMetadata;
-import org.dspace.foresite.OREException;
-import org.dspace.foresite.OREParserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.w3c.dom.Document;
@@ -177,47 +171,37 @@ public class IndexTaskProcessor {
 
     private boolean isResourceMapReadyToIndex(IndexTask task, List<IndexTask> queue) {
         boolean ready = true;
-        
-        if(representsResourceMap(task)) 
-        {
-        	FileInputStream fileInputStream = null;
-        	ResourceMap rm = null;
-        	
-        	try
-        	{
-        		fileInputStream = new FileInputStream(task.getObjectPath());   
-        		rm = new ForesiteResourceMap(fileInputStream);
-        		
-        		List<String> referencedIds = rm.getAllDocumentIDs();
+
+        if (representsResourceMap(task)) {
+            FileInputStream fileInputStream = null;
+            ResourceMap rm = null;
+
+            try {
+                fileInputStream = new FileInputStream(task.getObjectPath());
+                rm = new ForesiteResourceMap(fileInputStream);
+
+                List<String> referencedIds = rm.getAllDocumentIDs();
                 referencedIds.remove(task.getPid());
-        		
-                if(areAllReferencedDocsIndexed(referencedIds) == false) 
-                {
+
+                if (areAllReferencedDocsIndexed(referencedIds) == false) {
                     logger.info("Not all map resource references indexed for map: " + task.getPid()
                             + ".  Marking new and continuing...");
                     ready = false;
                 }
-                
-        	}catch(Exception e)
-        	{
-        		ready = false;
-        		
-        		logger.info("unable to load resource at object path: " + task.getObjectPath()
+            } catch (Exception e) {
+                ready = false;
+                logger.error("unable to load resource at object path: " + task.getObjectPath()
                         + ".  Marking new and continuing...");
-        		
-        	}finally
-        	{
-        		try 
-        		{
-					fileInputStream.close();
-				}catch (IOException e) 
-				{
-					logger.error(e.getMessage(), e);
-					e.printStackTrace();
-				}
-        	}
+            } finally {
+                try {
+                    fileInputStream.close();
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                    e.printStackTrace();
+                }
+            }
         }
-        
+
         return ready;
     }
 

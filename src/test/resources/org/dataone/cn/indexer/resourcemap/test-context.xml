@@ -8,7 +8,7 @@
 
 	<bean id="peggym.resourcemap" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String" 
-        value="org/dataone/cn/indexer/resourcemap/resources/peggym.resourcemap"/>
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/peggym.resourcemap"/>
     </bean>
 
 
