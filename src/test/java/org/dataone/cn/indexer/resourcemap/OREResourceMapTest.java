@@ -246,9 +246,6 @@ public class OREResourceMapTest
 			Assert.assertEquals("Document ID at "+i+"don't match", 
 					foresiteDocs.get(i), xpathDocs.get(i));
 		}
-		
-		
-		Assert.fail("Done.");
     }
 	
 	@Autowired
