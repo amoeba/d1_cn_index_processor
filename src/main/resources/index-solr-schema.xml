@@ -246,8 +246,8 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <field name="author"				type="string"			multiValued="false"	indexed="true"	stored="true" />
         <field name="authorSurName"			type="string"			multiValued="false"	indexed="true"	stored="true" />
         <field name="authorGivenName"		type="string" 			multiValued="false"	indexed="true"	stored="true" />
-        <field name="authorSurNameSort"		type="alphaOnlySort"	multiValued="false"	indexed="true"	stored="false" />
-        <field name="authorGivenNameSort"	type="alphaOnlySort"	multiValued="false"	indexed="true"	stored="false" />
+        <field name="authorSurNameSort"		type="alphaOnlySort"	multiValued="false"	indexed="true"	stored="true" />
+        <field name="authorGivenNameSort"	type="alphaOnlySort"	multiValued="false"	indexed="true"	stored="true" />
         
         <field name="authorLastName"	type="string"	multiValued="true"	indexed="true" stored="true" />
         

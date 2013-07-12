@@ -75,6 +75,7 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
     protected SolrDocument assertPresentInSolrIndex(String pid) throws SolrServerException {
         ModifiableSolrParams solrParams = new ModifiableSolrParams();
         solrParams.set("q", "id:" + ClientUtils.escapeQueryChars(pid));
+        solrParams.set("fl", "*");
         QueryResponse qr = getSolrServer().query(solrParams);
         Assert.assertFalse(qr.getResults().isEmpty());
         SolrDocument result = qr.getResults().get(0);
