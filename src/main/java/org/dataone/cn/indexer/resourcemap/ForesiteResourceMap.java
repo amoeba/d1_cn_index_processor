@@ -15,13 +15,11 @@ import java.util.Set;
 
 import org.apache.commons.io.input.ReaderInputStream;
 import org.apache.commons.lang.NotImplementedException;
-import org.dataone.cn.hazelcast.HazelcastClientFactory;
+import org.dataone.cn.index.processor.IndexVisibilityDelegateHazelcastImpl;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
-import org.dataone.configuration.Settings;
 import org.dataone.ore.ResourceMapFactory;
 import org.dataone.service.types.v1.Identifier;
-import org.dataone.service.types.v1.SystemMetadata;
 import org.dspace.foresite.OREException;
 import org.dspace.foresite.OREParserException;
 import org.w3c.dom.DOMException;
@@ -30,27 +28,18 @@ import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSException;
 
-import com.hazelcast.client.HazelcastClient;
-import com.hazelcast.core.IMap;
-
 public class ForesiteResourceMap implements ResourceMap {
     /* Class contants */
-    private static final String HZ_SYSTEM_METADATA = Settings.getConfiguration().getString(
-            "dataone.hazelcast.systemMetadata");
     private static final String RESOURCE_MAP_FORMAT = "http://www.openarchives.org/ore/terms";
 
     /* Instance variables */
     private String identifier = null;
-
     private HashMap<String, ForesiteResourceEntry> resourceMap = null;
-    private HazelcastClient hzClient = null;
-    private IMap<Identifier, SystemMetadata> systemMetadata = null;
 
-    private synchronized void _startHazelClient() {
-        if (this.hzClient == null) {
-            this.hzClient = HazelcastClientFactory.getStorageClient();
-            this.systemMetadata = this.hzClient.getMap(HZ_SYSTEM_METADATA);
-        }
+    private IndexVisibilityDelegate indexVisibilityDelegate = new IndexVisibilityDelegateHazelcastImpl();
+
+    public ForesiteResourceMap() {
+
     }
 
     private SolrDoc _mergeMappedReference(ResourceEntry resourceEntry, SolrDoc mergeDocument) {
@@ -162,9 +151,6 @@ public class ForesiteResourceMap implements ResourceMap {
 
     @Override
     public Set<ResourceEntry> getMappedReferences() {
-        /* Checks that hazelcast is running */
-        this._startHazelClient();
-
         /* Builds a set for references that are visible in solr doc index and
          * are not the resource map id */
         HashSet<ResourceEntry> resourceEntries = new HashSet<ResourceEntry>();
@@ -172,14 +158,11 @@ public class ForesiteResourceMap implements ResourceMap {
         for (ResourceEntry resourceEntry : this.resourceMap.values()) {
             Identifier pid = new Identifier();
             pid.setValue(resourceEntry.getIdentifier());
-            SystemMetadata smd = systemMetadata.get(pid);
-
-            if (SolrDoc.visibleInIndex(smd)) {
+            if (indexVisibilityDelegate.isDocumentVisible(pid)) {
                 if (resourceEntry.getIdentifier().equals(this.getIdentifier()) == false) {
                     resourceEntries.add(resourceEntry);
                 }
             }
-
         }
 
         /* Return the set of resource entries */
@@ -266,6 +249,10 @@ public class ForesiteResourceMap implements ResourceMap {
         this.identifier = identifier;
     }
 
+    public void setIndexVisibilityDeledate(IndexVisibilityDelegate ivd) {
+        this.indexVisibilityDelegate = ivd;
+    }
+
     public static void main(String[] args) throws OREException, URISyntaxException,
             OREParserException, IOException {
         String doc = "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
@@ -313,6 +300,5 @@ public class ForesiteResourceMap implements ResourceMap {
 
         ResourceMap resourceMap = new ForesiteResourceMap(doc);
         //System.out.printf("Identifier = %s\n", resourceMap.getIdentifier());
-
     }
 }

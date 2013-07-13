@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
-
-
-	<bean id="peggym.resourcemap" class="org.springframework.core.io.ClassPathResource" >
+ xmlns:p="http://www.springframework.org/schema/p"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:context="http://www.springframework.org/schema/context"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans 
+ http://www.springframework.org/schema/beans/spring-beans.xsd
+ http://www.springframework.org/schema/context  
+ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+ 	
+	<bean id="testDoc" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String" 
-        value="org/dataone/cn/index/resources/d1_testdocs/eml210/peggym.resourcemap"/>
+        value="org/dataone/cn/indexer/resourcemap/resources/resourceMap_ALEXXX_015MTBD009R00_20110122.50.1.rdf"/>
     </bean>
-
-
-
-    <bean id="oreResourceMapTest" class="org.dataone.cn.indexer.resourcemap.OREResourceMapTest">
-    	
-    </bean>
-
+    
+    <bean id="oreResourceMapTest" class="org.dataone.cn.indexer.resourcemap.OREResourceMapTest"/>
+    <bean id="indexVisibilityDelegate" class="org.dataone.cn.indexer.resourcemap.IndexVisibilityDelegateTestImpl"/>
+	
 </beans>

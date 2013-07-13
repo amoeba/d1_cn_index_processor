@@ -35,21 +35,16 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.dataone.cn.hazelcast.HazelcastClientFactory;
+import org.dataone.cn.index.processor.IndexVisibilityDelegateHazelcastImpl;
 import org.dataone.cn.indexer.XMLNamespace;
 import org.dataone.cn.indexer.XMLNamespaceConfig;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
-import org.dataone.configuration.Settings;
 import org.dataone.service.types.v1.Identifier;
-import org.dataone.service.types.v1.SystemMetadata;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -70,7 +65,9 @@ public class XPathResourceMap implements ResourceMap {
 
     private String identifier = null;
 
-    XPathFactory factory = null;
+    private XPathFactory factory = null;
+
+    private IndexVisibilityDelegate indexVisibilityDelegate = new IndexVisibilityDelegateHazelcastImpl();
 
     public static String XPATH_RESOURCE_MAP_IDENTIFIER = "/rdf:RDF/rdf:Description/rdf:type[@rdf:resource='http://www.openarchives.org/ore/terms/ResourceMap']/parent::*/dcterms:identifier/text()";
     static private NamespaceContext nameSpaceContext;
@@ -85,11 +82,6 @@ public class XPathResourceMap implements ResourceMap {
     public static final String TAG_IDENTIFIER = "identifier";
     public static final String TAG_IS_DOCUMENTED_BY = "isDocumentedBy";
     private HashMap<String, String> descriptionURIToIdentifierMap = null;
-
-    private HazelcastInstance hzClient;
-    private static final String HZ_SYSTEM_METADATA = Settings.getConfiguration().getString(
-            "dataone.hazelcast.systemMetadata");
-    private IMap<Identifier, SystemMetadata> systemMetadata;
 
     public XPathResourceMap(Document doc) throws XPathExpressionException {
         this.doc = doc;
@@ -110,12 +102,11 @@ public class XPathResourceMap implements ResourceMap {
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceMap#getMappedReferences()
-	 */
+     * @see org.dataone.cn.indexer.resourcemap.ResourceMap#getMappedReferences()
+     */
     @Override
-	public Set<ResourceEntry> getMappedReferences() {
+    public Set<ResourceEntry> getMappedReferences() {
         if (mappedReferences == null || mappedReferences.isEmpty()) {
-            startHazelClient();
             XPathFactory factory = XPathFactory.newInstance();
             XPath xp = factory.newXPath();
             xp.setNamespaceContext(getNameSpaceContext());
@@ -131,11 +122,11 @@ public class XPathResourceMap implements ResourceMap {
 
                 for (int i = 0; i < descriptions.getLength(); i++) {
                     Element descriptionElement = (Element) descriptions.item(i);
-                    XPathResourceEntry resourceEntry = new XPathResourceEntry(descriptionElement, this);
+                    XPathResourceEntry resourceEntry = new XPathResourceEntry(descriptionElement,
+                            this);
                     Identifier pid = new Identifier();
                     pid.setValue(resourceEntry.getIdentifier());
-                    SystemMetadata smd = systemMetadata.get(pid);
-                    if (SolrDoc.visibleInIndex(smd)) {
+                    if (indexVisibilityDelegate.isDocumentVisible(pid)) {
                         if (!resourceEntry.getIdentifier().equals(getIdentifier())) {
                             resourceEntries.add(resourceEntry);
                         }
@@ -167,23 +158,23 @@ public class XPathResourceMap implements ResourceMap {
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceMap#getContains()
-	 */
+     * @see org.dataone.cn.indexer.resourcemap.ResourceMap#getContains()
+     */
     @Override
-	public Set<String> getContains() {
+    public Set<String> getContains() {
         return contains;
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceMap#setContains(java.util.Set)
-	 */
+     * @see org.dataone.cn.indexer.resourcemap.ResourceMap#setContains(java.util.Set)
+     */
     void setContains(Set<String> contains) {
         this.contains = contains;
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceMap#setMappedReferences(java.util.Set)
-	 */
+     * @see org.dataone.cn.indexer.resourcemap.ResourceMap#setMappedReferences(java.util.Set)
+     */
     void setMappedReferences(Set<ResourceEntry> mappedReferences) {
         this.mappedReferences = mappedReferences;
     }
@@ -204,10 +195,10 @@ public class XPathResourceMap implements ResourceMap {
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceMap#getAllDocumentIDs()
-	 */
+     * @see org.dataone.cn.indexer.resourcemap.ResourceMap#getAllDocumentIDs()
+     */
     @Override
-	public List<String> getAllDocumentIDs() {
+    public List<String> getAllDocumentIDs() {
         List<String> ids = new ArrayList<String>();
         ids.add(getIdentifier());
         for (ResourceEntry resourceEntry : getMappedReferences()) {
@@ -217,10 +208,10 @@ public class XPathResourceMap implements ResourceMap {
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceMap#mergeIndexedDocuments(java.util.List)
-	 */
+     * @see org.dataone.cn.indexer.resourcemap.ResourceMap#mergeIndexedDocuments(java.util.List)
+     */
     @Override
-	public List<SolrDoc> mergeIndexedDocuments(List<SolrDoc> docs) {
+    public List<SolrDoc> mergeIndexedDocuments(List<SolrDoc> docs) {
 
         List<SolrDoc> mergedDocuments = new ArrayList<SolrDoc>();
         for (ResourceEntry mappedReference : mappedReferences) {
@@ -286,24 +277,24 @@ public class XPathResourceMap implements ResourceMap {
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceMap#getIdentifierFromResource(java.lang.String)
-	 */
+     * @see org.dataone.cn.indexer.resourcemap.ResourceMap#getIdentifierFromResource(java.lang.String)
+     */
     String getIdentifierFromResource(String resourceURI) {
         String mappedIdentifier = descriptionURIToIdentifierMap.get(resourceURI);
         return mappedIdentifier;
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceMap#getIdentifier()
-	 */
+     * @see org.dataone.cn.indexer.resourcemap.ResourceMap#getIdentifier()
+     */
     @Override
-	public String getIdentifier() {
+    public String getIdentifier() {
         return identifier;
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceMap#setIdentifier(java.lang.String)
-	 */
+     * @see org.dataone.cn.indexer.resourcemap.ResourceMap#setIdentifier(java.lang.String)
+     */
     void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
@@ -314,10 +305,7 @@ public class XPathResourceMap implements ResourceMap {
         return RESOURCE_MAP_FORMAT.equals(formatId);
     }
 
-    private void startHazelClient() {
-        if (this.hzClient == null) {
-            this.hzClient = HazelcastClientFactory.getStorageClient();
-            this.systemMetadata = this.hzClient.getMap(HZ_SYSTEM_METADATA);
-        }
+    public void setIndexVisibilityDeledate(IndexVisibilityDelegate ivd) {
+        this.indexVisibilityDelegate = ivd;
     }
 }

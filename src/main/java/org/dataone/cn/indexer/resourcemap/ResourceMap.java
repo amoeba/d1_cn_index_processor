@@ -5,15 +5,16 @@ import java.util.Set;
 
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 
-public interface ResourceMap 
-{
-	public List<String> getAllDocumentIDs();
-	public Set<String> getContains();
-	public String getIdentifier();
-	//public String getIdentifierFromResource(String resourceURI);
-	public Set<ResourceEntry> getMappedReferences();
-	public List<SolrDoc> mergeIndexedDocuments(List<SolrDoc> docs);
-	//public void setContains(Set<String> contains);
-	//public void setIdentifier(String identifier);
-	//public void setMappedReferences(Set<ResourceEntry> mappedReferences);
+public interface ResourceMap {
+    public List<String> getAllDocumentIDs();
+
+    public Set<String> getContains();
+
+    public String getIdentifier();
+
+    public Set<ResourceEntry> getMappedReferences();
+
+    public List<SolrDoc> mergeIndexedDocuments(List<SolrDoc> docs);
+
+    public void setIndexVisibilityDeledate(IndexVisibilityDelegate ivd);
 }

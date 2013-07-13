@@ -66,8 +66,9 @@ public class OREResourceMapTest {
     private static List<String> allMembers = Arrays.asList(new String[] { String.format(
             "127.0.0.1:%d", ports[0]), });
 
-    /* Instance variables */
-    private ClassPathResource document;
+    @Autowired
+    private ClassPathResource testDoc;
+
     private HazelcastInstance hazelcast;
     private HazelcastClient client;
 
@@ -127,12 +128,14 @@ public class OREResourceMapTest {
         DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
         domFactory.setNamespaceAware(true);
         DocumentBuilder builder = domFactory.newDocumentBuilder();
-        Document doc = builder.parse(document.getFile());
+        Document doc = builder.parse(testDoc.getFile());
 
-        ResourceMap foresiteResourceMap = new ForesiteResourceMap(IOUtils.toString(this.document
+        ResourceMap foresiteResourceMap = new ForesiteResourceMap(IOUtils.toString(testDoc
                 .getInputStream()));
+        foresiteResourceMap.setIndexVisibilityDeledate(new IndexVisibilityDelegateTestImpl());
 
         ResourceMap xpathResourceMap = new XPathResourceMap(doc);
+        xpathResourceMap.setIndexVisibilityDeledate(new IndexVisibilityDelegateTestImpl());
 
         /*** Checks that top level identifiers match ***/
         Assert.assertEquals("Identifiers do not match", foresiteResourceMap.getIdentifier(),
@@ -207,8 +210,4 @@ public class OREResourceMapTest {
         }
     }
 
-    @Autowired
-    public void setDocument(ClassPathResource document) throws IOException {
-        this.document = document;
-    }
 }
