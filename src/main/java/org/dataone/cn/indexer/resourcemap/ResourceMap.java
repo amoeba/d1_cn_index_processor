@@ -15,6 +15,4 @@ public interface ResourceMap {
     public Set<ResourceEntry> getMappedReferences();
 
     public List<SolrDoc> mergeIndexedDocuments(List<SolrDoc> docs);
-
-    public void setIndexVisibilityDeledate(IndexVisibilityDelegate ivd);
 }

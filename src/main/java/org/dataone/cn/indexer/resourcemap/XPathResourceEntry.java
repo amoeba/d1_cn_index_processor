@@ -26,16 +26,9 @@ import java.io.StringWriter;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.dataone.cn.hazelcast.HazelcastClientFactory;
-import org.dataone.cn.indexer.solrhttp.SolrDoc;
-import org.dataone.configuration.Settings;
 import org.dataone.service.types.v1.Identifier;
-import org.dataone.service.types.v1.SystemMetadata;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -62,24 +55,21 @@ public class XPathResourceEntry implements ResourceEntry {
     private String about = null;
     private XPathResourceMap parentMap = null;
 
-    private HazelcastInstance hzClient;
-    private static final String HZ_SYSTEM_METADATA = Settings.getConfiguration().getString(
-            "dataone.hazelcast.systemMetadata");
-    private IMap<Identifier, SystemMetadata> systemMetadata;
+    private IndexVisibilityDelegate indexVisibilityDelegate = null;
 
-    public XPathResourceEntry(Element entry, ResourceMap parentMap) {
+    public XPathResourceEntry(Element entry, ResourceMap parentMap, IndexVisibilityDelegate ivd) {
         getResourceMaps().add(parentMap.getIdentifier());
         this.setParentMap(parentMap);
         this.entry = entry;
+        this.indexVisibilityDelegate = ivd;
         initEntry();
     }
 
     private void initEntry() {
-        startHazelClient();
         setAbout(entry.getAttributeNS(XPathResourceMap.NS_RDF, XPathResourceMap.ATTRIBUTE_ABOUT));
         setIdentifier(entry
-                .getElementsByTagNameNS(XPathResourceMap.NS_DCTERMS, XPathResourceMap.TAG_IDENTIFIER).item(0)
-                .getTextContent());
+                .getElementsByTagNameNS(XPathResourceMap.NS_DCTERMS,
+                        XPathResourceMap.TAG_IDENTIFIER).item(0).getTextContent());
 
         NodeList nlDocuments = entry.getElementsByTagNameNS(XPathResourceMap.NS_CITO,
                 XPathResourceMap.TAG_DOCUMENTS);
@@ -94,17 +84,15 @@ public class XPathResourceEntry implements ResourceEntry {
         Set<String> isDocumentedByStrings = new HashSet<String>();
         for (int i = 0; i < nlIsDocumentedBy.getLength(); i++) {
             Element isDocumentedByElement = (Element) nlIsDocumentedBy.item(i);
-            String isDocumentedByString = isDocumentedByElement.getAttributeNS(XPathResourceMap.NS_RDF,
-                    XPathResourceMap.ATTRIBUTE_RESOURCE);
+            String isDocumentedByString = isDocumentedByElement.getAttributeNS(
+                    XPathResourceMap.NS_RDF, XPathResourceMap.ATTRIBUTE_RESOURCE);
             String id = parentMap.getIdentifierFromResource(isDocumentedByString);
             Identifier pid = new Identifier();
             pid.setValue(id);
-            SystemMetadata smd = systemMetadata.get(pid);
-            if (SolrDoc.visibleInIndex(smd)) {
+            if (indexVisibilityDelegate.isDocumentVisible(pid)) {
                 isDocumentedByStrings.add(id);
             }
         }
-
         return isDocumentedByStrings;
     }
 
@@ -117,8 +105,7 @@ public class XPathResourceEntry implements ResourceEntry {
             String id = parentMap.getIdentifierFromResource(resource);
             Identifier pid = new Identifier();
             pid.setValue(id);
-            SystemMetadata smd = systemMetadata.get(pid);
-            if (SolrDoc.visibleInIndex(smd)) {
+            if (indexVisibilityDelegate.isDocumentVisible(pid)) {
                 documetsStrings.add(id);
             }
 
@@ -127,26 +114,24 @@ public class XPathResourceEntry implements ResourceEntry {
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#getEntry()
-	 */
-	Element getEntry() 
-	{
+     * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#getEntry()
+     */
+    Element getEntry() {
         return entry;
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#setEntry(org.w3c.dom.Element)
-	 */
-	void setEntry(Element entry) 
-    {
+     * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#setEntry(org.w3c.dom.Element)
+     */
+    void setEntry(Element entry) {
         this.entry = entry;
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#getResourceMaps()
-	 */
+     * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#getResourceMaps()
+     */
     @Override
-	public Set<String> getResourceMaps() {
+    public Set<String> getResourceMaps() {
         if (resourceMaps == null) {
             resourceMaps = new HashSet<String>();
         }
@@ -154,77 +139,77 @@ public class XPathResourceEntry implements ResourceEntry {
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#setResourceMaps(java.util.Set)
-	 */
+     * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#setResourceMaps(java.util.Set)
+     */
     @Override
-	public void setResourceMaps(Set<String> resourceMaps) {
+    public void setResourceMaps(Set<String> resourceMaps) {
         this.resourceMaps = resourceMaps;
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#getIdentifier()
-	 */
+     * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#getIdentifier()
+     */
     @Override
-	public String getIdentifier() {
+    public String getIdentifier() {
         return identifier;
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#setIdentifier(java.lang.String)
-	 */
+     * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#setIdentifier(java.lang.String)
+     */
     @Override
-	public void setIdentifier(String identifier) {
+    public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#getDocuments()
-	 */
+     * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#getDocuments()
+     */
     @Override
-	public Set<String> getDocuments() {
+    public Set<String> getDocuments() {
         return documents;
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#setDocuments(java.util.Set)
-	 */
+     * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#setDocuments(java.util.Set)
+     */
     void setDocuments(Set<String> documents) {
         this.documents = documents;
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#getDocumentedBy()
-	 */
+     * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#getDocumentedBy()
+     */
     @Override
-	public Set<String> getDocumentedBy() {
+    public Set<String> getDocumentedBy() {
         return isDocumentedBy;
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#setDocumentedBy(java.util.Set)
-	 */
-	void setDocumentedBy(Set<String> documentedBy) {
+     * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#setDocumentedBy(java.util.Set)
+     */
+    void setDocumentedBy(Set<String> documentedBy) {
         isDocumentedBy = documentedBy;
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#getAbout()
-	 */
-	public String getAbout() {
+     * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#getAbout()
+     */
+    public String getAbout() {
         return about;
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#setAbout(java.lang.String)
-	 */
+     * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#setAbout(java.lang.String)
+     */
     void setAbout(String about) {
         this.about = about;
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#toString()
-	 */
-	@Override
+     * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#toString()
+     */
+    @Override
     public String toString() {
         StringWriter sw = new StringWriter();
 
@@ -261,24 +246,18 @@ public class XPathResourceEntry implements ResourceEntry {
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#getParentMap()
-	 */
+     * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#getParentMap()
+     */
     @Override
-	public ResourceMap getParentMap() {
+    public ResourceMap getParentMap() {
         return parentMap;
     }
 
     /* (non-Javadoc)
-	 * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#setParentMap(org.dataone.cn.indexer.resourcemap.ResourceMap)
-	 */
-	void setParentMap(ResourceMap parentMap) {
-        this.parentMap = (XPathResourceMap)parentMap;
+     * @see org.dataone.cn.indexer.resourcemap.ResourceEntry#setParentMap(org.dataone.cn.indexer.resourcemap.ResourceMap)
+     */
+    void setParentMap(ResourceMap parentMap) {
+        this.parentMap = (XPathResourceMap) parentMap;
     }
 
-    private void startHazelClient() {
-        if (this.hzClient == null) {
-            this.hzClient = HazelcastClientFactory.getStorageClient();
-            this.systemMetadata = this.hzClient.getMap(HZ_SYSTEM_METADATA);
-        }
-    }
 }

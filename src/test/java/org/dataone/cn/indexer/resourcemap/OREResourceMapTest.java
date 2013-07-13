@@ -21,10 +21,8 @@
  */
 package org.dataone.cn.indexer.resourcemap;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -38,10 +36,7 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.io.IOUtils;
 import org.dspace.foresite.OREException;
 import org.dspace.foresite.OREParserException;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,76 +46,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import com.hazelcast.client.HazelcastClient;
-import com.hazelcast.config.Config;
-import com.hazelcast.config.NetworkConfig;
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.impl.GroupProperties;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "test-context.xml" })
 public class OREResourceMapTest {
-    /* Static variables */
-    private static int ports[] = { 5740, };
-    private static List<String> allMembers = Arrays.asList(new String[] { String.format(
-            "127.0.0.1:%d", ports[0]), });
 
     @Autowired
     private ClassPathResource testDoc;
-
-    private HazelcastInstance hazelcast;
-    private HazelcastClient client;
-
-    @BeforeClass
-    public static void init() throws Exception {
-        Hazelcast.shutdownAll();
-    }
-
-    @Before
-    public void setupHazelcast() throws FileNotFoundException {
-        /* HazelCast Server configuration */
-        Config hazelcastServerConfig = new Config();
-        hazelcastServerConfig.getGroupConfig().setName("DataONEBuildTest")
-                .setPassword("passwordTestDataone");
-        hazelcastServerConfig.setProperty(GroupProperties.PROP_MERGE_FIRST_RUN_DELAY_SECONDS, "10");
-        hazelcastServerConfig.setProperty(GroupProperties.PROP_MERGE_NEXT_RUN_DELAY_SECONDS, "5");
-        hazelcastServerConfig.setProperty(GroupProperties.PROP_MAX_NO_HEARTBEAT_SECONDS, "10");
-        hazelcastServerConfig.setProperty(
-                GroupProperties.PROP_MASTER_CONFIRMATION_INTERVAL_SECONDS, "2");
-        hazelcastServerConfig.setProperty(GroupProperties.PROP_MAX_NO_MASTER_CONFIRMATION_SECONDS,
-                "10");
-        hazelcastServerConfig.setProperty(
-                GroupProperties.PROP_MEMBER_LIST_PUBLISH_INTERVAL_SECONDS, "10");
-
-        NetworkConfig networkConfig = hazelcastServerConfig.getNetworkConfig();
-        networkConfig.getJoin().getMulticastConfig().setEnabled(false);
-        networkConfig.getJoin().getTcpIpConfig().setEnabled(true);
-        networkConfig.setPortAutoIncrement(false);
-
-        hazelcastServerConfig.getNetworkConfig().setPort(ports[0]);
-        hazelcastServerConfig.getNetworkConfig().getJoin().getTcpIpConfig().setMembers(allMembers);
-
-        /* Create hazelcast server */
-        hazelcast = Hazelcast.newHazelcastInstance(hazelcastServerConfig);
-
-        /* Hazelcast client configuration */
-        /*ClientConfiguration clientConfiguration = new ClientConfiguration("/tmp/hazelcast.xml");
-        
-        ClientConfig cc = new ClientConfig();
-        
-        
-        cc.getGroupConfig().setName(clientConfiguration.getGroup());
-        cc.getGroupConfig().setPassword(clientConfiguration.getPassword());
-        cc.addAddress(clientConfiguration.getLocalhost());
-        
-        this.client = HazelcastClient.newHazelcastClient(cc);*/
-    }
-
-    @After
-    public void cleanup() throws Exception {
-        Hazelcast.shutdownAll();
-    }
 
     @Test
     public void testOREResourceMap() throws OREException, URISyntaxException, OREParserException,
@@ -131,11 +62,9 @@ public class OREResourceMapTest {
         Document doc = builder.parse(testDoc.getFile());
 
         ResourceMap foresiteResourceMap = new ForesiteResourceMap(IOUtils.toString(testDoc
-                .getInputStream()));
-        foresiteResourceMap.setIndexVisibilityDeledate(new IndexVisibilityDelegateTestImpl());
+                .getInputStream()), new IndexVisibilityDelegateTestImpl());
 
-        ResourceMap xpathResourceMap = new XPathResourceMap(doc);
-        xpathResourceMap.setIndexVisibilityDeledate(new IndexVisibilityDelegateTestImpl());
+        ResourceMap xpathResourceMap = new XPathResourceMap(doc, new IndexVisibilityDelegateTestImpl());
 
         /*** Checks that top level identifiers match ***/
         Assert.assertEquals("Identifiers do not match", foresiteResourceMap.getIdentifier(),

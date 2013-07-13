@@ -121,10 +121,23 @@ public class ForesiteResourceMap implements ResourceMap {
         }
     }
 
+    public ForesiteResourceMap(String doc, IndexVisibilityDelegate ivd) throws OREException,
+            URISyntaxException, OREParserException, IOException {
+        InputStream is = new ReaderInputStream(new StringReader(doc));
+        if (ivd != null) {
+            this.indexVisibilityDelegate = ivd;
+        }
+        try {
+            _init(is);
+
+        } finally {
+            is.close();
+        }
+    }
+
     public ForesiteResourceMap(String doc) throws OREException, URISyntaxException,
             OREParserException, IOException {
         InputStream is = new ReaderInputStream(new StringReader(doc));
-
         try {
             _init(is);
 
@@ -247,10 +260,6 @@ public class ForesiteResourceMap implements ResourceMap {
 
     void setIdentifier(String identifier) {
         this.identifier = identifier;
-    }
-
-    public void setIndexVisibilityDeledate(IndexVisibilityDelegate ivd) {
-        this.indexVisibilityDelegate = ivd;
     }
 
     public static void main(String[] args) throws OREException, URISyntaxException,

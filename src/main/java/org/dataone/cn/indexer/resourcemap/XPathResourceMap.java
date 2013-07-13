@@ -85,13 +85,25 @@ public class XPathResourceMap implements ResourceMap {
 
     public XPathResourceMap(Document doc) throws XPathExpressionException {
         this.doc = doc;
-        setIdentifier(parseIdentfier(doc));
+        setIdentifier(parseIdentifier(doc));
         mappedReferences = getMappedReferences();
         contains = new HashSet<String>();
         contains.addAll(descriptionURIToIdentifierMap.values());
     }
 
-    private String parseIdentfier(Document doc) throws XPathExpressionException {
+    public XPathResourceMap(Document doc, IndexVisibilityDelegate ivd)
+            throws XPathExpressionException {
+        this.doc = doc;
+        if (ivd != null) {
+            this.indexVisibilityDelegate = ivd;
+        }
+        setIdentifier(parseIdentifier(doc));
+        mappedReferences = getMappedReferences();
+        contains = new HashSet<String>();
+        contains.addAll(descriptionURIToIdentifierMap.values());
+    }
+
+    private String parseIdentifier(Document doc) throws XPathExpressionException {
         factory = XPathFactory.newInstance();
         XPath xPath = factory.newXPath();
         xPath.setNamespaceContext(getNameSpaceContext());
@@ -123,7 +135,7 @@ public class XPathResourceMap implements ResourceMap {
                 for (int i = 0; i < descriptions.getLength(); i++) {
                     Element descriptionElement = (Element) descriptions.item(i);
                     XPathResourceEntry resourceEntry = new XPathResourceEntry(descriptionElement,
-                            this);
+                            this, this.indexVisibilityDelegate);
                     Identifier pid = new Identifier();
                     pid.setValue(resourceEntry.getIdentifier());
                     if (indexVisibilityDelegate.isDocumentVisible(pid)) {
@@ -305,7 +317,4 @@ public class XPathResourceMap implements ResourceMap {
         return RESOURCE_MAP_FORMAT.equals(formatId);
     }
 
-    public void setIndexVisibilityDeledate(IndexVisibilityDelegate ivd) {
-        this.indexVisibilityDelegate = ivd;
-    }
 }
