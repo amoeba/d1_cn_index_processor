@@ -47,7 +47,6 @@ public class ForesiteResourceMap implements ResourceMap {
             fileInputStream = new FileInputStream(fileObjectPath);
             _init(fileInputStream);
         } catch (Exception e) {
-            logger.error("Unable to open file at: " + fileObjectPath);
             throw new OREParserException(e);
         } finally {
             try {
