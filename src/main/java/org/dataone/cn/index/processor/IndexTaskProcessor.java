@@ -23,8 +23,6 @@
 package org.dataone.cn.index.processor;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +34,7 @@ import org.dataone.cn.index.task.IndexTaskRepository;
 import org.dataone.cn.indexer.XPathDocumentParser;
 import org.dataone.cn.indexer.resourcemap.ForesiteResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMap;
+import org.dataone.cn.indexer.resourcemap.ResourceMapFactory;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.configuration.Settings;
@@ -129,7 +128,7 @@ public class IndexTaskProcessor {
                 updateProcessor.process(task);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            logger.error("Unable to process task for pid: " + task.getPid(), e);
             handleFailedTask(task);
             return;
         }
@@ -173,13 +172,9 @@ public class IndexTaskProcessor {
         boolean ready = true;
 
         if (representsResourceMap(task)) {
-            FileInputStream fileInputStream = null;
             ResourceMap rm = null;
-
             try {
-                fileInputStream = new FileInputStream(task.getObjectPath());
-                rm = new ForesiteResourceMap(fileInputStream);
-
+                rm = ResourceMapFactory.buildResourceMap(task.getObjectPath());
                 List<String> referencedIds = rm.getAllDocumentIDs();
                 referencedIds.remove(task.getPid());
 
@@ -190,15 +185,9 @@ public class IndexTaskProcessor {
                 }
             } catch (Exception e) {
                 ready = false;
-                logger.error("unable to load resource at object path: " + task.getObjectPath()
+                logger.error("unable to load resource for pid: " + task.getPid()
+                        + " at object path: " + task.getObjectPath()
                         + ".  Marking new and continuing...");
-            } finally {
-                try {
-                    fileInputStream.close();
-                } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
-                    e.printStackTrace();
-                }
             }
         }
 

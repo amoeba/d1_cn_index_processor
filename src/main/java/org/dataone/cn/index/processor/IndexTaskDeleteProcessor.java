@@ -22,7 +22,6 @@
 
 package org.dataone.cn.index.processor;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +38,7 @@ import org.dataone.cn.indexer.XPathDocumentParser;
 import org.dataone.cn.indexer.resourcemap.ForesiteResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceEntry;
 import org.dataone.cn.indexer.resourcemap.ResourceMap;
-import org.dataone.cn.indexer.resourcemap.XPathResourceMap;
+import org.dataone.cn.indexer.resourcemap.ResourceMapFactory;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementAdd;
@@ -48,7 +47,6 @@ import org.dataone.configuration.Settings;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.SystemMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.w3c.dom.Document;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
@@ -92,29 +90,14 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
     }
 
     private void removeDataPackage(IndexTask task) throws Exception {
-        
-    	//Document resourceMapDoc = getXPathDocumentParser().loadDocument(task.getObjectPath());
-        
-    	FileInputStream fileInputStream = null;
-    	ResourceMap resourceMap = null;
-    	
-    	try
-    	{
-    		fileInputStream = new FileInputStream(task.getObjectPath());   
-    		resourceMap = new ForesiteResourceMap(fileInputStream);
-    		
-    	}finally
-    	{
-    		fileInputStream.close();
-    	}
-       
+
+        ResourceMap resourceMap = ResourceMapFactory.buildResourceMap(task.getObjectPath());
         List<String> documentIds = resourceMap.getAllDocumentIDs();
         List<SolrDoc> indexDocuments = httpService.getDocuments(solrQueryUri, documentIds);
         removeFromIndex(task);
         List<SolrDoc> docsToUpdate = new ArrayList<SolrDoc>();
         // for each document in data package:
         for (SolrDoc indexDoc : indexDocuments) {
-
             if (indexDoc.getIdentifier().equals(task.getPid())) {
                 continue; // skipping the resource map, no need update
                           // it.

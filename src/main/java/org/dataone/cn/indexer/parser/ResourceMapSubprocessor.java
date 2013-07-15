@@ -23,26 +23,19 @@
 package org.dataone.cn.indexer.parser;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.codec.EncoderException;
-import org.dataone.cn.indexer.resourcemap.ForesiteResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMap;
-import org.dataone.cn.indexer.resourcemap.XPathResourceMap;
+import org.dataone.cn.indexer.resourcemap.ResourceMapFactory;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
-import org.dspace.foresite.OREException;
 import org.dspace.foresite.OREParserException;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
-import org.w3c.dom.ls.LSException;
-import org.xml.sax.SAXException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -66,11 +59,8 @@ public class ResourceMapSubprocessor extends AbstractDocumentSubprocessor implem
 
     @Override
     public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs,
-            Document doc) throws IOException, EncoderException, SAXException,
-            XPathExpressionException, ParserConfigurationException, 
-            DOMException, LSException, ClassCastException, OREException, 
-            URISyntaxException, OREParserException, ClassNotFoundException, 
-            InstantiationException, IllegalAccessException {
+            Document doc) throws XPathExpressionException, OREParserException, IOException,
+            EncoderException {
         SolrDoc resourceMapDoc = docs.get(identifier);
         List<SolrDoc> processedDocs = processResourceMap(resourceMapDoc, doc);
         Map<String, SolrDoc> processedDocsMap = new HashMap<String, SolrDoc>();
@@ -81,13 +71,9 @@ public class ResourceMapSubprocessor extends AbstractDocumentSubprocessor implem
     }
 
     private List<SolrDoc> processResourceMap(SolrDoc indexDocument, Document resourceMapDocument)
-            throws XPathExpressionException, IOException, SAXException,
-            ParserConfigurationException, EncoderException, 
-            DOMException, LSException, ClassCastException, OREException, 
-            URISyntaxException, OREParserException, ClassNotFoundException, 
-            InstantiationException, IllegalAccessException 
-    {
-        ResourceMap resourceMap = new ForesiteResourceMap(resourceMapDocument);
+            throws OREParserException, XPathExpressionException, IOException, EncoderException {
+
+        ResourceMap resourceMap = ResourceMapFactory.buildResourceMap(resourceMapDocument);
         List<String> documentIds = resourceMap.getAllDocumentIDs();
         List<SolrDoc> updateDocuments = getHttpService().getDocuments(getSolrQueryUri(),
                 documentIds);
