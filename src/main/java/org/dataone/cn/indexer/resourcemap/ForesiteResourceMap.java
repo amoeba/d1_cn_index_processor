@@ -1,5 +1,7 @@
 package org.dataone.cn.indexer.resourcemap;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -27,22 +29,26 @@ import org.w3c.dom.Document;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSException;
+import org.w3c.dom.ls.LSOutput;
+import org.w3c.dom.ls.LSSerializer;
+import org.apache.log4j.Logger;
+
 
 public class ForesiteResourceMap implements ResourceMap {
     /* Class contants */
     private static final String RESOURCE_MAP_FORMAT = "http://www.openarchives.org/ore/terms";
-
+    private static Logger logger = Logger.getLogger(ForesiteResourceMap.class.getName());
+    
     /* Instance variables */
     private String identifier = null;
     private HashMap<String, ForesiteResourceEntry> resourceMap = null;
 
     private IndexVisibilityDelegate indexVisibilityDelegate = new IndexVisibilityDelegateHazelcastImpl();
 
-    public ForesiteResourceMap() {
-
-    }
+   
 
     private SolrDoc _mergeMappedReference(ResourceEntry resourceEntry, SolrDoc mergeDocument) {
+    	
         if (mergeDocument.hasField(SolrElementField.FIELD_ID) == false) {
             mergeDocument.addField(new SolrElementField(SolrElementField.FIELD_ID, resourceEntry
                     .getIdentifier()));
@@ -63,6 +69,7 @@ public class ForesiteResourceMap implements ResourceMap {
             }
         }
 
+       
         for (String resourceMap : resourceEntry.getResourceMaps()) {
             if (mergeDocument.hasFieldWithValue(SolrElementField.FIELD_RESOURCEMAP, resourceMap) == false) {
                 mergeDocument.addField(new SolrElementField(SolrElementField.FIELD_RESOURCEMAP,
@@ -79,12 +86,19 @@ public class ForesiteResourceMap implements ResourceMap {
             UnsupportedEncodingException, OREParserException
 
     {
-        /* Creates the indentifier map from the doc */
-        Map<Identifier, Map<Identifier, List<Identifier>>> tmpResourceMap = ResourceMapFactory
-                .getInstance().parseResourceMap(is);
+    	/* Creates the identifier map from the doc */
+    	Map<Identifier, Map<Identifier, List<Identifier>>> tmpResourceMap = null;
 
-        //this.setMappedReferences(new HashSet<ResourceEntry>());
-
+    	try
+    	{
+    		tmpResourceMap = ResourceMapFactory.getInstance().parseResourceMap(is);
+    
+    	}catch(Throwable e)
+    	{
+    		logger.error(e.toString());
+    		throw new OREParserException(e);
+    	}
+       
         /* Gets the top level identifier */
         Identifier identifier = tmpResourceMap.keySet().iterator().next();
         this.setIdentifier(identifier.getValue());
@@ -98,14 +112,22 @@ public class ForesiteResourceMap implements ResourceMap {
             ForesiteResourceEntry documentsResourceEntry = resourceMap.get(entry.getKey()
                     .getValue());
 
-            if (documentsResourceEntry == null) {
+            if (documentsResourceEntry == null) 
+            {
                 documentsResourceEntry = new ForesiteResourceEntry(entry.getKey().getValue(), this);
                 resourceMap.put(entry.getKey().getValue(), documentsResourceEntry);
             }
 
-            for (Identifier documentedByIdentifier : entry.getValue()) {
-                documentsResourceEntry.addDocuments(documentedByIdentifier.getValue());
+            for(Identifier documentedByIdentifier : entry.getValue()) 
+            {
 
+            	Identifier pid = new Identifier();
+                pid.setValue(documentedByIdentifier.getValue());
+                if(indexVisibilityDelegate.isDocumentVisible(pid))
+                {
+                	documentsResourceEntry.addDocuments(documentedByIdentifier.getValue());
+                }
+            	
                 ForesiteResourceEntry documentedByResourceEntry = resourceMap
                         .get(documentedByIdentifier.getValue());
 
@@ -116,7 +138,13 @@ public class ForesiteResourceMap implements ResourceMap {
                     resourceMap.put(documentedByIdentifier.getValue(), documentedByResourceEntry);
                 }
 
-                documentedByResourceEntry.addDocumentedBy(entry.getKey().getValue());
+                pid = new Identifier();
+                pid.setValue(entry.getKey().getValue());
+                
+                if(indexVisibilityDelegate.isDocumentVisible(pid))
+                {
+                	documentedByResourceEntry.addDocumentedBy(entry.getKey().getValue());
+                }
             }
         }
     }
@@ -154,8 +182,37 @@ public class ForesiteResourceMap implements ResourceMap {
     public ForesiteResourceMap(Document doc) throws DOMException, LSException, ClassCastException,
             OREException, URISyntaxException, OREParserException, IOException,
             ClassNotFoundException, InstantiationException, IllegalAccessException {
-        this(((DOMImplementationLS) (DOMImplementationRegistry.newInstance()
-                .getDOMImplementation("LS"))).createLSSerializer().writeToString(doc));
+    	
+    	ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    	InputStream is = null;
+
+    	try
+    	{
+    		DOMImplementationLS domImpl = 
+    			(DOMImplementationLS)(DOMImplementationRegistry.newInstance()
+                    .getDOMImplementation("LS"));
+        	LSOutput lsOutput = domImpl.createLSOutput();
+        	lsOutput.setEncoding("UTF-8");
+        	
+	    	lsOutput.setByteStream(bos);      
+	              
+	    	LSSerializer lsSerializer = domImpl.createLSSerializer();;
+	    	
+	    	lsSerializer.write(doc, lsOutput);
+	    
+	    	is = new ReaderInputStream(new StringReader(bos.toString()));
+	    	
+	    	this._init(is);
+	    	
+    	}finally
+    	{
+    		bos.close();
+    		
+    		if(is != null)
+    		{
+    			is.close();
+    		}
+    	}
     }
 
     public static boolean representsResourceMap(String formatId) {
@@ -197,21 +254,6 @@ public class ForesiteResourceMap implements ResourceMap {
         return contains;
     }
 
-    void setContains(Set<String> contains) {
-        /* Not sure if this is required by other parts of the code, may remove 
-         * from the interface */
-
-        throw new NotImplementedException();
-    }
-
-    void setMappedReferences(Set<ResourceEntry> mappedReferences) {
-        /* Not sure if this is required by other parts of the code, may remove 
-         * from the interface */
-        //this.resourceEntries = mappedReferences;
-
-        throw new NotImplementedException();
-    }
-
     @Override
     public List<String> getAllDocumentIDs() {
         List<String> docIds = new LinkedList<String>();
@@ -230,6 +272,7 @@ public class ForesiteResourceMap implements ResourceMap {
 
     @Override
     public List<SolrDoc> mergeIndexedDocuments(List<SolrDoc> docs) {
+    	
         List<SolrDoc> mergedDocuments = new ArrayList<SolrDoc>();
 
         for (ResourceEntry resourceEntry : this.resourceMap.values()) {
@@ -243,15 +286,6 @@ public class ForesiteResourceMap implements ResourceMap {
 
         return mergedDocuments;
     }
-
-    /*@Override
-    public String getIdentifierFromResource(String resourceURI) 
-    {
-    	throw new NotImplementedException();
-    	
-    	// TODO Auto-generated method stub
-    	//return null;
-    }*/
 
     @Override
     public String getIdentifier() {

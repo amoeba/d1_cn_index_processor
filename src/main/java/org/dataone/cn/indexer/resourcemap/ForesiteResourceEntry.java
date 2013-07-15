@@ -44,6 +44,8 @@ public class ForesiteResourceEntry implements ResourceEntry {
         this.setParentMap(parentMap);
         this.setDocuments(new HashSet<String>());
         this.setDocumentedBy(new HashSet<String>());
+        
+        this.getResourceMaps().add(parentMap.getIdentifier());
     }
 
     @Override
