@@ -8,4 +8,8 @@ public class IndexVisibilityDelegateTestImpl implements IndexVisibilityDelegate 
         return true;
     }
 
+    public boolean documentExists(Identifier pid) {
+        return true;
+    }
+
 }

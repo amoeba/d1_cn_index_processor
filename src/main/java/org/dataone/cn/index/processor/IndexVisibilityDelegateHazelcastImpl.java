@@ -35,4 +35,19 @@ public class IndexVisibilityDelegateHazelcastImpl implements IndexVisibilityDele
         }
         return visible;
     }
+
+    public boolean documentExists(Identifier pid) {
+        boolean exists = false;
+        try {
+            IMap<Identifier, SystemMetadata> systemMetadataMap = HazelcastClientFactory
+                    .getStorageClient().getMap(HZ_SYSTEM_METADATA);
+            SystemMetadata systemMetadata = systemMetadataMap.get(pid);
+            if (systemMetadata != null) {
+                exists = true;
+            }
+        } catch (NullPointerException npe) {
+            logger.warn("Could not get visible value for pid: " + pid.getValue());
+        }
+        return exists;
+    }
 }

@@ -6,4 +6,6 @@ public interface IndexVisibilityDelegate {
 
     public boolean isDocumentVisible(Identifier pid);
 
+    public boolean documentExists(Identifier pid);
+
 }
