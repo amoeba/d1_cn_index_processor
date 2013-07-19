@@ -54,7 +54,7 @@ public class ForesiteResourceMap implements ResourceMap {
                     fileInputStream.close();
                 }
             } catch (IOException e) {
-                logger.error("error clasing file input stream", e);
+                logger.error("error closing file input stream", e);
             }
         }
     }
