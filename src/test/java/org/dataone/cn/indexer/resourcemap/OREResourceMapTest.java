@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -34,6 +35,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.io.IOUtils;
+import org.dataone.ore.ResourceMapFactory;
+import org.dataone.service.types.v1.Identifier;
 import org.dspace.foresite.OREException;
 import org.dspace.foresite.OREParserException;
 import org.junit.Assert;
@@ -64,7 +67,8 @@ public class OREResourceMapTest {
         ResourceMap foresiteResourceMap = new ForesiteResourceMap(IOUtils.toString(testDoc
                 .getInputStream()), new IndexVisibilityDelegateTestImpl());
 
-        ResourceMap xpathResourceMap = new XPathResourceMap(doc, new IndexVisibilityDelegateTestImpl());
+        ResourceMap xpathResourceMap = new XPathResourceMap(doc,
+                new IndexVisibilityDelegateTestImpl());
 
         /*** Checks that top level identifiers match ***/
         Assert.assertEquals("Identifiers do not match", foresiteResourceMap.getIdentifier(),
@@ -136,6 +140,63 @@ public class OREResourceMapTest {
         for (int i = 0; i < foresiteResourceMapDocs.size(); i++) {
             Assert.assertEquals("Document ID at " + i + "don't match", foresiteDocs.get(i),
                     xpathDocs.get(i));
+        }
+    }
+
+    /**
+     * Test scenario that ensures that pids that do not have system metadata in the 
+     * system yet, still appear in the pid list as pids that are referenced by this resource map
+     * and need to appear in the search index.
+     * 
+     * Test uses inner class - NullSmdVisibilityDelegate to simulate pids that do not have system
+     * metadata records.
+     */
+    @Test
+    public void testOREParsingWithNullSystemMetadataReferences()
+            throws ParserConfigurationException, SAXException, IOException, OREException,
+            URISyntaxException, OREParserException, XPathExpressionException {
+
+        DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+        domFactory.setNamespaceAware(true);
+        DocumentBuilder builder = domFactory.newDocumentBuilder();
+        Document doc = builder.parse(testDoc.getFile());
+
+        ResourceMap foresiteResourceMap = new ForesiteResourceMap(IOUtils.toString(testDoc
+                .getInputStream()), new NullSmdVisibilityDelegate());
+
+        ResourceMap xpathResourceMap = new XPathResourceMap(doc, new NullSmdVisibilityDelegate());
+
+        Map<Identifier, Map<Identifier, List<Identifier>>> relations = ResourceMapFactory
+                .getInstance().parseResourceMap(testDoc.getInputStream());
+
+        int pidCount = 1;
+        Identifier identifier = relations.keySet().iterator().next();
+        Map<Identifier, List<Identifier>> identiferMap = (Map<Identifier, List<Identifier>>) relations
+                .get(identifier);
+        for (Map.Entry<Identifier, List<Identifier>> entry : identiferMap.entrySet()) {
+            pidCount++;
+            for (Identifier documentedByIdentifier : entry.getValue()) {
+                pidCount++;
+            }
+        }
+
+        System.out.println("pidCount: " + pidCount);
+        System.out.println("foresite all ids: " + foresiteResourceMap.getAllDocumentIDs().size());
+        System.out.println("xpath all ids: " + xpathResourceMap.getAllDocumentIDs().size());
+        Assert.assertEquals("foresite pid count does not match actual pid count.", pidCount,
+                foresiteResourceMap.getAllDocumentIDs().size());
+        Assert.assertEquals("xpath pid count does not match actual pid count.", pidCount,
+                xpathResourceMap.getAllDocumentIDs().size());
+    }
+
+    private class NullSmdVisibilityDelegate implements IndexVisibilityDelegate {
+
+        public boolean isDocumentVisible(Identifier pid) {
+            return true;
+        }
+
+        public boolean documentExists(Identifier pid) {
+            return false;
         }
     }
 
