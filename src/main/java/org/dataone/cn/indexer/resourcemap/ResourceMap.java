@@ -131,7 +131,9 @@ public class ResourceMap {
                     Identifier pid = new Identifier();
                     pid.setValue(resourceEntry.getIdentifier());
                     SystemMetadata smd = systemMetadata.get(pid);
-                    if (SolrDoc.visibleInIndex(smd)) {
+                    // if system metadata is null - still include in map resources
+                    // because it may be on the way and we cant index the map yet.
+                    if (smd == null || SolrDoc.visibleInIndex(smd)) {
                         if (!resourceEntry.getIdentifier().equals(getIdentifier())) {
                             resourceEntries.add(resourceEntry);
                         }
