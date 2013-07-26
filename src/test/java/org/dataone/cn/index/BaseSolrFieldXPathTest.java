@@ -65,12 +65,14 @@ public abstract class BaseSolrFieldXPathTest {
             }
         }
 
-        Document systemMetadataDoc = getXPathDocumentParser().generateXmlDocument(
-                sysMetadata.getInputStream());
-        for (SolrField field : getXPathDocumentParser().getFields()) {
-            boolean compared = compareFields(expectedValues, systemMetadataDoc, field, pid);
-            if (compared) {
-                fieldCount++;
+        if (sysMetadata != null) {
+            Document systemMetadataDoc = getXPathDocumentParser().generateXmlDocument(
+                    sysMetadata.getInputStream());
+            for (SolrField field : getXPathDocumentParser().getFields()) {
+                boolean compared = compareFields(expectedValues, systemMetadataDoc, field, pid);
+                if (compared) {
+                    fieldCount++;
+                }
             }
         }
         // if field count is off, some field did not get compared that should

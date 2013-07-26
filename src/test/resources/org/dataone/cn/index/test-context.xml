@@ -131,4 +131,9 @@ xmlns:context="http://www.springframework.org/schema/context"
         <constructor-arg type="java.lang.String" 
         value="org/dataone/cn/index/resources/d1_testdocs/dryad/SystemMetadata-m4h771.xml"/>
     </bean> 
+    
+	<bean id="emlRefSciMeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/df35c.9.14"/>
+    </bean>
 </beans>

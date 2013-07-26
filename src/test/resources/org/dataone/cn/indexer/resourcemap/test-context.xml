@@ -10,7 +10,7 @@
  	
 	<bean id="testDoc" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String" 
-        value="org/dataone/cn/indexer/resourcemap/resources/resourceMap_ALEXXX_015MTBD009R00_20110122.50.1.rdf"/>
+        value="org/dataone/cn/indexer/resourcemap/resources/testORE"/>
     </bean>
     
     <bean id="oreResourceMapTest" class="org.dataone.cn.indexer.resourcemap.OREResourceMapTest"/>
