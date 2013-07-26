@@ -43,7 +43,7 @@ public class LogicalOrPostProcessor {
             } else if (partition.length > 1 && !partition[1].isEmpty()) {
                 return partition[1];
             } else {
-                return value;
+                return "";
             }
         } else {
             return value;

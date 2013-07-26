@@ -59,8 +59,9 @@ public class CommonRootSolrField extends SolrField {
                 if (orProcessor != null) {
                     value = orProcessor.process(value);
                 }
-
-                fields.add(new SolrElementField(this.name, value));
+                if (value != null && !value.isEmpty()) {
+                    fields.add(new SolrElementField(this.name, value));
+                }
                 if (!isMultivalue()) {
                     break;
                 }
