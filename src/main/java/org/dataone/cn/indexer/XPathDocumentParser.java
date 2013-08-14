@@ -449,10 +449,6 @@ public class XPathDocumentParser {
         setSolrindexUri(solrBaseUri + "/update?commit=true");
     }
 
-    public String getSolrBaseUri() {
-        return solrBaseUri;
-    }
-
     public List<IDocumentSubprocessor> getSubprocessors() {
         return subprocessors;
     }
