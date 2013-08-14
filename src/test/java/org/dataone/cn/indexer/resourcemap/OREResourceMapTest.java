@@ -45,6 +45,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -52,9 +53,8 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 
-
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "test-context.xml" })
+@ContextConfiguration(locations = { "classpath:/org/dataone/cn/indexer/resourcemap/test-context.xml" })
 public class OREResourceMapTest {
 
 	public class IndexVisibilityDelegateTestImpl implements IndexVisibilityDelegate {
@@ -72,18 +72,23 @@ public class OREResourceMapTest {
 	private static Logger logger = Logger.getLogger(OREResourceMapTest.class.getName());
 	
     @Autowired
+    @Qualifier("testDoc")
     private ClassPathResource testDoc;
 
     @Autowired
+    @Qualifier("incompleteResourceMap")
     private ClassPathResource incompleteResourceMap;
     
     @Autowired
+    @Qualifier("dryadDoc")
     private ClassPathResource dryadDoc;
     
     @Autowired
+    @Qualifier("transistiveRelationshipsDoc")
     private ClassPathResource transistiveRelationshipsDoc;
     
     @Autowired
+    @Qualifier("incompletetransistiveRelationshipsDoc")
     private ClassPathResource incompleteTransistiveRelationshipsDoc;
 
     
