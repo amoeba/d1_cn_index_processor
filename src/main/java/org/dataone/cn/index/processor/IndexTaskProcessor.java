@@ -176,16 +176,7 @@ public class IndexTaskProcessor {
             try {
                 rm = ResourceMapFactory.buildResourceMap(task.getObjectPath());
                 List<String> referencedIds = rm.getAllDocumentIDs();
-
-                logger.info("Referenced Id count: " + referencedIds.size());
-
                 referencedIds.remove(task.getPid());
-                logger.info("Referenced Id count after removing resource map pid by task id: "
-                        + referencedIds.size() + " map pid: " + task.getPid());
-
-                referencedIds.remove(rm.getIdentifier());
-                logger.info("Referenced Id count after removing resource map pid by rm identifier: "
-                        + referencedIds.size() + " map pid: " + rm.getIdentifier());
 
                 if (areAllReferencedDocsIndexed(referencedIds) == false) {
                     logger.info("Not all map resource references indexed for map: " + task.getPid()
