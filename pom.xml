@@ -74,8 +74,7 @@
 			<scope>test</scope>
 		</dependency>
  	
- 
- 
+ 	  
  		<dependency>
 			<groupId>org.dataone</groupId>
 			<artifactId>d1_cn_common</artifactId>
@@ -186,6 +185,13 @@
 		    <groupId>org.springframework.data</groupId>
 		    <artifactId>spring-data-jpa</artifactId>
 		    <version>1.0.3.RELEASE</version>
+		    <exclusions>
+                <exclusion>  <!-- declare the exclusion here -->
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-core</artifactId>
+                    <!--  <version>3.0.5-RELEASE</version>-->
+                </exclusion>
+        </exclusions> 
 		</dependency>
 
 		<dependency>

@@ -156,12 +156,14 @@ public class ForesiteResourceMap implements ResourceMap {
         Identifier identifier = tmpResourceMap.keySet().iterator().next();
         this.setIdentifier(identifier.getValue());
 
+       
         /* Gets the to identifier map */
         Map<Identifier, List<Identifier>> identiferMap = tmpResourceMap.get(identifier);
 
         this.resourceMap = new HashMap<String, ForesiteResourceEntry>();
 
-        for (Map.Entry<Identifier, List<Identifier>> entry : identiferMap.entrySet()) {
+        for(Map.Entry<Identifier, List<Identifier>> entry : identiferMap.entrySet()) 
+        {
             ForesiteResourceEntry documentsResourceEntry = resourceMap.get(entry.getKey()
                     .getValue());
 
