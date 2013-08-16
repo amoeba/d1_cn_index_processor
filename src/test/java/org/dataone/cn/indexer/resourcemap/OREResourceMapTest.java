@@ -37,7 +37,6 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.dataone.cn.index.SolrIndexDeleteTest;
 import org.dataone.service.types.v1.Identifier;
 import org.dspace.foresite.OREException;
 import org.dspace.foresite.OREParserException;
@@ -45,337 +44,276 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:/org/dataone/cn/indexer/resourcemap/test-context.xml" })
+@ContextConfiguration(locations = { "test-context.xml" })
 public class OREResourceMapTest {
 
-	public class IndexVisibilityDelegateTestImpl implements IndexVisibilityDelegate {
-
-	    public boolean isDocumentVisible(Identifier pid) {
-	        return true;
-	    }
-
-	    public boolean documentExists(Identifier pid) {
-	        return true;
-	    }
-
-	}
-	
-	private static Logger logger = Logger.getLogger(OREResourceMapTest.class.getName());
-	
-    @Autowired
-    @Qualifier("testDoc")
-    private ClassPathResource testDoc;
+    private static Logger logger = Logger.getLogger(OREResourceMapTest.class.getName());
 
     @Autowired
-    @Qualifier("incompleteResourceMap")
-    private ClassPathResource incompleteResourceMap;
-    
-    @Autowired
-    @Qualifier("dryadDoc")
-    private ClassPathResource dryadDoc;
-    
-    @Autowired
-    @Qualifier("transistiveRelationshipsDoc")
-    private ClassPathResource transistiveRelationshipsDoc;
-    
-    @Autowired
-    @Qualifier("incompletetransistiveRelationshipsDoc")
-    private ClassPathResource incompleteTransistiveRelationshipsDoc;
+    private Resource testDoc;
 
-    
+    @Autowired
+    private Resource incompleteResourceMap;
+
+    @Autowired
+    private Resource dryadDoc;
+
+    @Autowired
+    private Resource transistiveRelationshipsDoc;
+
+    @Autowired
+    private Resource incompletetransistiveRelationshipsDoc;
+
     @Test
-    public void testTransistiveRelationships() throws OREException, URISyntaxException, 
-		OREParserException, IOException
-    {
-    	/* Resource map with all resources visible */
-    	ResourceMap resourceMap = new ForesiteResourceMap(
-    		IOUtils.toString(transistiveRelationshipsDoc.getInputStream()), 
-    		new IndexVisibilityDelegateTestImpl());
-    	
-    	List<String> docs = resourceMap.getAllDocumentIDs();
-    	
-    	Assert.assertEquals("Number of documents should be 5", 5, docs.size());
-    	
-    	
-    	
-    	Set<ResourceEntry> resources = resourceMap.getMappedReferences();
-    	
-    	Assert.assertEquals("Number of mapped references should be 4", 4, 
-    			resources.size());
-    	
-    	
-    	for(ResourceEntry resource : resources)
-    	{
-    		logger.info(resource.getIdentifier());
-    		
-    		if(resource.getIdentifier().equals("resource1"))
-    		{
-    			Set<String> documentedBy = resource.getDocumentedBy();
+    public void testTransistiveRelationships() throws OREException, URISyntaxException,
+            OREParserException, IOException {
+        /* Resource map with all resources visible */
+        ResourceMap resourceMap = new ForesiteResourceMap(
+                IOUtils.toString(transistiveRelationshipsDoc.getInputStream()),
+                new IndexVisibilityDelegateTestImpl());
 
-    			Assert.assertEquals("Wrong number of documentedBy for "+resource.getIdentifier(), 0, 
-    					documentedBy.size());
+        List<String> docs = resourceMap.getAllDocumentIDs();
 
-    			Set<String> documents = resource.getDocuments();
+        Assert.assertEquals("Number of documents should be 5", 5, docs.size());
 
-    			Assert.assertEquals("Wrong number of documents for "+resource.getIdentifier(), 1, 
-    					documents.size());
-    			
-    			Assert.assertTrue("Resource1 does not document resource 2", 
-    					documents.contains("resource2"));
-    			
-    	
+        Set<ResourceEntry> resources = resourceMap.getMappedReferences();
 
-    		}else if(resource.getIdentifier().equals("resource2"))
-    		{
-    			Set<String> documentedBy = resource.getDocumentedBy();
+        Assert.assertEquals("Number of mapped references should be 4", 4, resources.size());
 
-    			Assert.assertEquals("Wrong number of documentedBy for "+resource.getIdentifier(), 1, 
-    					documentedBy.size());
+        for (ResourceEntry resource : resources) {
+            logger.info(resource.getIdentifier());
 
-    			Assert.assertTrue("Resource2 isn't documented by resource1",
-    					documentedBy.contains("resource1"));
-    			
-    			Set<String> documents = resource.getDocuments();
+            if (resource.getIdentifier().equals("resource1")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
 
-    			Assert.assertEquals("Wrong number of documents for "+resource.getIdentifier(), 1, 
-    					documents.size());
-    			
-    			Assert.assertTrue("Resource2 does not document resource 3", 
-    					documents.contains("resource3"));
+                Assert.assertEquals("Wrong number of documentedBy for " + resource.getIdentifier(),
+                        0, documentedBy.size());
 
-    		}else if(resource.getIdentifier().equals("resource3"))
-    		{
-    			Set<String> documentedBy = resource.getDocumentedBy();
+                Set<String> documents = resource.getDocuments();
 
-    			Assert.assertEquals("Wrong number of documentedBy for "+resource.getIdentifier(), 1, 
-    					documentedBy.size());
-    			
-    			Assert.assertTrue("Resource3 isn't documented by resource2",
-    					documentedBy.contains("resource2"));
+                Assert.assertEquals("Wrong number of documents for " + resource.getIdentifier(), 1,
+                        documents.size());
 
-    			Set<String> documents = resource.getDocuments();
+                Assert.assertTrue("Resource1 does not document resource 2",
+                        documents.contains("resource2"));
 
-    			Assert.assertEquals("Wrong number of documents for "+resource.getIdentifier(), 1, 
-    					documents.size());
-    			
-    			Assert.assertTrue("Resource3 does not document resource 4", 
-    					documents.contains("resource4"));
+            } else if (resource.getIdentifier().equals("resource2")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
 
-    		}else if(resource.getIdentifier().equals("resource4"))
-    		{
-    			Set<String> documentedBy = resource.getDocumentedBy();
+                Assert.assertEquals("Wrong number of documentedBy for " + resource.getIdentifier(),
+                        1, documentedBy.size());
 
-    			Assert.assertEquals("Wrong number of documentedBy for "+resource.getIdentifier(), 1, 
-    					documentedBy.size());
-    			
-    			Assert.assertTrue("Resource4 isn't documented by resource3",
-    					documentedBy.contains("resource3"));
+                Assert.assertTrue("Resource2 isn't documented by resource1",
+                        documentedBy.contains("resource1"));
 
-    			Set<String> documents = resource.getDocuments();
+                Set<String> documents = resource.getDocuments();
 
-    			Assert.assertEquals("Wrong number of documents for "+resource.getIdentifier(), 0, 
-    					documents.size());
-    		}
-    	}
+                Assert.assertEquals("Wrong number of documents for " + resource.getIdentifier(), 1,
+                        documents.size());
+
+                Assert.assertTrue("Resource2 does not document resource 3",
+                        documents.contains("resource3"));
+
+            } else if (resource.getIdentifier().equals("resource3")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
+
+                Assert.assertEquals("Wrong number of documentedBy for " + resource.getIdentifier(),
+                        1, documentedBy.size());
+
+                Assert.assertTrue("Resource3 isn't documented by resource2",
+                        documentedBy.contains("resource2"));
+
+                Set<String> documents = resource.getDocuments();
+
+                Assert.assertEquals("Wrong number of documents for " + resource.getIdentifier(), 1,
+                        documents.size());
+
+                Assert.assertTrue("Resource3 does not document resource 4",
+                        documents.contains("resource4"));
+
+            } else if (resource.getIdentifier().equals("resource4")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
+
+                Assert.assertEquals("Wrong number of documentedBy for " + resource.getIdentifier(),
+                        1, documentedBy.size());
+
+                Assert.assertTrue("Resource4 isn't documented by resource3",
+                        documentedBy.contains("resource3"));
+
+                Set<String> documents = resource.getDocuments();
+
+                Assert.assertEquals("Wrong number of documents for " + resource.getIdentifier(), 0,
+                        documents.size());
+            }
+        }
     }
-    
+
     @Test
-    public void testIncompleteTransistiveRelationships() 
-    		throws OREException, URISyntaxException, OREParserException, 
-    			IOException
-    {
-    	/* Resource map with all resources visible */
-    	ResourceMap resourceMap = new ForesiteResourceMap(
-    		IOUtils.toString(incompleteTransistiveRelationshipsDoc.getInputStream()), 
-    		new IndexVisibilityDelegateTestImpl());
-    	
-    	List<String> docs = resourceMap.getAllDocumentIDs();
-    	
-    	Assert.assertEquals("Number of documents should be 5", 5, docs.size());
-    	
-    	
-    	
-    	Set<ResourceEntry> resources = resourceMap.getMappedReferences();
-    	
-    	Assert.assertEquals("Number of mapped references should be 4", 4, 
-    			resources.size());
-    	
-    	
-    	for(ResourceEntry resource : resources)
-    	{
-    		logger.info(resource.getIdentifier());
-    		
-    		if(resource.getIdentifier().equals("resource1"))
-    		{
-    			Set<String> documentedBy = resource.getDocumentedBy();
+    public void testIncompleteTransistiveRelationships() throws OREException, URISyntaxException,
+            OREParserException, IOException {
+        /* Resource map with all resources visible */
+        ResourceMap resourceMap = new ForesiteResourceMap(
+                IOUtils.toString(incompletetransistiveRelationshipsDoc.getInputStream()),
+                new IndexVisibilityDelegateTestImpl());
 
-    			Assert.assertEquals("Wrong number of documentedBy for "+resource.getIdentifier(), 0, 
-    					documentedBy.size());
+        List<String> docs = resourceMap.getAllDocumentIDs();
 
-    			Set<String> documents = resource.getDocuments();
+        Assert.assertEquals("Number of documents should be 5", 5, docs.size());
 
-    			Assert.assertEquals("Wrong number of documents for "+resource.getIdentifier(), 1, 
-    					documents.size());
-    			
-    			Assert.assertTrue("Resource1 does not document resource 2", 
-    					documents.contains("resource2"));
-    			
-    	
+        Set<ResourceEntry> resources = resourceMap.getMappedReferences();
 
-    		}else if(resource.getIdentifier().equals("resource2"))
-    		{
-    			Set<String> documentedBy = resource.getDocumentedBy();
+        Assert.assertEquals("Number of mapped references should be 4", 4, resources.size());
 
-    			Assert.assertEquals("Wrong number of documentedBy for "+resource.getIdentifier(), 1, 
-    					documentedBy.size());
+        for (ResourceEntry resource : resources) {
+            logger.info(resource.getIdentifier());
 
-    			Assert.assertTrue("Resource2 isn't documented by resource1",
-    					documentedBy.contains("resource1"));
-    			
-    			Set<String> documents = resource.getDocuments();
+            if (resource.getIdentifier().equals("resource1")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
 
-    			Assert.assertEquals("Wrong number of documents for "+resource.getIdentifier(), 1, 
-    					documents.size());
-    			
-    			Assert.assertTrue("Resource2 does not document resource 3", 
-    					documents.contains("resource3"));
+                Assert.assertEquals("Wrong number of documentedBy for " + resource.getIdentifier(),
+                        0, documentedBy.size());
 
-    		}else if(resource.getIdentifier().equals("resource3"))
-    		{
-    			Set<String> documentedBy = resource.getDocumentedBy();
+                Set<String> documents = resource.getDocuments();
 
-    			Assert.assertEquals("Wrong number of documentedBy for "+resource.getIdentifier(), 1, 
-    					documentedBy.size());
-    			
-    			Assert.assertTrue("Resource3 isn't documented by resource2",
-    					documentedBy.contains("resource2"));
+                Assert.assertEquals("Wrong number of documents for " + resource.getIdentifier(), 1,
+                        documents.size());
 
-    			Set<String> documents = resource.getDocuments();
+                Assert.assertTrue("Resource1 does not document resource 2",
+                        documents.contains("resource2"));
 
-    			Assert.assertEquals("Wrong number of documents for "+resource.getIdentifier(), 1, 
-    					documents.size());
-    			
-    			Assert.assertTrue("Resource3 does not document resource 4", 
-    					documents.contains("resource4"));
+            } else if (resource.getIdentifier().equals("resource2")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
 
-    		}else if(resource.getIdentifier().equals("resource4"))
-    		{
-    			Set<String> documentedBy = resource.getDocumentedBy();
+                Assert.assertEquals("Wrong number of documentedBy for " + resource.getIdentifier(),
+                        1, documentedBy.size());
 
-    			Assert.assertEquals("Wrong number of documentedBy for "+resource.getIdentifier(), 1, 
-    					documentedBy.size());
-    			
-    			Assert.assertTrue("Resource4 isn't documented by resource3",
-    					documentedBy.contains("resource3"));
+                Assert.assertTrue("Resource2 isn't documented by resource1",
+                        documentedBy.contains("resource1"));
 
-    			Set<String> documents = resource.getDocuments();
+                Set<String> documents = resource.getDocuments();
 
-    			Assert.assertEquals("Wrong number of documents for "+resource.getIdentifier(), 0, 
-    					documents.size());
-    		}
-    	}
+                Assert.assertEquals("Wrong number of documents for " + resource.getIdentifier(), 1,
+                        documents.size());
+
+                Assert.assertTrue("Resource2 does not document resource 3",
+                        documents.contains("resource3"));
+
+            } else if (resource.getIdentifier().equals("resource3")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
+
+                Assert.assertEquals("Wrong number of documentedBy for " + resource.getIdentifier(),
+                        1, documentedBy.size());
+
+                Assert.assertTrue("Resource3 isn't documented by resource2",
+                        documentedBy.contains("resource2"));
+
+                Set<String> documents = resource.getDocuments();
+
+                Assert.assertEquals("Wrong number of documents for " + resource.getIdentifier(), 1,
+                        documents.size());
+
+                Assert.assertTrue("Resource3 does not document resource 4",
+                        documents.contains("resource4"));
+
+            } else if (resource.getIdentifier().equals("resource4")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
+
+                Assert.assertEquals("Wrong number of documentedBy for " + resource.getIdentifier(),
+                        1, documentedBy.size());
+
+                Assert.assertTrue("Resource4 isn't documented by resource3",
+                        documentedBy.contains("resource3"));
+
+                Set<String> documents = resource.getDocuments();
+
+                Assert.assertEquals("Wrong number of documents for " + resource.getIdentifier(), 0,
+                        documents.size());
+            }
+        }
     }
-    
+
     @Test
-    public void testDryadDoc() throws OREException, URISyntaxException, 
-    	OREParserException, IOException
-    {
-    	/* Resource map with all resources visible */
-    	ResourceMap resourceMap = new ForesiteResourceMap(
-    		IOUtils.toString(dryadDoc.getInputStream()), 
-    		new IndexVisibilityDelegateTestImpl());
-    	
-    	Set<ResourceEntry> resources = resourceMap.getMappedReferences();
-    	
-    	Assert.assertEquals("Number of mapped references don't match", 
-    			13, resources.size());
-    	
-    	for(ResourceEntry resource : resources)
-    	{
-    		logger.info(resource.getIdentifier());	
-    		
-    		if(resource.getIdentifier().equals(
-    			"http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"))
-    		{
-    			Set<String> documentedBy = resource.getDocumentedBy();
-    			
-    			Assert.assertEquals("Wrong number of documentedBy", 1, 
-    					documentedBy.size());
-    			
-    			Set<String> documents = resource.getDocuments();
-    			
-    		}
-    		
-    		
-    		
-    		
-    	}
-    	
-    	
-    	Assert.fail("Done.");
-    }
-    
-    @Test
-    public void testIncompleteResourceMap() throws OREException, 
-    	URISyntaxException, OREParserException, IOException
-    {
-    	/* Resource map with all resources visible */
-    	ResourceMap resourceMap = new ForesiteResourceMap(
-    		IOUtils.toString(incompleteResourceMap.getInputStream()), 
-    		new IndexVisibilityDelegateTestImpl());
-    	
-    	Set<ResourceEntry> resources = resourceMap.getMappedReferences();
-    	
-    	Assert.assertEquals("Number of mapped references don't match", 
-    			2, resources.size());
-    	
-    	for(ResourceEntry resource : resources)
-    	{
-    		logger.info(resource.getIdentifier());	
-    		
-    		if(resource.getIdentifier().equals("doi:10.6085/AA/ALEXXX_015MTBD009R00_20110122.50.1"))
-    		{
-    			Set<String> documentedBy = resource.getDocumentedBy();
-    			
-    			Assert.assertEquals("Wrong number of documentedBy", 0, documentedBy.size());
- 
-    			
-    			Set<String> documents = resource.getDocuments();
-				
-				Assert.assertEquals("Wrong number of documents for doi:10.6085/AA/ALEXXX_015MTBD009R00_20110122.50.1", 1, documents.size());
-				Assert.assertTrue("doi:10.6085/AA/ALEXXX_015MTBD009R00_20110122.50.1 should document doi:10.6085/AA/ALEXXX_015MTBD009R00_20110122.40.1", documents.contains("doi:10.6085/AA/ALEXXX_015MTBD009R00_20110122.40.1"));
-				
-				
-    			
-			}else if(resource.getIdentifier().equals("doi:10.6085/AA/ALEXXX_015MTBD009R00_20110122.40.1"))
-			{
-				Set<String> documentedBy = resource.getDocumentedBy();
+    public void testDryadDoc() throws OREException, URISyntaxException, OREParserException,
+            IOException {
+        /* Resource map with all resources visible */
+        ResourceMap resourceMap = new ForesiteResourceMap(IOUtils.toString(dryadDoc
+                .getInputStream()), new IndexVisibilityDelegateTestImpl());
 
-				Assert.assertEquals("Wrong number of documentedBy", 1, documentedBy.size());
-				Assert.assertTrue("doi:10.6085/AA/ALEXXX_015MTBD009R00_20110122.40.1 should be documented by doi:10.6085/AA/ALEXXX_015MTBD009R00_20110122.50.1", documentedBy.contains("doi:10.6085/AA/ALEXXX_015MTBD009R00_20110122.50.1"));
-				
-				Set<String> documents = resource.getDocuments();
-				
-				Assert.assertEquals("Wrong number of documents doi:10.6085/AA/ALEXXX_015MTBD009R00_20110122.40.1", 0, documents.size());
-		
-			}else
-			{
-				Assert.fail("Unknown resource id: "+resource.getIdentifier());
-			}
-    	}
-    	
-    	Assert.fail("Success");
+        Set<ResourceEntry> resources = resourceMap.getMappedReferences();
+
+        Assert.assertEquals("Number of mapped references don't match", 13, resources.size());
+
+        for (ResourceEntry resource : resources) {
+            logger.info(resource.getIdentifier());
+
+            if (resource.getIdentifier().equals(
+                    "http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
+                Assert.assertEquals("Wrong number of documentedBy", 0, documentedBy.size());
+
+                Set<String> documents = resource.getDocuments();
+                Assert.assertEquals("Wrong number of documents", 12, documents.size());
+            }
+        }
     }
-    
+
+    @Test
+    public void testIncompleteResourceMap() throws OREException, URISyntaxException,
+            OREParserException, IOException {
+        /* Resource map with all resources visible */
+        ResourceMap resourceMap = new ForesiteResourceMap(IOUtils.toString(incompleteResourceMap
+                .getInputStream()), new IndexVisibilityDelegateTestImpl());
+
+        Set<ResourceEntry> resources = resourceMap.getMappedReferences();
+
+        Assert.assertEquals("Number of mapped references don't match", 2, resources.size());
+
+        for (ResourceEntry resource : resources) {
+            logger.info(resource.getIdentifier());
+
+            if (resource.getIdentifier()
+                    .equals("doi:10.6085/AA/ALEXXX_015MTBD009R00_20110122.50.1")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
+
+                Assert.assertEquals("Wrong number of documentedBy", 0, documentedBy.size());
+
+                Set<String> documents = resource.getDocuments();
+
+                Assert.assertEquals(
+                        "Wrong number of documents for doi:10.6085/AA/ALEXXX_015MTBD009R00_20110122.50.1",
+                        1, documents.size());
+                Assert.assertTrue(
+                        "doi:10.6085/AA/ALEXXX_015MTBD009R00_20110122.50.1 should document doi:10.6085/AA/ALEXXX_015MTBD009R00_20110122.40.1",
+                        documents.contains("doi:10.6085/AA/ALEXXX_015MTBD009R00_20110122.40.1"));
+
+            } else if (resource.getIdentifier().equals(
+                    "doi:10.6085/AA/ALEXXX_015MTBD009R00_20110122.40.1")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
+
+                Assert.assertEquals("Wrong number of documentedBy", 1, documentedBy.size());
+                Assert.assertTrue(
+                        "doi:10.6085/AA/ALEXXX_015MTBD009R00_20110122.40.1 should be documented by doi:10.6085/AA/ALEXXX_015MTBD009R00_20110122.50.1",
+                        documentedBy.contains("doi:10.6085/AA/ALEXXX_015MTBD009R00_20110122.50.1"));
+
+                Set<String> documents = resource.getDocuments();
+
+                Assert.assertEquals(
+                        "Wrong number of documents doi:10.6085/AA/ALEXXX_015MTBD009R00_20110122.40.1",
+                        0, documents.size());
+
+            } else {
+                Assert.fail("Unknown resource id: " + resource.getIdentifier());
+            }
+        }
+    }
+
     @Test
     public void testOREResourceMap() throws OREException, URISyntaxException, OREParserException,
             IOException, XPathExpressionException, SAXException, ParserConfigurationException {
@@ -486,7 +424,6 @@ public class OREResourceMapTest {
 
         ResourceMap xpathResourceMap = new XPathResourceMap(doc, new NullSmdVisibilityDelegate());
 
-       
         Map<Identifier, Map<Identifier, List<Identifier>>> relations = org.dataone.ore.ResourceMapFactory
                 .getInstance().parseResourceMap(testDoc.getInputStream());
 
@@ -508,6 +445,16 @@ public class OREResourceMapTest {
                 foresiteResourceMap.getAllDocumentIDs().size());
         Assert.assertEquals("xpath pid count does not match actual pid count.", pidCount,
                 xpathResourceMap.getAllDocumentIDs().size());
+    }
+
+    private class IndexVisibilityDelegateTestImpl implements IndexVisibilityDelegate {
+        public boolean isDocumentVisible(Identifier pid) {
+            return true;
+        }
+
+        public boolean documentExists(Identifier pid) {
+            return true;
+        }
     }
 
     private class NullSmdVisibilityDelegate implements IndexVisibilityDelegate {
