@@ -25,14 +25,14 @@
         value="org/dataone/cn/indexer/resourcemap/resources/dryad.12"/>
     </bean>
  
-    <bean id="transistiveRelationshipsDoc" class="org.springframework.core.io.ClassPathResource">
+    <bean id="transitiveRelationshipsDoc" class="org.springframework.core.io.ClassPathResource">
         <constructor-arg type="java.lang.String" 
-        value="org/dataone/cn/indexer/resourcemap/resources/nested_resourcemap.rdf"/>
+        value="org/dataone/cn/indexer/resourcemap/resources/transitive_resourcemap.rdf"/>
     </bean>
     
-    <bean id="incompletetransistiveRelationshipsDoc" class="org.springframework.core.io.ClassPathResource">
+    <bean id="incompleteTransitiveRelationshipsDoc" class="org.springframework.core.io.ClassPathResource">
         <constructor-arg type="java.lang.String" 
-        value="org/dataone/cn/indexer/resourcemap/resources/incomplete_nested_resourcemap.rdf"/>
+        value="org/dataone/cn/indexer/resourcemap/resources/incomplete_transitive_resourcemap.rdf"/>
     </bean>
     
     <bean id="oreResourceMapTest" class="org.dataone.cn.indexer.resourcemap.OREResourceMapTest"/>
