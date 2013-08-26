@@ -40,8 +40,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.IPostProcessor;
 import org.dataone.cn.indexer.parser.SolrField;
@@ -71,7 +70,10 @@ import org.xml.sax.SAXException;
  */
 
 public class XPathDocumentParser {
-    public String index = null;
+
+    private static Logger log = Logger.getLogger(XPathDocumentParser.class);
+
+    private String index = null;
     private String solrBaseUri = null;
     private String solrindexUri = null;
     private String solrQueryUri = null;
@@ -93,7 +95,6 @@ public class XPathDocumentParser {
     private static final String INPUT_ENCODING = "UTF-8";
     private HTTPService httpService = null;
 
-    Log log = LogFactory.getLog(XPathDocumentParser.class);
     private List<IPostProcessor> postProcessors = new ArrayList<IPostProcessor>();
 
     static {
@@ -362,12 +363,12 @@ public class XPathDocumentParser {
 
     }
 
-    public Document loadDocument(String filePath) throws ParserConfigurationException, IOException,
-            SAXException {
+    public static Document loadDocument(String filePath) throws ParserConfigurationException,
+            IOException, SAXException {
         return loadDocument(filePath, INPUT_ENCODING);
     }
 
-    private Document loadDocument(String filePath, String input_encoding)
+    private static Document loadDocument(String filePath, String input_encoding)
             throws ParserConfigurationException, IOException, SAXException {
         Document doc = null;
         FileInputStream fis = null;
