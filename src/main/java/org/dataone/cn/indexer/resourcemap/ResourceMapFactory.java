@@ -38,18 +38,15 @@ public class ResourceMapFactory {
     }
 
     public static ResourceMap buildResourceMap(String objectFilePath) throws OREParserException {
-        //return new XPathResourceMap(objectFilePath);
-        return new ForesiteResourceMap(objectFilePath);
+        return new XPathResourceMap(objectFilePath);
     }
 
     public static ResourceMap buildResourceMap(Document oreDoc) throws OREParserException {
-        //return new XPathResourceMap(oreDoc);
-        return new ForesiteResourceMap(oreDoc);
+        return new XPathResourceMap(oreDoc);
     }
 
     public static ResourceMap buildResourceMap(String objectFilePath, IndexVisibilityDelegate ivd)
             throws OREParserException {
-        //return new XPathResourceMap(objectFilePath, ivd);
-        return new ForesiteResourceMap(objectFilePath, ivd);
+        return new XPathResourceMap(objectFilePath, ivd);
     }
 }
