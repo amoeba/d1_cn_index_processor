@@ -119,23 +119,32 @@ public class ForesiteResourceMap implements ResourceMap {
     /**
      * Constructor for testing, allows test class to override the index visibility delegate object.  
      * To avoid need for hazelcast during testing.
-     * @param doc
+     * @param fileObjectPath
      * @param ivd
      * @throws OREException
      * @throws URISyntaxException
      * @throws OREParserException
      * @throws IOException
      */
-    public ForesiteResourceMap(String doc, IndexVisibilityDelegate ivd) throws OREException,
-            URISyntaxException, OREParserException, IOException {
-        InputStream is = new ReaderInputStream(new StringReader(doc));
+    public ForesiteResourceMap(String fileObjectPath, IndexVisibilityDelegate ivd)
+            throws OREParserException {
         if (ivd != null) {
             this.indexVisibilityDelegate = ivd;
         }
+        FileInputStream fileInputStream = null;
         try {
-            _init(is);
+            fileInputStream = new FileInputStream(fileObjectPath);
+            _init(fileInputStream);
+        } catch (Exception e) {
+            throw new OREParserException(e);
         } finally {
-            is.close();
+            try {
+                if (fileInputStream != null) {
+                    fileInputStream.close();
+                }
+            } catch (IOException e) {
+                logger.error("error closing file input stream", e);
+            }
         }
     }
 
@@ -156,14 +165,12 @@ public class ForesiteResourceMap implements ResourceMap {
         Identifier identifier = tmpResourceMap.keySet().iterator().next();
         this.setIdentifier(identifier.getValue());
 
-       
         /* Gets the to identifier map */
         Map<Identifier, List<Identifier>> identiferMap = tmpResourceMap.get(identifier);
 
         this.resourceMap = new HashMap<String, ForesiteResourceEntry>();
 
-        for(Map.Entry<Identifier, List<Identifier>> entry : identiferMap.entrySet()) 
-        {
+        for (Map.Entry<Identifier, List<Identifier>> entry : identiferMap.entrySet()) {
             ForesiteResourceEntry documentsResourceEntry = resourceMap.get(entry.getKey()
                     .getValue());
 

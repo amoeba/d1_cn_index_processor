@@ -23,8 +23,6 @@ package org.dataone.cn.indexer.resourcemap;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -37,8 +35,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 import org.dataone.service.types.v1.Identifier;
 import org.dspace.foresite.OREException;
 import org.dspace.foresite.OREParserException;
@@ -55,8 +51,6 @@ import org.xml.sax.SAXException;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "test-context.xml" })
 public class OREResourceMapTest {
-
-    private static Logger logger = Logger.getLogger(OREResourceMapTest.class.getName());
 
     @Autowired
     private Resource testDoc;
@@ -85,9 +79,8 @@ public class OREResourceMapTest {
     public void testTransitiveRelationships() throws OREException, URISyntaxException,
             OREParserException, IOException {
         /* Resource map with all resources visible */
-        ResourceMap resourceMap = new ForesiteResourceMap(
-                IOUtils.toString(transitiveRelationshipsDoc.getInputStream()),
-                new IndexVisibilityDelegateTestImpl());
+        ResourceMap resourceMap = new ForesiteResourceMap(transitiveRelationshipsDoc.getFile()
+                .getAbsolutePath(), new IndexVisibilityDelegateTestImpl());
 
         List<String> docs = resourceMap.getAllDocumentIDs();
 
@@ -98,7 +91,7 @@ public class OREResourceMapTest {
         Assert.assertEquals("Number of mapped references should be 4", 4, resources.size());
 
         for (ResourceEntry resource : resources) {
-            
+
             if (resource.getIdentifier().equals("resource1")) {
                 Set<String> documentedBy = resource.getDocumentedBy();
 
@@ -174,13 +167,12 @@ public class OREResourceMapTest {
      * @throws IOException
      */
     @Test
-    public void testIncompleteTransitiveRelationships() throws OREException, 
-    		URISyntaxException, OREParserException, IOException {
-    	
+    public void testIncompleteTransitiveRelationships() throws OREException, URISyntaxException,
+            OREParserException, IOException {
+
         /* Resource map with all resources visible */
-        ResourceMap resourceMap = new ForesiteResourceMap(
-                IOUtils.toString(incompleteTransitiveRelationshipsDoc.getInputStream()),
-                new IndexVisibilityDelegateTestImpl());
+        ResourceMap resourceMap = new ForesiteResourceMap(incompleteTransitiveRelationshipsDoc
+                .getFile().getAbsolutePath(), new IndexVisibilityDelegateTestImpl());
 
         List<String> docs = resourceMap.getAllDocumentIDs();
 
@@ -191,7 +183,7 @@ public class OREResourceMapTest {
         Assert.assertEquals("Number of mapped references should be 4", 4, resources.size());
 
         for (ResourceEntry resource : resources) {
-           
+
             if (resource.getIdentifier().equals("resource1")) {
                 Set<String> documentedBy = resource.getDocumentedBy();
 
@@ -269,183 +261,240 @@ public class OREResourceMapTest {
     public void testDryadDoc() throws OREException, URISyntaxException, OREParserException,
             IOException {
         /* Resource map with all resources visible */
-        ResourceMap resourceMap = new ForesiteResourceMap(IOUtils.toString(dryadDoc
-                .getInputStream()), new IndexVisibilityDelegateTestImpl());
+        ResourceMap resourceMap = ResourceMapFactory.buildResourceMap(dryadDoc.getFile()
+                .getAbsolutePath(), new IndexVisibilityDelegateTestImpl());
 
         /* Tests the identifer */
-        Assert.assertEquals("http://dx.doi.org/10.5061/dryad.12?format=d1rem&ver=2011-08-02T16:00:05.530-0400", 
-        		resourceMap.getIdentifier());
-       
+        Assert.assertEquals(
+                "http://dx.doi.org/10.5061/dryad.12?format=d1rem&ver=2011-08-02T16:00:05.530-0400",
+                resourceMap.getIdentifier());
+
         /* Tests the getAllDocumentIDs() method */
-        Assert.assertEquals("Number of doc ids don't match", 14, resourceMap.getAllDocumentIDs().size());
-        
+        Assert.assertEquals("Number of doc ids don't match", 14, resourceMap.getAllDocumentIDs()
+                .size());
+
         /* Tests the getMappedReferences() method */
         Set<ResourceEntry> resources = resourceMap.getMappedReferences();
 
         Assert.assertEquals("Number of mapped references don't match", 13, resources.size());
 
         /* Checks the documents and documentedby for each resource */
-        for(ResourceEntry resource : resources) {
-        	
-        	String resourceID = resource.getIdentifier();
-        	
-            if(resourceID.equals("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400")) {
+        for (ResourceEntry resource : resources) {
+
+            String resourceID = resource.getIdentifier();
+
+            if (resourceID
+                    .equals("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400")) {
                 Set<String> documentedBy = resource.getDocumentedBy();
-                Assert.assertEquals("Wrong number of documentedBy for "+resourceID, 0, documentedBy.size());
+                Assert.assertEquals("Wrong number of documentedBy for " + resourceID, 0,
+                        documentedBy.size());
 
                 Set<String> documents = resource.getDocuments();
-                Assert.assertEquals("Wrong number of documents for "+resourceID, 12, documents.size());
-                
-                
-                for(String docID : new String[] {
-		                "http://dx.doi.org/10.5061/dryad.12/6?ver=2011-08-02T16:00:05.530-0400",
-		                "http://dx.doi.org/10.5061/dryad.12/4/bitstream",
-		                "http://dx.doi.org/10.5061/dryad.12/6/bitstream",
-		                "http://dx.doi.org/10.5061/dryad.12/2?ver=2011-08-02T16:00:05.530-0400",
-		                "http://dx.doi.org/10.5061/dryad.12/1?ver=2011-08-02T16:00:05.530-0400",
-		                "http://dx.doi.org/10.5061/dryad.12/4?ver=2011-08-02T16:00:05.530-0400",
-		                "http://dx.doi.org/10.5061/dryad.12/5?ver=2011-08-02T16:00:05.530-0400",
-		                "http://dx.doi.org/10.5061/dryad.12/3?ver=2011-08-02T16:00:05.530-0400",
-		                "http://dx.doi.org/10.5061/dryad.12/3/bitstream",
-		                "http://dx.doi.org/10.5061/dryad.12/1/bitstream",
-		                "http://dx.doi.org/10.5061/dryad.12/5/bitstream",
-		                "http://dx.doi.org/10.5061/dryad.12/2/bitstream"})
-                {
-                	Assert.assertTrue(resourceID + " doesn't document "+docID, 
-                			documents.contains(docID));
+                Assert.assertEquals("Wrong number of documents for " + resourceID, 12,
+                        documents.size());
+
+                for (String docID : new String[] {
+                        "http://dx.doi.org/10.5061/dryad.12/6?ver=2011-08-02T16:00:05.530-0400",
+                        "http://dx.doi.org/10.5061/dryad.12/4/bitstream",
+                        "http://dx.doi.org/10.5061/dryad.12/6/bitstream",
+                        "http://dx.doi.org/10.5061/dryad.12/2?ver=2011-08-02T16:00:05.530-0400",
+                        "http://dx.doi.org/10.5061/dryad.12/1?ver=2011-08-02T16:00:05.530-0400",
+                        "http://dx.doi.org/10.5061/dryad.12/4?ver=2011-08-02T16:00:05.530-0400",
+                        "http://dx.doi.org/10.5061/dryad.12/5?ver=2011-08-02T16:00:05.530-0400",
+                        "http://dx.doi.org/10.5061/dryad.12/3?ver=2011-08-02T16:00:05.530-0400",
+                        "http://dx.doi.org/10.5061/dryad.12/3/bitstream",
+                        "http://dx.doi.org/10.5061/dryad.12/1/bitstream",
+                        "http://dx.doi.org/10.5061/dryad.12/5/bitstream",
+                        "http://dx.doi.org/10.5061/dryad.12/2/bitstream" }) {
+                    Assert.assertTrue(resourceID + " doesn't document " + docID,
+                            documents.contains(docID));
                 }
-                     
-            }else if(resourceID.equals("http://dx.doi.org/10.5061/dryad.12/3/bitstream"))
-            {
-            	Set<String> documentedBy = resource.getDocumentedBy();
-                Assert.assertEquals("Wrong number of documentedBy for "+resourceID, 1, documentedBy.size());
 
-                Assert.assertTrue(resourceID + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400", 
-                	documentedBy.contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
-                
-                Set<String> documents = resource.getDocuments();
-                Assert.assertEquals("Wrong number of documents for "+resourceID, 0, documents.size());
-                
-            }else if(resourceID.equals("http://dx.doi.org/10.5061/dryad.12/1?ver=2011-08-02T16:00:05.530-0400"))
-            {
-            	Set<String> documentedBy = resource.getDocumentedBy();
-                Assert.assertEquals("Wrong number of documentedBy for "+resourceID, 1, documentedBy.size());
+            } else if (resourceID.equals("http://dx.doi.org/10.5061/dryad.12/3/bitstream")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
+                Assert.assertEquals("Wrong number of documentedBy for " + resourceID, 1,
+                        documentedBy.size());
 
-                Assert.assertTrue(resourceID + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400", 
-                    documentedBy.contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
-                    
-                Set<String> documents = resource.getDocuments();
-                Assert.assertEquals("Wrong number of documents for "+resourceID, 0, documents.size());
-                
-            }else if(resourceID.equals("http://dx.doi.org/10.5061/dryad.12/2?ver=2011-08-02T16:00:05.530-0400"))
-            {
-            	Set<String> documentedBy = resource.getDocumentedBy();
-                Assert.assertEquals("Wrong number of documentedBy for "+resourceID, 1, documentedBy.size());
+                Assert.assertTrue(
+                        resourceID
+                                + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400",
+                        documentedBy
+                                .contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
 
-                Assert.assertTrue(resourceID + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400", 
-                    documentedBy.contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
-                                
                 Set<String> documents = resource.getDocuments();
-                Assert.assertEquals("Wrong number of documents for "+resourceID, 0, documents.size());
-                
-            }else if(resourceID.equals("http://dx.doi.org/10.5061/dryad.12/5?ver=2011-08-02T16:00:05.530-0400"))
-            {
-            	Set<String> documentedBy = resource.getDocumentedBy();
-                Assert.assertEquals("Wrong number of documentedBy for "+resourceID, 1, documentedBy.size());
+                Assert.assertEquals("Wrong number of documents for " + resourceID, 0,
+                        documents.size());
 
-                Assert.assertTrue(resourceID + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400", 
-                    documentedBy.contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
-                                 
-                Set<String> documents = resource.getDocuments();
-                Assert.assertEquals("Wrong number of documents for "+resourceID, 0, documents.size());
-                
-            }else if(resourceID.equals("http://dx.doi.org/10.5061/dryad.12/1/bitstream"))
-            {
-            	Set<String> documentedBy = resource.getDocumentedBy();
-                Assert.assertEquals("Wrong number of documentedBy for "+resourceID, 1, documentedBy.size());
+            } else if (resourceID
+                    .equals("http://dx.doi.org/10.5061/dryad.12/1?ver=2011-08-02T16:00:05.530-0400")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
+                Assert.assertEquals("Wrong number of documentedBy for " + resourceID, 1,
+                        documentedBy.size());
 
-                Assert.assertTrue(resourceID + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400", 
-                    documentedBy.contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
-                    
-                Set<String> documents = resource.getDocuments();
-                Assert.assertEquals("Wrong number of documents for "+resourceID, 0, documents.size());
-            	
-            }else if(resourceID.equals("http://dx.doi.org/10.5061/dryad.12/4/bitstream"))
-            {
-            	Set<String> documentedBy = resource.getDocumentedBy();
-                Assert.assertEquals("Wrong number of documentedBy for "+resourceID, 1, documentedBy.size());
+                Assert.assertTrue(
+                        resourceID
+                                + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400",
+                        documentedBy
+                                .contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
 
-                Assert.assertTrue(resourceID + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400", 
-                   	documentedBy.contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
-                    
                 Set<String> documents = resource.getDocuments();
-                Assert.assertEquals("Wrong number of documents for "+resourceID, 0, documents.size());
-                
-            }else if(resourceID.equals("http://dx.doi.org/10.5061/dryad.12/6?ver=2011-08-02T16:00:05.530-0400"))
-            {
-            	Set<String> documentedBy = resource.getDocumentedBy();
-                Assert.assertEquals("Wrong number of documentedBy for "+resourceID, 1, documentedBy.size());
+                Assert.assertEquals("Wrong number of documents for " + resourceID, 0,
+                        documents.size());
 
-                Assert.assertTrue(resourceID + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400", 
-                    documentedBy.contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
-                    
-                Set<String> documents = resource.getDocuments();
-                Assert.assertEquals("Wrong number of documents for "+resourceID, 0, documents.size());
-            	
-            }else if(resourceID.equals("http://dx.doi.org/10.5061/dryad.12/5/bitstream"))
-            {
-            	Set<String> documentedBy = resource.getDocumentedBy();
-                Assert.assertEquals("Wrong number of documentedBy for "+resourceID, 1, documentedBy.size());
+            } else if (resourceID
+                    .equals("http://dx.doi.org/10.5061/dryad.12/2?ver=2011-08-02T16:00:05.530-0400")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
+                Assert.assertEquals("Wrong number of documentedBy for " + resourceID, 1,
+                        documentedBy.size());
 
-                Assert.assertTrue(resourceID + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400", 
-                    documentedBy.contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
-                    
-                Set<String> documents = resource.getDocuments();
-                Assert.assertEquals("Wrong number of documents for "+resourceID, 0, documents.size());
-                
-            }else if(resourceID.equals("http://dx.doi.org/10.5061/dryad.12/6/bitstream"))
-            {
-            	Set<String> documentedBy = resource.getDocumentedBy();
-                Assert.assertEquals("Wrong number of documentedBy for "+resourceID, 1, documentedBy.size());
+                Assert.assertTrue(
+                        resourceID
+                                + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400",
+                        documentedBy
+                                .contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
 
-                Assert.assertTrue(resourceID + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400", 
-                    documentedBy.contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
-                    
                 Set<String> documents = resource.getDocuments();
-                Assert.assertEquals("Wrong number of documents for "+resourceID, 0, documents.size());
-                
-            }else if(resourceID.equals("http://dx.doi.org/10.5061/dryad.12/4?ver=2011-08-02T16:00:05.530-0400"))
-            {
-            	Set<String> documentedBy = resource.getDocumentedBy();
-                Assert.assertEquals("Wrong number of documentedBy for "+resourceID, 1, documentedBy.size());
+                Assert.assertEquals("Wrong number of documents for " + resourceID, 0,
+                        documents.size());
 
-                Assert.assertTrue(resourceID + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400", 
-                   	documentedBy.contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
-                    
-                Set<String> documents = resource.getDocuments();
-                Assert.assertEquals("Wrong number of documents for "+resourceID, 0, documents.size());
-            	
-            }else if(resourceID.equals("http://dx.doi.org/10.5061/dryad.12/2/bitstream"))
-            {
-            	Set<String> documentedBy = resource.getDocumentedBy();
-                Assert.assertEquals("Wrong number of documentedBy for "+resourceID, 1, documentedBy.size());
+            } else if (resourceID
+                    .equals("http://dx.doi.org/10.5061/dryad.12/5?ver=2011-08-02T16:00:05.530-0400")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
+                Assert.assertEquals("Wrong number of documentedBy for " + resourceID, 1,
+                        documentedBy.size());
 
-                Assert.assertTrue(resourceID + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400", 
-                    documentedBy.contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
-                    
-                Set<String> documents = resource.getDocuments();
-                Assert.assertEquals("Wrong number of documents for "+resourceID, 0, documents.size());
-                
-            }else if(resourceID.equals("http://dx.doi.org/10.5061/dryad.12/3?ver=2011-08-02T16:00:05.530-0400"))
-            {
-            	Set<String> documentedBy = resource.getDocumentedBy();
-                Assert.assertEquals("Wrong number of documentedBy for "+resourceID, 1, documentedBy.size());
+                Assert.assertTrue(
+                        resourceID
+                                + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400",
+                        documentedBy
+                                .contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
 
-                Assert.assertTrue(resourceID + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400", 
-                    documentedBy.contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
-                    
                 Set<String> documents = resource.getDocuments();
-                Assert.assertEquals("Wrong number of documents for "+resourceID, 0, documents.size());
+                Assert.assertEquals("Wrong number of documents for " + resourceID, 0,
+                        documents.size());
+
+            } else if (resourceID.equals("http://dx.doi.org/10.5061/dryad.12/1/bitstream")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
+                Assert.assertEquals("Wrong number of documentedBy for " + resourceID, 1,
+                        documentedBy.size());
+
+                Assert.assertTrue(
+                        resourceID
+                                + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400",
+                        documentedBy
+                                .contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
+
+                Set<String> documents = resource.getDocuments();
+                Assert.assertEquals("Wrong number of documents for " + resourceID, 0,
+                        documents.size());
+
+            } else if (resourceID.equals("http://dx.doi.org/10.5061/dryad.12/4/bitstream")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
+                Assert.assertEquals("Wrong number of documentedBy for " + resourceID, 1,
+                        documentedBy.size());
+
+                Assert.assertTrue(
+                        resourceID
+                                + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400",
+                        documentedBy
+                                .contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
+
+                Set<String> documents = resource.getDocuments();
+                Assert.assertEquals("Wrong number of documents for " + resourceID, 0,
+                        documents.size());
+
+            } else if (resourceID
+                    .equals("http://dx.doi.org/10.5061/dryad.12/6?ver=2011-08-02T16:00:05.530-0400")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
+                Assert.assertEquals("Wrong number of documentedBy for " + resourceID, 1,
+                        documentedBy.size());
+
+                Assert.assertTrue(
+                        resourceID
+                                + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400",
+                        documentedBy
+                                .contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
+
+                Set<String> documents = resource.getDocuments();
+                Assert.assertEquals("Wrong number of documents for " + resourceID, 0,
+                        documents.size());
+
+            } else if (resourceID.equals("http://dx.doi.org/10.5061/dryad.12/5/bitstream")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
+                Assert.assertEquals("Wrong number of documentedBy for " + resourceID, 1,
+                        documentedBy.size());
+
+                Assert.assertTrue(
+                        resourceID
+                                + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400",
+                        documentedBy
+                                .contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
+
+                Set<String> documents = resource.getDocuments();
+                Assert.assertEquals("Wrong number of documents for " + resourceID, 0,
+                        documents.size());
+
+            } else if (resourceID.equals("http://dx.doi.org/10.5061/dryad.12/6/bitstream")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
+                Assert.assertEquals("Wrong number of documentedBy for " + resourceID, 1,
+                        documentedBy.size());
+
+                Assert.assertTrue(
+                        resourceID
+                                + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400",
+                        documentedBy
+                                .contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
+
+                Set<String> documents = resource.getDocuments();
+                Assert.assertEquals("Wrong number of documents for " + resourceID, 0,
+                        documents.size());
+
+            } else if (resourceID
+                    .equals("http://dx.doi.org/10.5061/dryad.12/4?ver=2011-08-02T16:00:05.530-0400")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
+                Assert.assertEquals("Wrong number of documentedBy for " + resourceID, 1,
+                        documentedBy.size());
+
+                Assert.assertTrue(
+                        resourceID
+                                + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400",
+                        documentedBy
+                                .contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
+
+                Set<String> documents = resource.getDocuments();
+                Assert.assertEquals("Wrong number of documents for " + resourceID, 0,
+                        documents.size());
+
+            } else if (resourceID.equals("http://dx.doi.org/10.5061/dryad.12/2/bitstream")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
+                Assert.assertEquals("Wrong number of documentedBy for " + resourceID, 1,
+                        documentedBy.size());
+
+                Assert.assertTrue(
+                        resourceID
+                                + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400",
+                        documentedBy
+                                .contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
+
+                Set<String> documents = resource.getDocuments();
+                Assert.assertEquals("Wrong number of documents for " + resourceID, 0,
+                        documents.size());
+
+            } else if (resourceID
+                    .equals("http://dx.doi.org/10.5061/dryad.12/3?ver=2011-08-02T16:00:05.530-0400")) {
+                Set<String> documentedBy = resource.getDocumentedBy();
+                Assert.assertEquals("Wrong number of documentedBy for " + resourceID, 1,
+                        documentedBy.size());
+
+                Assert.assertTrue(
+                        resourceID
+                                + "is not doucmented by http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400",
+                        documentedBy
+                                .contains("http://dx.doi.org/10.5061/dryad.12&ver=2011-08-02T16:00:05.530-0400"));
+
+                Set<String> documents = resource.getDocuments();
+                Assert.assertEquals("Wrong number of documents for " + resourceID, 0,
+                        documents.size());
             }
         }
     }
@@ -463,15 +512,15 @@ public class OREResourceMapTest {
     public void testIncompleteResourceMap() throws OREException, URISyntaxException,
             OREParserException, IOException {
         /* Resource map with all resources visible */
-        ResourceMap resourceMap = new ForesiteResourceMap(IOUtils.toString(incompleteResourceMap
-                .getInputStream()), new IndexVisibilityDelegateTestImpl());
+        ResourceMap resourceMap = new ForesiteResourceMap(incompleteResourceMap.getFile()
+                .getAbsolutePath(), new IndexVisibilityDelegateTestImpl());
 
         Set<ResourceEntry> resources = resourceMap.getMappedReferences();
 
         Assert.assertEquals("Number of mapped references don't match", 2, resources.size());
 
         for (ResourceEntry resource : resources) {
-            
+
             if (resource.getIdentifier()
                     .equals("doi:10.6085/AA/ALEXXX_015MTBD009R00_20110122.50.1")) {
                 Set<String> documentedBy = resource.getDocumentedBy();
@@ -507,7 +556,7 @@ public class OREResourceMapTest {
             }
         }
     }
-    
+
     /**
      * Tests the base case of foresite resource map parsing against the xpath
      * base resource map parser. 
@@ -528,8 +577,8 @@ public class OREResourceMapTest {
         DocumentBuilder builder = domFactory.newDocumentBuilder();
         Document doc = builder.parse(testDoc.getFile());
 
-        ResourceMap foresiteResourceMap = new ForesiteResourceMap(IOUtils.toString(testDoc
-                .getInputStream()), new IndexVisibilityDelegateTestImpl());
+        ResourceMap foresiteResourceMap = new ForesiteResourceMap(testDoc.getFile()
+                .getAbsolutePath(), new IndexVisibilityDelegateTestImpl());
 
         ResourceMap xpathResourceMap = new XPathResourceMap(doc,
                 new IndexVisibilityDelegateTestImpl());
@@ -625,8 +674,8 @@ public class OREResourceMapTest {
         DocumentBuilder builder = domFactory.newDocumentBuilder();
         Document doc = builder.parse(testDoc.getFile());
 
-        ResourceMap foresiteResourceMap = new ForesiteResourceMap(IOUtils.toString(testDoc
-                .getInputStream()), new NullSmdVisibilityDelegate());
+        ResourceMap foresiteResourceMap = new ForesiteResourceMap(testDoc.getFile()
+                .getAbsolutePath(), new NullSmdVisibilityDelegate());
 
         ResourceMap xpathResourceMap = new XPathResourceMap(doc, new NullSmdVisibilityDelegate());
 

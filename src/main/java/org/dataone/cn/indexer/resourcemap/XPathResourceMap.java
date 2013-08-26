@@ -38,9 +38,11 @@ import javax.xml.xpath.XPathFactory;
 import org.dataone.cn.index.processor.IndexVisibilityDelegateHazelcastImpl;
 import org.dataone.cn.indexer.XMLNamespace;
 import org.dataone.cn.indexer.XMLNamespaceConfig;
+import org.dataone.cn.indexer.XPathDocumentParser;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.service.types.v1.Identifier;
+import org.dspace.foresite.OREParserException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -83,21 +85,46 @@ public class XPathResourceMap implements ResourceMap {
     public static final String TAG_IS_DOCUMENTED_BY = "isDocumentedBy";
     private HashMap<String, String> descriptionURIToIdentifierMap = null;
 
-    public XPathResourceMap(Document doc) throws XPathExpressionException {
-        this.doc = doc;
-        setIdentifier(parseIdentifier(doc));
-        mappedReferences = getMappedReferences();
-        contains = new HashSet<String>();
-        contains.addAll(descriptionURIToIdentifierMap.values());
+    public XPathResourceMap(Document doc) throws OREParserException {
+        init(doc);
     }
 
-    public XPathResourceMap(Document doc, IndexVisibilityDelegate ivd)
-            throws XPathExpressionException {
-        this.doc = doc;
+    public XPathResourceMap(Document doc, IndexVisibilityDelegate ivd) throws OREParserException {
         if (ivd != null) {
             this.indexVisibilityDelegate = ivd;
         }
-        setIdentifier(parseIdentifier(doc));
+        init(doc);
+    }
+
+    public XPathResourceMap(String objectFilePath) throws OREParserException {
+        try {
+            Document doc = XPathDocumentParser.loadDocument(objectFilePath);
+            init(doc);
+        } catch (Exception e) {
+            throw new OREParserException(e);
+        }
+    }
+
+    public XPathResourceMap(String filePath, IndexVisibilityDelegate ivd) throws OREParserException {
+        if (ivd != null) {
+            this.indexVisibilityDelegate = ivd;
+        }
+        try {
+            Document doc = XPathDocumentParser.loadDocument(filePath);
+            init(doc);
+        } catch (Exception e) {
+            throw new OREParserException(e);
+        }
+    }
+
+    private void init(Document doc) throws OREParserException {
+        this.doc = doc;
+
+        try {
+            setIdentifier(parseIdentifier(doc));
+        } catch (XPathExpressionException e) {
+            throw new OREParserException(e);
+        }
         mappedReferences = getMappedReferences();
         contains = new HashSet<String>();
         contains.addAll(descriptionURIToIdentifierMap.values());
@@ -319,5 +346,4 @@ public class XPathResourceMap implements ResourceMap {
     public static boolean representsResourceMap(String formatId) {
         return RESOURCE_MAP_FORMAT.equals(formatId);
     }
-
 }
