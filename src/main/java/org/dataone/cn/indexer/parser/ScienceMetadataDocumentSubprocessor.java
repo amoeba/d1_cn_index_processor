@@ -41,25 +41,10 @@ import org.w3c.dom.Document;
 public class ScienceMetadataDocumentSubprocessor extends AbstractDocumentSubprocessor implements
         IDocumentSubprocessor {
 
-    private IDocumentProvider documentProvider = null;
-
     @Override
     public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs,
             Document doc) throws Exception {
-        Document sciMetaDoc = null;
-        if (documentProvider == null) {
-            sciMetaDoc = doc;
-        } else {
-            sciMetaDoc = documentProvider.GetDocument(identifier);
-        }
-        return super.processDocument(identifier, docs, sciMetaDoc);
+        return super.processDocument(identifier, docs, doc);
     }
 
-    public IDocumentProvider getDocumentProvider() {
-        return documentProvider;
-    }
-
-    public void setDocumentProvider(IDocumentProvider documentProvider) {
-        this.documentProvider = documentProvider;
-    }
 }

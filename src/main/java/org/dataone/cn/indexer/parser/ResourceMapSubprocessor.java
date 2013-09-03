@@ -38,18 +38,21 @@ import org.dspace.foresite.OREParserException;
 import org.w3c.dom.Document;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Porter
- * Date: 9/26/11
- * Time: 3:51 PM
- */
-
-/**
+ * Resource Map Document processor.  Operates on ORE/RDF objects.  Maps 
+ * 'documents', 'documentedBy', and 'aggregates' relationships.
+ * 
+ * Uses org.dataone.cn.indexer.resourcemap.ResourceMap to update individual
+ * SolrDoc objects with values for 'documents', 'documentedBy', and 'resourceMap'
+ * (aggregates) fields.
+ * 
  * Updates entries for related documents in index. For document relational
  * information refer to
  * http://mule1.dataone.org/ArchitectureDocs-current/design/
  * SearchMetadata.html#id4
  * 
+ * User: Porter
+ * Date: 9/26/11
+ * Time: 3:51 PM
  */
 public class ResourceMapSubprocessor extends AbstractDocumentSubprocessor implements
         IDocumentSubprocessor {
@@ -57,6 +60,13 @@ public class ResourceMapSubprocessor extends AbstractDocumentSubprocessor implem
     private HTTPService httpService = null;
     private String solrQueryUri = null;
 
+    /**
+     * Implements IDocumentSubprocessor.processDocument method.
+     * Creates a map of D1 Identifier string values to SolrDoc objects which represent
+     * the Solr search index documents for the data package defined by the ORE/RDF document.
+     * Each solr record in the data package is updated with 'documents', 'documentedBy',
+     * and 'resourceMap' field values contained in the incoming Document doc method parameter.
+     */
     @Override
     public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs,
             Document doc) throws XPathExpressionException, OREParserException, IOException,

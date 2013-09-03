@@ -24,6 +24,13 @@ package org.dataone.cn.indexer.parser.utility;
 
 import java.util.Map;
 
+/**
+ * Used by RootElement to define how leaf element data values are to be combined
+ * into the final field value.
+ * 
+ * @author sroseboo
+ *
+ */
 public class TemplateStringProcessor {
 
     public String process(String template, Map<String, String> valueMap) {

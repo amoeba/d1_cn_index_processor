@@ -22,22 +22,21 @@
 
 package org.dataone.cn.indexer.parser;
 
+import java.io.IOException;
+
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-
 /**
- * Created by IntelliJ IDEA.
+ * IDocumentProvider use to retrieve resourcemap data from different repositories.
+ * 
  * User: Porter
  * Date: 9/6/11
  * Time: 11:09 AM
  */
-
-/**IDocumentProvider use to retrieve resourcemap data from different repositories.
- *
- */
 public interface IDocumentProvider {
-    public Document GetDocument(String identifier) throws ParserConfigurationException, IOException, SAXException;
+    public Document GetDocument(String identifier) throws ParserConfigurationException,
+            IOException, SAXException;
 }

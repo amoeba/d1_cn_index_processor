@@ -35,17 +35,24 @@ import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.w3c.dom.Document;
 
 /**
- * Created by IntelliJ IDEA.
+ * Base functionality for document processors. A document processor represents
+ * an object which is configured with SolrFields for deriving search index field
+ * data from xml documents which the document processor is configured to run against.
+ * For example, there will be specific document processor objects each science metadata
+ * format.
+ * 
+ * matchDocument property contains an xpath expression which is used to determine if an
+ * instance of a science metadata document should be processed by this document processor.
+ * Basically matches the expected 'formatId' to the formatId of a candidate document.
+ * 
+ * fieldList property contains the collection of ISolrFields configured for operating over
+ * a particular science metadata format.
+ * 
+ * 
  * User: Porter
  * Date: 9/22/11
  * Time: 3:24 PM
  */
-
-/**
- * Base functionality for Sub processor.
- * 
- */
-
 public class AbstractDocumentSubprocessor implements IDocumentSubprocessor {
 
     /**

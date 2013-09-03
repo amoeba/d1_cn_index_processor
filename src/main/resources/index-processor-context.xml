@@ -21,8 +21,7 @@
   <constructor-arg>
    <list>
     <bean class="org.dataone.cn.indexer.XPathDocumentParser">
-     <constructor-arg name="fields" ref="xpath_system_metadata_100">
-     </constructor-arg>
+     <constructor-arg name="fields" ref="xpath_system_metadata_100" />
      <constructor-arg name="xmlNamespaceConfig" ref="xmlNamespaceConfig" />
      <property name="solrBaseUri" value="${solr.base.uri}" />
      <property name="httpService" ref="httpService" />
@@ -80,12 +79,11 @@
     </bean>
     <bean class="org.dataone.cn.indexer.XMLNamespace">
      <constructor-arg name="prefix" value="dc" />
-     <constructor-arg name="namespace"
-      value="http://purl.org/dc/elements/1.1/" />
+     <constructor-arg name="namespace" value="http://purl.org/dc/elements/1.1/" />
     </bean>
     <bean class="org.dataone.cn.indexer.XMLNamespace">
-     <constructor-arg name="prefix" value="dcterms" />
-     <constructor-arg name="namespace" value="http://purl.org/dc/terms/" />
+     	<constructor-arg name="prefix" value="dcterms" />
+     	<constructor-arg name="namespace" value="http://purl.org/dc/terms/" />
     </bean>
      <bean class="org.dataone.cn.indexer.XMLNamespace">
      	<constructor-arg name="prefix" value="dwc" />
@@ -121,7 +119,6 @@
     	<constructor-arg name="prefix" value="dryad" />
     	<constructor-arg name="namespace" value="http://purl.org/dryad/terms/" />
     </bean>   
-    
    </list>
   </constructor-arg>
  </bean>

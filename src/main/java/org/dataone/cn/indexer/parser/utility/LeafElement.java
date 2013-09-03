@@ -31,6 +31,16 @@ import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * A LeafElement object represents the ends of the common root element expressions.
+ * The leaf element should map to an xml text node which contains data values of interest
+ * to the search index.
+ * 
+ * Combined with RootElements and used by CommonRootSolrField to create complex data values.
+ * 
+ * @author sroseboo
+ *
+ */
 public class LeafElement {
 
     private String name;

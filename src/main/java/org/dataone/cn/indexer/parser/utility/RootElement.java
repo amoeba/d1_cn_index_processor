@@ -36,6 +36,18 @@ import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * Used by CommonRootSolrField.  Contains other root elements and leaf elements.
+ * Allows definition of nested root elements which expand eventually into leaf elements.
+ * 
+ * Leaf elements represent text node elements which are endpoints of root elements.
+ * 
+ * The templateProcessor object defines how the leaf node data should be combined into
+ * a new field value.
+ * 
+ * @author sroseboo
+ *
+ */
 public class RootElement {
 
     private String name;

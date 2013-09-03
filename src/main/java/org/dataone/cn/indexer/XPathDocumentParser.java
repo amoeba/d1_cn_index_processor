@@ -42,7 +42,6 @@ import org.apache.commons.codec.EncoderException;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.log4j.Logger;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
-import org.dataone.cn.indexer.parser.IPostProcessor;
 import org.dataone.cn.indexer.parser.SolrField;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
@@ -53,28 +52,26 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- * User: Porter
- * Date: 7/25/11
- * Time: 1:28 PM
- */
-
-/**
- * Main class for processing and updating solr index for DataOne.org solr
- * schema. See spring configuration file for more information.
+ * Top level document processing class.  
+ * 
+ * Contains collection of document sub-processors which are used to mine search
+ * index data from document objects.  Each sub-processor is configured via spring
+ * to collect data from different types of documents (by formatId).
  * 
  * There should only be one instance of XPathDocumentParser in place at a time
  * since it performs updates on the SOLR index and transactions on SOLR are at
  * the server level - so if multiple threads write and commit then things could
- * get ugly.
+ * get messy.
  * 
+ * User: Porter
+ * Date: 7/25/11
+ * Time: 1:28 PM
  */
 
 public class XPathDocumentParser {
 
     private static Logger log = Logger.getLogger(XPathDocumentParser.class);
 
-    private String index = null;
-    private String solrBaseUri = null;
     private String solrindexUri = null;
     private String solrQueryUri = null;
     private List<SolrField> fields = null;
@@ -95,7 +92,7 @@ public class XPathDocumentParser {
     private static final String INPUT_ENCODING = "UTF-8";
     private HTTPService httpService = null;
 
-    private List<IPostProcessor> postProcessors = new ArrayList<IPostProcessor>();
+    long startTime = 0;
 
     static {
         documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -127,10 +124,6 @@ public class XPathDocumentParser {
         }
 
     }
-
-    long startTime = 0;
-
-    // List<SolrDoc> docs = new ArrayList<SolrDoc>();
 
     /**
      * Given a PID, system metadata document path, and an optional document
@@ -445,7 +438,6 @@ public class XPathDocumentParser {
     }
 
     public void setSolrBaseUri(String solrBaseUri) {
-        this.solrBaseUri = solrBaseUri;
         setSolrQueryUri(solrBaseUri + "/adminSelect/");
         setSolrindexUri(solrBaseUri + "/update?commit=true");
     }
@@ -464,9 +456,4 @@ public class XPathDocumentParser {
     public static DocumentBuilder getDocumentBuilder() {
         return builder;
     }
-
-    public void setPostProcessors(List<IPostProcessor> postProcessors) {
-        this.postProcessors = postProcessors;
-    }
-
 }

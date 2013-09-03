@@ -26,6 +26,16 @@ import java.util.List;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.w3c.dom.Document;
 
+/**
+ * Simple extension of SolrField.  Uses default SolrField behavior to capture full text and 
+ * concatenates the DataONE identifier value for the current document into the full text field
+ * value.  Many science metadata documents do not contain text which is the actual D1 identifier 
+ * however to enable search results based on D1 identifier against the full text field this field
+ * adds the identifier value.
+ * 
+ * @author sroseboo
+ *
+ */
 public class FullTextSolrField extends SolrField {
 
     public FullTextSolrField(String name, String xpath) {

@@ -33,6 +33,21 @@ import org.dataone.cn.indexer.parser.utility.RootElement;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.w3c.dom.Document;
 
+/**
+ * A complex data value mining SolrField.  For use when multiple xPath selector rules
+ * need to be used together from a common rooted xml element.  However, using just xPath
+ * selectors will ignore the 'common' root xml element requirement.  An example usage is 
+ * in eml where creator elements are a common root which can contain a person name in
+ * several elements OR an organization name.  The creator element needs to be treated as a
+ * common root so that first and last name elements across creator elements are not erroneously
+ * combined.
+ * 
+ * Uses a RootElement object to represent the common element from which the data values should
+ * be derived.
+ * 
+ * @author sroseboo
+ *
+ */
 public class CommonRootSolrField extends SolrField {
 
     private RootElement root;

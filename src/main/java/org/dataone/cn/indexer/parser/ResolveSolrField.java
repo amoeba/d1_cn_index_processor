@@ -32,6 +32,13 @@ import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.configuration.Settings;
 import org.w3c.dom.Document;
 
+/**
+ * Simple SolrField which configures the resolve url for the document being processed.
+ * Uses dataone properties file to derive the cn router hostname.
+ * 
+ * @author sroseboo
+ *
+ */
 public class ResolveSolrField extends SolrField {
 
     private static final String ROUTER_HOST_NAME = Settings.getConfiguration().getString(

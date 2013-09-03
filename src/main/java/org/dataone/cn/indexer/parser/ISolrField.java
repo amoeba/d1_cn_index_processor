@@ -30,9 +30,12 @@ import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.w3c.dom.Document;
 
 /**
- * Created by IntelliJ IDEA. User: Porter Date: 9/22/11 Time: 1:31 PM
+ * Solr field processing interface.  Defines the methods which need to be provided
+ * by an implementation of a solr field processing class.
+ *  
  */
 public interface ISolrField {
+
     /**
      * Method for initializing xpath expression from main document builder.
      * 
@@ -49,5 +52,9 @@ public interface ISolrField {
      */
     public List<SolrElementField> getFields(Document doc, String identifier) throws Exception;
 
+    /**
+     * Returns the search field name.
+     * @return
+     */
     public String getName();
 }

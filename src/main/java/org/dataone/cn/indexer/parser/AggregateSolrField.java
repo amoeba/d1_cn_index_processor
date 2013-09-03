@@ -31,6 +31,19 @@ import org.apache.commons.lang.StringUtils;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.w3c.dom.Document;
 
+/**
+ * ISolrField implementation that aggregates multiple other SolrField instance configurations
+ * into a new field value.
+ * 
+ * Used by some science metadata formats to create a full text field that contains different parts
+ * of the science metadata document which cannot be derived with a single xPath selector.
+ * 
+ * For example - see the SolrField configuration in application-context-eml-base.xml at the full text
+ * field.
+ * 
+ * @author sroseboo
+ *
+ */
 public class AggregateSolrField implements ISolrField {
 
     private List<ISolrField> solrFields = null;

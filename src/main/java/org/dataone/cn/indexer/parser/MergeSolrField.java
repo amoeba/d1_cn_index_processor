@@ -40,6 +40,10 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
+ * Extension of SolrField.  Merges multiple data values into a single value field seperated
+ * by the delimiter character.  Assumes a non-mulivalued field.  Used when the xPath selector
+ * rule may match multiple text nodes which need to be combined into a single delimited value.
+ * 
  * @author vieglais
  * 
  */

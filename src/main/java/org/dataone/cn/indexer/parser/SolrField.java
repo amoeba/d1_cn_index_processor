@@ -50,8 +50,16 @@ import org.xml.sax.SAXException;
  */
 
 /**
- * Used for mapping XPath queries to SolrIndex fields
+ * Base implementation of a class used to process an xml document in order
+ * to mine value(s) from it - to be placed in a search index field.
  * 
+ * SolrField defines:
+ *      the search field name,
+ *      the xpath expression that derives the field value.
+ *      Control flags include whether the field is mapped to a multi-valued field,
+ *      whether values should be de-duped (duplicates removed), whether a special
+ *      conversion utility class should be run over the data values.
+ *      
  */
 
 public class SolrField implements ISolrField {
@@ -87,6 +95,9 @@ public class SolrField implements ISolrField {
         this.xpath = xpath;
     }
 
+    /**
+     * Initializes the xPath expression parser object using xpath instance variable.
+     */
     public void initExpression(XPath xpathObject) {
         if (getxPathExpression() == null) {
             try {
@@ -104,6 +115,18 @@ public class SolrField implements ISolrField {
         return processField(doc);
     }
 
+    /**
+     * Process incoming xml doc object for the data value this SolrField instance is
+     * configured to derive.  Return a list of SolrElementFields containing the search
+     * index field name and the data mined from the xml doc.
+     * 
+     * @param doc
+     * @return
+     * @throws XPathExpressionException
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     */
     public List<SolrElementField> processField(Document doc) throws XPathExpressionException,
             IOException, SAXException, ParserConfigurationException {
         List<SolrElementField> fields = new ArrayList<SolrElementField>();
@@ -230,10 +253,20 @@ public class SolrField implements ISolrField {
         this.combineNodes = combineNodes;
     }
 
+    /**
+     * Controls whether duplicate values be removed from final field value.
+     * 
+     * @param dedupe
+     */
     public void setDedupe(boolean dedupe) {
         this.dedupe = dedupe;
     }
 
+    /**
+     * Controls whether there are values which should be disallowed - removed from field value.
+     * 
+     * @param disallowed
+     */
     public void setDisallowedValues(List<String> disallowed) {
         this.disallowedValues = disallowed;
     }
@@ -242,6 +275,11 @@ public class SolrField implements ISolrField {
         return this.disallowedValues;
     }
 
+    /**
+     * Delimiter character between values mined from source xml document.
+     * 
+     * @param valueSeparator
+     */
     public void setValueSeparator(String valueSeparator) {
         this.valueSeparator = valueSeparator;
     }
@@ -262,6 +300,11 @@ public class SolrField implements ISolrField {
         return name;
     }
 
+    /**
+     * The name of the search index field this SolrField instance is generating.
+     * 
+     * @param name
+     */
     public void setName(String name) {
         this.name = name;
     }
@@ -270,6 +313,12 @@ public class SolrField implements ISolrField {
         return xpath;
     }
 
+    /**
+     * A string representing an xPath selector rule used to derive search index field values
+     * from incoming xml documents.
+     * 
+     * @param xpath
+     */
     public void setXpath(String xpath) {
         this.xpath = xpath;
     }
@@ -278,6 +327,12 @@ public class SolrField implements ISolrField {
         return multivalue;
     }
 
+    /**
+     * Controls whether the search index field this instance of SolrField is generating is defined
+     * as accepting multiple values (a collection of values).
+     * 
+     * @param multivalue
+     */
     public void setMultivalue(boolean multivalue) {
         this.multivalue = multivalue;
     }
