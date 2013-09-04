@@ -76,6 +76,10 @@ public class SolrField implements ISolrField {
     protected List<String> disallowedValues = null;
     protected String valueSeparator = null;
 
+    protected String splitOnString = null;
+    protected boolean substringBefore = false;
+    protected boolean substringAfter = false;
+
     public SolrField() {
     }
 
@@ -148,11 +152,17 @@ public class SolrField implements ISolrField {
                             for (int j = 0; j < inlineValues.length; j++) {
                                 String inlineValue = inlineValues[j];
                                 if (inlineValue.equals(this.valueSeparator) == false) {
-                                    processValue(fields, usedValues, inlineValue);
+                                    nodeValue = processNodeValue(nodeValue, usedValues);
+                                    if (StringUtils.isNotEmpty(nodeValue)) {
+                                        fields.add(new SolrElementField(name, nodeValue));
+                                    }
                                 }
                             }
                         } else {
-                            processValue(fields, usedValues, nodeValue);
+                            nodeValue = processNodeValue(nodeValue, usedValues);
+                            if (StringUtils.isNotEmpty(nodeValue)) {
+                                fields.add(new SolrElementField(name, nodeValue));
+                            }
                         }
                     }
                 }
@@ -168,34 +178,16 @@ public class SolrField implements ISolrField {
                         }
                         Node nText = nodeSet.item(i);
                         String nodeValue = nText.getNodeValue();
-                        if (nodeValue != null) {
-                            nodeValue = nodeValue.trim();
-                            if (this.converter != null) {
-                                nodeValue = this.converter.convert(nodeValue);
-                            }
-                            if (this.escapeXML) {
-                                nodeValue = StringEscapeUtils.escapeXml(nodeValue);
-                            }
-                            if (!dedupe || (dedupe && !usedValues.contains(nodeValue))) {
-                                if (allowedValue(value)) {
-                                    sb.append(nodeValue);
-                                    usedValues.add(nodeValue);
-                                }
-                            }
+                        nodeValue = processNodeValue(nodeValue, usedValues);
+                        if (StringUtils.isNotEmpty(nodeValue)) {
+                            sb.append(nodeValue);
                         }
                     }
                     value = sb.toString().trim();
                 } else {
-                    value = (String) xPathExpression.evaluate(doc, XPathConstants.STRING);
-                    if (value != null) {
-                        value = value.trim();
-                    }
-                    if (converter != null) {
-                        value = converter.convert(value);
-                    }
-                    if (escapeXML) {
-                        value = StringEscapeUtils.escapeXml(value);
-                    }
+                    String nodeValue = (String) xPathExpression
+                            .evaluate(doc, XPathConstants.STRING);
+                    value = processNodeValue(nodeValue, usedValues);
                 }
                 if (StringUtils.isNotEmpty(value) && allowedValue(value)) {
                     fields.add(new SolrElementField(name, value));
@@ -207,9 +199,18 @@ public class SolrField implements ISolrField {
         return fields;
     }
 
-    private void processValue(List<SolrElementField> fields, Set<String> usedValues,
-            String nodeValue) {
+    protected String processNodeValue(String nodeValue, Set<String> usedValues) {
+        String finalValue = null;
         if (StringUtils.isNotEmpty(nodeValue)) {
+            if (StringUtils.isNotEmpty(this.splitOnString)
+                    && nodeValue.contains(this.splitOnString)) {
+                if (this.substringAfter) {
+                    nodeValue = StringUtils.substringAfter(nodeValue, this.splitOnString);
+                }
+                if (this.substringBefore) {
+                    nodeValue = StringUtils.substringBefore(nodeValue, this.splitOnString);
+                }
+            }
             nodeValue = nodeValue.trim();
             if (this.converter != null) {
                 nodeValue = this.converter.convert(nodeValue);
@@ -218,12 +219,13 @@ public class SolrField implements ISolrField {
                 nodeValue = StringEscapeUtils.escapeXml(nodeValue);
             }
             if (!dedupe || (dedupe & !usedValues.contains(nodeValue))) {
-                if (allowedValue(nodeValue)) {
-                    fields.add(new SolrElementField(name, nodeValue));
-                    usedValues.add(nodeValue);
+                if (StringUtils.isNotEmpty(nodeValue) && allowedValue(nodeValue)) {
+                    finalValue = nodeValue;
+                    usedValues.add(finalValue);
                 }
             }
         }
+        return finalValue;
     }
 
     protected boolean allowedValue(String value) {
@@ -351,5 +353,29 @@ public class SolrField implements ISolrField {
 
     public void setEscapeXML(boolean escapeXML) {
         this.escapeXML = escapeXML;
+    }
+
+    public String getSplitOnString() {
+        return splitOnString;
+    }
+
+    public void setSplitOnString(String splitOnString) {
+        this.splitOnString = splitOnString;
+    }
+
+    public boolean isSubstringBefore() {
+        return substringBefore;
+    }
+
+    public void setSubstringBefore(boolean substringBefore) {
+        this.substringBefore = substringBefore;
+    }
+
+    public boolean isSubstringAfter() {
+        return substringAfter;
+    }
+
+    public void setSubstringAfter(boolean substringAfter) {
+        this.substringAfter = substringAfter;
     }
 }

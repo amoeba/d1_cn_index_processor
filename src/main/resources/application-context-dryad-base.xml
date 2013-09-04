@@ -6,28 +6,44 @@
 		<constructor-arg name="name" value="abstract" />
 		<constructor-arg name="xpath"
 		  value="//dcterms:description[1]/text()" />
-		<property name="multivalue" value="false" />
 	</bean>
 
 	<bean id="dryad.author" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="author" />
 		<constructor-arg name="xpath"
 		  value="//dcterms:creator[1]/text()" />
-		<property name="multivalue" value="false" />
 	</bean>
 	
 	<bean id="dryad.authorSurName" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="authorSurName" />
 		<constructor-arg name="xpath"
 			value="//dcterms:creator[1]/text()" />
-		<property name="multivalue" value="false" />
+		<property name="substringBefore" value="true" />
+		<property name="splitOnString" value="," />
 	</bean>
 	
 	<bean id="dryad.authorSurNameSort" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="authorSurNameSort" />
 		<constructor-arg name="xpath"
 			value="//dcterms:creator[1]/text()" />
-		<property name="multivalue" value="false" />
+		<property name="substringBefore" value="true" />
+		<property name="splitOnString" value="," />
+	</bean>	
+	
+	<bean id="dryad.authorGivenName" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="authorGivenName" />
+		<constructor-arg name="xpath"
+			value="//dcterms:creator[1]/text()" />
+		<property name="substringAfter" value="true" />
+		<property name="splitOnString" value="," />
+	</bean>
+	
+	<bean id="dryad.authorGivenNameSort" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="authorGivenNameSort" />
+		<constructor-arg name="xpath"
+			value="//dcterms:creator[1]/text()" />
+		<property name="substringAfter" value="true" />
+		<property name="splitOnString" value="," />
 	</bean>	
 	
 	<bean id="dryad.keywords" class="org.dataone.cn.indexer.parser.SolrField">
@@ -40,7 +56,6 @@
 	<bean id="dryad.pubDate" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="pubDate" />
 		<constructor-arg name="xpath" value="//dcterms:dateSubmitted/text()" />
-		<property name="multivalue" value="false" />
 		<property name="converter" ref="dateConverter" />
 	</bean>
 	
@@ -55,7 +70,6 @@
 		<constructor-arg name="name" value="title" />
 		<constructor-arg name="xpath"
 		  value="//dcterms:title[1]/text()" />
-		<property name="multivalue" value="false" />
 	</bean>
  
  	<bean id="dryad.scientificName" class="org.dataone.cn.indexer.parser.SolrField">
@@ -86,7 +100,6 @@
 	<bean id="dryad.fullText" class="org.dataone.cn.indexer.parser.FullTextSolrField">
 		<constructor-arg name="name" value="text" />
 		<constructor-arg name="xpath" value="//*/text()" />
-		<property name="multivalue" value="false" />
 		<property name="combineNodes" value="true"/>
 	</bean>
 	

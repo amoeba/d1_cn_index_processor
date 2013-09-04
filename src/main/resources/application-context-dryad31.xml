@@ -12,6 +12,8 @@
 				<ref bean="dryad.author" />
 				<ref bean="dryad.authorSurName" />
 				<ref bean="dryad.authorSurNameSort" />
+				<ref bean="dryad.authorGivenName" />
+				<ref bean="dryad.authorGivenNameSort" />
 				<ref bean="dryad.investigator" />
 				<ref bean="dryad.keywords" />
 				<ref bean="dryad.origin" />
