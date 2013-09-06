@@ -99,7 +99,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         csiroExpected.put("geoform", "maps data");
         csiroExpected.put("kingdom", "Animalia");
         csiroExpected.put("order", "Decapoda");
-        csiroExpected.put("phylum", "Arthropoda Test");
+        csiroExpected.put("phylum", "Arthropoda#Test");
         csiroExpected.put("species", "");
         csiroExpected.put("family", "");
         csiroExpected.put("scientificName", "");
