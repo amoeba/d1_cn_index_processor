@@ -44,12 +44,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * User: Porter
- * Date: 7/25/11
- * Time: 1:40 PM
- */
-
-/**
  * Base implementation of a class used to process an xml document in order
  * to mine value(s) from it - to be placed in a search index field.
  * 
@@ -60,6 +54,9 @@ import org.xml.sax.SAXException;
  *      whether values should be de-duped (duplicates removed), whether a special
  *      conversion utility class should be run over the data values.
  *      
+ * User: Porter
+ * Date: 7/25/11
+ * Time: 1:40 PM      
  */
 
 public class SolrField implements ISolrField {
