@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -187,7 +188,8 @@ public class App {
                 // if
                 // (task.pid.equals("__test_object_valid_eml__sciMD-eml-201-NoLastLForCR__"))
                 // {
-                parser.processID(task.pid, task.sysMetaPath, task.objectPath);
+                InputStream smdStream = new FileInputStream(task.sysMetaPath);
+                parser.process(task.pid, smdStream, task.objectPath);
                 log.info("Processing complete for PID = " + task.pid);
                 // }
             } catch (Exception e) {

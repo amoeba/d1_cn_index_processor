@@ -30,80 +30,84 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * Candidate for removal - unused.
+ * 
+ * Abstraction of an IndexingTask collection/list.
+ *
+ */
 public class IndexingTaskList extends ArrayList<IndexingTask> {
 
-  // Path offset to files listed in the task list. Normally blank, this
-  // is used for testing when mounting the remote file system at another root.
-  private static String basePath = "";
-  Log log = LogFactory.getLog(App.class);
+    // Path offset to files listed in the task list. Normally blank, this
+    // is used for testing when mounting the remote file system at another root.
+    private static String basePath = "";
+    Log log = LogFactory.getLog(App.class);
 
-  /**
-   * Load indexing tasks from the temporary hack textfile
-   * 
-   * @param sourcePath
-   *          File system path to the taks list.
-   */
-  public IndexingTaskList(String sourcePath) {
-    loadTasks(sourcePath);
-  }
-  
-  public IndexingTaskList(String sourcePath, String basePath) {
-    if (basePath != null) {
-      log.info("Initializing with basePath = " + basePath);
-      this.basePath = basePath;
+    /**
+     * Load indexing tasks from the temporary hack textfile
+     * 
+     * @param sourcePath
+     *          File system path to the taks list.
+     */
+    public IndexingTaskList(String sourcePath) {
+        loadTasks(sourcePath);
     }
-    loadTasks(sourcePath);
-  }
 
-  
-  public void loadTasks(String sourcePath) {
-    File sourceFile = new File(sourcePath);
-    try {
-      List<String> lines = org.apache.commons.io.FileUtils
-          .readLines(sourceFile);
+    public IndexingTaskList(String sourcePath, String basePath) {
+        if (basePath != null) {
+            log.info("Initializing with basePath = " + basePath);
+            this.basePath = basePath;
+        }
+        loadTasks(sourcePath);
+    }
 
-      int lineCount = 0;
-      IndexingTask task = null;
-      for (String line : lines) {
-        if (line.startsWith("TIMESTAMP")) {
-          continue;
-        }
-        if (task == null || line.trim().equals("::")) {
-          if (task != null) {
-            this.add(task);
-          }
-          task = new IndexingTask();
-          lineCount = 0;
-          continue;
-        }
+    public void loadTasks(String sourcePath) {
+        File sourceFile = new File(sourcePath);
+        try {
+            List<String> lines = org.apache.commons.io.FileUtils.readLines(sourceFile);
 
-        lineCount++;
-        switch (lineCount) {
-        case 0:
-          break;
-        case 1:
-          task.setPid(line);
-          //log.debug("TASK pid=" + line);
-          break;
-        case 2:
-          task.setFmtid(line);
-          break;
-        case 3:
-          task.setDateSysmModified(line);
-          break;
-        case 4:
-          task.setSysMetaPath(basePath + line);
-          break;
-        case 5:
-          if (!line.equals("null") & line != null) {
-            task.setObjectPath(basePath + line);
-          }
-          break;
+            int lineCount = 0;
+            IndexingTask task = null;
+            for (String line : lines) {
+                if (line.startsWith("TIMESTAMP")) {
+                    continue;
+                }
+                if (task == null || line.trim().equals("::")) {
+                    if (task != null) {
+                        this.add(task);
+                    }
+                    task = new IndexingTask();
+                    lineCount = 0;
+                    continue;
+                }
+
+                lineCount++;
+                switch (lineCount) {
+                case 0:
+                    break;
+                case 1:
+                    task.setPid(line);
+                    //log.debug("TASK pid=" + line);
+                    break;
+                case 2:
+                    task.setFmtid(line);
+                    break;
+                case 3:
+                    task.setDateSysmModified(line);
+                    break;
+                case 4:
+                    task.setSysMetaPath(basePath + line);
+                    break;
+                case 5:
+                    if (!line.equals("null") & line != null) {
+                        task.setObjectPath(basePath + line);
+                    }
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            log.error(e.getMessage());
         }
-      }
-    } catch (IOException e) {
-      log.error(e.getMessage());
-    }    
-  }
+    }
 
 }
