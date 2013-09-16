@@ -40,5 +40,7 @@
             </list>
         </property>
     </bean>
-
+	
+	<bean id="indexTaskProcessorScheduler" class="org.dataone.cn.index.processor.IndexTaskProcessorScheduler"/>
+	<bean id="indexTaskProcessorJob" class="org.dataone.cn.index.processor.IndexTaskProcessorJob" />
 </beans>
