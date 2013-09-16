@@ -126,6 +126,90 @@ public class XPathDocumentParser {
     }
 
     /**
+     * Given a PID, system metadata input stream, and an optional document
+     * path, populate the set of SOLR fields for the document and update the
+     * index. Note that if the document is a resource map, then records that it
+     * references will be updated as well.
+     * 
+     * @param id
+     * @param systemMetaDataStream
+     * @param objectPath
+     * @return
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     * @throws XPathExpressionException
+     * @throws EncoderException
+     */
+    public SolrDoc process(String id, InputStream systemMetaDataStream, String objectPath)
+            throws IOException, SAXException, ParserConfigurationException,
+            XPathExpressionException, EncoderException {
+
+        // Load the System Metadata document
+        Document sysMetaDoc = generateXmlDocument(systemMetaDataStream);
+        if (sysMetaDoc == null) {
+            log.error("Could not load System metadata for ID: " + id);
+            return null;
+        }
+
+        // Extract the field values from the System Metadata
+        List<SolrElementField> sysSolrFields = processFields(sysMetaDoc, id);
+        SolrDoc indexDocument = new SolrDoc(sysSolrFields);
+        Map<String, SolrDoc> docs = new HashMap<String, SolrDoc>();
+        docs.put(id, indexDocument);
+
+        // Determine if subprocessors are available for this ID
+        if (subprocessors != null) {
+            // for each subprocessor loaded from the spring config
+            for (IDocumentSubprocessor subprocessor : subprocessors) {
+                // Does this subprocessor apply?
+                if (subprocessor.canProcess(sysMetaDoc)) {
+                    // if so, then extract the additional information from the
+                    // document.
+                    try {
+                        // docObject = the resource map document or science
+                        // metadata document.
+                        // note that resource map processing touches all objects
+                        // referenced by the resource map.
+                        Document docObject = loadDocument(objectPath, INPUT_ENCODING);
+                        if (docObject == null) {
+                            log.error("Could not load OBJECT file for ID,Path=" + id + ", "
+                                    + objectPath);
+                        } else {
+                            docs = subprocessor.processDocument(id, docs, docObject);
+                        }
+                    } catch (Exception e) {
+                        log.error(e.getStackTrace().toString());
+                    }
+                }
+            }
+        }
+
+        // TODO: get list of unmerged documents and do single http request for
+        // all
+        // unmerged documents
+        for (SolrDoc mergeDoc : docs.values()) {
+            if (!mergeDoc.isMerged()) {
+                mergeWithIndexedDocument(mergeDoc);
+            }
+        }
+
+        SolrElementAdd addCommand = getAddCommand(new ArrayList<SolrDoc>(docs.values()));
+        if (log.isTraceEnabled()) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            addCommand.serialize(baos, OUTPUT_ENCODING);
+            log.trace(baos.toString());
+        }
+
+        sendCommand(addCommand);
+
+        return indexDocument;
+    }
+
+    /**
+     * Candidate for deprecation - unused.  Lots of duplicate code in process method.
+     * Possible refactor into a wrapper around process method.
+     * 
      * Given a PID, system metadata document path, and an optional document
      * path, populate the set of SOLR fields for the document and update the
      * index. Note that if the document is a resource map, then records that it
@@ -144,7 +228,7 @@ public class XPathDocumentParser {
      * @throws SAXException
      * @throws ParserConfigurationException
      */
-    public SolrDoc processID(String id, String sysMetaPath, String objectPath) throws IOException,
+    private SolrDoc processID(String id, String sysMetaPath, String objectPath) throws IOException,
             SAXException, ParserConfigurationException, XPathExpressionException, EncoderException {
         // Load the System Metadata document
         Document sysMetaDoc = loadDocument(sysMetaPath, INPUT_ENCODING);
@@ -207,71 +291,6 @@ public class XPathDocumentParser {
         sendCommand(addCommand);
         if (docs.size() > 0)
             docs.clear();
-
-        return indexDocument;
-    }
-
-    public SolrDoc process(String id, InputStream systemMetaDataStream, String objectPath)
-            throws IOException, SAXException, ParserConfigurationException,
-            XPathExpressionException, EncoderException {
-
-        // Load the System Metadata document
-        Document sysMetaDoc = generateXmlDocument(systemMetaDataStream);
-        if (sysMetaDoc == null) {
-            log.error("Could not load System metadata for ID: " + id);
-            return null;
-        }
-
-        // Extract the field values from the System Metadata
-        List<SolrElementField> sysSolrFields = processFields(sysMetaDoc, id);
-        SolrDoc indexDocument = new SolrDoc(sysSolrFields);
-        Map<String, SolrDoc> docs = new HashMap<String, SolrDoc>();
-        docs.put(id, indexDocument);
-
-        // Determine if subprocessors are available for this ID
-        if (subprocessors != null) {
-            // for each subprocessor loaded from the spring config
-            for (IDocumentSubprocessor subprocessor : subprocessors) {
-                // Does this subprocessor apply?
-                if (subprocessor.canProcess(sysMetaDoc)) {
-                    // if so, then extract the additional information from the
-                    // document.
-                    try {
-                        // docObject = the resource map document or science
-                        // metadata document.
-                        // note that resource map processing touches all objects
-                        // referenced by the resource map.
-                        Document docObject = loadDocument(objectPath, INPUT_ENCODING);
-                        if (docObject == null) {
-                            log.error("Could not load OBJECT file for ID,Path=" + id + ", "
-                                    + objectPath);
-                        } else {
-                            docs = subprocessor.processDocument(id, docs, docObject);
-                        }
-                    } catch (Exception e) {
-                        log.error(e.getStackTrace().toString());
-                    }
-                }
-            }
-        }
-
-        // TODO: get list of unmerged documents and do single http request for
-        // all
-        // unmerged documents
-        for (SolrDoc mergeDoc : docs.values()) {
-            if (!mergeDoc.isMerged()) {
-                mergeWithIndexedDocument(mergeDoc);
-            }
-        }
-
-        SolrElementAdd addCommand = getAddCommand(new ArrayList<SolrDoc>(docs.values()));
-        if (log.isTraceEnabled()) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            addCommand.serialize(baos, OUTPUT_ENCODING);
-            log.trace(baos.toString());
-        }
-
-        sendCommand(addCommand);
 
         return indexDocument;
     }
