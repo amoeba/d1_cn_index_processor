@@ -33,6 +33,7 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
     private Resource peggym1281Sys;
     private Resource peggym1291Sys;
     private Resource peggym1304Sys;
+    private Resource tao129301Sys;
 
     @Test
     public void testTokenizingPeriod() throws Exception {
@@ -42,6 +43,19 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
         assertPresentInSolrIndex(pid);
         SolrDocumentList sdl = null;
         sdl = findByField("text", "frank");
+        Assert.assertEquals(1, sdl.size());
+    }
+
+    @Test
+    public void testTokenizingPipe() throws Exception {
+        String pid = "tao.12930.1";
+        sendSolrDeleteAll();
+        addAllToSolr();
+        assertPresentInSolrIndex(pid);
+        SolrDocumentList sdl = null;
+        sdl = findByField("origin", "tao||");
+        Assert.assertEquals(0, sdl.size());
+        sdl = findByField("origin", "tao");
         Assert.assertEquals(1, sdl.size());
     }
 
@@ -159,9 +173,11 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
         peggym1281Sys = (Resource) context.getBean("peggym1281Sys");
         peggym1291Sys = (Resource) context.getBean("peggym1291Sys");
         peggym1304Sys = (Resource) context.getBean("peggym1304Sys");
+        tao129301Sys = (Resource) context.getBean("tao129301Sys");
         addEmlToSolrIndex(peggym1271Sys);
         addEmlToSolrIndex(peggym1281Sys);
         addEmlToSolrIndex(peggym1291Sys);
         addEmlToSolrIndex(peggym1304Sys);
+        addEmlToSolrIndex(tao129301Sys);
     }
 }
