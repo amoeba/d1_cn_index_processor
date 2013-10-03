@@ -46,6 +46,12 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
         Assert.assertEquals(1, sdl.size());
     }
 
+    /**
+     * EML specific test to ensure '||' characters do not appear in origin field when
+     * eml references are used to indicate people resources.
+     * 
+     * @throws Exception
+     */
     @Test
     public void testTokenizingPipe() throws Exception {
         String pid = "tao.12930.1";
