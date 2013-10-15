@@ -44,14 +44,19 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
+ * Base implementation of a class used to process an xml document in order
+ * to mine value(s) from it - to be placed in a search index field.
+ * 
+ * SolrField defines:
+ *      the search field name,
+ *      the xpath expression that derives the field value.
+ *      Control flags include whether the field is mapped to a multi-valued field,
+ *      whether values should be de-duped (duplicates removed), whether a special
+ *      conversion utility class should be run over the data values.
+ *      
  * User: Porter
  * Date: 7/25/11
- * Time: 1:40 PM
- */
-
-/**
- * Used for mapping XPath queries to SolrIndex fields
- * 
+ * Time: 1:40 PM      
  */
 
 public class SolrField implements ISolrField {
@@ -67,6 +72,10 @@ public class SolrField implements ISolrField {
     protected boolean dedupe = false;
     protected List<String> disallowedValues = null;
     protected String valueSeparator = null;
+
+    protected String splitOnString = null;
+    protected boolean substringBefore = false;
+    protected boolean substringAfter = false;
 
     public SolrField() {
     }
@@ -87,6 +96,9 @@ public class SolrField implements ISolrField {
         this.xpath = xpath;
     }
 
+    /**
+     * Initializes the xPath expression parser object using xpath instance variable.
+     */
     public void initExpression(XPath xpathObject) {
         if (getxPathExpression() == null) {
             try {
@@ -104,6 +116,18 @@ public class SolrField implements ISolrField {
         return processField(doc);
     }
 
+    /**
+     * Process incoming xml doc object for the data value this SolrField instance is
+     * configured to derive.  Return a list of SolrElementFields containing the search
+     * index field name and the data mined from the xml doc.
+     * 
+     * @param doc
+     * @return
+     * @throws XPathExpressionException
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     */
     public List<SolrElementField> processField(Document doc) throws XPathExpressionException,
             IOException, SAXException, ParserConfigurationException {
         List<SolrElementField> fields = new ArrayList<SolrElementField>();
@@ -125,11 +149,17 @@ public class SolrField implements ISolrField {
                             for (int j = 0; j < inlineValues.length; j++) {
                                 String inlineValue = inlineValues[j];
                                 if (inlineValue.equals(this.valueSeparator) == false) {
-                                    processValue(fields, usedValues, inlineValue);
+                                    nodeValue = processNodeValue(nodeValue, usedValues);
+                                    if (StringUtils.isNotEmpty(nodeValue)) {
+                                        fields.add(new SolrElementField(name, nodeValue));
+                                    }
                                 }
                             }
                         } else {
-                            processValue(fields, usedValues, nodeValue);
+                            nodeValue = processNodeValue(nodeValue, usedValues);
+                            if (StringUtils.isNotEmpty(nodeValue)) {
+                                fields.add(new SolrElementField(name, nodeValue));
+                            }
                         }
                     }
                 }
@@ -145,34 +175,16 @@ public class SolrField implements ISolrField {
                         }
                         Node nText = nodeSet.item(i);
                         String nodeValue = nText.getNodeValue();
-                        if (nodeValue != null) {
-                            nodeValue = nodeValue.trim();
-                            if (this.converter != null) {
-                                nodeValue = this.converter.convert(nodeValue);
-                            }
-                            if (this.escapeXML) {
-                                nodeValue = StringEscapeUtils.escapeXml(nodeValue);
-                            }
-                            if (!dedupe || (dedupe && !usedValues.contains(nodeValue))) {
-                                if (allowedValue(value)) {
-                                    sb.append(nodeValue);
-                                    usedValues.add(nodeValue);
-                                }
-                            }
+                        nodeValue = processNodeValue(nodeValue, usedValues);
+                        if (StringUtils.isNotEmpty(nodeValue)) {
+                            sb.append(nodeValue);
                         }
                     }
                     value = sb.toString().trim();
                 } else {
-                    value = (String) xPathExpression.evaluate(doc, XPathConstants.STRING);
-                    if (value != null) {
-                        value = value.trim();
-                    }
-                    if (converter != null) {
-                        value = converter.convert(value);
-                    }
-                    if (escapeXML) {
-                        value = StringEscapeUtils.escapeXml(value);
-                    }
+                    String nodeValue = (String) xPathExpression
+                            .evaluate(doc, XPathConstants.STRING);
+                    value = processNodeValue(nodeValue, usedValues);
                 }
                 if (StringUtils.isNotEmpty(value) && allowedValue(value)) {
                     fields.add(new SolrElementField(name, value));
@@ -184,9 +196,18 @@ public class SolrField implements ISolrField {
         return fields;
     }
 
-    private void processValue(List<SolrElementField> fields, Set<String> usedValues,
-            String nodeValue) {
+    protected String processNodeValue(String nodeValue, Set<String> usedValues) {
+        String finalValue = null;
         if (StringUtils.isNotEmpty(nodeValue)) {
+            if (StringUtils.isNotEmpty(this.splitOnString)
+                    && nodeValue.contains(this.splitOnString)) {
+                if (this.substringAfter) {
+                    nodeValue = StringUtils.substringAfter(nodeValue, this.splitOnString);
+                }
+                if (this.substringBefore) {
+                    nodeValue = StringUtils.substringBefore(nodeValue, this.splitOnString);
+                }
+            }
             nodeValue = nodeValue.trim();
             if (this.converter != null) {
                 nodeValue = this.converter.convert(nodeValue);
@@ -195,12 +216,13 @@ public class SolrField implements ISolrField {
                 nodeValue = StringEscapeUtils.escapeXml(nodeValue);
             }
             if (!dedupe || (dedupe & !usedValues.contains(nodeValue))) {
-                if (allowedValue(nodeValue)) {
-                    fields.add(new SolrElementField(name, nodeValue));
-                    usedValues.add(nodeValue);
+                if (StringUtils.isNotEmpty(nodeValue) && allowedValue(nodeValue)) {
+                    finalValue = nodeValue;
+                    usedValues.add(finalValue);
                 }
             }
         }
+        return finalValue;
     }
 
     protected boolean allowedValue(String value) {
@@ -230,10 +252,20 @@ public class SolrField implements ISolrField {
         this.combineNodes = combineNodes;
     }
 
+    /**
+     * Controls whether duplicate values be removed from final field value.
+     * 
+     * @param dedupe
+     */
     public void setDedupe(boolean dedupe) {
         this.dedupe = dedupe;
     }
 
+    /**
+     * Controls whether there are values which should be disallowed - removed from field value.
+     * 
+     * @param disallowed
+     */
     public void setDisallowedValues(List<String> disallowed) {
         this.disallowedValues = disallowed;
     }
@@ -242,6 +274,11 @@ public class SolrField implements ISolrField {
         return this.disallowedValues;
     }
 
+    /**
+     * Delimiter character between values mined from source xml document.
+     * 
+     * @param valueSeparator
+     */
     public void setValueSeparator(String valueSeparator) {
         this.valueSeparator = valueSeparator;
     }
@@ -262,6 +299,11 @@ public class SolrField implements ISolrField {
         return name;
     }
 
+    /**
+     * The name of the search index field this SolrField instance is generating.
+     * 
+     * @param name
+     */
     public void setName(String name) {
         this.name = name;
     }
@@ -270,6 +312,12 @@ public class SolrField implements ISolrField {
         return xpath;
     }
 
+    /**
+     * A string representing an xPath selector rule used to derive search index field values
+     * from incoming xml documents.
+     * 
+     * @param xpath
+     */
     public void setXpath(String xpath) {
         this.xpath = xpath;
     }
@@ -278,6 +326,12 @@ public class SolrField implements ISolrField {
         return multivalue;
     }
 
+    /**
+     * Controls whether the search index field this instance of SolrField is generating is defined
+     * as accepting multiple values (a collection of values).
+     * 
+     * @param multivalue
+     */
     public void setMultivalue(boolean multivalue) {
         this.multivalue = multivalue;
     }
@@ -296,5 +350,29 @@ public class SolrField implements ISolrField {
 
     public void setEscapeXML(boolean escapeXML) {
         this.escapeXML = escapeXML;
+    }
+
+    public String getSplitOnString() {
+        return splitOnString;
+    }
+
+    public void setSplitOnString(String splitOnString) {
+        this.splitOnString = splitOnString;
+    }
+
+    public boolean isSubstringBefore() {
+        return substringBefore;
+    }
+
+    public void setSubstringBefore(boolean substringBefore) {
+        this.substringBefore = substringBefore;
+    }
+
+    public boolean isSubstringAfter() {
+        return substringAfter;
+    }
+
+    public void setSubstringAfter(boolean substringAfter) {
+        this.substringAfter = substringAfter;
     }
 }
