@@ -27,8 +27,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.dataone.service.util.DateTimeMarshaller;
-
 /**Converts date to solr consumable format.
  * User: Porter
  * Date: 7/26/11
@@ -53,11 +51,15 @@ public class SolrDateConverter implements IConverter{
         if(data == null || data.equals("")){
             return "";
         }
-        Date dateTime = DateTimeMarshaller.deserializeDateToUTC(data);
-        SimpleDateFormat sdf = new SimpleDateFormat(OUTPUT_DATE_FORMAT);
-        sdf.setTimeZone(OUTPUT_TIMEZONE);
-        String outputDateFormat = sdf.format(dateTime);
-
+        //Date dateTime = DateTimeMarshaller.deserializeDateToUTC(data);
+        String outputDateFormat = "";
+        try {
+            Date dateTime = javax.xml.bind.DatatypeConverter.parseDate(data).getTime();
+            SimpleDateFormat sdf = new SimpleDateFormat(OUTPUT_DATE_FORMAT);
+            sdf.setTimeZone(OUTPUT_TIMEZONE);
+            outputDateFormat = sdf.format(dateTime);
+        } catch (IllegalArgumentException iae) {
+        }
         return outputDateFormat;
     }
 
