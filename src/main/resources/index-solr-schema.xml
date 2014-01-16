@@ -354,6 +354,16 @@ both match, the first appearing in the schema will be used.  -->
         <dynamicField name="*_f" type="sfloat" indexed="true" stored="true"/>
         <dynamicField name="*_d" type="sdouble" indexed="true" stored="true"/>
         <dynamicField name="*_dt" type="date" indexed="true" stored="true"/>
+        
+        <!-- allow multivalued dynamic fields as well -->
+        <dynamicField name="*_im" type="sint" indexed="true" stored="true" multiValued="true"/>
+        <dynamicField name="*_sm" type="string" indexed="true" stored="true" multiValued="true"/>
+        <dynamicField name="*_lm" type="slong" indexed="true" stored="true" multiValued="true"/>
+        <dynamicField name="*_tm" type="text" indexed="true" stored="true" multiValued="true"/>
+        <dynamicField name="*_bm" type="boolean" indexed="true" stored="true" multiValued="true"/>
+        <dynamicField name="*_fm" type="sfloat" indexed="true" stored="true" multiValued="true"/>
+        <dynamicField name="*_dm" type="sdouble" indexed="true" stored="true" multiValued="true"/>
+        <dynamicField name="*_dtm" type="date" indexed="true" stored="true" multiValued="true"/>
     </fields>
 
 <!-- ======================================================================= -->
