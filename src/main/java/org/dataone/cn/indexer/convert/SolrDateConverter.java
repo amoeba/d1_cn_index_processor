@@ -36,9 +36,11 @@ import java.util.TimeZone;
 public class SolrDateConverter implements IConverter{
 
     private static TimeZone OUTPUT_TIMEZONE = TimeZone.getTimeZone("Zulu");
-
+    
     protected static final String OUTPUT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
+    protected boolean assumeDate = false;
+    
     /**Converts date to solr consumable format.
      *
      * All date times are converted to Zulu time zone with Millisecond accuracy.
@@ -52,6 +54,21 @@ public class SolrDateConverter implements IConverter{
             return "";
         }
         //Date dateTime = DateTimeMarshaller.deserializeDateToUTC(data);
+        
+        // instead of far-in-the-future, assume years <=9999 when values slip in by being xsd:gYear valid
+        if (assumeDate) {
+	        if (!data.contains("-")) {
+	        	if (data.length() == 6) {
+		        	//turn CCYYMM into CCYY-MM
+		        	data = data.substring(0,4) + "-" + data.substring(4);
+	        	} 
+	        	if (data.length() == 8) {
+		        	//turn CCYYMMDD into CCYY-MM-DD
+		        	data = data.substring(0,4) + "-" + data.substring(4,6) + "-" + data.substring(6);
+	        	}
+	        }
+        }
+        
         String outputDateFormat = "";
         try {
             Date dateTime = javax.xml.bind.DatatypeConverter.parseDate(data).getTime();
@@ -63,7 +80,15 @@ public class SolrDateConverter implements IConverter{
         return outputDateFormat;
     }
 
-    public static Date ParseSolrDate(String date) {
+    public boolean isAssumeDate() {
+		return assumeDate;
+	}
+
+	public void setAssumeDate(boolean assumeDate) {
+		this.assumeDate = assumeDate;
+	}
+
+	public static Date ParseSolrDate(String date) {
         Date outputDate = null;
         try {
             SimpleDateFormat sdf = new SimpleDateFormat(OUTPUT_DATE_FORMAT);
