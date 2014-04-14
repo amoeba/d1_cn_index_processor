@@ -72,10 +72,10 @@ public class GeohashConverter implements IConverter {
 			geohashLong = Double.parseDouble(coords[1]);
 		} else if (coords.length == 4) {
 			// Input string is west, south, east, north
-			double westCoord = Double.parseDouble(coords[0]);
+			double northCoord = Double.parseDouble(coords[0]);
 			double southCoord = Double.parseDouble(coords[1]);
 			double eastCoord = Double.parseDouble(coords[2]);
-			double northCoord = Double.parseDouble(coords[3]);
+			double westCoord = Double.parseDouble(coords[3]);
 
 			// In some cases the the lat and long values for the bounding coords
 			// can
@@ -102,12 +102,13 @@ public class GeohashConverter implements IConverter {
 
 		try {
 			geohash = GeoHash.withCharacterPrecision(geohashLat, geohashLong,
-					length).toString();
+					length).toBase32();
 		} catch (IllegalArgumentException iae) {
 			return null;
 		}
 
-		return geohash.substring(0, length - 1);
+		return geohash;
+
 	}
 
 	// public String[] getLatLongMidpoint(double lat1, double lon1, double lat2,
