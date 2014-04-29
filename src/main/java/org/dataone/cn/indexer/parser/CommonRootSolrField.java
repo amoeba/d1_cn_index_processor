@@ -64,15 +64,14 @@ public class CommonRootSolrField extends SolrField {
         if (root != null) {
             List<String> resultValues = root.getRootValues(doc, isMultivalue());
             for (String value : resultValues) {
+                if (orProcessor != null) {
+                    value = orProcessor.process(value);
+                }
                 if (getConverter() != null) {
                     value = getConverter().convert(value);
                 }
                 if (isEscapeXML()) {
                     value = StringEscapeUtils.escapeXml(value);
-                }
-
-                if (orProcessor != null) {
-                    value = orProcessor.process(value);
                 }
                 if (value != null && !value.isEmpty()) {
                     fields.add(new SolrElementField(this.name, value));
