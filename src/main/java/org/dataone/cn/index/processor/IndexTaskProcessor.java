@@ -43,6 +43,7 @@ import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.ObjectFormat;
 import org.dataone.service.types.v1.ObjectFormatIdentifier;
 import org.dataone.service.types.v1.SystemMetadata;
+import org.dspace.foresite.OREParserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.w3c.dom.Document;
@@ -183,6 +184,10 @@ public class IndexTaskProcessor {
                             + ".  Marking new and continuing...");
                     ready = false;
                 }
+            } catch (OREParserException oreException) {
+                ready = false;
+                logger.error("Unable to parse ORE doc: " + task.getPid()
+                        + ".  Unrecoverable parse error: task will not be re-tried.");
             } catch (Exception e) {
                 ready = false;
                 logger.error("unable to load resource for pid: " + task.getPid()

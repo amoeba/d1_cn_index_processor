@@ -23,6 +23,7 @@
 package org.dataone.cn.indexer.parser;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import java.util.Map;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.codec.EncoderException;
+import org.apache.log4j.Logger;
 import org.dataone.cn.indexer.resourcemap.ResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMapFactory;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
@@ -38,31 +40,41 @@ import org.dspace.foresite.OREParserException;
 import org.w3c.dom.Document;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Porter
- * Date: 9/26/11
- * Time: 3:51 PM
- */
-
-/**
+ * Resource Map Document processor.  Operates on ORE/RDF objects.  Maps 
+ * 'documents', 'documentedBy', and 'aggregates' relationships.
+ * 
+ * Uses org.dataone.cn.indexer.resourcemap.ResourceMap to update individual
+ * SolrDoc objects with values for 'documents', 'documentedBy', and 'resourceMap'
+ * (aggregates) fields.
+ * 
  * Updates entries for related documents in index. For document relational
  * information refer to
  * http://mule1.dataone.org/ArchitectureDocs-current/design/
  * SearchMetadata.html#id4
  * 
+ * User: Porter
+ * Date: 9/26/11
+ * Time: 3:51 PM
  */
 public class ResourceMapSubprocessor extends AbstractDocumentSubprocessor implements
         IDocumentSubprocessor {
+
+    private static Logger logger = Logger.getLogger(ResourceMapSubprocessor.class.getName());
 
     private HTTPService httpService = null;
     private String solrQueryUri = null;
 
     @Override
     public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs,
-            Document doc) throws XPathExpressionException, OREParserException, IOException,
-            EncoderException {
+            Document doc) throws XPathExpressionException, IOException, EncoderException {
         SolrDoc resourceMapDoc = docs.get(identifier);
-        List<SolrDoc> processedDocs = processResourceMap(resourceMapDoc, doc);
+        List<SolrDoc> processedDocs = new ArrayList<SolrDoc>();
+        try {
+            processedDocs = processResourceMap(resourceMapDoc, doc);
+        } catch (OREParserException oreException) {
+            logger.error("Unable to parse resource map: " + identifier
+                    + ".  Unrecoverable parse exception:  task will not be re-tried.");
+        }
         Map<String, SolrDoc> processedDocsMap = new HashMap<String, SolrDoc>();
         for (SolrDoc processedDoc : processedDocs) {
             processedDocsMap.put(processedDoc.getIdentifier(), processedDoc);

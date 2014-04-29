@@ -46,6 +46,7 @@ import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.configuration.Settings;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.SystemMetadata;
+import org.dspace.foresite.OREParserException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.hazelcast.core.HazelcastInstance;
@@ -90,8 +91,15 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
     }
 
     private void removeDataPackage(IndexTask task) throws Exception {
-
-        ResourceMap resourceMap = ResourceMapFactory.buildResourceMap(task.getObjectPath());
+        ResourceMap resourceMap = null;
+        try {
+            resourceMap = ResourceMapFactory.buildResourceMap(task.getObjectPath());
+        } catch (OREParserException oreException) {
+            logger.warn("Unable to parse ORE document in IndexTask Delete processing for pid: "
+                    + task.getPid()
+                    + ".  Nothing will be deleted.  Unrecoverable error: task will not be re-tried.");
+            return;
+        }
         List<String> documentIds = resourceMap.getAllDocumentIDs();
         List<SolrDoc> indexDocuments = httpService.getDocuments(solrQueryUri, documentIds);
         removeFromIndex(task);
