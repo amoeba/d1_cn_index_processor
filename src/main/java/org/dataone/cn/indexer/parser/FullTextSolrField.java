@@ -40,6 +40,8 @@ public class FullTextSolrField extends SolrField {
             if (field != null) {
                 field.setValue(field.getValue().concat(" " + identifier));
             }
+        } else {
+            fields.add(new SolrElementField(name, identifier));
         }
         return fields;
     }
