@@ -31,6 +31,36 @@
 		<property name="dedupe" value="true"/>
 	</bean>	
 
+	<!-- define the root and leafs for accessing multiple bounding coordinates for geohash -->
+	<bean id="fgdc.geohashRoot" class="org.dataone.cn.indexer.parser.utility.RootElement"
+		p:name="geohashRoot"
+		p:xPath="//metadata/idinfo/spdom/bounding"
+		p:template="[northBoundingCoordinate] [southBoundingCoordinate] [eastBoundingCoordinate] [westBoundingCoordinate]">
+		<property name="leafs">
+			<list>
+				<ref bean="fgdc.northBoundCoordLeaf"/>
+				<ref bean="fgdc.southBoundCoordLeaf"/>
+				<ref bean="fgdc.eastBoundCoordLeaf"/>
+				<ref bean="fgdc.westBoundCoordLeaf"/>
+			</list>
+		</property>
+	</bean>
+		<bean id="fgdc.northBoundCoordLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+		p:name="northBoundingCoordinate"
+		p:xPath="northbc/text()" />
+		
+	<bean id="fgdc.westBoundCoordLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+		p:name="westBoundingCoordinate"
+		p:xPath="westbc/text()" />
+	
+	<bean id="fgdc.southBoundCoordLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+		p:name="southBoundingCoordinate"
+		p:xPath="southbc/text()" />		
+		
+	<bean id="fgdc.eastBoundCoordLeaf" class="org.dataone.cn.indexer.parser.utility.LeafElement"
+		p:name="eastBoundingCoordinate"
+		p:xPath="eastbc/text()" />
+
 	<bean id="fgdc.eastBoundCoord" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="eastBoundCoord" />
 		<constructor-arg name="xpath"
@@ -63,6 +93,70 @@
 		<property name="converter" ref="solrLongitudeConverter" />
 	</bean>		
 	
+		<!-- use the root to calculate different geohash lengths -->
+	<bean id="fgdc.geohash1" class="org.dataone.cn.indexer.parser.CommonRootSolrField"
+		p:multivalue="false"
+		p:root-ref="fgdc.geohashRoot">
+		<constructor-arg name="name" value="geohash_1" />
+		<property name="converter" ref="geohashConverter_1"/>
+	</bean>
+	
+	<bean id="fgdc.geohash2" class="org.dataone.cn.indexer.parser.CommonRootSolrField"
+		p:multivalue="false"
+		p:root-ref="fgdc.geohashRoot">
+		<constructor-arg name="name" value="geohash_2" />
+		<property name="converter" ref="geohashConverter_2"/>
+	</bean>
+	
+		<bean id="fgdc.geohash3" class="org.dataone.cn.indexer.parser.CommonRootSolrField"
+		p:multivalue="false"
+		p:root-ref="fgdc.geohashRoot">
+		<constructor-arg name="name" value="geohash_3" />
+		<property name="converter" ref="geohashConverter_3"/>
+	</bean>
+	
+		<bean id="fgdc.geohash4" class="org.dataone.cn.indexer.parser.CommonRootSolrField"
+		p:multivalue="false"
+		p:root-ref="fgdc.geohashRoot">
+		<constructor-arg name="name" value="geohash_4" />
+		<property name="converter" ref="geohashConverter_4"/>
+	</bean>
+	
+		<bean id="fgdc.geohash5" class="org.dataone.cn.indexer.parser.CommonRootSolrField"
+		p:multivalue="false"
+		p:root-ref="fgdc.geohashRoot">
+		<constructor-arg name="name" value="geohash_5" />
+		<property name="converter" ref="geohashConverter_5"/>
+	</bean>
+	
+		<bean id="fgdc.geohash6" class="org.dataone.cn.indexer.parser.CommonRootSolrField"
+		p:multivalue="false"
+		p:root-ref="fgdc.geohashRoot">
+		<constructor-arg name="name" value="geohash_6" />
+		<property name="converter" ref="geohashConverter_6"/>
+	</bean>
+	
+		<bean id="fgdc.geohash7" class="org.dataone.cn.indexer.parser.CommonRootSolrField"
+		p:multivalue="false"
+		p:root-ref="fgdc.geohashRoot">
+		<constructor-arg name="name" value="geohash_7" />
+		<property name="converter" ref="geohashConverter_7"/>
+	</bean>
+	
+		<bean id="fgdc.geohash8" class="org.dataone.cn.indexer.parser.CommonRootSolrField"
+		p:multivalue="false"
+		p:root-ref="fgdc.geohashRoot">
+		<constructor-arg name="name" value="geohash_8" />
+		<property name="converter" ref="geohashConverter_8"/>
+	</bean>
+	
+		<bean id="fgdc.geohash9" class="org.dataone.cn.indexer.parser.CommonRootSolrField"
+		p:multivalue="false"
+		p:root-ref="fgdc.geohashRoot">
+		<constructor-arg name="name" value="geohash_9" />
+		<property name="converter" ref="geohashConverter_9"/>
+	</bean>
+
 	<bean id="fgdc.edition" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="edition" />
 		<constructor-arg name="xpath" value='//metadata/idinfo/citeinfo/edition/text()' />

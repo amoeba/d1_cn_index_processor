@@ -47,6 +47,15 @@
 	    <ref bean="fgdc.attributeDescription" />
 	    <ref bean="fgdc.attributeUnit" />
 	    <ref bean="fgdc.attributeText" />
+	  <ref bean="fgdc.geohash1" />
+    <ref bean="fgdc.geohash2" />
+    <ref bean="fgdc.geohash3" />
+    <ref bean="fgdc.geohash4" />
+    <ref bean="fgdc.geohash5" />
+    <ref bean="fgdc.geohash6" />
+    <ref bean="fgdc.geohash7" />
+    <ref bean="fgdc.geohash8" />
+    <ref bean="fgdc.geohash9" /> 
    </list>
   </property>
  </bean>

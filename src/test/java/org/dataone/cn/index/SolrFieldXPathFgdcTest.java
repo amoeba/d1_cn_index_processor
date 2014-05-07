@@ -90,6 +90,15 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         csiroExpected.put("westBoundCoord", "141.5");
         csiroExpected.put("southBoundCoord", "-13.0");
         csiroExpected.put("northBoundCoord", "-12.5");
+        csiroExpected.put("geohash_1",  "r");
+        csiroExpected.put("geohash_2",  "rj");
+        csiroExpected.put("geohash_3",  "rjs");
+        csiroExpected.put("geohash_4",  "rjsz");
+        csiroExpected.put("geohash_5",  "rjsz3");
+        csiroExpected.put("geohash_6",  "rjsz3w");
+        csiroExpected.put("geohash_7",  "rjsz3wg");
+        csiroExpected.put("geohash_8",  "rjsz3wgj");
+        csiroExpected.put("geohash_9",  "rjsz3wgjy");
         csiroExpected.put("edition", "");
         csiroExpected.put("endDate", dateConverter.convert("19920401"));
         csiroExpected.put("gcmdKeyword", "");
@@ -183,6 +192,15 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         fgdcNasaExpected.put("westBoundCoord", "-68.0");
         fgdcNasaExpected.put("southBoundCoord", "45.0");
         fgdcNasaExpected.put("northBoundCoord", "45.0");
+        fgdcNasaExpected.put("geohash_1",  "f");
+        fgdcNasaExpected.put("geohash_2",  "f2");
+        fgdcNasaExpected.put("geohash_3",  "f2p");
+        fgdcNasaExpected.put("geohash_4",  "f2p8");
+        fgdcNasaExpected.put("geohash_5",  "f2p8h");
+        fgdcNasaExpected.put("geohash_6",  "f2p8h8");
+        fgdcNasaExpected.put("geohash_7",  "f2p8h85");
+        fgdcNasaExpected.put("geohash_8",  "f2p8h85b");
+        fgdcNasaExpected.put("geohash_9",  "f2p8h85bj");
         fgdcNasaExpected.put("edition", "");
         fgdcNasaExpected.put("endDate", dateConverter.convert("19931231"));
         fgdcNasaExpected
@@ -296,6 +314,15 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         esriExpected.put("westBoundCoord", "29.92057");
         esriExpected.put("southBoundCoord", "-25.064201");
         esriExpected.put("northBoundCoord", "-23.726981");
+        esriExpected.put("geohash_1",  "k");
+        esriExpected.put("geohash_2",  "ke");
+        esriExpected.put("geohash_3",  "kew");
+        esriExpected.put("geohash_4",  "kewj");
+        esriExpected.put("geohash_5",  "kewj0");
+        esriExpected.put("geohash_6",  "kewj0y");
+        esriExpected.put("geohash_7",  "kewj0yz");
+        esriExpected.put("geohash_8",  "kewj0yzt");
+        esriExpected.put("geohash_9",  "kewj0yzt6");
         esriExpected.put("edition", "");
         esriExpected.put("endDate", "");
         esriExpected.put("gcmdKeyword", "");
