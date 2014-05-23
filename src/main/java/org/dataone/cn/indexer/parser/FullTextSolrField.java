@@ -45,9 +45,13 @@ public class FullTextSolrField extends SolrField {
     @Override
     public List<SolrElementField> getFields(Document doc, String identifier) throws Exception {
         List<SolrElementField> fields = super.getFields(doc, identifier);
-        SolrElementField field = fields.get(0);
-        if (field != null) {
-            field.setValue(field.getValue().concat(" " + identifier));
+        if (fields.size() > 0) {
+            SolrElementField field = fields.get(0);
+            if (field != null) {
+                field.setValue(field.getValue().concat(" " + identifier));
+            }
+        } else {
+            fields.add(new SolrElementField(name, identifier));
         }
         return fields;
     }

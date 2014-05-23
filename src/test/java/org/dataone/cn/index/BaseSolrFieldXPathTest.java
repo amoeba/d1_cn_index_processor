@@ -129,7 +129,7 @@ public abstract class BaseSolrFieldXPathTest {
                 } else {
                     System.out
                             .println("Expected does not contain field for: " + docField.getName());
-                    Assert.fail("Expectd does not contain value for field: " + docField.getName());
+                    Assert.fail("Expected does not contain value for field: " + docField.getName());
                 }
             }
         } else {
