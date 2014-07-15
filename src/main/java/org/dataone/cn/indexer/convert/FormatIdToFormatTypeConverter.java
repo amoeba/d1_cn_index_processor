@@ -1,6 +1,6 @@
 package org.dataone.cn.indexer.convert;
 
-import org.dataone.client.ObjectFormatCache;
+import org.dataone.client.formats.ObjectFormatCache;
 import org.dataone.service.exceptions.BaseException;
 import org.dataone.service.types.v1.ObjectFormat;
 import org.dataone.service.types.v1.ObjectFormatIdentifier;
