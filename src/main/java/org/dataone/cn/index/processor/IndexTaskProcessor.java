@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.dataone.client.formats.ObjectFormatCache;
+import org.dataone.client.ObjectFormatCache;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.index.task.IndexTaskRepository;
