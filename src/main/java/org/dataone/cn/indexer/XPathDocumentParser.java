@@ -179,7 +179,7 @@ public class XPathDocumentParser {
                             docs = subprocessor.processDocument(id, docs, docObject);
                         }
                     } catch (Exception e) {
-                        log.error(e.getStackTrace().toString());
+                        log.error(e.getMessage());
                     }
                 }
             }
