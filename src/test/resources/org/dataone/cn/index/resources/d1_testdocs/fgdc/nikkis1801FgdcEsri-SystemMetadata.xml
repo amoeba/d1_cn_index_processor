@@ -1,4 +1,4 @@
-<d1:systemMetadata xmlns:d1="http://ns.dataone.org/service/types/v1">
+<d1:systemMetadata xmlns:d1="http://ns.dataone.org/service/types/v2.0">
 	<serialVersion>1</serialVersion>
 	<identifier>nikkis.180.1</identifier>
 	<formatId>http://www.esri.com/metadata/esriprof80.dtd</formatId>

@@ -86,8 +86,8 @@
    <list>
     <bean class="org.dataone.cn.indexer.XMLNamespace">
      <constructor-arg name="namespace"
-      value="http://ns.dataone.org/service/types/v1" />
-     <constructor-arg name="prefix" value="d100" />
+      value="http://ns.dataone.org/service/types/v2.0" />
+     <constructor-arg name="prefix" value="d200" />
     </bean>
     <bean class="org.dataone.cn.indexer.XMLNamespace">
      <constructor-arg name="namespace"

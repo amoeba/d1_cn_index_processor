@@ -5,7 +5,7 @@
 	<bean id="dryad30Subprocessor"
 	  	class="org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor">
 		<property name="matchDocument"
-	   		value="/d100:systemMetadata/formatId[text() = 'http://purl.org/dryad/terms/']"></property>
+	   		value="/d200:systemMetadata/formatId[text() = 'http://purl.org/dryad/terms/']"></property>
 	  	<property name="fieldList">
 		   	<list>
 		    	<ref bean="dryad.abstract" />

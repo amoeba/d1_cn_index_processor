@@ -34,7 +34,7 @@ import org.dataone.cn.index.task.IndexTaskRepository;
 import org.dataone.cn.indexer.XPathDocumentParser;
 import org.dataone.configuration.Settings;
 import org.dataone.service.types.v1.Identifier;
-import org.dataone.service.types.v1.SystemMetadata;
+import org.dataone.service.types.v2.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.xml.sax.SAXParseException;

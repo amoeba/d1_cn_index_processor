@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<d1:systemMetadata xsi:schemaLocation="http://ns.dataone.org/service/types/v1 http://ns.dataone.org/service/types/v1" xmlns:d1="http://ns.dataone.org/service/types/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<d1:systemMetadata xsi:schemaLocation="http://ns.dataone.org/service/types/v2.0 http://ns.dataone.org/service/types/v2.0" xmlns:d1="http://ns.dataone.org/service/types/v2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <serialVersion>1</serialVersion>
   <identifier>http:/dx.doi.org/10.5061/dryad.m4h77/1</identifier>
   <formatId>http://datadryad.org/profile/v3.1</formatId>

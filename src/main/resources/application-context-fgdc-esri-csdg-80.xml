@@ -5,7 +5,7 @@
  <bean id="fgdcEsri80Subprocessor"
   class="org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor">
   <property name="matchDocument"
-   value="/d100:systemMetadata/formatId[text() = 'http://www.esri.com/metadata/esriprof80.dtd']"></property>
+   value="/d200:systemMetadata/formatId[text() = 'http://www.esri.com/metadata/esriprof80.dtd']"></property>
   <property name="fieldList">
    <list>
 	    <ref bean="fgdc.abstract" />
