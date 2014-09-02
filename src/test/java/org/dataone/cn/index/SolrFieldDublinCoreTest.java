@@ -69,7 +69,7 @@ public class SolrFieldDublinCoreTest extends BaseSolrFieldXPathTest {
 
         qdcExpected.put("beginDate", dateConverter.convert("1981"));
         qdcExpected.put("endDate", dateConverter.convert("1981"));
-        qdcExpected.put("pubDate", "2014-08-22T06:00:00.000Z");
+        qdcExpected.put("pubDate", dateConverter.convert("2014-08-22"));
         qdcExpected.put("author", "Minnesota Population Center");
         qdcExpected.put("authorSurName", "Minnesota Population Center");
         qdcExpected.put("authorSurNameSort", "Minnesota Population Center");
