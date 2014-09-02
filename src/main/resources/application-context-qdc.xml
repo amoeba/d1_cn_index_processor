@@ -5,7 +5,7 @@
 	<bean id="qualifiedDublicCoreSubprocessor"
 	  	class="org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor">
 		<property name="matchDocument"
-	   		value="/d100:systemMetadata/formatId[text() = 'http://dublincore.org/schemas/xmls/qdc/2008/02/11/qualifieddc.xsd']"></property>
+	   		value="/d200:systemMetadata/formatId[text() = 'http://dublincore.org/schemas/xmls/qdc/2008/02/11/qualifieddc.xsd']"></property>
 	  	<property name="fieldList">
 		   	<list>
 		    	<ref bean="dc.abstract" />
