@@ -59,10 +59,19 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
     private Resource fgdcEsriSciMeta;
 
     @Autowired
+    private Resource ornl_mercury_science_metadata;
+
+    @Autowired
+    private Resource ornl_mercury_system_metadata;
+
+    @Autowired
     private ScienceMetadataDocumentSubprocessor fgdcstd00111999Subprocessor;
 
     @Autowired
     private ScienceMetadataDocumentSubprocessor fgdcEsri80Subprocessor;
+
+    @Autowired
+    private ScienceMetadataDocumentSubprocessor ornlMercury10Subprocessor;
 
     private IConverter dateConverter = new FgdcDateConverter();
     private IConverter solrDateConverter = new SolrDateConverter();
@@ -72,10 +81,12 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
     private HashMap<String, String> csiroExpected = new HashMap<String, String>();
     private HashMap<String, String> fgdcNasaExpected = new HashMap<String, String>();
     private HashMap<String, String> esriExpected = new HashMap<String, String>();
+    private HashMap<String, String> ornlMercuryExpected = new HashMap<String, String>();
 
     private String csiro_pid = "www.nbii.gov_metadata_mdata_CSIRO_csiro_d_abayadultprawns";
     private String nasa_pid = "www.nbii.gov_metadata_mdata_NASA_nasa_d_FEDGPS1293";
     private String esri_pid = "nikkis.180.1";
+    private String ornl_mercury_pid = "Map_ORR_Aspect_2m_1993.xml";
 
     @Before
     public void setUp() throws Exception {
@@ -90,15 +101,15 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         csiroExpected.put("westBoundCoord", "141.5");
         csiroExpected.put("southBoundCoord", "-13.0");
         csiroExpected.put("northBoundCoord", "-12.5");
-        csiroExpected.put("geohash_1",  "r");
-        csiroExpected.put("geohash_2",  "rj");
-        csiroExpected.put("geohash_3",  "rjs");
-        csiroExpected.put("geohash_4",  "rjsz");
-        csiroExpected.put("geohash_5",  "rjsz3");
-        csiroExpected.put("geohash_6",  "rjsz3w");
-        csiroExpected.put("geohash_7",  "rjsz3wg");
-        csiroExpected.put("geohash_8",  "rjsz3wgj");
-        csiroExpected.put("geohash_9",  "rjsz3wgjy");
+        csiroExpected.put("geohash_1", "r");
+        csiroExpected.put("geohash_2", "rj");
+        csiroExpected.put("geohash_3", "rjs");
+        csiroExpected.put("geohash_4", "rjsz");
+        csiroExpected.put("geohash_5", "rjsz3");
+        csiroExpected.put("geohash_6", "rjsz3w");
+        csiroExpected.put("geohash_7", "rjsz3wg");
+        csiroExpected.put("geohash_8", "rjsz3wgj");
+        csiroExpected.put("geohash_9", "rjsz3wgjy");
         csiroExpected.put("edition", "");
         csiroExpected.put("endDate", dateConverter.convert("19920401"));
         csiroExpected.put("gcmdKeyword", "");
@@ -192,15 +203,15 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         fgdcNasaExpected.put("westBoundCoord", "-68.0");
         fgdcNasaExpected.put("southBoundCoord", "45.0");
         fgdcNasaExpected.put("northBoundCoord", "45.0");
-        fgdcNasaExpected.put("geohash_1",  "f");
-        fgdcNasaExpected.put("geohash_2",  "f2");
-        fgdcNasaExpected.put("geohash_3",  "f2p");
-        fgdcNasaExpected.put("geohash_4",  "f2p8");
-        fgdcNasaExpected.put("geohash_5",  "f2p8h");
-        fgdcNasaExpected.put("geohash_6",  "f2p8h8");
-        fgdcNasaExpected.put("geohash_7",  "f2p8h85");
-        fgdcNasaExpected.put("geohash_8",  "f2p8h85b");
-        fgdcNasaExpected.put("geohash_9",  "f2p8h85bj");
+        fgdcNasaExpected.put("geohash_1", "f");
+        fgdcNasaExpected.put("geohash_2", "f2");
+        fgdcNasaExpected.put("geohash_3", "f2p");
+        fgdcNasaExpected.put("geohash_4", "f2p8");
+        fgdcNasaExpected.put("geohash_5", "f2p8h");
+        fgdcNasaExpected.put("geohash_6", "f2p8h8");
+        fgdcNasaExpected.put("geohash_7", "f2p8h85");
+        fgdcNasaExpected.put("geohash_8", "f2p8h85b");
+        fgdcNasaExpected.put("geohash_9", "f2p8h85bj");
         fgdcNasaExpected.put("edition", "");
         fgdcNasaExpected.put("endDate", dateConverter.convert("19931231"));
         fgdcNasaExpected
@@ -314,15 +325,15 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         esriExpected.put("westBoundCoord", "29.92057");
         esriExpected.put("southBoundCoord", "-25.064201");
         esriExpected.put("northBoundCoord", "-23.726981");
-        esriExpected.put("geohash_1",  "k");
-        esriExpected.put("geohash_2",  "ke");
-        esriExpected.put("geohash_3",  "kew");
-        esriExpected.put("geohash_4",  "kewj");
-        esriExpected.put("geohash_5",  "kewj0");
-        esriExpected.put("geohash_6",  "kewj0y");
-        esriExpected.put("geohash_7",  "kewj0yz");
-        esriExpected.put("geohash_8",  "kewj0yzt");
-        esriExpected.put("geohash_9",  "kewj0yzt6");
+        esriExpected.put("geohash_1", "k");
+        esriExpected.put("geohash_2", "ke");
+        esriExpected.put("geohash_3", "kew");
+        esriExpected.put("geohash_4", "kewj");
+        esriExpected.put("geohash_5", "kewj0");
+        esriExpected.put("geohash_6", "kewj0y");
+        esriExpected.put("geohash_7", "kewj0yz");
+        esriExpected.put("geohash_8", "kewj0yzt");
+        esriExpected.put("geohash_9", "kewj0yzt6");
         esriExpected.put("edition", "");
         esriExpected.put("endDate", "");
         esriExpected.put("gcmdKeyword", "");
@@ -392,6 +403,100 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         esriExpected.put("changePermission", "");
         esriExpected.put("isPublic", "true");
         esriExpected.put("dataUrl", "https://" + hostname + "/cn/v1/resolve/" + esri_pid);
+
+        // ornl-mercury
+        ornlMercuryExpected
+                .put("abstract",
+                        "This raster map the Oak Ridge Reservation identifies the aspect or the steepest down-slope direction from each cell to its neighbors.  The aspect map was created from the Digital Elevation Model (DEM) produced by Melanie Harris (Qsystems).  She created the DEM from a Digital Terrain Model (DTM) created from aerial photography taken during leaf-off in April of 1993.  The aerial photographs were flown at 7200' Above Ground Level resulting in a nominal scale of 1:14400.  The data were compiled at 1:2,400 scale (1=200') yielding the +/- 2.32m error.  The original DTM was created as part of the DOE Basemapping and Imagery project for the Oak Ridge Environmental Restoration program.");
+        ornlMercuryExpected.put("beginDate", "1993-04-01T00:00:00.000Z");
+        ornlMercuryExpected.put("class", "");
+        ornlMercuryExpected.put("contactOrganization",
+                "Environmental Sciences Division, Oak Ridge National Laboratory");
+        ornlMercuryExpected.put("eastBoundCoord", "84.44");
+        ornlMercuryExpected.put("westBoundCoord", "-84.19");
+        ornlMercuryExpected.put("southBoundCoord", "-35.87");
+        ornlMercuryExpected.put("northBoundCoord", "36.0");
+        ornlMercuryExpected.put("geohash_1", "s");
+        ornlMercuryExpected.put("geohash_2", "s0");
+        ornlMercuryExpected.put("geohash_3", "s00");
+        ornlMercuryExpected.put("geohash_4", "s000");
+        ornlMercuryExpected.put("geohash_5", "s0006");
+        ornlMercuryExpected.put("geohash_6", "s0006g");
+        ornlMercuryExpected.put("geohash_7", "s0006gg");
+        ornlMercuryExpected.put("geohash_8", "s0006gg4");
+        ornlMercuryExpected.put("geohash_9", "s0006gg48");
+        ornlMercuryExpected.put("edition", "");
+        ornlMercuryExpected.put("endDate", "1993-04-01T00:00:00.000Z");
+        ornlMercuryExpected.put("gcmdKeyword", "");
+        ornlMercuryExpected.put("genus", "");
+        ornlMercuryExpected.put("site", "");
+        ornlMercuryExpected.put("presentationCat", "");
+        ornlMercuryExpected.put("geoform", "");
+        ornlMercuryExpected.put("kingdom", "");
+        ornlMercuryExpected.put("order", "");
+        ornlMercuryExpected.put("phylum", "");
+        ornlMercuryExpected.put("species", "");
+        ornlMercuryExpected.put("family", "");
+        ornlMercuryExpected.put("scientificName", "");
+        ornlMercuryExpected.put("placeKey", "Oak Ridge Reservation, TN, USA");
+        ornlMercuryExpected.put("origin", "Henley, Marsha#Harris, Melinda H.");
+        ornlMercuryExpected.put("author", "Henley, Marsha");
+        ornlMercuryExpected.put("authorSurName", "Henley, Marsha");
+        ornlMercuryExpected.put("authorSurNameSort", "Henley, Marsha");
+        ornlMercuryExpected.put("investigator", "Henley, Marsha#Harris, Melinda H.");
+        ornlMercuryExpected.put("pubDate", "");
+        ornlMercuryExpected.put("purpose", "");
+
+        ornlMercuryExpected.put("title", "Map ORR Aspect 2m 1993");
+        ornlMercuryExpected
+                .put("webUrl",
+                        "http://daac.ornl.gov/data/bluangel_harvest/WBW/gibbs/metadata/Map_ORR_Aspect_2m_1993.xml#ftp://ftp.esd.ornl.gov/pub/orr/Maps/Topography/ORR/Aspect/Browse%20ORR%20Aspect.html");
+
+        ornlMercuryExpected
+                .put("keywords",
+                        "TERRAIN ELEVATION|CAMERA|HELICOPTER#TERRAIN ELEVATION#HELICOPTER#CAMERA#Oak Ridge Reservation, TN, USA");
+        ornlMercuryExpected.put("fileID", "https://" + hostname + "/cn/v1/resolve/"
+                + ornl_mercury_pid);
+
+        ornlMercuryExpected.put("attributeName", "");
+        ornlMercuryExpected.put("attributeLabel", "");
+        ornlMercuryExpected.put("attributeDescription", "");
+        ornlMercuryExpected.put("attributeUnit", "");
+        ornlMercuryExpected.put("attribute", "");
+
+        ornlMercuryExpected
+                .put("text",
+                        "Henley, Marsha  Harris, Melinda H.  Map ORR Aspect 2m 1993  http://daac.ornl.gov/data/bluangel_harvest/WBW/gibbs/metadata/Map_ORR_Aspect_2m_1993.xml  ftp://ftp.esd.ornl.gov/pub/orr/Maps/Topography/ORR/Aspect/Browse%20ORR%20Aspect.html      This raster map the Oak Ridge Reservation identifies the aspect or the steepest down-slope direction from each cell to its neighbors.  The aspect map was created from the Digital Elevation Model (DEM) produced by Melanie Harris (Qsystems).  She created the DEM from a Digital Terrain Model (DTM) created from aerial photography taken during leaf-off in April of 1993.  The aerial photographs were flown at 7200' Above Ground Level resulting in a nominal scale of 1:14400.  The data were compiled at 1:2,400 scale (1=200') yielding the +/- 2.32m error.  The original DTM was created as part of the DOE Basemapping and Imagery project for the Oak Ridge Environmental Restoration program.       19930401  19930401      Final  As appropriate     -84.19  84.44  36  -35.87      Parameter_Sensor_Source  TERRAIN ELEVATION|CAMERA|HELICOPTER  Parameter  TERRAIN ELEVATION  Source  HELICOPTER  Sensor  CAMERA    Place Keywords  Oak Ridge Reservation, TN, USA       Henley, Marsha   6.1.10.8 Contact Electronic Mail: INTERNET &gt; mhenley@qsystems.net         Environmental Sciences Division, Oak Ridge National Laboratory  Gibbs, Holly K.   (865) 574-7356  6.1.10.8 Contact Electronic Mail: INTERNET &gt; mhenley@qsystems.net  gibbshk@ornl.gov        ftp://ftp.esd.ornl.gov/pub/orr/  Public         20020413 162015     Gibbs, Holly K.    Gibbs, Holly K.   (865) 574-7356  gibbshk@ornl.gov    FGDC Content Standard for Digital Geospatial Metadata    19930401  19930401   Oak Ridge Reservation, TN, USA  -84.19  84.44  36  -35.87   Aspect  Elevation  Oak Ridge Reservation  GIS  Raster  Digital Elevation Model  Topography   TERRAIN ELEVATION  CAMERA  HELICOPTER  TOPOGRAPHY  LAND SURFACE   The Oak Ridge Reservation Bioenergy and Carbon Sequestration Initiative; managed by Robin L. Graham  HELICOPTER|CAMERA|TERRAIN ELEVATION   Henley, Marsha  mhenley@qsystems.net    Harris, Melinda H.  Harrism@qsystems.net    ftp://ftp.esd.ornl.gov/pub/orr/Maps/Topography/ORR/Aspect/  Download Aspect data set     ftp://ftp.esd.ornl.gov/pub/orr/Maps/Topography/ORR/Aspect/Browse%20ORR%20Aspect.html  Browse image and metadata        Version 2.4.04a, Revision Date: 19 Mar 2002  metadata20.dtd   gibbshk@ornl.gov  Gibbs, Holly K.  (865) 574-7356   N/A   20140610  Created 20020413 161719 by 160.91.16.106  Raster  12119.4381   ftp://ftp.esd.ornl.gov/pub/orr/Maps/Topography/ORR/Aspect/Browse%20ORR%20Aspect.html  Browse image and metadata "
+                                + ornl_mercury_pid);
+        // system metadata
+        ornlMercuryExpected.put("id", ornl_mercury_pid);
+        ornlMercuryExpected.put("formatId", "http://purl.org/ornl/schema/mercury/terms/v1.0");
+        ornlMercuryExpected.put("formatType", "");
+        ornlMercuryExpected.put("size", "7424");
+        ornlMercuryExpected.put("checksum", "8151041c5f77f89b05004272ed94d463");
+        ornlMercuryExpected.put("checksumAlgorithm", "MD5");
+        ornlMercuryExpected.put("submitter", "CN=mnEDORA,DC=dataone,DC=org");
+        ornlMercuryExpected.put("rightsHolder", "CN=mnEDORA,DC=dataone,DC=org");
+        ornlMercuryExpected.put("replicationAllowed", "");
+        ornlMercuryExpected.put("numberReplicas", "");
+        ornlMercuryExpected.put("preferredReplicationMN", "");
+        ornlMercuryExpected.put("blockedReplicationMN", "");
+        ornlMercuryExpected.put("obsoletes", "");
+        ornlMercuryExpected.put("obsoletedBy", "");
+        ornlMercuryExpected.put("dateUploaded",
+                solrDateConverter.convert("2014-06-11T09:33:32.000+00:00"));
+        ornlMercuryExpected.put("dateModified",
+                solrDateConverter.convert("2014-06-11T09:33:32.000+00:00"));
+        ornlMercuryExpected.put("datasource", "urn:node:mnEDORA");
+        ornlMercuryExpected.put("authoritativeMN", "urn:node:mnEDORA");
+        ornlMercuryExpected.put("replicaMN", "");
+        ornlMercuryExpected.put("replicaVerifiedDate", "");
+        ornlMercuryExpected.put("readPermission", "public");
+        ornlMercuryExpected.put("writePermission", "");
+        ornlMercuryExpected.put("changePermission", "");
+        ornlMercuryExpected.put("isPublic", "true");
+        ornlMercuryExpected.put("dataUrl", "https://" + hostname + "/cn/v1/resolve/"
+                + ornl_mercury_pid);
     }
 
     /**
@@ -417,5 +522,11 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
     public void testEsriFgdcScienceMetadataFields() throws Exception {
         testXPathParsing(fgdcEsri80Subprocessor, fgdcEsriSysMeta, fgdcEsriSciMeta, esriExpected,
                 esri_pid);
+    }
+
+    @Test
+    public void testOrnlMercuryScienceMetadataFields() throws Exception {
+        testXPathParsing(ornlMercury10Subprocessor, ornl_mercury_system_metadata,
+                ornl_mercury_science_metadata, ornlMercuryExpected, ornl_mercury_pid);
     }
 }

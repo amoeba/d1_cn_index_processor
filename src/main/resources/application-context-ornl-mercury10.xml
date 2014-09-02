@@ -2,10 +2,10 @@
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
- <bean id="fgdcstd00121999Subprocessor"
+ <bean id="ornlMercury10Subprocessor"
   class="org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor">
   <property name="matchDocument"
-   value="/d100:systemMetadata/formatId[text() = 'FGDC-STD-001.2-1999']"></property>
+   value="/d100:systemMetadata/formatId[text() = 'http://purl.org/ornl/schema/mercury/terms/v1.0']"></property>
   <property name="fieldList">
    <list>
 	    <ref bean="fgdc.abstract" />

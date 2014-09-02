@@ -56,15 +56,6 @@ public abstract class BaseSolrFieldXPathTest {
             String pid) throws Exception {
         Integer fieldCount = Integer.valueOf(0);
 
-        Document scienceMetadataDoc = getXPathDocumentParser().generateXmlDocument(
-                sciMetadata.getInputStream());
-        for (ISolrField field : docProcessor.getFieldList()) {
-            boolean compared = compareFields(expectedValues, scienceMetadataDoc, field, pid);
-            if (compared) {
-                fieldCount++;
-            }
-        }
-
         if (sysMetadata != null) {
             Document systemMetadataDoc = getXPathDocumentParser().generateXmlDocument(
                     sysMetadata.getInputStream());
@@ -75,6 +66,15 @@ public abstract class BaseSolrFieldXPathTest {
                 }
             }
         }
+        Document scienceMetadataDoc = getXPathDocumentParser().generateXmlDocument(
+                sciMetadata.getInputStream());
+        for (ISolrField field : docProcessor.getFieldList()) {
+            boolean compared = compareFields(expectedValues, scienceMetadataDoc, field, pid);
+            if (compared) {
+                fieldCount++;
+            }
+        }
+
         // if field count is off, some field did not get compared that should
         // have.
         Assert.assertEquals(expectedValues.keySet().size(), fieldCount.intValue());

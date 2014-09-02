@@ -72,8 +72,10 @@
        <ref bean="fgdcstd00111999Subprocessor" />
        <ref bean="fgdcstd00121999Subprocessor" />
        <ref bean="fgdcEsri80Subprocessor" />
+       <ref bean="ornlMercury10Subprocessor" />
        <ref bean="dryad30Subprocessor" />
        <ref bean="dryad31Subprocessor" />
+       <ref bean="qualifiedDublicCoreSubprocessor" />
       </list>
      </property>
     </bean>
@@ -114,28 +116,25 @@
      <constructor-arg name="namespace" value="http://purl.org/spar/cito/" />
     </bean>
     <bean class="org.dataone.cn.indexer.XMLNamespace">
-     <constructor-arg name="prefix" value="dc" />
-     <constructor-arg name="namespace" value="http://purl.org/dc/elements/1.1/" />
+   	  	<constructor-arg name="prefix" value="dc" />
+     	<constructor-arg name="namespace" value="http://purl.org/dc/elements/1.1/" />
     </bean>
     <bean class="org.dataone.cn.indexer.XMLNamespace">
      	<constructor-arg name="prefix" value="dcterms" />
      	<constructor-arg name="namespace" value="http://purl.org/dc/terms/" />
     </bean>
-     <bean class="org.dataone.cn.indexer.XMLNamespace">
+    <bean class="org.dataone.cn.indexer.XMLNamespace">
      	<constructor-arg name="prefix" value="dwc" />
      	<constructor-arg name="namespace" value="http://rs.tdwg.org/dwc/terms/" />
     </bean>
-    
     <bean class="org.dataone.cn.indexer.XMLNamespace">
 		<constructor-arg name="prefix" value="foaf" />
 		<constructor-arg name="namespace" value="http://xmlns.com/foaf/0.1/" />
     </bean>
-    
     <bean class="org.dataone.cn.indexer.XMLNamespace">
 		<constructor-arg name="prefix" value="ore" />
      	<constructor-arg name="namespace" value="http://www.openarchives.org/ore/terms/" />
     </bean>
-    
     <bean class="org.dataone.cn.indexer.XMLNamespace">
 		<constructor-arg name="prefix" value="rdf" />
      	<constructor-arg name="namespace" value="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
@@ -154,7 +153,12 @@
 	<bean class="org.dataone.cn.indexer.XMLNamespace">
     	<constructor-arg name="prefix" value="dryad" />
     	<constructor-arg name="namespace" value="http://purl.org/dryad/terms/" />
-    </bean>   
+    </bean>  
+    
+    <bean class="org.dataone.cn.indexer.XMLNamespace">
+    	<constructor-arg name="prefix" value="xsi" />
+    	<constructor-arg name="namespace" value="http://www.w3.org/2001/XMLSchema-instance" />
+    </bean> 
    </list>
   </constructor-arg>
  </bean>
