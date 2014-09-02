@@ -48,7 +48,7 @@ public class GeohashConverter implements IConverter {
 
     /**
      * @param latlong
-     *            coords of a bounding box (longmin, lotmin, longmax, latmax) or a single point (lat,
+     *            coords of a bounding box (latmax, latmin, longmax, longmin) or a single point (lat,
      *            long)
      * @return geohash string for the center of the bounding box or the
      *         specifice point
@@ -61,8 +61,7 @@ public class GeohashConverter implements IConverter {
         double geohashLong = 0;
 
         // This will be either the center point of the input bounding box, or
-        // the
-        // lat, long of an input point.
+        // the lat, long of an input point.
         WGS84Point centerPoint = null;
 
         // Parse command line for either bounding coords (west,south,east,north)
@@ -80,11 +79,9 @@ public class GeohashConverter implements IConverter {
             double westCoord = Double.parseDouble(coords[3]);
 
             // In some cases the the lat and long values for the bounding coords
-            // can
-            // be equal, if it is intended to use four coords to specify a
-            // single point,
-            // i.e. west = -119.1234 south=34.5678 east = -119.1234
-            // north=34.5678
+            // can be equal, if it is intended to use four coords to specify a
+            // single point, i.e. 
+            //west = -119.1234 south=34.5678 east = -119.1234 north=34.5678
             if (westCoord == eastCoord || southCoord == northCoord) {
                 geohashLat = southCoord;
                 geohashLong = westCoord;
@@ -104,8 +101,6 @@ public class GeohashConverter implements IConverter {
         } catch (IllegalArgumentException iae) {
             return null;
         }
-
         return geohash;
-
     }
 }

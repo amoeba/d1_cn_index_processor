@@ -26,11 +26,14 @@ xmlns:context="http://www.springframework.org/schema/context"
  	<import resource="classpath:application-context-fgdc-std-0011-1999.xml" />
  	<import resource="classpath:application-context-fgdc-std-0012-1999.xml" />
  	<import resource="classpath:application-context-fgdc-esri-csdg-80.xml" />
+ 	<import resource="classpath:application-context-ornl-mercury10.xml" />
  
  	<import resource="classpath:application-context-dryad-base.xml" />
  	<import resource="classpath:application-context-dryad30.xml" />
  	<import resource="classpath:application-context-dryad31.xml" />
     
+    <import resource="classpath:application-context-dc-base.xml" />
+    <import resource="classpath:application-context-qdc.xml" />
     <!-- 
     This import overrides default postgres datasource for testing.
     	 To test with postgres, comment out the following import 
@@ -145,4 +148,25 @@ xmlns:context="http://www.springframework.org/schema/context"
         <constructor-arg type="java.lang.String" 
         value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/tao.12930.1"/>
     </bean>
+    
+    <bean id="qdc_ipumsi_6_3_pt_1981_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/qdc/SystemMetadata-ipumsi_6-3_pt_1981.dc.xml"/>
+    </bean>
+    
+  	<bean id="qdc_ipumsi_6_3_pt_1981_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/qdc/ipumsi_6-3_pt_1981.dc.xml"/>
+    </bean>
+    
+   	<bean id="ornl_mercury_science_metadata" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/fgdc/ornl-mercury-science-metadata.xml"/>
+    </bean>
+    
+  	<bean id="ornl_mercury_system_metadata" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/fgdc/ornl-mercury-system-metadata.xml"/>
+    </bean>
+    
 </beans>
