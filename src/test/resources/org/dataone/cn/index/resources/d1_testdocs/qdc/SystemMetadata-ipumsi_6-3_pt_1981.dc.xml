@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<ns1:systemMetadata xmlns:ns1="http://ns.dataone.org/service/types/v1">
+<ns1:systemMetadata xmlns:ns1="http://ns.dataone.org/service/types/v2.0">
 	<serialVersion>2</serialVersion>
 	<identifier>ipumsi_6-3_pt_1981.dc.xml</identifier>
 	<formatId>http://dublincore.org/schemas/xmls/qdc/2008/02/11/qualifieddc.xsd</formatId>
