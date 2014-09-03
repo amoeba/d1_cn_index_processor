@@ -82,9 +82,7 @@ public class InvalidXmlCharTest {
     public void testTaskWithBmpCharset() throws Exception {
         SystemMetadata sysmeta = null;
         String pid = "testMNodeTier3:2012679267486_common-bmp-doc-example-ฉันกินกระจกได้";
-
         repo.deleteInBatch(repo.findByPid(pid));
-
         try {
             sysmeta = TypeMarshaller.unmarshalTypeFromStream(SystemMetadata.class,
                     commonBMPCharSetExample.getInputStream());
