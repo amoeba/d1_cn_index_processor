@@ -78,6 +78,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     private Resource peggym1304Sys;
     private Resource peggym1304SysArchived;
     private Resource peggymResourcemapSys;
+    private Resource peggymResourcemap2Sys;
     private Resource peggymResourcemapSysArchived;
 
     /**
@@ -198,6 +199,21 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         // verify again
         verifyDataPackageNoResourceMap();
     }
+    
+    /**
+     * Test to index two resource map files (packages) which have the same 
+     * aggregation information.
+     */
+    @Test
+    public void testTwoDataPackages() throws Exception {
+    	 // create/index data package
+        deleteAll();
+        indexTestDataPackage();
+        // verify in index correct
+        verifyTestDataPackageIndexed();
+        indexSecondTestDataPackage();
+        System.out.println("here");        
+    }
 
     /**
      * Verify that a data package will index when one (or more) documents in the
@@ -293,6 +309,15 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         addSystemMetadata(peggym1291Sys);
         addSystemMetadata(peggym1304Sys);
         addSystemMetadata(peggymResourcemapSys);
+        processor.processIndexTaskQueue();
+    }
+    
+    private void indexSecondTestDataPackage() {
+        addSystemMetadata(peggym1271Sys);
+        addSystemMetadata(peggym1281Sys);
+        addSystemMetadata(peggym1291Sys);
+        addSystemMetadata(peggym1304Sys);
+        addSystemMetadata(peggymResourcemap2Sys);
         processor.processIndexTaskQueue();
     }
 
@@ -391,6 +416,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         peggym1304Sys = (Resource) context.getBean("peggym1304Sys");
         peggym1304SysArchived = (Resource) context.getBean("peggym1304SysArchived");
         peggymResourcemapSys = (Resource) context.getBean("peggymResourcemapSys");
+        peggymResourcemap2Sys = (Resource) context.getBean("peggymResourcemap2Sys");
         peggymResourcemapSysArchived = (Resource) context.getBean("peggymResourcemapSysArchived");
     }
 
