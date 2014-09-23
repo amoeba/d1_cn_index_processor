@@ -77,6 +77,9 @@ public class HTTPService {
     final static String VALUE_INDENT_ON = "on";
     final static String VALUE_INDENT_OFF = "off";
     final static String PARAM_QUERY = "q";
+
+    private static final String MAX_ROWS = "5000";
+
     private static Logger log = Logger.getLogger(HTTPService.class.getName());
     private HttpComponentsClientHttpRequestFactory httpRequestFactory;
 
@@ -240,22 +243,24 @@ public class HTTPService {
      */
     public List<SolrDoc> getDocumentsById(String uir, List<String> ids) throws IOException,
             XPathExpressionException, EncoderException {
-        return getDocumentsByField(uir, ids, SolrElementField.FIELD_ID);
+        return getDocumentsByField(uir, ids, SolrElementField.FIELD_ID, false);
     }
 
     public List<SolrDoc> getDocumentById(String uir, String id) throws IOException,
             XPathExpressionException, EncoderException {
-        return getDocumentsByField(uir, Collections.singletonList(id), SolrElementField.FIELD_ID);
+        return getDocumentsByField(uir, Collections.singletonList(id), SolrElementField.FIELD_ID,
+                false);
     }
 
     public List<SolrDoc> getDocumentsByResourceMap(String uir, String resourceMapId)
             throws IOException, XPathExpressionException, EncoderException {
         return getDocumentsByField(uir, Collections.singletonList(resourceMapId),
-                SolrElementField.FIELD_RESOURCEMAP);
+                SolrElementField.FIELD_RESOURCEMAP, true);
     }
 
     private List<SolrDoc> getDocumentsByField(String uir, List<String> fieldValues,
-            String queryField) throws IOException, XPathExpressionException, EncoderException {
+            String queryField, boolean maxRows) throws IOException, XPathExpressionException,
+            EncoderException {
 
         if (fieldValues == null || fieldValues.size() <= 0) {
             return null;
@@ -275,16 +280,51 @@ public class HTTPService {
             sb.append(queryField + ":").append(escapeQueryChars(id));
             rows++;
             if (sb.length() > 5000) {
-                rowString = Integer.toString(rows);
+                if (maxRows) {
+                    rowString = MAX_ROWS;
+                } else {
+                    rowString = Integer.toString(rows);
+                }
                 docs.addAll(doRequest(uir, sb, rowString));
                 rows = 0;
                 sb = new StringBuilder();
             }
         }
         if (sb.length() > 0) {
-            rowString = Integer.toString(rows);
+            if (maxRows) {
+                rowString = MAX_ROWS;
+            } else {
+                rowString = Integer.toString(rows);
+            }
             docs.addAll(doRequest(uir, sb, rowString));
         }
+        return docs;
+    }
+
+    public List<SolrDoc> getDocumentsByResourceMapFieldAndDocumentsField(String uir,
+            String resourceMapId, String documentsId) throws IOException, XPathExpressionException,
+            EncoderException {
+        return getDocumentsByTwoFields(uir, SolrElementField.FIELD_RESOURCEMAP, resourceMapId,
+                SolrElementField.FIELD_DOCUMENTS, documentsId);
+    }
+
+    public List<SolrDoc> getDocumentsByResourceMapFieldAndIsDocumentedByField(String uir,
+            String resourceMapId, String isDocumentedById) throws IOException,
+            XPathExpressionException, EncoderException {
+        return getDocumentsByTwoFields(uir, SolrElementField.FIELD_RESOURCEMAP, resourceMapId,
+                SolrElementField.FIELD_ISDOCUMENTEDBY, isDocumentedById);
+    }
+
+    private List<SolrDoc> getDocumentsByTwoFields(String uir, String field1, String field1Value,
+            String field2, String field2Value) throws IOException, XPathExpressionException,
+            EncoderException {
+        loadSolrSchemaFields();
+        List<SolrDoc> docs = new ArrayList<SolrDoc>();
+        StringBuilder sb = new StringBuilder();
+        sb.append(field1 + ":").append(escapeQueryChars(field1Value));
+        sb.append(" AND ");
+        sb.append(field2 + ":").append(escapeQueryChars(field2Value));
+        docs.addAll(doRequest(uir, sb, MAX_ROWS));
         return docs;
     }
 
