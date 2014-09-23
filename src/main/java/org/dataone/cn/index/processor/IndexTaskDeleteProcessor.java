@@ -31,10 +31,7 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.task.IndexTask;
-import org.dataone.cn.index.task.IndexTaskRepository;
-import org.dataone.cn.indexer.XPathDocumentParser;
 import org.dataone.cn.indexer.resourcemap.ForesiteResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceEntry;
 import org.dataone.cn.indexer.resourcemap.ResourceMap;
@@ -43,14 +40,8 @@ import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementAdd;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
-import org.dataone.configuration.Settings;
-import org.dataone.service.types.v1.Identifier;
-import org.dataone.service.types.v2.SystemMetadata;
 import org.dspace.foresite.OREParserException;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
 
 public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
 
@@ -59,28 +50,10 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
     @Autowired
     HTTPService httpService;
 
-    @Autowired
-    private IndexTaskRepository repo;
-
-    @Autowired
-    private ArrayList<XPathDocumentParser> documentParsers;
-
-    private HazelcastInstance hzClient;
-
-    private static final String HZ_OBJECT_PATH = Settings.getConfiguration().getString(
-            "dataone.hazelcast.objectPath");
-
-    private static final String HZ_SYSTEM_METADATA = Settings.getConfiguration().getString(
-            "dataone.hazelcast.systemMetadata");
-
-    private IMap<Identifier, String> objectPaths;
-    private IMap<Identifier, SystemMetadata> systemMetadata;
-
     private String solrQueryUri;
     private String solrIndexUri;
 
     public void process(IndexTask task) throws Exception {
-        startHazelClient();
         if (isDataPackage(task)) {
             removeDataPackage(task);
         } else if (isPartOfDataPackage(task)) {
@@ -107,27 +80,20 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
         // for each document in data package:
         for (SolrDoc indexDoc : indexDocuments) {
             if (indexDoc.getIdentifier().equals(task.getPid())) {
-                continue; // skipping the resource map, no need update
-                          // it.
-                          // will
-                          // be removed.
+                continue; // skipping the resource map, no need update it. will be removed.
             }
 
             // Remove resourceMap reference
             indexDoc.removeFieldsWithValue(SolrElementField.FIELD_RESOURCEMAP,
                     resourceMap.getIdentifier());
 
-            // // Remove documents/documentedby values for this resource
-            // map
+            // // Remove documents/documentedby values for this resource map
             for (ResourceEntry entry : resourceMap.getMappedReferences()) {
                 if (indexDoc.getIdentifier().equals(entry.getIdentifier())) {
                     for (String documentedBy : entry.getDocumentedBy()) {
                         // Using removeOneFieldWithValue in-case same
-                        // documents
-                        // are in more than one data package. just
-                        // remove
-                        // one
-                        // instance of data package info.
+                        // documents are in more than one data package. just
+                        // remove one instance of data package info.
                         indexDoc.removeOneFieldWithValue(SolrElementField.FIELD_ISDOCUMENTEDBY,
                                 documentedBy);
                     }
@@ -193,23 +159,11 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
         }
     }
 
-    private XPathDocumentParser getXPathDocumentParser() {
-        return documentParsers.get(0);
-    }
-
     public void setSolrQueryUri(String uri) {
         this.solrQueryUri = uri;
     }
 
     public void setSolrIndexUri(String uri) {
         this.solrIndexUri = uri;
-    }
-
-    private void startHazelClient() {
-        if (this.hzClient == null) {
-            this.hzClient = HazelcastClientFactory.getStorageClient();
-            this.objectPaths = this.hzClient.getMap(HZ_OBJECT_PATH);
-            this.systemMetadata = hzClient.getMap(HZ_SYSTEM_METADATA);
-        }
     }
 }

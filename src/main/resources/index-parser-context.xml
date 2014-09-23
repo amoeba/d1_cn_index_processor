@@ -59,7 +59,8 @@
     <bean class="org.dataone.cn.indexer.XPathDocumentParser">
      <constructor-arg name="fields" ref="xpath_system_metadata_100" />
      <constructor-arg name="xmlNamespaceConfig" ref="xmlNamespaceConfig" />
-     <property name="solrBaseUri" value="${solr.base.uri}" />
+     <property name="solrQueryUri" value="${solr.query.uri}" />
+	 <property name="solrIndexUri" value="${solr.index.uri}" />
      <property name="httpService" ref="httpService" />
      <property name="subprocessors">
       <list>

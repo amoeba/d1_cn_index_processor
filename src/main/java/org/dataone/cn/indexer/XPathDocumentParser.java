@@ -436,7 +436,7 @@ public class XPathDocumentParser {
         return solrindexUri;
     }
 
-    public void setSolrindexUri(String solrindexUri) {
+    public void setSolrIndexUri(String solrindexUri) {
         this.solrindexUri = solrindexUri;
     }
 
@@ -454,11 +454,6 @@ public class XPathDocumentParser {
 
     public void setSolrQueryUri(String solrQueryUri) {
         this.solrQueryUri = solrQueryUri;
-    }
-
-    public void setSolrBaseUri(String solrBaseUri) {
-        setSolrQueryUri(solrBaseUri + "/adminSelect/");
-        setSolrindexUri(solrBaseUri + "/update?commit=true");
     }
 
     public List<IDocumentSubprocessor> getSubprocessors() {
