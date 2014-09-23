@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -237,10 +238,26 @@ public class HTTPService {
      * @throws XPathExpressionException
      * @throws EncoderException
      */
-    public List<SolrDoc> getDocuments(String uir, List<String> ids) throws IOException,
+    public List<SolrDoc> getDocumentsById(String uir, List<String> ids) throws IOException,
             XPathExpressionException, EncoderException {
+        return getDocumentsByField(uir, ids, SolrElementField.FIELD_ID);
+    }
 
-        if (ids == null || ids.size() <= 0) {
+    public List<SolrDoc> getDocumentById(String uir, String id) throws IOException,
+            XPathExpressionException, EncoderException {
+        return getDocumentsByField(uir, Collections.singletonList(id), SolrElementField.FIELD_ID);
+    }
+
+    public List<SolrDoc> getDocumentsByResourceMap(String uir, String resourceMapId)
+            throws IOException, XPathExpressionException, EncoderException {
+        return getDocumentsByField(uir, Collections.singletonList(resourceMapId),
+                SolrElementField.FIELD_RESOURCEMAP);
+    }
+
+    private List<SolrDoc> getDocumentsByField(String uir, List<String> fieldValues,
+            String queryField) throws IOException, XPathExpressionException, EncoderException {
+
+        if (fieldValues == null || fieldValues.size() <= 0) {
             return null;
         }
 
@@ -251,11 +268,11 @@ public class HTTPService {
         int rows = 0;
         String rowString = "";
         StringBuilder sb = new StringBuilder();
-        for (String id : ids) {
+        for (String id : fieldValues) {
             if (sb.length() > 0) {
                 sb.append(" OR ");
             }
-            sb.append(SolrElementField.FIELD_ID + ":").append(escapeQueryChars(id));
+            sb.append(queryField + ":").append(escapeQueryChars(id));
             rows++;
             if (sb.length() > 5000) {
                 rowString = Integer.toString(rows);
@@ -305,7 +322,7 @@ public class HTTPService {
             throws XPathExpressionException, IOException, EncoderException {
         List<String> ids = new ArrayList<String>();
         ids.add(id);
-        List<SolrDoc> indexedDocuments = getDocuments(solrQueryUri, ids);
+        List<SolrDoc> indexedDocuments = getDocumentsById(solrQueryUri, ids);
         if (indexedDocuments.size() > 0) {
             return indexedDocuments.get(0);
         } else {

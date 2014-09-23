@@ -206,7 +206,7 @@ public class IndexTaskProcessor {
         List<SolrDoc> updateDocuments = null;
         int numberOfIndexedOrRemovedReferences = 0;
         try {
-            updateDocuments = httpService.getDocuments(this.solrQueryUri, referencedIds);
+            updateDocuments = httpService.getDocumentsById(this.solrQueryUri, referencedIds);
             numberOfIndexedOrRemovedReferences = updateDocuments.size();
             if (updateDocuments.size() != referencedIds.size()) {
                 for (String id : referencedIds) {

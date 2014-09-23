@@ -320,7 +320,7 @@ public class XPathDocumentParser {
         }
         List<String> ids = new ArrayList<String>();
         ids.add(indexDocument.getIdentifier());
-        List<SolrDoc> indexedDocuments = httpService.getDocuments(solrQueryUri, ids);
+        List<SolrDoc> indexedDocuments = httpService.getDocumentsById(solrQueryUri, ids);
         SolrDoc indexedDocument = indexedDocuments == null || indexedDocuments.size() <= 0 ? null
                 : indexedDocuments.get(0);
         if (indexedDocument == null || indexedDocument.getFieldList().size() <= 0) {

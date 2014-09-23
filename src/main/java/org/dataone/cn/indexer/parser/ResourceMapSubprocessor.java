@@ -94,7 +94,7 @@ public class ResourceMapSubprocessor extends AbstractDocumentSubprocessor implem
 
         ResourceMap resourceMap = ResourceMapFactory.buildResourceMap(resourceMapDocument);
         List<String> documentIds = resourceMap.getAllDocumentIDs();
-        List<SolrDoc> updateDocuments = getHttpService().getDocuments(getSolrQueryUri(),
+        List<SolrDoc> updateDocuments = getHttpService().getDocumentsById(getSolrQueryUri(),
                 documentIds);
         List<SolrDoc> mergedDocuments = resourceMap.mergeIndexedDocuments(updateDocuments);
         mergedDocuments.add(indexDocument);

@@ -74,7 +74,7 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
             return;
         }
         List<String> documentIds = resourceMap.getAllDocumentIDs();
-        List<SolrDoc> indexDocuments = httpService.getDocuments(solrQueryUri, documentIds);
+        List<SolrDoc> indexDocuments = httpService.getDocumentsById(solrQueryUri, documentIds);
         removeFromIndex(task);
         List<SolrDoc> docsToUpdate = new ArrayList<SolrDoc>();
         // for each document in data package:
