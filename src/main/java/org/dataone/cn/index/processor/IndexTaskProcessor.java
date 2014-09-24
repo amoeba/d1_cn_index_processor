@@ -40,8 +40,8 @@ import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.configuration.Settings;
 import org.dataone.service.exceptions.BaseException;
 import org.dataone.service.types.v1.Identifier;
-import org.dataone.service.types.v2.ObjectFormat;
 import org.dataone.service.types.v1.ObjectFormatIdentifier;
+import org.dataone.service.types.v2.ObjectFormat;
 import org.dataone.service.types.v2.SystemMetadata;
 import org.dspace.foresite.OREParserException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -149,15 +149,15 @@ public class IndexTaskProcessor {
             task.markInProgress();
             task = saveTask(task);
 
+            if (task != null && task.isDeleteTask()) {
+                return task;
+            }
+
             if (task != null && !isObjectPathReady(task)) {
                 task.markNew();
                 saveTask(task);
                 task = null;
                 continue;
-            }
-
-            if (task != null && task.isDeleteTask()) {
-                return task;
             }
 
             if (task != null && !isResourceMapReadyToIndex(task, queue)) {
