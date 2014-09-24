@@ -134,26 +134,26 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
                 doc.removeAllFields(fieldName);
                 updatedSolrDocs.add(doc);
             } else if (resourceMapIdsInDoc.size() > 1) {
-                if (aggregatedItemsInDoc.size() > 1) {
-                    //we have multiple resource maps and multiple documents. We should match them.  					
-                    Map<String, String> ids = matchResourceMapsAndItems(doc.getIdentifier(),
-                            targetResourceMapId, resourceMapIdsInDoc, aggregatedItemsInDoc, fieldName);
-                    if (ids != null) {
-                        for (String id : ids.keySet()) {
-                            doc.removeFieldsWithValue(fieldName, id);
-                        }
+            	//we have multiple resource maps. We should match them.  					
+                Map<String, String> ids = matchResourceMapsAndItems(doc.getIdentifier(),
+                        targetResourceMapId, resourceMapIdsInDoc, aggregatedItemsInDoc, fieldName);
+                if (ids != null) {
+                    for (String id : ids.keySet()) {
+                        doc.removeFieldsWithValue(fieldName, id);
                     }
-
-                    doc.removeFieldsWithValue(SolrElementField.FIELD_RESOURCEMAP,
-                            targetResourceMapId);
-                    updatedSolrDocs.add(doc);
+                }
+                doc.removeFieldsWithValue(SolrElementField.FIELD_RESOURCEMAP,
+                        targetResourceMapId);
+                updatedSolrDocs.add(doc);
+                /*if (aggregatedItemsInDoc.size() > 1) {
+                    
 
                 } else {
                     //multiple resource map aggregate same metadata and data. Just remove the resource map
                     doc.removeFieldsWithValue(SolrElementField.FIELD_RESOURCEMAP,
                             targetResourceMapId);
                     updatedSolrDocs.add(doc);
-                }
+                }*/
             }
         }
         return updatedSolrDocs;
@@ -184,23 +184,23 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
                         if ((fieldValues != null && fieldValues.contains(targetId))
                                 && (resourceMapIds != null && resourceMapIds
                                         .contains(targetResourceMapId))) {
-                        	//okay, we found the target aggregation item id and the resource map id
-                        	//in this solr doc. However, we need check if another resource map with different
-                        	//id but specify the same relationship. If we have the id(s), we should not
-                        	// remove the documents( or documentBy) element since we need to preserve the 
-                        	// relationship for the remain resource map. 
-                        	boolean hasDuplicateIds = false;
-                        	if(originalResourceMaps != null) {
-                        		for(String id :resourceMapIds) {
-                        			if (originalResourceMaps.contains(id) && !id.equals(targetResourceMapId)) {
-                        				hasDuplicateIds = true;
-                        				break;
-                        			}
-                        		}
-                        	}
-                        	if(!hasDuplicateIds) {
-                        		map.put(item, targetResourceMapId);
-                        	}
+                            //okay, we found the target aggregation item id and the resource map id
+                            //in this solr doc. However, we need check if another resource map with different
+                            //id but specify the same relationship. If we have the id(s), we should not
+                            // remove the documents( or documentBy) element since we need to preserve the 
+                            // relationship for the remain resource map. 
+                            boolean hasDuplicateIds = false;
+                            if(originalResourceMaps != null) {
+                               for(String id :resourceMapIds) {
+                                    if (originalResourceMaps.contains(id) && !id.equals(targetResourceMapId)) {
+                                        hasDuplicateIds = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if(!hasDuplicateIds) {
+                                map.put(item, targetResourceMapId);
+                            }
                             
                         }
                     } catch (Exception e) {
