@@ -24,6 +24,7 @@ package org.dataone.cn.index.processor;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import java.util.Map;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.codec.EncoderException;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.dataone.cn.index.task.IndexTask;
@@ -80,7 +82,7 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
         if (resourceMapId != null && !resourceMapId.trim().equals("")) {
             List<SolrDoc> docsContainResourceMap = httpService.getDocumentsByResourceMap(
                     solrQueryUri, resourceMapId);
-            updatedSolrDocs = updateSolrDocsByRemovingResourceMap(docsContainResourceMap,
+            updatedSolrDocs = removeResourceMapRelationship(docsContainResourceMap,
                     resourceMapId);
         }
         return updatedSolrDocs;
@@ -89,7 +91,7 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
     /*
      * Get the list of the solr doc which need to be updated because the removal of the resource map
      */
-    private List<SolrDoc> updateSolrDocsByRemovingResourceMap(List<SolrDoc> docsContainResourceMap,
+    private List<SolrDoc> removeResourceMapRelationship(List<SolrDoc> docsContainResourceMap,
             String resourceMapId) throws XPathExpressionException, IOException, EncoderException {
         List<SolrDoc> updatedSolrDocs = new ArrayList<SolrDoc>();
         if (docsContainResourceMap != null && docsContainResourceMap.isEmpty()) {
@@ -109,21 +111,32 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
                 } else if ((dataIdStrs != null && !dataIdStrs.isEmpty())
                         && (metadataIdStrs == null || metadataIdStrs.isEmpty())) {
                     //data file
-                    updatedSolrDocs = handleAggregatedItems(resourceMapId, doc, resourceMapIdStrs,
+                    updatedSolrDocs = removeAggregatedItems(resourceMapId, doc, resourceMapIdStrs,
                             dataIdStrs, SolrElementField.FIELD_ISDOCUMENTEDBY);
                 } else if ((dataIdStrs == null || dataIdStrs.isEmpty())
                         && (metadataIdStrs != null && !metadataIdStrs.isEmpty())) {
                     //metadata file
-                    updatedSolrDocs = handleAggregatedItems(resourceMapId, doc, resourceMapIdStrs,
+                    updatedSolrDocs = removeAggregatedItems(resourceMapId, doc, resourceMapIdStrs,
                             dataIdStrs, SolrElementField.FIELD_DOCUMENTS);
+                } else if ((dataIdStrs != null && !dataIdStrs.isEmpty())
+                        && (metadataIdStrs != null && !metadataIdStrs.isEmpty())){
+                    // both metadata and data for one object
+                    List<SolrDoc> solrDocsRemovedDocumentBy = removeAggregatedItems(resourceMapId, doc, resourceMapIdStrs,
+                            dataIdStrs, SolrElementField.FIELD_ISDOCUMENTEDBY);
+                    List<SolrDoc> solrDocsRemovedDocuments = removeAggregatedItems(resourceMapId, doc, resourceMapIdStrs,
+                            dataIdStrs, SolrElementField.FIELD_DOCUMENTS);
+                    updatedSolrDocs = mergeUpdatedSolrDocs(solrDocsRemovedDocumentBy, solrDocsRemovedDocuments);
                 }
             }
 
         }
         return updatedSolrDocs;
     }
-
-    private List<SolrDoc> handleAggregatedItems(String targetResourceMapId, SolrDoc doc,
+    
+    /*
+     * Process the list of ids of the documentBy/documents in a slor doc.
+     */
+    private List<SolrDoc> removeAggregatedItems(String targetResourceMapId, SolrDoc doc,
             List<String> resourceMapIdsInDoc, List<String> aggregatedItemsInDoc, String fieldName) {
         List<SolrDoc> updatedSolrDocs = new ArrayList<SolrDoc>();
         if (doc != null && resourceMapIdsInDoc != null && aggregatedItemsInDoc != null
@@ -221,6 +234,74 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
             doc = docs.get(0);
         }
         return doc;
+    }
+    
+    /*
+     * Merge two list of updated solr docs. removedDocumentBy has the correct information about documentBy element.
+     * removedDocuments has the correct information about the documents information.
+     * So we go through the two list and found the two docs having the same identifier.
+     * Get the list of the documents value from the one in the removedDoucments (1). 
+     * Remove all values of documents from the one in the removedDocumentBy. 
+     * Then copy the list of documents value from (1) to to the one in the removedDocumentBy.
+     */
+    private List<SolrDoc> mergeUpdatedSolrDocs(List<SolrDoc>removedDocumentBy, List<SolrDoc>removedDocuments) {
+        List<SolrDoc> mergedDocuments = new ArrayList<SolrDoc>();
+        if(removedDocumentBy == null || removedDocumentBy.isEmpty()) {
+            mergedDocuments = removedDocuments;
+        } else if (removedDocuments == null || removedDocuments.isEmpty()) {
+            mergedDocuments = removedDocumentBy;
+        } else {
+            int sizeOfWithDocBy = removedDocumentBy.size();
+            int sizeOfWithDocs = removedDocuments.size();
+            for(int i=sizeOfWithDocBy-1; i>= 0; i--) {
+                SolrDoc docInRemovedDocBy = removedDocumentBy.get(i);
+                for(int j= sizeOfWithDocs-1; j>=0; j--) {
+                    SolrDoc docInRemovedDocs = removedDocuments.get(j);
+                    if(docInRemovedDocBy.getIdentifier().equals(docInRemovedDocs.getIdentifier())) {
+                        //find the same doc in both list. let's merge them.
+                        //first move all the documents element from the docWithDocs to the docWithDocBy.
+                        List<String> idsInDocuments = docInRemovedDocs.getAllFieldValues(SolrElementField.FIELD_DOCUMENTS);
+                        docInRemovedDocBy.removeAllFields(SolrElementField.FIELD_DOCUMENTS);//clear out any documents element in docInRemovedDocBy
+                        //add the Documents element from the docInRemovedDocs if it has any.
+                        if(idsInDocuments != null) {
+                            for(String id : idsInDocuments) {
+                                if(id != null && !id.trim().equals("")) {
+                                    docInRemovedDocBy.addField(new SolrElementField(SolrElementField.FIELD_DOCUMENTS, id));
+                                }
+                                
+                            }
+                        }
+                        //intersect the resource map ids.
+                        List<String> resourceMapIdsInWithDocs = docInRemovedDocs.getAllFieldValues(SolrElementField.FIELD_RESOURCEMAP);
+                        List<String> resourceMapIdsInWithDocBy = docInRemovedDocBy.getAllFieldValues(SolrElementField.FIELD_RESOURCEMAP);
+                        docInRemovedDocBy.removeAllFields(SolrElementField.FIELD_RESOURCEMAP);
+                        Collection resourceMapIds = CollectionUtils.intersection(resourceMapIdsInWithDocs, resourceMapIdsInWithDocBy);
+                        if(resourceMapIds != null) {
+                            for(Object idObj : resourceMapIds) {
+                                String id = (String)idObj;
+                                docInRemovedDocBy.addField(new SolrElementField(SolrElementField.FIELD_RESOURCEMAP, id));
+                            }
+                        }
+                        //we don't need do anything about the documentBy elements since the docInRemovedDocBy has the correct information.
+                        mergedDocuments.add(docInRemovedDocBy);
+                        //delete the two documents from the list
+                        removedDocumentBy.remove(i);
+                        removedDocuments.remove(j);
+                        break;
+                    }
+                    
+                }
+            }
+            // when we get there, if both list are empty, this will be a perfect merge. However, if something are left. we 
+            //just put them in.
+            for(SolrDoc doc: removedDocumentBy) {
+                mergedDocuments.add(doc);
+            }
+            for(SolrDoc doc: removedDocuments) {
+                mergedDocuments.add(doc);
+            }
+        }
+        return mergedDocuments;
     }
 
     private void removeFromDataPackage(IndexTask task) throws Exception {
