@@ -137,7 +137,7 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
                 if (aggregatedItemsInDoc.size() > 1) {
                     //we have multiple resource maps and multiple documents. We should match them.  					
                     Map<String, String> ids = matchResourceMapsAndItems(doc.getIdentifier(),
-                            targetResourceMapId, aggregatedItemsInDoc, fieldName);
+                            targetResourceMapId, resourceMapIdsInDoc, aggregatedItemsInDoc, fieldName);
                     if (ids != null) {
                         for (String id : ids.keySet()) {
                             doc.removeFieldsWithValue(fieldName, id);
@@ -163,7 +163,7 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
      * Return a map of mapping aggregation id map the target resourceMapId.
      */
     private Map<String, String> matchResourceMapsAndItems(String targetId,
-            String targetResourceMapId, List<String> aggregatedItems, String fieldName) {
+            String targetResourceMapId, List<String> originalResourceMaps, List<String> aggregatedItems, String fieldName) {
         Map<String, String> map = new HashMap<String, String>();
         if (targetId != null && targetResourceMapId != null && aggregatedItems != null
                 && fieldName != null) {
@@ -184,7 +184,24 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
                         if ((fieldValues != null && fieldValues.contains(targetId))
                                 && (resourceMapIds != null && resourceMapIds
                                         .contains(targetResourceMapId))) {
-                            map.put(item, targetResourceMapId);
+                        	//okay, we found the target aggregation item id and the resource map id
+                        	//in this solr doc. However, we need check if another resource map with different
+                        	//id but specify the same relationship. If we have the id(s), we should not
+                        	// remove the documents( or documentBy) element since we need to preserve the 
+                        	// relationship for the remain resource map. 
+                        	boolean hasDuplicateIds = false;
+                        	if(originalResourceMaps != null) {
+                        		for(String id :resourceMapIds) {
+                        			if (originalResourceMaps.contains(id) && !id.equals(targetResourceMapId)) {
+                        				hasDuplicateIds = true;
+                        				break;
+                        			}
+                        		}
+                        	}
+                        	if(!hasDuplicateIds) {
+                        		map.put(item, targetResourceMapId);
+                        	}
+                            
                         }
                     } catch (Exception e) {
                         logger.warn("IndexTaskDeleteProcessor.matchResourceMapsAndItems - can't get the solrdoc for the id "
