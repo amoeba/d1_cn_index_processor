@@ -93,9 +93,10 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
      */
     private List<SolrDoc> removeResourceMapRelationship(List<SolrDoc> docsContainResourceMap,
             String resourceMapId) throws XPathExpressionException, IOException, EncoderException {
-        List<SolrDoc> updatedSolrDocs = new ArrayList<SolrDoc>();
+        List<SolrDoc> totalUpdatedSolrDocs = new ArrayList<SolrDoc>();
         if (docsContainResourceMap != null && !docsContainResourceMap.isEmpty()) {
             for (SolrDoc doc : docsContainResourceMap) {
+                List<SolrDoc> updatedSolrDocs = new ArrayList<SolrDoc>();
                 List<String> resourceMapIdStrs = doc
                         .getAllFieldValues(SolrElementField.FIELD_RESOURCEMAP);
                 List<String> dataIdStrs = doc
@@ -127,10 +128,14 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
                             dataIdStrs, SolrElementField.FIELD_DOCUMENTS);
                     updatedSolrDocs = mergeUpdatedSolrDocs(solrDocsRemovedDocumentBy, solrDocsRemovedDocuments);
                 }
+                //move them to the final result
+                for(SolrDoc updatedDoc: updatedSolrDocs) {
+                    totalUpdatedSolrDocs.add(updatedDoc);
+                }
             }
 
         }
-        return updatedSolrDocs;
+        return totalUpdatedSolrDocs;
     }
     
     /*
