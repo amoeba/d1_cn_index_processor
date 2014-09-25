@@ -79,6 +79,8 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     private Resource peggym1304SysArchived;
     private Resource peggymResourcemapSys;
     private Resource peggymResourcemap2Sys;
+    private Resource peggymResourcemapComplicatedSys;
+    private Resource peggymResourcemap2ComplicatedSys;
     private Resource peggymResourcemapSysArchived;
     private Resource peggymResourcemap2SysArchived;
   
@@ -238,6 +240,39 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         // we removed the second one. So it will recover 
         // to status that only has one resource map
         verifyTestDataPackageIndexed();
+        deleteSystemMetadata(peggymResourcemapSys);
+        processor.processIndexTaskQueue();
+        // verify data package info correct in index
+        verifyDataPackageNoResourceMap();
+    }
+    
+    /**
+     * Test to delete data packages having complicated relationship.
+     * DataPackage1 - peggym.resourcemap-complicated - describe the following relationship:
+     *  peggym.130.4 documents peggym.128.1
+     *  peggym.130.4 documents peggym.129.1
+     *  peggym.127.1 documents peggym.130.4
+     *  So peggym.130.4 is both metadata and data.
+     * DataPackage2 - peggym.resourcemap2-complicated - describe the same relationship.
+     * 
+     */
+    @Test
+    public void testDeleteDataPackagesWithComplicatedRelation() throws Exception {
+        deleteAll();
+        indexComplicatedDataPackage();
+        verifyComplicatedDataPackageIndexed();
+        indexSecondComplicatedDataPackage();
+        verifySecondComplicatedDataPackageIndexed();
+        deleteSystemMetadata(peggymResourcemap2ComplicatedSys);
+        processor.processIndexTaskQueue();
+        // verify data package info correct in index.
+        // we removed the second one. So it will recover 
+        // to status that only has one resource map
+        verifyComplicatedDataPackageIndexed();
+        deleteSystemMetadata(peggymResourcemapComplicatedSys);
+        processor.processIndexTaskQueue();
+        // verify data package info correct in index
+        verifyDataPackageNoResourceMap();
     }
 
     /**
@@ -293,6 +328,9 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         httpService.sendSolrDelete("peggym.128.1");
         httpService.sendSolrDelete("peggym.129.1");
         httpService.sendSolrDelete("peggym.resourcemap");
+        httpService.sendSolrDelete("peggym.resourcemap2");
+        httpService.sendSolrDelete("peggym.resourcemap-complicated");
+        httpService.sendSolrDelete("peggym.resourcemap2-complicated");
     }
 
     private void verifyDataPackageNo1271() throws Exception {
@@ -345,6 +383,24 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         addSystemMetadata(peggymResourcemap2Sys);
         processor.processIndexTaskQueue();
     }
+    
+    private void indexComplicatedDataPackage() {
+        addSystemMetadata(peggym1271Sys);
+        addSystemMetadata(peggym1281Sys);
+        addSystemMetadata(peggym1291Sys);
+        addSystemMetadata(peggym1304Sys);
+        addSystemMetadata(peggymResourcemapComplicatedSys);
+        processor.processIndexTaskQueue();
+    }
+    
+    private void indexSecondComplicatedDataPackage() {
+        addSystemMetadata(peggym1271Sys);
+        addSystemMetadata(peggym1281Sys);
+        addSystemMetadata(peggym1291Sys);
+        addSystemMetadata(peggym1304Sys);
+        addSystemMetadata(peggymResourcemap2ComplicatedSys);
+        processor.processIndexTaskQueue();
+    }
 
     private void indexTestDataPackageWithArchived1271Doc() {
         addSystemMetadata(peggym1271SysArchived);
@@ -353,6 +409,133 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         addSystemMetadata(peggym1304Sys);
         addSystemMetadata(peggymResourcemapSys);
         processor.processIndexTaskQueue();
+    }
+    
+    private void verifyComplicatedDataPackageIndexed() throws Exception {
+        SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
+        Assert.assertEquals(1,
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
+        Assert.assertEquals("peggym.resourcemap-complicated",
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(0));
+        Assert.assertEquals(1,
+                ((List) data.getFieldValues(SolrElementField.FIELD_DOCUMENTS)).size());
+        Assert.assertEquals("peggym.130.4",
+                ((List) data.getFieldValue(SolrElementField.FIELD_DOCUMENTS)).get(0));
+        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY));
+        
+        
+        
+        data = assertPresentInSolrIndex("peggym.128.1");
+        Assert.assertEquals(1,
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
+        Assert.assertEquals("peggym.resourcemap-complicated",
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(0));
+        Assert.assertEquals(1,
+                ((List) data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY)).size());
+        Assert.assertEquals("peggym.130.4",
+                ((List) data.getFieldValue(SolrElementField.FIELD_ISDOCUMENTEDBY)).get(0));
+        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_DOCUMENTS));     
+        
+        
+        
+        data = assertPresentInSolrIndex("peggym.129.1");
+        Assert.assertEquals(1,
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
+        Assert.assertEquals("peggym.resourcemap-complicated",
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(0));
+        Assert.assertEquals(1,
+                ((List) data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY)).size());
+        Assert.assertEquals("peggym.130.4",
+                ((List) data.getFieldValue(SolrElementField.FIELD_ISDOCUMENTEDBY)).get(0));
+        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_DOCUMENTS));     
+        
+        
+        
+        SolrDocument scienceMetadata = assertPresentInSolrIndex("peggym.130.4");
+        Assert.assertEquals(1,
+                ((List) scienceMetadata.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
+        Assert.assertEquals("peggym.resourcemap-complicated",
+                ((List) scienceMetadata.getFieldValue(SolrElementField.FIELD_RESOURCEMAP)).get(0));
+
+        Collection documentsCollection = scienceMetadata
+                .getFieldValues(SolrElementField.FIELD_DOCUMENTS);
+        Assert.assertEquals(2, documentsCollection.size());
+        Assert.assertTrue(documentsCollection.contains("peggym.128.1"));
+        Assert.assertTrue(documentsCollection.contains("peggym.129.1"));
+        Assert.assertEquals(1,
+                ((List) scienceMetadata.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY)).size());
+        Assert.assertEquals("peggym.127.1",
+                ((List) scienceMetadata.getFieldValue(SolrElementField.FIELD_ISDOCUMENTEDBY)).get(0));
+
+        assertPresentInSolrIndex("peggym.resourcemap-complicated");
+    }
+    
+    private void verifySecondComplicatedDataPackageIndexed() throws Exception {
+        SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
+        Assert.assertEquals(2,
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
+        Assert.assertEquals("peggym.resourcemap-complicated",
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(0));
+        Assert.assertEquals("peggym.resourcemap2-complicated",
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(1));
+        Assert.assertEquals(1,
+                ((List) data.getFieldValues(SolrElementField.FIELD_DOCUMENTS)).size());
+        Assert.assertEquals("peggym.130.4",
+                ((List) data.getFieldValue(SolrElementField.FIELD_DOCUMENTS)).get(0));
+        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY));
+        
+        
+        
+        data = assertPresentInSolrIndex("peggym.128.1");
+        Assert.assertEquals(2,
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
+        Assert.assertEquals("peggym.resourcemap-complicated",
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(0));
+        Assert.assertEquals("peggym.resourcemap2-complicated",
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(1));
+        Assert.assertEquals(1,
+                ((List) data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY)).size());
+        Assert.assertEquals("peggym.130.4",
+                ((List) data.getFieldValue(SolrElementField.FIELD_ISDOCUMENTEDBY)).get(0));
+        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_DOCUMENTS));     
+        
+        
+        
+        data = assertPresentInSolrIndex("peggym.129.1");
+        Assert.assertEquals(2,
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
+        Assert.assertEquals("peggym.resourcemap-complicated",
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(0));
+        Assert.assertEquals("peggym.resourcemap2-complicated",
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(1));
+        Assert.assertEquals(1,
+                ((List) data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY)).size());
+        Assert.assertEquals("peggym.130.4",
+                ((List) data.getFieldValue(SolrElementField.FIELD_ISDOCUMENTEDBY)).get(0));
+        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_DOCUMENTS));     
+        
+        
+        
+        SolrDocument scienceMetadata = assertPresentInSolrIndex("peggym.130.4");
+        Assert.assertEquals(2,
+                ((List) scienceMetadata.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
+        Assert.assertEquals("peggym.resourcemap-complicated",
+                ((List) scienceMetadata.getFieldValue(SolrElementField.FIELD_RESOURCEMAP)).get(0));
+        Assert.assertEquals("peggym.resourcemap2-complicated",
+                ((List) scienceMetadata.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(1));
+
+        Collection documentsCollection = scienceMetadata
+                .getFieldValues(SolrElementField.FIELD_DOCUMENTS);
+        Assert.assertEquals(2, documentsCollection.size());
+        Assert.assertTrue(documentsCollection.contains("peggym.128.1"));
+        Assert.assertTrue(documentsCollection.contains("peggym.129.1"));
+        Assert.assertEquals(1,
+                ((List) scienceMetadata.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY)).size());
+        Assert.assertEquals("peggym.127.1",
+                ((List) scienceMetadata.getFieldValue(SolrElementField.FIELD_ISDOCUMENTEDBY)).get(0));
+
+        assertPresentInSolrIndex("peggym.resourcemap-complicated");
+        assertPresentInSolrIndex("peggym.resourcemap2-complicated");
     }
 
     private void verifyTestDataPackageIndexed() throws Exception {
@@ -524,6 +707,8 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         peggymResourcemap2Sys = (Resource) context.getBean("peggymResourcemap2Sys");
         peggymResourcemapSysArchived = (Resource) context.getBean("peggymResourcemapSysArchived");
         peggymResourcemap2SysArchived = (Resource) context.getBean("peggymResourcemap2SysArchived");
+        peggymResourcemapComplicatedSys = (Resource) context.getBean("peggymResourcemapComplicatedSys");
+        peggymResourcemap2ComplicatedSys = (Resource) context.getBean("peggymResourcemap2ComplicatedSys");
     }
 
     private static void configureHazelCast() {
