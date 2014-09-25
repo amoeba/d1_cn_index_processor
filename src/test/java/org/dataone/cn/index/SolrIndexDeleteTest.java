@@ -80,6 +80,8 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     private Resource peggymResourcemapSys;
     private Resource peggymResourcemap2Sys;
     private Resource peggymResourcemapSysArchived;
+    private Resource peggymResourcemap2SysArchived;
+  
 
     /**
      * Unit test of the HTTPService.sendSolrDelete(pid) method. Inserts record
@@ -201,18 +203,41 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     }
     
     /**
-     * Test to index two resource map files (packages) which have the same 
-     * aggregation information.
+     * Test to delete a data package by the removing event.
      */
     @Test
-    public void testTwoDataPackages() throws Exception {
+    public void testDeleteDataPackage() throws Exception {
     	 // create/index data package
         deleteAll();
         indexTestDataPackage();
-        // verify in index correct
+        //verify in index correct
+        verifyTestDataPackageIndexed();
+        deleteSystemMetadata(peggymResourcemapSys);
+        processor.processIndexTaskQueue();
+        // verify data package info correct in index
+        verifyDataPackageNoResourceMap();
+    }
+    
+    
+    /**
+     * Test to delete a data package while there is another package specifies
+     * the same relationship
+     */
+    @Test
+    public void testDeleteDataPackageWithDuplicatedRelationship() throws Exception {
+         // create/index data package
+        deleteAll();
+        indexTestDataPackage();
+        //verify in index correct
         verifyTestDataPackageIndexed();
         indexSecondTestDataPackage();
-        System.out.println("here");        
+        verifySecondTestDataPackageIndexed();
+        deleteSystemMetadata(peggymResourcemap2Sys);
+        processor.processIndexTaskQueue();
+        // verify data package info correct in index.
+        // we removed the second one. So it will recover 
+        // to status that only has one resource map
+        verifyTestDataPackageIndexed();
     }
 
     /**
@@ -362,6 +387,71 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
 
         assertPresentInSolrIndex("peggym.resourcemap");
     }
+    
+    private void verifySecondTestDataPackageIndexed() throws Exception {
+        SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
+        Assert.assertEquals(2,
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
+        Assert.assertEquals("peggym.resourcemap",
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(0));
+        Assert.assertEquals("peggym.resourcemap2",
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(1));
+
+        Assert.assertEquals(1,
+                ((List) data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY)).size());
+        Assert.assertEquals("peggym.130.4",
+                ((List) data.getFieldValue(SolrElementField.FIELD_ISDOCUMENTEDBY)).get(0));
+
+        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
+
+        data = assertPresentInSolrIndex("peggym.128.1");
+        Assert.assertEquals(2,
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
+        Assert.assertEquals("peggym.resourcemap",
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(0));
+        Assert.assertEquals("peggym.resourcemap2",
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(1));
+
+        Assert.assertEquals(1,
+                ((List) data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY)).size());
+        Assert.assertEquals("peggym.130.4",
+                ((List) data.getFieldValue(SolrElementField.FIELD_ISDOCUMENTEDBY)).get(0));
+
+        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
+        
+        data = assertPresentInSolrIndex("peggym.129.1");
+        Assert.assertEquals(2,
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
+        Assert.assertEquals("peggym.resourcemap",
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(0));
+        Assert.assertEquals("peggym.resourcemap2",
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(1));
+
+        Assert.assertEquals(1,
+                ((List) data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY)).size());
+        Assert.assertEquals("peggym.130.4",
+                ((List) data.getFieldValue(SolrElementField.FIELD_ISDOCUMENTEDBY)).get(0));
+
+        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
+
+        SolrDocument scienceMetadata = assertPresentInSolrIndex("peggym.130.4");
+        Assert.assertEquals(2,
+                ((List) scienceMetadata.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
+        Assert.assertEquals("peggym.resourcemap",
+                ((List) scienceMetadata.getFieldValue(SolrElementField.FIELD_RESOURCEMAP)).get(0));
+        Assert.assertEquals("peggym.resourcemap2",
+                ((List) scienceMetadata.getFieldValue(SolrElementField.FIELD_RESOURCEMAP)).get(1));
+
+        Collection documentsCollection = scienceMetadata
+                .getFieldValues(SolrElementField.FIELD_DOCUMENTS);
+        Assert.assertEquals(3, documentsCollection.size());
+        Assert.assertTrue(documentsCollection.contains("peggym.127.1"));
+        Assert.assertTrue(documentsCollection.contains("peggym.128.1"));
+        Assert.assertTrue(documentsCollection.contains("peggym.129.1"));
+
+        assertPresentInSolrIndex("peggym.resourcemap");
+        assertPresentInSolrIndex("peggym.resourcemap2");
+    }
 
     private void addSystemMetadata(Resource systemMetadataResource) {
         SystemMetadata sysmeta = null;
@@ -380,9 +470,24 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
             logger.error(e.getMessage(), e);
         }
         sysMetaMap.put(sysmeta.getIdentifier(), sysmeta);
-        sysMetaMap.put(sysmeta.getIdentifier(), sysmeta);
+        //sysMetaMap.put(sysmeta.getIdentifier(), sysmeta);
         objectPaths.putAsync(sysmeta.getIdentifier(), path);
         generator.processSystemMetaDataUpdate(sysmeta, path);
+    }
+    
+    private void deleteSystemMetadata(Resource systemMetadataResource) {
+        SystemMetadata sysmeta = null;
+        try {
+            sysmeta = TypeMarshaller.unmarshalTypeFromStream(SystemMetadata.class,
+                    systemMetadataResource.getInputStream());
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+            fail("Test SystemMetadata misconfiguration - Exception " + ex);
+        }
+        //sysMetaMap.remove(sysmeta);
+        sysMetaMap.removeAsync(sysmeta.getIdentifier());
+        objectPaths.removeAsync(sysmeta.getIdentifier());
+        generator.processSystemMetaDataDelete(sysmeta);
     }
 
     public void setUp() throws Exception {
@@ -418,6 +523,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         peggymResourcemapSys = (Resource) context.getBean("peggymResourcemapSys");
         peggymResourcemap2Sys = (Resource) context.getBean("peggymResourcemap2Sys");
         peggymResourcemapSysArchived = (Resource) context.getBean("peggymResourcemapSysArchived");
+        peggymResourcemap2SysArchived = (Resource) context.getBean("peggymResourcemap2SysArchived");
     }
 
     private static void configureHazelCast() {
