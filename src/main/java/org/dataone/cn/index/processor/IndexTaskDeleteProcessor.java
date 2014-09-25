@@ -94,7 +94,7 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
     private List<SolrDoc> removeResourceMapRelationship(List<SolrDoc> docsContainResourceMap,
             String resourceMapId) throws XPathExpressionException, IOException, EncoderException {
         List<SolrDoc> updatedSolrDocs = new ArrayList<SolrDoc>();
-        if (docsContainResourceMap != null && docsContainResourceMap.isEmpty()) {
+        if (docsContainResourceMap != null && !docsContainResourceMap.isEmpty()) {
             for (SolrDoc doc : docsContainResourceMap) {
                 List<String> resourceMapIdStrs = doc
                         .getAllFieldValues(SolrElementField.FIELD_RESOURCEMAP);
