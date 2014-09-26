@@ -83,6 +83,8 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     private Resource peggymResourcemap2ComplicatedSys;
     private Resource peggymResourcemapSysArchived;
     private Resource peggymResourcemap2SysArchived;
+    private Resource peggymResourcemap1OverlapSys;
+    private Resource peggymResourcemap2OverlapSys;
   
 
     /**
@@ -218,6 +220,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         processor.processIndexTaskQueue();
         // verify data package info correct in index
         verifyDataPackageNoResourceMap();
+        assertNotPresentInSolrIndex("peggym.resourcemap");
     }
     
     
@@ -240,10 +243,12 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         // we removed the second one. So it will recover 
         // to status that only has one resource map
         verifyTestDataPackageIndexed();
+        assertNotPresentInSolrIndex("peggym.resourcemap2");
         deleteSystemMetadata(peggymResourcemapSys);
         processor.processIndexTaskQueue();
         // verify data package info correct in index
         verifyDataPackageNoResourceMap();
+        assertNotPresentInSolrIndex("peggym.resourcemap");
     }
     
     /**
@@ -269,10 +274,35 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         // we removed the second one. So it will recover 
         // to status that only has one resource map
         verifyComplicatedDataPackageIndexed();
+        assertNotPresentInSolrIndex("peggym.resourcemap2-complicated");
         deleteSystemMetadata(peggymResourcemapComplicatedSys);
         processor.processIndexTaskQueue();
         // verify data package info correct in index
         verifyDataPackageNoResourceMap();
+        assertNotPresentInSolrIndex("peggym.resourcemap-complicated");
+    }
+    
+    /**
+     * Two data packages:
+     * The first one - peggym.resourcemap1-overlap: peggym.130.4 documents peggym.127.1
+     * The second one - peggym.resourcemap2-overlap: peggym.130.4 documents peggym.128.1 and peggym.129.1. 
+     * @throws Exception
+     */
+    @Test
+    public void testDeleteTwoOverlappedDataPackage() throws Exception {
+        deleteAll();
+        indexFirstOverlapDataPackage();
+        verifyFirstOverlapDataPackageIndexed();
+        indexSecondOverlapDataPackage();
+        verifySecondOverlapDataPackageIndexed();
+        deleteSystemMetadata(peggymResourcemap2OverlapSys);
+        processor.processIndexTaskQueue();
+        verifyFirstOverlapDataPackageIndexed();
+        assertNotPresentInSolrIndex("peggym.resourcemap2-overlap");
+        deleteSystemMetadata(peggymResourcemap1OverlapSys);
+        processor.processIndexTaskQueue();
+        verifyDataPackageNoResourceMap();
+        assertNotPresentInSolrIndex("peggym.resourcemap1-overlap");
     }
 
     /**
@@ -289,14 +319,21 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     }
 
     private void verifyDataPackageNoResourceMap() throws Exception {
-        assertPresentInSolrIndex("peggym.127.1");
-
-        SolrDocument data = assertPresentInSolrIndex("peggym.128.1");
+        SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
         Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP));
         Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY));
         Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
 
-        assertPresentInSolrIndex("peggym.129.1");
+        data = assertPresentInSolrIndex("peggym.128.1");
+        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP));
+        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY));
+        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
+
+        data = assertPresentInSolrIndex("peggym.129.1");
+        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP));
+        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY));
+        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
+        
         SolrDocument scienceMetadata = assertPresentInSolrIndex("peggym.130.4");
         Assert.assertNull(scienceMetadata.getFieldValues(SolrElementField.FIELD_RESOURCEMAP));
         Assert.assertNull(scienceMetadata.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY));
@@ -331,6 +368,8 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         httpService.sendSolrDelete("peggym.resourcemap2");
         httpService.sendSolrDelete("peggym.resourcemap-complicated");
         httpService.sendSolrDelete("peggym.resourcemap2-complicated");
+        httpService.sendSolrDelete("peggym.resourcemap1-overlap");
+        httpService.sendSolrDelete("peggym.resourcemap2-overlap");
     }
 
     private void verifyDataPackageNo1271() throws Exception {
@@ -364,6 +403,21 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         Assert.assertTrue(documentsCollection.contains("peggym.129.1"));
 
         assertPresentInSolrIndex("peggym.resourcemap");
+    }
+    
+    private void indexFirstOverlapDataPackage() {
+        addSystemMetadata(peggym1271Sys);
+        addSystemMetadata(peggym1304Sys);
+        addSystemMetadata(peggymResourcemap1OverlapSys);
+        processor.processIndexTaskQueue();
+    }
+    
+    private void indexSecondOverlapDataPackage() {
+        addSystemMetadata(peggym1281Sys);
+        addSystemMetadata(peggym1291Sys);
+        addSystemMetadata(peggym1304Sys);
+        addSystemMetadata(peggymResourcemap2OverlapSys);
+        processor.processIndexTaskQueue();
     }
 
     private void indexTestDataPackage() {
@@ -409,6 +463,89 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         addSystemMetadata(peggym1304Sys);
         addSystemMetadata(peggymResourcemapSys);
         processor.processIndexTaskQueue();
+    }
+    
+    private void verifyFirstOverlapDataPackageIndexed() throws Exception {
+        SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
+        Assert.assertEquals(1,
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
+        Assert.assertEquals("peggym.resourcemap1-overlap",
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(0));
+
+        Assert.assertEquals(1,
+                ((List) data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY)).size());
+        Assert.assertEquals("peggym.130.4",
+                ((List) data.getFieldValue(SolrElementField.FIELD_ISDOCUMENTEDBY)).get(0));
+
+        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
+
+        SolrDocument scienceMetadata = assertPresentInSolrIndex("peggym.130.4");
+        Assert.assertEquals(1,
+                ((List) scienceMetadata.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
+        Assert.assertEquals("peggym.resourcemap1-overlap",
+                ((List) scienceMetadata.getFieldValue(SolrElementField.FIELD_RESOURCEMAP)).get(0));
+
+        Collection documentsCollection = scienceMetadata
+                .getFieldValues(SolrElementField.FIELD_DOCUMENTS);
+        Assert.assertEquals(1, documentsCollection.size());
+        Assert.assertTrue(documentsCollection.contains("peggym.127.1"));
+
+        assertPresentInSolrIndex("peggym.resourcemap1-overlap");
+    }
+    
+    private void verifySecondOverlapDataPackageIndexed() throws Exception {
+        SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
+        Assert.assertEquals(1,
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
+        Assert.assertEquals("peggym.resourcemap1-overlap",
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(0));
+
+        Assert.assertEquals(1,
+                ((List) data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY)).size());
+        Assert.assertEquals("peggym.130.4",
+                ((List) data.getFieldValue(SolrElementField.FIELD_ISDOCUMENTEDBY)).get(0));
+        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
+
+        data=assertPresentInSolrIndex("peggym.128.1");
+        Assert.assertEquals(1,
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
+        Assert.assertEquals("peggym.resourcemap2-overlap",
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(0));
+        Assert.assertEquals(1,
+                ((List) data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY)).size());
+        Assert.assertEquals("peggym.130.4",
+                ((List) data.getFieldValue(SolrElementField.FIELD_ISDOCUMENTEDBY)).get(0));
+        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
+        
+        
+        data=assertPresentInSolrIndex("peggym.129.1");
+        Assert.assertEquals(1,
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
+        Assert.assertEquals("peggym.resourcemap2-overlap",
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(0));
+        Assert.assertEquals(1,
+                ((List) data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY)).size());
+        Assert.assertEquals("peggym.130.4",
+                ((List) data.getFieldValue(SolrElementField.FIELD_ISDOCUMENTEDBY)).get(0));
+        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
+
+        SolrDocument scienceMetadata = assertPresentInSolrIndex("peggym.130.4");
+        Assert.assertEquals(2,
+                ((List) scienceMetadata.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
+        Assert.assertEquals("peggym.resourcemap1-overlap",
+                ((List) scienceMetadata.getFieldValue(SolrElementField.FIELD_RESOURCEMAP)).get(0));
+        Assert.assertEquals("peggym.resourcemap2-overlap",
+                ((List) scienceMetadata.getFieldValue(SolrElementField.FIELD_RESOURCEMAP)).get(1));
+
+        Collection documentsCollection = scienceMetadata
+                .getFieldValues(SolrElementField.FIELD_DOCUMENTS);
+        Assert.assertEquals(3, documentsCollection.size());
+        Assert.assertTrue(documentsCollection.contains("peggym.127.1"));
+        Assert.assertTrue(documentsCollection.contains("peggym.128.1"));
+        Assert.assertTrue(documentsCollection.contains("peggym.129.1"));
+
+        assertPresentInSolrIndex("peggym.resourcemap1-overlap");
+        assertPresentInSolrIndex("peggym.resourcemap2-overlap");
     }
     
     private void verifyComplicatedDataPackageIndexed() throws Exception {
@@ -709,6 +846,8 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         peggymResourcemap2SysArchived = (Resource) context.getBean("peggymResourcemap2SysArchived");
         peggymResourcemapComplicatedSys = (Resource) context.getBean("peggymResourcemapComplicatedSys");
         peggymResourcemap2ComplicatedSys = (Resource) context.getBean("peggymResourcemap2ComplicatedSys");
+        peggymResourcemap1OverlapSys = (Resource) context.getBean("peggymResourcemap1OverlapSys");
+        peggymResourcemap2OverlapSys = (Resource) context.getBean("peggymResourcemap2OverlapSys");
     }
 
     private static void configureHazelCast() {

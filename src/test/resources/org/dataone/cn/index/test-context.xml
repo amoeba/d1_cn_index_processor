@@ -84,6 +84,14 @@ xmlns:context="http://www.springframework.org/schema/context"
          <constructor-arg type="java.lang.String" 
         value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap2-complicated"/>      
     </bean>
+     <bean id="peggymResourcemap1OverlapSys" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap1-overlap"/>       
+    </bean>
+    <bean id="peggymResourcemap2OverlapSys" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap2-overlap"/>      
+    </bean>
     <bean id="peggymResourcemapSysArchived" class="org.springframework.core.io.ClassPathResource" >
          <constructor-arg type="java.lang.String" 
         value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap-archived"/>   	
