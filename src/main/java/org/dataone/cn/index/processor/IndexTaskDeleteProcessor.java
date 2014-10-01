@@ -288,7 +288,7 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
                         List<String> resourceMapIdsInWithDocs = docInRemovedDocs.getAllFieldValues(SolrElementField.FIELD_RESOURCEMAP);
                         List<String> resourceMapIdsInWithDocBy = docInRemovedDocBy.getAllFieldValues(SolrElementField.FIELD_RESOURCEMAP);
                         docInRemovedDocBy.removeAllFields(SolrElementField.FIELD_RESOURCEMAP);
-                        Collection resourceMapIds = CollectionUtils.intersection(resourceMapIdsInWithDocs, resourceMapIdsInWithDocBy);
+                        Collection resourceMapIds = CollectionUtils.union(resourceMapIdsInWithDocs, resourceMapIdsInWithDocBy);
                         if(resourceMapIds != null) {
                             for(Object idObj : resourceMapIds) {
                                 String id = (String)idObj;
