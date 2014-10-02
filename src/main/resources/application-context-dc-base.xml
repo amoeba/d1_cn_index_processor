@@ -87,18 +87,18 @@
  	<bean id="dc.site" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="site" />
 		<constructor-arg name="xpath"
-		  value="//dcterms:spatial[not(@xsi:type = 'dc:Box')]/text()" />
+		  value="//dcterms:spatial[not(@xsi:type = 'dcterms:Box')]/text()" />
 		<property name="multivalue" value="true" />
 		<property name="dedupe" value="true" />
 	</bean>	
 
 	<bean id="dc.boxSpatialBoundCoordinates" class="org.dataone.cn.indexer.parser.DublinCoreSpatialBoxBoundingCoordinatesSolrField">
-		<constructor-arg name="xpath" value="//dcterms:spatial[@xsi:type='dc:Box']/text()[1]" />
+		<constructor-arg name="xpath" value="//dcterms:spatial[@xsi:type='dcterms:Box']/text()[1]" />
 		<property name="converter" ref="solrLatitudeConverter" />
 	</bean>
 	
 	<bean id="dc.boxSpatialGeohash" class="org.dataone.cn.indexer.parser.DublinCoreSpatialBoxGeohashSolrField">
-		<constructor-arg name="xpath" value="//dcterms:spatial[@xsi:type='dc:Box']/text()[1]" />
+		<constructor-arg name="xpath" value="//dcterms:spatial[@xsi:type='dcterms:Box']/text()[1]" />
 		<property name="converter" ref="solrLatitudeConverter" />
 	</bean>
 

@@ -29,7 +29,7 @@
     <dc:subject>Work: Industry Variables -- PERSON</dc:subject>
     <dc:subject>Work: Occupation Variables -- PERSON</dc:subject>
     <dc:spatial>Portugal</dc:spatial>
-    <dc:spatial xsi:type="dc:Box">northlimit=32.637500; eastlimit=-6.190455; southlimit=42.150673; westlimit=-31.289027; name=Portugal;</dc:spatial>
+    <dc:spatial xsi:type="dcterms:Box">northlimit=32.637500; eastlimit=-6.190455; southlimit=42.150673; westlimit=-31.289027; name=Portugal;</dc:spatial>
     <dc:temporal>1981</dc:temporal>
     <dc:references>http://international.ipums.org</dc:references>
     <dc:hasPart>ipumsi_6.3_pt_1981_ddic.xml</dc:hasPart>
