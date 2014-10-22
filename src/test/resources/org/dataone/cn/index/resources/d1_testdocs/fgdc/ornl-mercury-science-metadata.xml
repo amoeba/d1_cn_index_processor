@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<metadata>
+<ornl:metadata xmlns:ornl="http://purl.org/ornl/schema/mercury/terms/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://purl.org/ornl/schema/mercury/terms/v1.0 mercury-ornl-v1.xsd">
   <idinfo>
     <citation>
       <citeinfo>
@@ -170,4 +170,4 @@
       <Label />
     </Other_Link>
   </mercury>
-</metadata>
+</ornl:metadata>
