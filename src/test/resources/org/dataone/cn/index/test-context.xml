@@ -76,10 +76,34 @@ xmlns:context="http://www.springframework.org/schema/context"
          <constructor-arg type="java.lang.String" 
         value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap"/>   	
     </bean>
+    <bean id="peggymResourcemap2Sys" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap2"/>   	
+    </bean>
+    <bean id="peggymResourcemapComplicatedSys" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap-complicated"/>       
+    </bean>
+    <bean id="peggymResourcemap2ComplicatedSys" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap2-complicated"/>      
+    </bean>
+     <bean id="peggymResourcemap1OverlapSys" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap1-overlap"/>       
+    </bean>
+    <bean id="peggymResourcemap2OverlapSys" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap2-overlap"/>      
+    </bean>
     <bean id="peggymResourcemapSysArchived" class="org.springframework.core.io.ClassPathResource" >
          <constructor-arg type="java.lang.String" 
         value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap-archived"/>   	
     </bean>	
+    <bean id="peggymResourcemap2SysArchived" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap2-archived"/>      
+    </bean> 
 	
 	<bean id="systemMetadataResource5" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String" 
