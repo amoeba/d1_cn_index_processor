@@ -59,8 +59,7 @@
     <bean class="org.dataone.cn.indexer.XPathDocumentParser">
      <constructor-arg name="fields" ref="xpath_system_metadata_100" />
      <constructor-arg name="xmlNamespaceConfig" ref="xmlNamespaceConfig" />
-     <property name="solrQueryUri" value="${solr.query.uri}" />
-	 <property name="solrIndexUri" value="${solr.index.uri}" />
+     <property name="solrBaseUri" value="${solr.base.uri}" />
      <property name="httpService" ref="httpService" />
      <property name="subprocessors">
       <list>
@@ -77,6 +76,8 @@
        <ref bean="dryad30Subprocessor" />
        <ref bean="dryad31Subprocessor" />
        <ref bean="qualifiedDublicCoreSubprocessor" />
+       <ref bean="dublinCoreExtendedSubprocessor" />
+       <ref bean="datacite3Subprocessor" />
       </list>
      </property>
     </bean>
@@ -89,8 +90,8 @@
    <list>
     <bean class="org.dataone.cn.indexer.XMLNamespace">
      <constructor-arg name="namespace"
-      value="http://ns.dataone.org/service/types/v2.0" />
-     <constructor-arg name="prefix" value="d200" />
+      value="http://ns.dataone.org/service/types/v1" />
+     <constructor-arg name="prefix" value="d100" />
     </bean>
     <bean class="org.dataone.cn.indexer.XMLNamespace">
      <constructor-arg name="namespace"
@@ -153,9 +154,14 @@
     
 	<bean class="org.dataone.cn.indexer.XMLNamespace">
     	<constructor-arg name="prefix" value="dryad" />
-    	<constructor-arg name="namespace" value="http://purl.org/dryad/terms/" />
+    	<constructor-arg name="namespace" value="http://purl.org/dryad/terms/v3.1" />
     </bean>  
     
+	<bean class="org.dataone.cn.indexer.XMLNamespace">
+    	<constructor-arg name="prefix" value="datacite" />
+    	<constructor-arg name="namespace" value="http://datacite.org/schema/kernel-3" />
+    </bean>
+        
     <bean class="org.dataone.cn.indexer.XMLNamespace">
     	<constructor-arg name="prefix" value="xsi" />
     	<constructor-arg name="namespace" value="http://www.w3.org/2001/XMLSchema-instance" />

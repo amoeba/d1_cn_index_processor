@@ -93,13 +93,11 @@
 	</bean>	
 
 	<bean id="dc.boxSpatialBoundCoordinates" class="org.dataone.cn.indexer.parser.DublinCoreSpatialBoxBoundingCoordinatesSolrField">
-		<constructor-arg name="xpath" value="//dcterms:spatial[@xsi:type='dcterms:Box']/text()[1]" />
-		<property name="converter" ref="solrLatitudeConverter" />
+		<constructor-arg name="xpath" value="//dcterms:spatial[@xsi:type='dcterms:Box'][1]/text()[1]" />
 	</bean>
 	
 	<bean id="dc.boxSpatialGeohash" class="org.dataone.cn.indexer.parser.DublinCoreSpatialBoxGeohashSolrField">
-		<constructor-arg name="xpath" value="//dcterms:spatial[@xsi:type='dcterms:Box']/text()[1]" />
-		<property name="converter" ref="solrLatitudeConverter" />
+		<constructor-arg name="xpath" value="//dcterms:spatial[@xsi:type='dcterms:Box'][1]/text()[1]" />
 	</bean>
 
 	<bean id="dc.fileID" class="org.dataone.cn.indexer.parser.ResolveSolrField">
