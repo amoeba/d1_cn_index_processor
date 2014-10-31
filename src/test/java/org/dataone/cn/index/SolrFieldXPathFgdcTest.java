@@ -24,6 +24,7 @@ package org.dataone.cn.index;
 
 import java.util.HashMap;
 
+import org.dataone.cn.index.BaseSolrFieldXPathTest;
 import org.dataone.cn.indexer.convert.FgdcDateConverter;
 import org.dataone.cn.indexer.convert.IConverter;
 import org.dataone.cn.indexer.convert.SolrDateConverter;
@@ -471,7 +472,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         // system metadata
         ornlMercuryExpected.put("id", ornl_mercury_pid);
         ornlMercuryExpected.put("formatId", "http://purl.org/ornl/schema/mercury/terms/v1.0");
-        ornlMercuryExpected.put("formatType", "");
+        ornlMercuryExpected.put("formatType", "METADATA");
         ornlMercuryExpected.put("size", "7424");
         ornlMercuryExpected.put("checksum", "8151041c5f77f89b05004272ed94d463");
         ornlMercuryExpected.put("checksumAlgorithm", "MD5");
