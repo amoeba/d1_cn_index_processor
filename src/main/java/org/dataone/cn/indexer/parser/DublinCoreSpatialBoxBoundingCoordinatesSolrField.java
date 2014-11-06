@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.dataone.cn.indexer.parser.utility.DublinCoreSpatialBoxParsingUtility;
+import org.dataone.cn.indexer.parser.utility.SpatialBoxParsingUtility;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.w3c.dom.Document;
 
@@ -37,12 +37,7 @@ public class DublinCoreSpatialBoxBoundingCoordinatesSolrField extends SolrField 
     private static Logger logger = Logger
             .getLogger(DublinCoreSpatialBoxBoundingCoordinatesSolrField.class.getName());
 
-    private static final String INDEX_NORTH_PROPERTY = "northBoundCoord";
-    private static final String INDEX_SOUTH_PROPERTY = "southBoundCoord";
-    private static final String INDEX_EAST_PROPERTY = "eastBoundCoord";
-    private static final String INDEX_WEST_PROPERTY = "westBoundCoord";
-
-    private static DublinCoreSpatialBoxParsingUtility boxParsingUtility = new DublinCoreSpatialBoxParsingUtility();
+    private static SpatialBoxParsingUtility boxParsingUtility = new SpatialBoxParsingUtility();
 
     public DublinCoreSpatialBoxBoundingCoordinatesSolrField() {
     }
@@ -60,14 +55,14 @@ public class DublinCoreSpatialBoxBoundingCoordinatesSolrField extends SolrField 
 
         String nodeValue = boxParsingUtility.extractNodeValue(doc, this.xPathExpression);
 
-        setBoundingBoxCoordinate(nodeValue, fields,
-                DublinCoreSpatialBoxParsingUtility.DC_BOX_NORTH_PROPERTY, INDEX_NORTH_PROPERTY);
-        setBoundingBoxCoordinate(nodeValue, fields,
-                DublinCoreSpatialBoxParsingUtility.DC_BOX_SOUTH_PROPERTY, INDEX_SOUTH_PROPERTY);
-        setBoundingBoxCoordinate(nodeValue, fields,
-                DublinCoreSpatialBoxParsingUtility.DC_BOX_EAST_PROPERTY, INDEX_EAST_PROPERTY);
-        setBoundingBoxCoordinate(nodeValue, fields,
-                DublinCoreSpatialBoxParsingUtility.DC_BOX_WEST_PROPERTY, INDEX_WEST_PROPERTY);
+        setBoundingBoxCoordinate(nodeValue, fields, SpatialBoxParsingUtility.DC_BOX_NORTH_PROPERTY,
+                SpatialBoxParsingUtility.INDEX_NORTH_PROPERTY);
+        setBoundingBoxCoordinate(nodeValue, fields, SpatialBoxParsingUtility.DC_BOX_SOUTH_PROPERTY,
+                SpatialBoxParsingUtility.INDEX_SOUTH_PROPERTY);
+        setBoundingBoxCoordinate(nodeValue, fields, SpatialBoxParsingUtility.DC_BOX_EAST_PROPERTY,
+                SpatialBoxParsingUtility.INDEX_EAST_PROPERTY);
+        setBoundingBoxCoordinate(nodeValue, fields, SpatialBoxParsingUtility.DC_BOX_WEST_PROPERTY,
+                SpatialBoxParsingUtility.INDEX_WEST_PROPERTY);
 
         return fields;
     }
@@ -75,12 +70,9 @@ public class DublinCoreSpatialBoxBoundingCoordinatesSolrField extends SolrField 
     private void setBoundingBoxCoordinate(String nodeValue, List<SolrElementField> fields,
             String boxDirectionProperty, String indexDirectionProperty) {
 
-        String directionValue = boxParsingUtility.extractDirectionalValue(nodeValue,
+        String directionValue = boxParsingUtility.extractDublinCoreDirectionalValue(nodeValue,
                 boxDirectionProperty);
         if (directionValue != null && StringUtils.isNotEmpty(directionValue)) {
-            if (this.converter != null) {
-                directionValue = this.converter.convert(directionValue);
-            }
             if (StringUtils.isNotEmpty(directionValue)) {
                 fields.add(new SolrElementField(indexDirectionProperty, directionValue));
             }

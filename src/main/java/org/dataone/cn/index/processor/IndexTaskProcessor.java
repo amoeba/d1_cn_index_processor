@@ -149,15 +149,15 @@ public class IndexTaskProcessor {
             task.markInProgress();
             task = saveTask(task);
 
+            if (task != null && task.isDeleteTask()) {
+                return task;
+            }
+
             if (task != null && !isObjectPathReady(task)) {
                 task.markNew();
                 saveTask(task);
                 task = null;
                 continue;
-            }
-
-            if (task != null && task.isDeleteTask()) {
-                return task;
             }
 
             if (task != null && !isResourceMapReadyToIndex(task, queue)) {
@@ -206,7 +206,7 @@ public class IndexTaskProcessor {
         List<SolrDoc> updateDocuments = null;
         int numberOfIndexedOrRemovedReferences = 0;
         try {
-            updateDocuments = httpService.getDocuments(this.solrQueryUri, referencedIds);
+            updateDocuments = httpService.getDocumentsById(this.solrQueryUri, referencedIds);
             numberOfIndexedOrRemovedReferences = updateDocuments.size();
             if (updateDocuments.size() != referencedIds.size()) {
                 for (String id : referencedIds) {

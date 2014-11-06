@@ -105,7 +105,7 @@ public abstract class BaseSolrFieldXPathTest {
                             CollectionUtils.isEqualCollection(expectedValues, actualValues));
                 } else {
                     System.out.println("Expected does not contain field for: " + docFieldName);
-                    Assert.fail("Expectd does not contain value for field: " + docFieldName);
+                    Assert.fail("Expected does not contain value for field: " + docFieldName);
                 }
             } else {
                 SolrElementField docField = fields.get(0);

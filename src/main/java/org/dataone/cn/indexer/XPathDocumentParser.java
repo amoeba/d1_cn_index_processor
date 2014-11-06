@@ -320,7 +320,7 @@ public class XPathDocumentParser {
         }
         List<String> ids = new ArrayList<String>();
         ids.add(indexDocument.getIdentifier());
-        List<SolrDoc> indexedDocuments = httpService.getDocuments(solrQueryUri, ids);
+        List<SolrDoc> indexedDocuments = httpService.getDocumentsById(solrQueryUri, ids);
         SolrDoc indexedDocument = indexedDocuments == null || indexedDocuments.size() <= 0 ? null
                 : indexedDocuments.get(0);
         if (indexedDocument == null || indexedDocument.getFieldList().size() <= 0) {
@@ -436,7 +436,7 @@ public class XPathDocumentParser {
         return solrindexUri;
     }
 
-    public void setSolrindexUri(String solrindexUri) {
+    public void setSolrIndexUri(String solrindexUri) {
         this.solrindexUri = solrindexUri;
     }
 
@@ -454,11 +454,6 @@ public class XPathDocumentParser {
 
     public void setSolrQueryUri(String solrQueryUri) {
         this.solrQueryUri = solrQueryUri;
-    }
-
-    public void setSolrBaseUri(String solrBaseUri) {
-        setSolrQueryUri(solrBaseUri + "/adminSelect/");
-        setSolrindexUri(solrBaseUri + "/update?commit=true");
     }
 
     public List<IDocumentSubprocessor> getSubprocessors() {

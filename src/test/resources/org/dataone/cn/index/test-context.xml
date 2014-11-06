@@ -34,6 +34,11 @@ xmlns:context="http://www.springframework.org/schema/context"
     
     <import resource="classpath:application-context-dc-base.xml" />
     <import resource="classpath:application-context-qdc.xml" />
+    <import resource="classpath:application-context-dcx.xml" />
+
+    <import resource="classpath:application-context-datacite-base.xml" />
+    <import resource="classpath:application-context-datacite-3.xml" />
+    
     <!-- 
     This import overrides default postgres datasource for testing.
     	 To test with postgres, comment out the following import 
@@ -72,11 +77,35 @@ xmlns:context="http://www.springframework.org/schema/context"
          <constructor-arg type="java.lang.String" 
         value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap"/>   	
     </bean>
+    <bean id="peggymResourcemap2Sys" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap2"/>   	
+    </bean>
+    <bean id="peggymResourcemapComplicatedSys" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap-complicated"/>       
+    </bean>
+    <bean id="peggymResourcemap2ComplicatedSys" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap2-complicated"/>      
+    </bean>
+     <bean id="peggymResourcemap1OverlapSys" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap1-overlap"/>       
+    </bean>
+    <bean id="peggymResourcemap2OverlapSys" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap2-overlap"/>      
+    </bean>
     <bean id="peggymResourcemapSysArchived" class="org.springframework.core.io.ClassPathResource" >
          <constructor-arg type="java.lang.String" 
         value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap-archived"/>   	
     </bean>	
-	
+    <bean id="peggymResourcemap2SysArchived" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap2-archived"/>      
+    </bean> 
+    	
 	<bean id="systemMetadataResource5" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String" 
         value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap"/>
@@ -167,6 +196,36 @@ xmlns:context="http://www.springframework.org/schema/context"
   	<bean id="ornl_mercury_system_metadata" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String" 
         value="org/dataone/cn/index/resources/d1_testdocs/fgdc/ornl-mercury-system-metadata.xml"/>
+    </bean>
+    
+     <bean id="dcx_ipumsi_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/dcx/SystemMetadata-ipumsi_6-3_br_2000_dcx.xml"/>
+    </bean>
+    
+    <bean id="dcx_ipumsi_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/dcx/ipumsi_6-3_br_2000_dcx.xml"/>
+    </bean>
+    
+   	<bean id="datacite_1_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/datacite/datacite-system-metadata-1.xml"/>
+    </bean>
+    
+    <bean id="datacite_1_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/datacite/datacite-science-metadata-1.xml"/>
+    </bean>
+
+   	<bean id="datacite_2_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/datacite/datacite-system-metadata-2.xml"/>
+    </bean>
+    
+    <bean id="datacite_2_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/datacite/datacite-science-metadata-2.xml"/>
     </bean>
     
 </beans>
