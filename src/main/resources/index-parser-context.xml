@@ -155,7 +155,7 @@
     
 	<bean class="org.dataone.cn.indexer.XMLNamespace">
     	<constructor-arg name="prefix" value="dryad" />
-    	<constructor-arg name="namespace" value="http://purl.org/dryad/terms/v3.1" />
+    	<constructor-arg name="namespace" value="http://purl.org/dryad/terms/" />
     </bean>  
     
 	<bean class="org.dataone.cn.indexer.XMLNamespace">
