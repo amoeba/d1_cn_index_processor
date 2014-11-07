@@ -73,7 +73,7 @@ public class SolrFieldDataCiteTest extends BaseSolrFieldXPathTest {
 
         // system metadata
         datacite1Expected.put("id", pid1);
-        datacite1Expected.put("formatId", "http://schema.datacite.org/meta/kernel-3");
+        datacite1Expected.put("formatId", "http://datacite.org/schema/kernel-3");
         datacite1Expected.put("formatType", "");
         datacite1Expected.put("size", "8849");
         datacite1Expected.put("checksum", "f3985f867816caea2f2be2e2f6b7ddc6");
