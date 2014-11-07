@@ -155,7 +155,7 @@ public class SolrFieldDublinCoreTest extends BaseSolrFieldXPathTest {
 
         // system metadata
         dcxExpected.put("id", "ipumsi_6-3_br_2000_dc.xml");
-        dcxExpected.put("formatId", "http://www.loc.gov/standards/sru/cql/contextSets/dcx/dcx.xsd");
+        dcxExpected.put("formatId", "info:lc/xmlns/dcx-v1");
         dcxExpected.put("formatType", "");
         dcxExpected.put("size", "14949");
         dcxExpected.put("checksum", "e5975f877816caea2f2be2e2f6b7ddc6");
