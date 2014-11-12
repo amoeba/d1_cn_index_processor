@@ -5,7 +5,7 @@
 	<bean id="datacite3Subprocessor"
 	  	class="org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor">
 		<property name="matchDocument"
-	   		value="/d200:systemMetadata/formatId[text() = 'http://datacite.org/schema/kernel-3']"></property>
+	   		value="/d200:systemMetadata/formatId[text() = 'http://datacite.org/schema/kernel-3.1'] | /d200:systemMetadata/formatId[text()='http://datacite.org/schema/kernel-3.0']"></property>
 	  	<property name="fieldList">
 		   	<list>
 		    	<ref bean="datacite.author" />

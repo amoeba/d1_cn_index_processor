@@ -2,7 +2,7 @@
 <ns1:systemMetadata xmlns:ns1="http://ns.dataone.org/service/types/v2.0">
 	<serialVersion>1</serialVersion>
 	<identifier>dataciteScienceMetadata1</identifier>
-	<formatId>http://datacite.org/schema/kernel-3</formatId>
+	<formatId>http://datacite.org/schema/kernel-3.0</formatId>
 	<size>8849</size>
 	<checksum algorithm="MD5">f3985f867816caea2f2be2e2f6b7ddc6</checksum>
 	<submitter>CN=urn:node:mnTestDASH,DC=dataone,DC=org</submitter>
