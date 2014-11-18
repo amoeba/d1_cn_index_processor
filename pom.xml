@@ -84,6 +84,12 @@
         	<artifactId>d1_libclient_java</artifactId>
         	<version>${d1_libclient_version}</version>
         	<type>jar</type>
+        	<exclusions>
+        		<exclusion>
+					<groupId>com.hp.hpl.jena</groupId>
+					<artifactId>jena</artifactId>
+				</exclusion>
+        	</exclusions>	
         </dependency>
 		<dependency>
 			<groupId>org.dataone</groupId>
@@ -238,6 +244,11 @@
 			<groupId>net.minidev</groupId>
 			<artifactId>json-smart</artifactId>
 			<version>1.0.9</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>jena-tdb</artifactId>
+			<version>1.0.0</version>
 		</dependency>
         
 		<dependency>

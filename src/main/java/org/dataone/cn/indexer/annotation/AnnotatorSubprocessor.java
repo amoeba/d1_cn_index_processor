@@ -1,12 +1,12 @@
 package org.dataone.cn.indexer.annotation;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
@@ -21,11 +21,24 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dataone.cn.indexer.parser.AbstractDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
+import org.dataone.cn.indexer.parser.ISolrField;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.configuration.Settings;
 import org.w3c.dom.Document;
+
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.tdb.TDBFactory;
 
 
 /**
@@ -36,7 +49,7 @@ import org.w3c.dom.Document;
  * @author leinfelder
  *
  */
-public class AnnotatorSubprocessor implements IDocumentSubprocessor {
+public class AnnotatorSubprocessor extends AbstractDocumentSubprocessor implements IDocumentSubprocessor {
 
 	private static Log log = LogFactory.getLog(AnnotatorSubprocessor.class);
 
@@ -62,19 +75,15 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 			Entry<String, SolrDoc> entry = entries.next();
 			String pid = entry.getKey();
 			SolrDoc solrDoc = entry.getValue();
-			Map<String, List<Object>> annotations = lookUpAnnotations(pid);
-			// annotations found, then process them
+			
+			// check for annotations, and add them if found
+			SolrDoc annotations = lookUpAnnotations(pid);
 			if (annotations != null) {
-				Iterator<Entry<String, List<Object>>> fieldEntries = annotations.entrySet().iterator();
+				Iterator<SolrElementField> annotationIter = annotations.getFieldList().iterator();
 				// each field can have multiple values
-				while (fieldEntries.hasNext()) {
-					Entry<String, List<Object>> fieldEntry = fieldEntries.next();
-					String name = fieldEntry.getKey();
-					// add each value as a solr field
-					for (Object value: fieldEntry.getValue()) {
-						SolrElementField solrField = new SolrElementField(name, value.toString());
-						solrDoc.addField(solrField);
-					}
+				while (annotationIter.hasNext()) {
+					SolrElementField annotation = annotationIter.next();
+					solrDoc.addField(annotation);
 				}
 			}
 		}
@@ -89,8 +98,7 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 	 * @param pid the identifier to fetch annotations about
 	 * @return
 	 */
-	public static Map<String, List<Object>> lookUpAnnotations(String pid) {
-		
+	private SolrDoc lookUpAnnotations(String pid) {
 
 		String annotatorUrl = null;
 		String consumerKey = null;
@@ -121,14 +129,12 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 			
 			JSONArray rows = (JSONArray) jo.get("rows");
 			int count = rows.size();
-			Map<String, List<Object>> annotations = new HashMap<String, List<Object>>();
+			SolrDoc annotations = new SolrDoc();
 			
 			// use catch-all annotation field for the tags
-			List<Object> tagValues = null;
 			String tagKey = "annotation_sm";
 			
 			// track the comments here
-			List<Object> commentValues = null;
 			String commentKey = "comment_sm";
 			
 			for (int i = 0; i < count; i++){
@@ -148,37 +154,53 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 					tagKey = field.toString();
 				}
 				
-				// make sure we have a place to store the values
-				tagValues = annotations.get(tagKey);
-				if (tagValues == null) {
-					tagValues = new ArrayList<Object>();
-				}
 				Object obj = row.get("tags");
 				if (obj instanceof JSONArray) {
 					JSONArray tags = (JSONArray) obj;
-					tagValues.addAll(tags);
+					for (Object tag: tags) {
+						String value = tag.toString();
+						if (!annotations.hasFieldWithValue(tagKey, value)) {
+							annotations.addField(new SolrElementField(tagKey, value));
+						}
+					}
 				} else {
 					String value = obj.toString();
-					tagValues.add(value);
+					if (!annotations.hasFieldWithValue(tagKey, value)) {
+						annotations.addField(new SolrElementField(tagKey, value));
+					}
 				}
-				annotations.put(tagKey, tagValues);
-				
+
 				// index the comments
-				commentValues = annotations.get(commentKey);
-				if (commentValues == null) {
-					commentValues = new ArrayList<Object>();
-				}
 				Object commentObj = row.get("text");
 				if (commentObj != null) {
 					String value = commentObj.toString();
 					if (value != null && value.length() > 0) {
-						commentValues.add(value);
+						if (!annotations.hasFieldWithValue(commentKey, value)) {
+							annotations.addField(new SolrElementField(commentKey, value));
+						}
 					}
 				}
-				annotations.put(commentKey, commentValues);
-
 			}
-			// just populate this one field for example
+			
+			// expand the tags, adding expanded concepts to the existing fields
+			for (String tag: annotations.getAllFieldValues(tagKey)) {
+				try {
+					// get the expanded tags
+					Map<String, Set<String>> expandedConcepts = this.expandConcepts(tag);
+					for (Map.Entry<String, Set<String>> entry: expandedConcepts.entrySet()) {
+						for (String value: entry.getValue()) {
+							String name = entry.getKey();
+							if (!annotations.hasFieldWithValue(name, value)) {
+								annotations.addField(new SolrElementField(name, value));
+							}
+						}
+					}
+				} catch (Exception e) {
+					log.error("Problem exapnding concept: " + tag, e);
+				}	
+			}
+			
+			// return them
 			return annotations;
 			
 		} catch (Exception e) {
@@ -186,6 +208,62 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 		}
 		
 		return null;
+	}
+	
+	private Map<String, Set<String>> expandConcepts(String uri) throws Exception {
+		
+		// return structure allows multi-valued fields
+		Map<String, Set<String>> conceptFields = new HashMap<String, Set<String>>();
+		
+		// get the triples tore dataset
+		Dataset dataset = TripleStoreService.getInstance().getDataset();
+		
+    	// load the ontology
+    	boolean loaded = dataset.containsNamedModel(uri);
+		if (!loaded) {
+			OntModel ontModel = ModelFactory.createOntologyModel();
+			//InputStream sourceStream = new URI(uri).toURL().openStream();
+			// TODO: look up physical source from bioportal
+			ontModel.read(uri);
+			dataset.addNamedModel(uri, ontModel);
+		}
+		
+		// process each field query
+		for (ISolrField field: this.getFieldList()) {
+			String q = null;
+			if (field instanceof SparqlField) {
+				q = ((SparqlField) field).getQuery();
+				q = q.replaceAll("\\$CONCEPT_URI", uri);
+				q = q.replaceAll("\\$GRAPH_NAME", uri);
+				Query query = QueryFactory.create(q);
+				QueryExecution qexec = QueryExecutionFactory.create(query, dataset);
+				ResultSet results = qexec.execSelect();
+				
+				// each field might have multiple solution values
+				String name = field.getName();
+				Set<String> values = new TreeSet<String>();
+				
+				while (results.hasNext()) {
+					
+					QuerySolution solution = results.next();
+					log.debug(solution.toString());
+
+					// the value[s] for that field
+					if (solution.contains(name)) {
+						String value = solution.get(field.getName()).toString();
+						values.add(value);
+					}
+				}
+				conceptFields.put(name, values);
+
+			}
+		}
+		
+		// clean up the triple store
+		TDBFactory.release(dataset);
+
+        return conceptFields;
+		        
 	}
 
 }
