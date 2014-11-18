@@ -210,7 +210,7 @@ public class AnnotatorSubprocessor extends AbstractDocumentSubprocessor implemen
 		return null;
 	}
 	
-	private Map<String, Set<String>> expandConcepts(String uri) throws Exception {
+	protected Map<String, Set<String>> expandConcepts(String uri) throws Exception {
 		
 		// return structure allows multi-valued fields
 		Map<String, Set<String>> conceptFields = new HashMap<String, Set<String>>();
