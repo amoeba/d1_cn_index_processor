@@ -154,6 +154,19 @@ public class AnnotatorSubprocessor extends AbstractDocumentSubprocessor implemen
 					tagKey = field.toString();
 				}
 				
+				// do not index rejected annotations
+				Object reject = row.get("reject");
+				if (reject != null && Boolean.parseBoolean(reject.toString())) {
+					// include empty index values to force removal
+					if (!annotations.hasFieldWithValue(tagKey, "")) {
+						annotations.addField(new SolrElementField(tagKey, ""));
+					}
+					if (!annotations.hasFieldWithValue(commentKey, "")) {
+						annotations.addField(new SolrElementField(commentKey, ""));
+					}
+					continue;
+				}
+				
 				Object obj = row.get("tags");
 				if (obj instanceof JSONArray) {
 					JSONArray tags = (JSONArray) obj;
@@ -214,6 +227,10 @@ public class AnnotatorSubprocessor extends AbstractDocumentSubprocessor implemen
 		
 		// return structure allows multi-valued fields
 		Map<String, Set<String>> conceptFields = new HashMap<String, Set<String>>();
+		
+		if (uri == null || uri.length() < 1) {
+			return conceptFields;
+		}
 		
 		// get the triples tore dataset
 		Dataset dataset = TripleStoreService.getInstance().getDataset();
