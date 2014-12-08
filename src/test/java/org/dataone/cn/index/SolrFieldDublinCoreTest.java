@@ -97,7 +97,7 @@ public class SolrFieldDublinCoreTest extends BaseSolrFieldXPathTest {
         // system metadata
         qdcExpected.put("id", "ipumsi_6-3_pt_1981.dc.xml");
         qdcExpected.put("formatId", "info:lc/xmlns/dcx-v1");
-        qdcExpected.put("formatType", "METADATA");
+        qdcExpected.put("formatType", "");
         qdcExpected.put("size", "8734");
         qdcExpected.put("checksum", "f5975f877816caea2f2be2e2f6b7ddb5");
         qdcExpected.put("checksumAlgorithm", "MD5");
