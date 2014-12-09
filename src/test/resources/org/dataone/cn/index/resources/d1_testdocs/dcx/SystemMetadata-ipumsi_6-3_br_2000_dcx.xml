@@ -2,7 +2,7 @@
 <ns1:systemMetadata xmlns:ns1="http://ns.dataone.org/service/types/v2.0">
 	<serialVersion>2</serialVersion>
 	<identifier>ipumsi_6-3_br_2000_dc.xml</identifier>
-	<formatId>info:lc/xmlns/dcx-v1</formatId>
+	<formatId>http://ns.dataone.org/metadata/schema/onedcx/v1.0</formatId>
 	<size>14949</size>
 	<checksum algorithm="MD5">e5975f877816caea2f2be2e2f6b7ddc6</checksum>
 	<submitter>CN=urn:node:mnTestMPC,DC=dataone,DC=org</submitter>
