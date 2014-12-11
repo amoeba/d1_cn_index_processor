@@ -22,6 +22,7 @@
 
 package org.dataone.cn.indexer.parser;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.dataone.cn.indexer.XPathDocumentParser;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.w3c.dom.Document;
 
@@ -86,10 +88,13 @@ public class AbstractDocumentSubprocessor implements IDocumentSubprocessor {
      * @return map of Documents including updated Solr index document
      */
     public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs,
-            Document doc) throws Exception {
+            InputStream is) throws Exception {
 
         SolrDoc metaDocument = docs.get(identifier);
 
+        // get the stream as a Document
+        Document doc = XPathDocumentParser.generateXmlDocument(is);
+        
         for (ISolrField solrField : fieldList) {
             try {
                 metaDocument.getFieldList().addAll(solrField.getFields(doc, identifier));

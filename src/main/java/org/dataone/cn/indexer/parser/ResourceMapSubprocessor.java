@@ -23,6 +23,7 @@
 package org.dataone.cn.indexer.parser;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,12 +33,14 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.log4j.Logger;
+import org.dataone.cn.indexer.XPathDocumentParser;
 import org.dataone.cn.indexer.resourcemap.ResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMapFactory;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dspace.foresite.OREParserException;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * Resource Map Document processor.  Operates on ORE/RDF objects.  Maps 
@@ -73,15 +76,19 @@ public class ResourceMapSubprocessor extends AbstractDocumentSubprocessor implem
      */
     @Override
     public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs,
-            Document doc) throws XPathExpressionException, IOException, EncoderException {
+            InputStream is) throws XPathExpressionException, IOException, EncoderException {
         SolrDoc resourceMapDoc = docs.get(identifier);
         List<SolrDoc> processedDocs = new ArrayList<SolrDoc>();
         try {
+            Document doc = XPathDocumentParser.generateXmlDocument(is);
             processedDocs = processResourceMap(resourceMapDoc, doc);
         } catch (OREParserException oreException) {
             logger.error("Unable to parse resource map: " + identifier
                     + ".  Unrecoverable parse exception:  task will not be re-tried.");
-        }
+        } catch (SAXException e) {
+        	logger.error("Unable to parse resource map: " + identifier
+                    + ".  Unrecoverable parse exception:  task will not be re-tried.");
+		}
         Map<String, SolrDoc> processedDocsMap = new HashMap<String, SolrDoc>();
         for (SolrDoc processedDoc : processedDocs) {
             processedDocsMap.put(processedDoc.getIdentifier(), processedDoc);

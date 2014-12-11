@@ -1,8 +1,10 @@
 package org.dataone.cn.indexer.annotation;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -23,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dataone.cn.indexer.parser.AbstractDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
+import org.dataone.cn.indexer.parser.ISolrDataField;
 import org.dataone.cn.indexer.parser.ISolrField;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
@@ -49,9 +52,19 @@ import com.hp.hpl.jena.tdb.TDBFactory;
  * @author leinfelder
  *
  */
-public class AnnotatorSubprocessor extends AbstractDocumentSubprocessor implements IDocumentSubprocessor {
+public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 
 	private static Log log = LogFactory.getLog(AnnotatorSubprocessor.class);
+
+    private List<ISolrDataField> fieldList = new ArrayList<ISolrDataField>();
+
+	public List<ISolrDataField> getFieldList() {
+		return fieldList;
+	}
+
+	public void setFieldList(List<ISolrDataField> fieldList) {
+		this.fieldList = fieldList;
+	}
 
 	@Override
 	public boolean canProcess(Document doc) throws XPathExpressionException {
@@ -67,7 +80,7 @@ public class AnnotatorSubprocessor extends AbstractDocumentSubprocessor implemen
 
 	@Override
 	public Map<String, SolrDoc> processDocument(String identifier,
-			Map<String, SolrDoc> docs, Document doc) throws Exception {
+			Map<String, SolrDoc> docs, InputStream is) throws Exception {
 		
 		// for each document, check if there are any annotations
 		Iterator<Entry<String, SolrDoc>> entries = docs.entrySet().iterator();
@@ -246,7 +259,7 @@ public class AnnotatorSubprocessor extends AbstractDocumentSubprocessor implemen
 		}
 		
 		// process each field query
-		for (ISolrField field: this.getFieldList()) {
+		for (ISolrDataField field: fieldList) {
 			String q = null;
 			if (field instanceof SparqlField) {
 				q = ((SparqlField) field).getQuery();

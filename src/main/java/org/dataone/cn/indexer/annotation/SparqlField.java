@@ -2,13 +2,10 @@ package org.dataone.cn.indexer.annotation;
 
 import java.util.List;
 
-import javax.xml.xpath.XPath;
-
-import org.dataone.cn.indexer.parser.ISolrField;
+import org.dataone.cn.indexer.parser.ISolrDataField;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
-import org.w3c.dom.Document;
 
-public class SparqlField implements ISolrField {
+public class SparqlField implements ISolrDataField {
 	
 	private String name;
 	
@@ -36,16 +33,10 @@ public class SparqlField implements ISolrField {
 	}
 
 	@Override
-	public List<SolrElementField> getFields(Document arg0, String arg1)
+	public List<SolrElementField> getFields(byte[] data, String arg1)
 			throws Exception {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public void initExpression(XPath arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

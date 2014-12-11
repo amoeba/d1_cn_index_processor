@@ -171,12 +171,13 @@ public class XPathDocumentParser {
                         // metadata document.
                         // note that resource map processing touches all objects
                         // referenced by the resource map.
-                        Document docObject = loadDocument(objectPath, INPUT_ENCODING);
-                        if (docObject == null) {
+                        //Document docObject = loadDocument(objectPath, INPUT_ENCODING);
+                    	FileInputStream objectStream = new FileInputStream(objectPath);
+                        if (!objectStream.getFD().valid()) {
                             log.error("Could not load OBJECT file for ID,Path=" + id + ", "
                                     + objectPath);
                         } else {
-                            docs = subprocessor.processDocument(id, docs, docObject);
+                            docs = subprocessor.processDocument(id, docs, objectStream);
                         }
                     } catch (Exception e) {
                         log.error(e.getMessage());
@@ -256,12 +257,13 @@ public class XPathDocumentParser {
                         // metadata document.
                         // note that resource map processing touches all objects
                         // referenced by the resource map.
-                        Document docObject = loadDocument(objectPath, INPUT_ENCODING);
-                        if (docObject == null) {
+                        //Document docObject = loadDocument(objectPath, INPUT_ENCODING);
+                        FileInputStream objectStream = new FileInputStream(objectPath);
+                        if (!objectStream.getFD().valid()) {
                             log.error("Could not load OBJECT file for ID,Path=" + id + ", "
                                     + objectPath);
                         } else {
-                            docs = subprocessor.processDocument(id, docs, docObject);
+                            docs = subprocessor.processDocument(id, docs, objectStream);
                         }
                     } catch (Exception e) {
                         log.error(e.getStackTrace().toString());
@@ -404,7 +406,7 @@ public class XPathDocumentParser {
         return doc;
     }
 
-    public Document generateXmlDocument(InputStream smdStream) throws SAXException {
+    public static Document generateXmlDocument(InputStream smdStream) throws SAXException {
         Document doc = null;
 
         try {

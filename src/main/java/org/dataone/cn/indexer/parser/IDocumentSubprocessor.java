@@ -22,6 +22,7 @@
 
 package org.dataone.cn.indexer.parser;
 
+import java.io.InputStream;
 import java.util.Map;
 
 import javax.xml.xpath.XPath;
@@ -58,9 +59,9 @@ public interface IDocumentSubprocessor {
      *
      * @param identifier id of original document in Map docs
      * @param docs Documents indexed by identifiers
-     * @param doc original XML document
+     * @param is original document stream
      * @return Updated solr index documents
      */
     public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs,
-            Document doc) throws Exception;
+            InputStream is) throws Exception;
 }

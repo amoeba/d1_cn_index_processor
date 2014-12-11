@@ -22,29 +22,29 @@
 
 package org.dataone.cn.indexer.parser;
 
-import java.io.InputStream;
-import java.util.Map;
+import java.util.List;
 
-import org.dataone.cn.indexer.solrhttp.SolrDoc;
+import org.dataone.cn.indexer.solrhttp.SolrElementField;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Porter
- * Date: 9/22/11
- * Time: 1:41 PM
+ * Solr field processing interface.  Defines the methods which need to be provided
+ * by an implementation of a solr field processing class.
+ *  
  */
+public interface ISolrDataField {
 
-/**Retrieves science metadata document from ID using {@link IDocumentProvider}.  After retrievval document is processed
- * and fields added to {@link SolrDoc} to be indexed.
- *
- */
-public class ScienceMetadataDocumentSubprocessor extends AbstractDocumentSubprocessor implements
-        IDocumentSubprocessor {
+    /**
+     * Method for extracting data from document
+     * 
+     * @param data
+     * @return fields parsed from the object
+     * @throws Exception
+     */
+    public List<SolrElementField> getFields(byte[] data, String identifier) throws Exception;
 
-    @Override
-    public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs,
-            InputStream is) throws Exception {
-        return super.processDocument(identifier, docs, is);
-    }
-
+    /**
+     * Returns the search field name.
+     * @return
+     */
+    public String getName();
 }

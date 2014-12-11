@@ -5,9 +5,6 @@
 
 	<bean id="annotatorSubprocessor" class="org.dataone.cn.indexer.annotation.AnnotatorSubprocessor">
 		
-		<!-- match any document type -->
-		<property name="matchDocument"
-			value="/d200:systemMetadata/formatId[text() != '']" />
 		<property name="fieldList">
 			<list>
 				<ref bean="annotation.expansion" />
