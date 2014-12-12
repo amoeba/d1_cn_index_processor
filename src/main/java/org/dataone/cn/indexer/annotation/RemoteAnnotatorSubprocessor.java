@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -13,6 +14,9 @@ import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,6 +24,7 @@ import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.ISolrDataField;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
+import org.dataone.configuration.Settings;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.Dataset;
@@ -41,22 +46,12 @@ import com.hp.hpl.jena.tdb.TDBFactory;
  * @author leinfelder
  *
  */
-public class AnnotatorSubprocessor implements IDocumentSubprocessor {
+public class RemoteAnnotatorSubprocessor implements IDocumentSubprocessor {
 
-	private static Log log = LogFactory.getLog(AnnotatorSubprocessor.class);
-
-    private List<String> matchDocuments = null;
+	private static Log log = LogFactory.getLog(RemoteAnnotatorSubprocessor.class);
 
     private List<ISolrDataField> fieldList = new ArrayList<ISolrDataField>();
 
-    public List<String> getMatchDocuments() {
-        return matchDocuments;
-    }
-
-    public void setMatchDocuments(List<String> matchDocuments) {
-        this.matchDocuments = matchDocuments;
-    }
-    
 	public List<ISolrDataField> getFieldList() {
 		return fieldList;
 	}
@@ -65,37 +60,32 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 		this.fieldList = fieldList;
 	}
 
-	/**
-     * Returns true if subprocessor should be run against object
-     * 
-     * @param formatId the the document to be processed
-     * @return true if this processor can parse the formatId
-     */
-    public boolean canProcess(String formatId) {
-        return matchDocuments.contains(formatId);
-    }
+	@Override
+	public boolean canProcess(String formatId) {
+		// process any document, looking for annotations about said document
+		return true;
+	}
 	
 	@Override
 	public Map<String, SolrDoc> processDocument(String identifier,
 			Map<String, SolrDoc> docs, InputStream is) throws Exception {
 		
-		// check for annotations, and add them if found
-		SolrDoc annotations = parseAnnotation(is);
-		if (annotations != null) {
-			String referencedPid = annotations.getIdentifier();
-			SolrDoc referencedDoc = docs.get(referencedPid);
-
-			// make sure we have a reference for the document we are adding to
-			if (referencedDoc == null) {
-				referencedDoc = new SolrDoc();
-				docs.put(referencedPid, referencedDoc);
-			}
+		// for each document, check if there are any annotations
+		Iterator<Entry<String, SolrDoc>> entries = docs.entrySet().iterator();
+		while (entries.hasNext()) {
+			Entry<String, SolrDoc> entry = entries.next();
+			String pid = entry.getKey();
+			SolrDoc solrDoc = entry.getValue();
 			
-			// add the new fields to the doc
-			Iterator<SolrElementField> annotationIter = annotations.getFieldList().iterator();
-			while (annotationIter.hasNext()) {
-				SolrElementField annotation = annotationIter.next();
-				referencedDoc.addField(annotation);
+			// check for annotations, and add them if found
+			SolrDoc annotations = lookUpAnnotations(pid);
+			if (annotations != null) {
+				Iterator<SolrElementField> annotationIter = annotations.getFieldList().iterator();
+				// each field can have multiple values
+				while (annotationIter.hasNext()) {
+					SolrElementField annotation = annotationIter.next();
+					solrDoc.addField(annotation);
+				}
 			}
 		}
 		
@@ -109,14 +99,37 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 	 * @param pid the identifier to fetch annotations about
 	 * @return
 	 */
-	private SolrDoc parseAnnotation(InputStream is) {
+	private SolrDoc lookUpAnnotations(String pid) {
 
+		String annotatorUrl = null;
+		String consumerKey = null;
 		try {
+			
+			annotatorUrl = Settings.getConfiguration().getString("annotator.store.url");
+			consumerKey = Settings.getConfiguration().getString("annotator.consumerKey");
 
+			// skip if not configured to query the annotator-store
+			if (annotatorUrl == null || annotatorUrl.length() == 0) {
+				return null;
+			}
+			
+			// TODO: query for matching PID only - wasting time iterating over full list
+			//String urlParameters = "pid=" + URLEncoder.encode(pid, "UTF-8");
+			String urlParameters = "consumer=" + consumerKey;
+			
+			String url = annotatorUrl + "?" + urlParameters;
+			HttpClient client = new HttpClient();
+			HttpMethod method = new GetMethod(url);
+			method.addRequestHeader("Accept", "application/json");
+			client.executeMethod(method);
+			InputStream is = method.getResponseBodyAsStream();
+			
 			String results = IOUtils.toString(is, "UTF-8");
 			log.debug("RESULTS: " + results);
-			JSONObject annotation = (JSONObject) JSONValue.parse(results);
-
+			JSONObject jo = (JSONObject) JSONValue.parse(results);
+			
+			JSONArray rows = (JSONArray) jo.get("rows");
+			int count = rows.size();
 			SolrDoc annotations = new SolrDoc();
 			
 			// use catch-all annotation field for the tags
@@ -124,35 +137,38 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 			
 			// track the comments here
 			String commentKey = "comment_sm";
-							
-			// make sure we know which pid we are talking about
-			String pidValue = annotation.get("pid").toString();
-			if (!annotations.hasFieldWithValue(SolrElementField.FIELD_ID, pidValue)) {
-				annotations.addField(new SolrElementField(SolrElementField.FIELD_ID, pidValue));
-			}
 			
-			// do not index rejected annotations (clear them out)
-			Object reject = annotation.get("reject");
-			if (reject != null && Boolean.parseBoolean(reject.toString())) {
+			for (int i = 0; i < count; i++){
+				JSONObject row = (JSONObject) rows.get(i);
 				
-				// include empty index values to force removal
-				if (!annotations.hasFieldWithValue(tagKey, "")) {
-					annotations.addField(new SolrElementField(tagKey, ""));
-				}
-				if (!annotations.hasFieldWithValue(commentKey, "")) {
-					annotations.addField(new SolrElementField(commentKey, ""));
+				// skip this row if it is not about this pid
+				// FIXME: Bug in annotator-store prevents effective search by pid
+				String pidValue = row.get("pid").toString();
+				if (!pidValue.equals(pid)) {
+					continue;
 				}
 				
-			} else {
-						
 				// index the (semantic) tags
 				// if the annotation told us the target index field, then use it
-				Object field = annotation.get("field");
+				Object field = row.get("field");
 				if (field != null) {
 					tagKey = field.toString();
 				}
 				
-				Object obj = annotation.get("tags");
+				// do not index rejected annotations
+				Object reject = row.get("reject");
+				if (reject != null && Boolean.parseBoolean(reject.toString())) {
+					// include empty index values to force removal
+					if (!annotations.hasFieldWithValue(tagKey, "")) {
+						annotations.addField(new SolrElementField(tagKey, ""));
+					}
+					if (!annotations.hasFieldWithValue(commentKey, "")) {
+						annotations.addField(new SolrElementField(commentKey, ""));
+					}
+					continue;
+				}
+				
+				Object obj = row.get("tags");
 				if (obj instanceof JSONArray) {
 					JSONArray tags = (JSONArray) obj;
 					for (Object tag: tags) {
@@ -167,9 +183,9 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 						annotations.addField(new SolrElementField(tagKey, value));
 					}
 				}
-	
+
 				// index the comments
-				Object commentObj = annotation.get("text");
+				Object commentObj = row.get("text");
 				if (commentObj != null) {
 					String value = commentObj.toString();
 					if (value != null && value.length() > 0) {
@@ -178,32 +194,31 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 						}
 					}
 				}
-				
-				// expand the tags, adding expanded concepts to the existing fields
-				for (String tag: annotations.getAllFieldValues(tagKey)) {
-					try {
-						// get the expanded tags
-						Map<String, Set<String>> expandedConcepts = this.expandConcepts(tag);
-						for (Map.Entry<String, Set<String>> entry: expandedConcepts.entrySet()) {
-							for (String value: entry.getValue()) {
-								String name = entry.getKey();
-								if (!annotations.hasFieldWithValue(name, value)) {
-									annotations.addField(new SolrElementField(name, value));
-								}
+			}
+			
+			// expand the tags, adding expanded concepts to the existing fields
+			for (String tag: annotations.getAllFieldValues(tagKey)) {
+				try {
+					// get the expanded tags
+					Map<String, Set<String>> expandedConcepts = this.expandConcepts(tag);
+					for (Map.Entry<String, Set<String>> entry: expandedConcepts.entrySet()) {
+						for (String value: entry.getValue()) {
+							String name = entry.getKey();
+							if (!annotations.hasFieldWithValue(name, value)) {
+								annotations.addField(new SolrElementField(name, value));
 							}
 						}
-					} catch (Exception e) {
-						log.error("Problem exapnding concept: " + tag, e);
-					}	
-				}
-				
+					}
+				} catch (Exception e) {
+					log.error("Problem exapnding concept: " + tag, e);
+				}	
 			}
 			
 			// return them
 			return annotations;
 			
 		} catch (Exception e) {
-			log.error("Problem parsing annotation: " + e.getMessage(), e);
+			log.error("Could not lookup annotation using: " + annotatorUrl, e);
 		}
 		
 		return null;
