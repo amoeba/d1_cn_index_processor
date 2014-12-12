@@ -25,8 +25,6 @@ package org.dataone.cn.indexer.parser;
 import java.io.InputStream;
 import java.util.Map;
 
-import javax.xml.xpath.XPath;
-
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 
 /**
@@ -49,8 +47,6 @@ public interface IDocumentSubprocessor {
      */
     public boolean canProcess(String formatId);
 
-    public void initExpression(XPath xpath);
-    
     /**
      * Method allows for manipulation of indexed fields that should be added to solr index
      *

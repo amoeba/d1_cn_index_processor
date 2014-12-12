@@ -41,6 +41,7 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.log4j.Logger;
+import org.dataone.cn.indexer.parser.AbstractDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.SolrField;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
@@ -123,6 +124,10 @@ public class XPathDocumentParser {
             field.initExpression(xpath);
         }
 
+    }
+    
+    public static XPath getXpath() {
+    	return xpath;
     }
 
     /**
@@ -470,7 +475,11 @@ public class XPathDocumentParser {
 
     public void setSubprocessors(List<IDocumentSubprocessor> subprocessorList) {
         for (IDocumentSubprocessor subprocessor : subprocessorList) {
-            subprocessor.initExpression(xpath);
+        	// initialize the xpath evaluator for these subprocessors
+        	// TODO: refactor this parser class to only handle XML files and another for non-XML?
+            if (subprocessor instanceof AbstractDocumentSubprocessor) {
+            	((AbstractDocumentSubprocessor)subprocessor).initExpression(xpath);
+            }
         }
         this.subprocessors = subprocessorList;
     }

@@ -10,8 +10,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.xml.xpath.XPath;
-
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -66,12 +64,6 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 	public boolean canProcess(String formatId) {
 		// process any document, looking for annotations about said document
 		return true;
-	}
-
-	@Override
-	public void initExpression(XPath xpath) {
-		// can decide later to limit type of documents that support annotation lookup
-		
 	}
 	
 	@Override
