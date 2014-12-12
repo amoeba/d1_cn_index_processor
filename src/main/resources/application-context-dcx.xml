@@ -4,8 +4,11 @@
 
 	<bean id="dublinCoreExtendedSubprocessor"
 	  	class="org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor">
-		<property name="matchDocument"
-	   		value="/d200:systemMetadata/formatId[text() = 'http://ns.dataone.org/metadata/schema/onedcx/v1.0']"></property>
+		<property name="matchDocuments">
+			<list>
+				<value>http://ns.dataone.org/metadata/schema/onedcx/v1.0</value>
+			</list>
+		</property>
 	  	<property name="fieldList">
 		   	<list>
 		    	<ref bean="dc.abstract" />

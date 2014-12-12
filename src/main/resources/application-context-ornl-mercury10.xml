@@ -4,8 +4,11 @@
 
  <bean id="ornlMercury10Subprocessor"
   class="org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor">
-  <property name="matchDocument"
-   value="/d200:systemMetadata/formatId[text() = 'http://purl.org/ornl/schema/mercury/terms/v1.0']"></property>
+  	<property name="matchDocuments">
+		<list>
+			<value>http://purl.org/ornl/schema/mercury/terms/v1.0</value>
+		</list>
+	</property>
   <property name="fieldList">
    <list>
 	    <ref bean="fgdc.abstract" />

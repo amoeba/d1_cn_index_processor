@@ -26,10 +26,8 @@ import java.io.InputStream;
 import java.util.Map;
 
 import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
 
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
-import org.w3c.dom.Document;
 
 /**
  * 
@@ -46,14 +44,13 @@ import org.w3c.dom.Document;
 public interface IDocumentSubprocessor {
 
     /**Determines if subprocessor should be run on document
-     * @param
+     * @param formatId for the object being tested
      * @return returns true if subprocessor should be run on document
-     * @throws XPathExpressionException
      */
-    public boolean canProcess(Document doc) throws XPathExpressionException;
+    public boolean canProcess(String formatId);
 
     public void initExpression(XPath xpath);
-
+    
     /**
      * Method allows for manipulation of indexed fields that should be added to solr index
      *

@@ -4,8 +4,11 @@
 
  <bean id="fgdcstd00111999Subprocessor"
   class="org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor">
-  <property name="matchDocument"
-   value="/d200:systemMetadata/formatId[text() = 'FGDC-STD-001.1-1999']"></property>
+  	<property name="matchDocuments">
+		<list>
+			<value>FGDC-STD-001.1-1999</value>
+		</list>
+	</property>
   <property name="fieldList">
    <list>
 	    <ref bean="fgdc.abstract" />

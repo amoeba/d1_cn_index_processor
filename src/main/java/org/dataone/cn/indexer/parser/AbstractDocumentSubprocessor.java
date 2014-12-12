@@ -28,9 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
 
 import org.dataone.cn.indexer.XPathDocumentParser;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
@@ -43,7 +40,7 @@ import org.w3c.dom.Document;
  * For example, there will be specific document processor objects each science metadata
  * format.
  * 
- * matchDocument property contains an xpath expression which is used to determine if an
+ * matchDocuments property contains a list of formatIds which is used to determine if an
  * instance of a science metadata document should be processed by this document processor.
  * Basically matches the expected 'formatId' to the formatId of a candidate document.
  * 
@@ -60,16 +57,15 @@ public class AbstractDocumentSubprocessor implements IDocumentSubprocessor {
     /**
      * If xpath returns true execute the processDocument Method
      */
-    private String matchDocument = null;
-    private XPathExpression matchDocumentExpression = null;
+    private List<String> matchDocuments = null;
     private List<ISolrField> fieldList = new ArrayList<ISolrField>();
 
-    public String getMatchDocument() {
-        return matchDocument;
+    public List<String> getMatchDocuments() {
+        return matchDocuments;
     }
 
-    public void setMatchDocument(String matchDocument) {
-        this.matchDocument = matchDocument;
+    public void setMatchDocuments(List<String> matchDocuments) {
+        this.matchDocuments = matchDocuments;
     }
 
     /**
@@ -107,26 +103,18 @@ public class AbstractDocumentSubprocessor implements IDocumentSubprocessor {
     }
 
     /**
-     * Returns true if subprocessor should be run against document.
+     * Returns true if subprocessor should be run against object
      * 
-     * @param doc
-     * @return
-     * @throws XPathExpressionException
+     * @param formatId the the document to be processed
+     * @return true if this processor can parse the formatId
      */
-    public boolean canProcess(Document doc) throws XPathExpressionException {
-
-        Boolean matches = (Boolean) matchDocumentExpression.evaluate(doc, XPathConstants.BOOLEAN);
-        return matches == null ? false : matches.booleanValue();
-    }
+    public boolean canProcess(String formatId) {
+        return matchDocuments.contains(formatId);
+    }   
 
     public void initExpression(XPath xpathObject) {
-        try {
-            matchDocumentExpression = xpathObject.compile(getMatchDocument());
-            for (ISolrField solrField : fieldList) {
-                solrField.initExpression(xpathObject);
-            }
-        } catch (XPathExpressionException e) {
-            e.printStackTrace();
+        for (ISolrField solrField : fieldList) {
+            solrField.initExpression(xpathObject);
         }
     }
 

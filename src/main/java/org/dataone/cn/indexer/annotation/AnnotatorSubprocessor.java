@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
 
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -23,14 +22,11 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dataone.cn.indexer.parser.AbstractDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.ISolrDataField;
-import org.dataone.cn.indexer.parser.ISolrField;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.configuration.Settings;
-import org.w3c.dom.Document;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.Dataset;
@@ -67,7 +63,7 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 	}
 
 	@Override
-	public boolean canProcess(Document doc) throws XPathExpressionException {
+	public boolean canProcess(String formatId) {
 		// process any document, looking for annotations about said document
 		return true;
 	}
@@ -77,7 +73,7 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 		// can decide later to limit type of documents that support annotation lookup
 		
 	}
-
+	
 	@Override
 	public Map<String, SolrDoc> processDocument(String identifier,
 			Map<String, SolrDoc> docs, InputStream is) throws Exception {

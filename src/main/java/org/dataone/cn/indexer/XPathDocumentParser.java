@@ -157,13 +157,16 @@ public class XPathDocumentParser {
         SolrDoc indexDocument = new SolrDoc(sysSolrFields);
         Map<String, SolrDoc> docs = new HashMap<String, SolrDoc>();
         docs.put(id, indexDocument);
+        
+        // get the format id for this object
+        String formatId = indexDocument.getFirstFieldValue(SolrElementField.FIELD_OBJECTFORMAT);
 
         // Determine if subprocessors are available for this ID
         if (subprocessors != null) {
             // for each subprocessor loaded from the spring config
             for (IDocumentSubprocessor subprocessor : subprocessors) {
-                // Does this subprocessor apply?
-                if (subprocessor.canProcess(sysMetaDoc)) {
+				// Does this subprocessor apply for the formatId?
+                if (subprocessor.canProcess(formatId)) {
                     // if so, then extract the additional information from the
                     // document.
                     try {
@@ -244,12 +247,15 @@ public class XPathDocumentParser {
         Map<String, SolrDoc> docs = new HashMap<String, SolrDoc>();
         docs.put(id, indexDocument);
 
+        // get the format id for this object
+        String formatId = indexDocument.getFirstFieldValue(SolrElementField.FIELD_OBJECTFORMAT);
+        
         // Determine if subprocessors are available for this ID
         if (subprocessors != null) {
             // for each subprocessor loaded from the spring config
             for (IDocumentSubprocessor subprocessor : subprocessors) {
                 // Does this subprocessor apply?
-                if (subprocessor.canProcess(sysMetaDoc)) {
+                if (subprocessor.canProcess(formatId)) {
                     // if so, then extract the additional information from the
                     // document.
                     try {
