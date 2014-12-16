@@ -104,9 +104,9 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 	}
 	
     /**
-	 * Look up annotations from annotator service
+	 * Parse the annotation for fields
 	 * @see "http://docs.annotatorjs.org/en/latest/storage.html"
-	 * @param pid the identifier to fetch annotations about
+	 * @param the stream of the [JSON] annotation
 	 * @return
 	 */
 	private SolrDoc parseAnnotation(InputStream is) {
