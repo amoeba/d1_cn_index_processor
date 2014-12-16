@@ -109,20 +109,12 @@ public class SolrFieldAnnotatorTest extends BaseSolrFieldXPathTest {
         
     }
     
-    protected void testParsing(AnnotatorSubprocessor docProcessor,
-            Resource sysMetadata, Resource annotation, HashMap<String, String> expectedValues,
-            String pid) throws Exception {
-        System.out.println("annotation: " + IOUtils.toString(annotation.getInputStream()));
-        compareFields(expectedValues, annotation.getInputStream(), docProcessor, pid);
-        
-    }
-    
     protected boolean compareFields(HashMap<String, String> expected, InputStream annotation,
-            AnnotatorSubprocessor subProcessor, String identifier) throws Exception {
+            AnnotatorSubprocessor subProcessor, String identifier, String referencedpid) throws Exception {
 
         Map<String, SolrDoc> docs = new TreeMap<String, SolrDoc>();
         Map<String, SolrDoc> solrDocs = subProcessor.processDocument(identifier, docs, annotation);
-        List<SolrElementField> fields = solrDocs.get(identifier).getFieldList();
+        List<SolrElementField> fields = solrDocs.get(referencedpid).getFieldList();
         
         // make sure our expected fields have the expected values
         for (SolrElementField docField : fields) {
@@ -150,8 +142,9 @@ public class SolrFieldAnnotatorTest extends BaseSolrFieldXPathTest {
      */
     @Test
     public void testAnnotationFields() throws Exception {
-        testParsing(annotatorSubprocessor, annotation1304Sys, annotation1304, annotationExpected,
-                "peggym.130.4");
+        System.out.println("annotation: " + IOUtils.toString(annotation1304.getInputStream()));
+
+        compareFields(annotationExpected, annotation1304.getInputStream(), annotatorSubprocessor, "annotation.130.4", "peggym.130.4");
     }
 
 }
