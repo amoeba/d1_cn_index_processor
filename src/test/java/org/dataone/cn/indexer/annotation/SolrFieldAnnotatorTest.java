@@ -67,7 +67,7 @@ public class SolrFieldAnnotatorTest extends BaseSolrFieldXPathTest {
     public void setUp() throws Exception {
         // annotations should include the superclass[es]
     	annotationExpected
-                .put("annotation_sm", 
+                .put(AnnotatorSubprocessor.FIELD_ANNOTATION, 
                 		"http://ecoinformatics.org/oboe/oboe.1.0/oboe-characteristics.owl#Mass" +
                 		"||" +
                 		"http://ecoinformatics.org/oboe/oboe.1.0/oboe-core.owl#PhysicalCharacteristic" +
@@ -77,12 +77,13 @@ public class SolrFieldAnnotatorTest extends BaseSolrFieldXPathTest {
                 		"http://www.w3.org/2000/01/rdf-schema#Resource" +
                 		
                 		"");
-        annotationExpected.put("comment_sm", "Original annotation content");
+        annotationExpected.put(AnnotatorSubprocessor.FIELD_COMMENT, "Original annotation content");
 
-    	
+    	// relationships
+        annotationExpected.put(AnnotatorSubprocessor.FIELD_ANNOTATED_BY, "annotation.130.4");
        
         // system metadata
-        annotationExpected.put("id", "peggym.130.4");
+        annotationExpected.put(SolrElementField.FIELD_ID, "peggym.130.4");
         
 //        annotationExpected.put("formatId", "http://docs.annotatorjs.org/en/v1.2.x/annotation-format.html");
 //        annotationExpected.put("formatType", "METADATA");
@@ -127,11 +128,15 @@ public class SolrFieldAnnotatorTest extends BaseSolrFieldXPathTest {
         for (SolrElementField docField : fields) {
             String name = docField.getName();
             String value = docField.getValue();
-            List<String> expectedValues = Arrays.asList(StringUtils.split(expected.get(name), "||"));
-            if (expectedValues != null && !expectedValues.isEmpty()) {
-            	System.out.println("Checking value: " + value);
-            	System.out.println("in expected: " + expectedValues);
-            	Assert.assertTrue(expectedValues.contains(value));  
+            
+            String expectedValue = expected.get(name);
+            if (expectedValue != null) {
+				List<String> expectedValues = Arrays.asList(StringUtils.split(expectedValue , "||"));
+	            if (expectedValues != null && !expectedValues.isEmpty()) {
+	            	System.out.println("Checking value: " + value);
+	            	System.out.println("in expected: " + expectedValues);
+	            	Assert.assertTrue(expectedValues.contains(value));  
+	            }
             }
         }
         		

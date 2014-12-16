@@ -43,6 +43,11 @@ import com.hp.hpl.jena.tdb.TDBFactory;
  */
 public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 
+	public static final String FIELD_ANNOTATION = "annotation_sm";
+	public static final String FIELD_ANNOTATES = "annotates_sm";
+	public static final String FIELD_ANNOTATED_BY = "annotated_by_sm";
+	public static final String FIELD_COMMENT = "comment_sm";
+
 	private static Log log = LogFactory.getLog(AnnotatorSubprocessor.class);
 
     private List<String> matchDocuments = null;
@@ -76,7 +81,7 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
     }
 	
 	@Override
-	public Map<String, SolrDoc> processDocument(String identifier,
+	public Map<String, SolrDoc> processDocument(String annotationId,
 			Map<String, SolrDoc> docs, InputStream is) throws Exception {
 		
 		// check for annotations, and add them if found
@@ -85,13 +90,19 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 			String referencedPid = annotations.getIdentifier();
 			SolrDoc referencedDoc = docs.get(referencedPid);
 
-			// make sure we have a reference for the document we are adding to
+			// make sure we have a reference for the document we annotating
 			if (referencedDoc == null) {
 				referencedDoc = new SolrDoc();
 				docs.put(referencedPid, referencedDoc);
 			}
 			
-			// add the new fields to the doc
+			// make sure we say we annotate the object
+			SolrDoc annotationDoc = docs.get(annotationId);
+			if (annotationDoc != null) {
+				annotationDoc.addField(new SolrElementField(FIELD_ANNOTATES, referencedPid));
+			}
+			
+			// add the annotations to the referenced document
 			Iterator<SolrElementField> annotationIter = annotations.getFieldList().iterator();
 			while (annotationIter.hasNext()) {
 				SolrElementField annotation = annotationIter.next();
@@ -120,15 +131,18 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 			SolrDoc annotations = new SolrDoc();
 			
 			// use catch-all annotation field for the tags
-			String tagKey = "annotation_sm";
-			
-			// track the comments here
-			String commentKey = "comment_sm";
-							
+			String tagKey = FIELD_ANNOTATION;
+										
 			// make sure we know which pid we are talking about
 			String pidValue = annotation.get("pid").toString();
 			if (!annotations.hasFieldWithValue(SolrElementField.FIELD_ID, pidValue)) {
 				annotations.addField(new SolrElementField(SolrElementField.FIELD_ID, pidValue));
+			}
+			
+			// and which object is doing the annotating
+			String idValue = annotation.get("id").toString();
+			if (!annotations.hasFieldWithValue(FIELD_ANNOTATED_BY, idValue)) {
+				annotations.addField(new SolrElementField(FIELD_ANNOTATED_BY, idValue));
 			}
 			
 			// do not index rejected annotations (clear them out)
@@ -139,8 +153,8 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 				if (!annotations.hasFieldWithValue(tagKey, "")) {
 					annotations.addField(new SolrElementField(tagKey, ""));
 				}
-				if (!annotations.hasFieldWithValue(commentKey, "")) {
-					annotations.addField(new SolrElementField(commentKey, ""));
+				if (!annotations.hasFieldWithValue(FIELD_COMMENT, "")) {
+					annotations.addField(new SolrElementField(FIELD_COMMENT, ""));
 				}
 				
 			} else {
@@ -173,8 +187,8 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 				if (commentObj != null) {
 					String value = commentObj.toString();
 					if (value != null && value.length() > 0) {
-						if (!annotations.hasFieldWithValue(commentKey, value)) {
-							annotations.addField(new SolrElementField(commentKey, value));
+						if (!annotations.hasFieldWithValue(FIELD_COMMENT, value)) {
+							annotations.addField(new SolrElementField(FIELD_COMMENT, value));
 						}
 					}
 				}
