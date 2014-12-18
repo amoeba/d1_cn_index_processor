@@ -36,7 +36,7 @@ public class XMLNamespace {
     /**Used to define prefix and namespace for XMLNamespace for xpath queries in XPathDocumentParser
      *
      * @see XMLNamespace
-     * @see XPathDocumentParser
+     * @see SolrIndexService
      */
 
     private String prefix = null;

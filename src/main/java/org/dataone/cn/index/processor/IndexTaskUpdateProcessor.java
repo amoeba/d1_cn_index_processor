@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.index.task.IndexTaskRepository;
-import org.dataone.cn.indexer.XPathDocumentParser;
+import org.dataone.cn.indexer.SolrIndexService;
 import org.dataone.configuration.Settings;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v2.SystemMetadata;
@@ -47,7 +47,7 @@ public class IndexTaskUpdateProcessor implements IndexTaskProcessingStrategy {
     private static Logger logger = Logger.getLogger(IndexTaskUpdateProcessor.class.getName());
 
     @Autowired
-    private ArrayList<XPathDocumentParser> documentParsers;
+    private ArrayList<SolrIndexService> documentParsers;
 
     @Autowired
     private IndexTaskRepository repo;
@@ -58,11 +58,11 @@ public class IndexTaskUpdateProcessor implements IndexTaskProcessingStrategy {
             "dataone.hazelcast.systemMetadata");
 
     public void process(IndexTask task) throws Exception {
-        XPathDocumentParser parser = getXPathDocumentParser();
+        SolrIndexService indexService = getSolrIndexService();
         InputStream smdStream = new ByteArrayInputStream(task.getSysMetadata().getBytes());
 
         try {
-            parser.process(task.getPid(), smdStream, task.getObjectPath());
+            indexService.insertIntoIndex(task.getPid(), smdStream, task.getObjectPath());
         } catch (SAXParseException spe) {
             logger.error(spe);
             logger.error("Caught SAX parse exception on: " + task.getPid()
@@ -73,7 +73,7 @@ public class IndexTaskUpdateProcessor implements IndexTaskProcessingStrategy {
             SystemMetadata smd = this.systemMetadata.get(pid);
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             TypeMarshaller.marshalTypeToOutputStream(smd, os);
-            parser.process(task.getPid(), new ByteArrayInputStream(os.toByteArray()),
+            indexService.insertIntoIndex(task.getPid(), new ByteArrayInputStream(os.toByteArray()),
                     task.getObjectPath());
             logger.error("Retry with fresh system metadata successful!");
         }
@@ -87,7 +87,7 @@ public class IndexTaskUpdateProcessor implements IndexTaskProcessingStrategy {
         }
     }
 
-    private XPathDocumentParser getXPathDocumentParser() {
+    private SolrIndexService getSolrIndexService() {
         return documentParsers.get(0);
     }
 }

@@ -4,6 +4,7 @@
 
  <bean id="eml201Subprocessor"
   class="org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor">
+  <property name="xmlNamespaceConfig" ref="xmlNamespaceConfig" />
   <property name="matchDocuments">
 		<list>
 			<value>eml://ecoinformatics.org/eml-2.0.1</value>

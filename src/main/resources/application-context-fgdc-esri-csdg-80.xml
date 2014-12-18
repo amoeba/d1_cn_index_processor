@@ -4,6 +4,7 @@
 
  <bean id="fgdcEsri80Subprocessor"
   class="org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor">
+  <property name="xmlNamespaceConfig" ref="xmlNamespaceConfig" />
   	<property name="matchDocuments">
 		<list>
 			<value>http://www.esri.com/metadata/esriprof80.dtd</value>

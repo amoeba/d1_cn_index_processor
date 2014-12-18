@@ -35,7 +35,7 @@ import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.params.ModifiableSolrParams;
-import org.dataone.cn.indexer.XPathDocumentParser;
+import org.dataone.cn.indexer.SolrIndexService;
 import org.dataone.service.types.v2.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
 import org.junit.Assert;
@@ -53,23 +53,25 @@ import org.springframework.core.io.Resource;
 public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
 
     protected ApplicationContext context;
-    protected ArrayList<XPathDocumentParser> documentParsers;
+    protected ArrayList<SolrIndexService> documentParsers;
 
     protected void addEmlToSolrIndex(Resource sysMetaFile) throws Exception {
-        XPathDocumentParser parser = getXPathDocumentParser();
+        SolrIndexService indexService = getSolrIndexService();
         SystemMetadata smd = TypeMarshaller.unmarshalTypeFromStream(SystemMetadata.class,
                 sysMetaFile.getInputStream());
         // path to actual science metadata document
         String path = StringUtils.remove(sysMetaFile.getFile().getPath(), "/SystemMetadata");
-        parser.process(smd.getIdentifier().getValue(), sysMetaFile.getInputStream(), path);
+        indexService.insertIntoIndex(smd.getIdentifier().getValue(), sysMetaFile.getInputStream(),
+                path);
     }
 
     protected void addSysAndSciMetaToSolrIndex(Resource sysMeta, Resource sciMeta) throws Exception {
-        XPathDocumentParser parser = getXPathDocumentParser();
+        SolrIndexService indexService = getSolrIndexService();
         SystemMetadata smd = TypeMarshaller.unmarshalTypeFromStream(SystemMetadata.class,
                 sysMeta.getInputStream());
         String path = sciMeta.getFile().getAbsolutePath();
-        parser.process(smd.getIdentifier().getValue(), sysMeta.getInputStream(), path);
+        indexService
+                .insertIntoIndex(smd.getIdentifier().getValue(), sysMeta.getInputStream(), path);
     }
 
     protected SolrDocument assertPresentInSolrIndex(String pid) throws SolrServerException {
@@ -170,7 +172,7 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
         return jetty;
     }
 
-    protected XPathDocumentParser getXPathDocumentParser() {
+    protected SolrIndexService getSolrIndexService() {
         return documentParsers.get(0);
     }
 

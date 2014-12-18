@@ -26,7 +26,6 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -34,8 +33,9 @@ import junit.framework.Assert;
 import org.apache.log4j.Logger;
 import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.index.task.IndexTaskRepository;
-import org.dataone.cn.indexer.XPathDocumentParser;
-import org.dataone.cn.indexer.parser.SolrField;
+import org.dataone.cn.indexer.XmlDocumentUtility;
+import org.dataone.cn.indexer.parser.BaseXPathDocumentSubprocessor;
+import org.dataone.cn.indexer.parser.ISolrField;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.configuration.Settings;
 import org.dataone.service.types.v1.Identifier;
@@ -62,7 +62,7 @@ import com.hazelcast.core.IMap;
 public class InvalidXmlCharTest {
 
     @Autowired
-    private ArrayList<XPathDocumentParser> documentParsers;
+    private BaseXPathDocumentSubprocessor systemMetadata200Subprocessor;
 
     @Autowired
     private Resource commonBMPCharSetExample;
@@ -116,9 +116,9 @@ public class InvalidXmlCharTest {
     }
 
     private void testXMLParsing(InputStream in, String pid) throws Exception {
-        Document sysMeta = getXPathDocumentParser().generateXmlDocument(in);
+        Document sysMeta = XmlDocumentUtility.generateXmlDocument(in);
         System.out.println(" ");
-        for (SolrField field : getXPathDocumentParser().getFields()) {
+        for (ISolrField field : systemMetadata200Subprocessor.getFieldList()) {
             List<SolrElementField> fields = field.getFields(sysMeta, pid);
             if (fields.isEmpty() == false) {
                 for (SolrElementField docField : fields) {
@@ -126,10 +126,6 @@ public class InvalidXmlCharTest {
                 }
             }
         }
-    }
-
-    private XPathDocumentParser getXPathDocumentParser() {
-        return documentParsers.get(0);
     }
 
     @Before

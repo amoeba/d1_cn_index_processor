@@ -4,6 +4,7 @@
 
 	<bean id="qualifiedDublicCoreSubprocessor"
 	  	class="org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor">
+	  	<property name="xmlNamespaceConfig" ref="xmlNamespaceConfig" />
 		<property name="matchDocuments">
 			<list>
 				<value>http://dublincore.org/schemas/xmls/qdc/2008/02/11/qualifieddc.xsd</value>

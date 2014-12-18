@@ -29,14 +29,17 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.apache.solr.common.SolrDocument;
+import org.dataone.cn.indexer.XmlDocumentUtility;
+import org.dataone.cn.indexer.parser.BaseXPathDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.ISolrField;
 import org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor;
-import org.dataone.cn.indexer.parser.SolrField;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.service.util.DateTimeMarshaller;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.Resource;
 import org.w3c.dom.Document;
@@ -52,7 +55,8 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
 
     private static Logger logger = Logger.getLogger(SolrIndexFieldTest.class.getName());
 
-    // TODO: test resource map / data packaging index properties?
+    private BaseXPathDocumentSubprocessor systemMetadata200Subprocessor;
+
     @Test
     public void testSystemMetadataAndEml210ScienceData() throws Exception {
         // peggym.130.4 system metadata document for eml2.1.0 science metadata
@@ -78,17 +82,17 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
                 .getBean("eml210Subprocessor");
 
         Resource scienceMetadataResource = (Resource) context.getBean("peggym1304Sci");
-        Document scienceMetadataDoc = getXPathDocumentParser().generateXmlDocument(
-                scienceMetadataResource.getInputStream());
+        Document scienceMetadataDoc = XmlDocumentUtility
+                .generateXmlDocument(scienceMetadataResource.getInputStream());
         for (ISolrField field : eml210.getFieldList()) {
             compareFields(result, scienceMetadataDoc, field, pid);
         }
 
         // test system metadata fields in system metadata config match those
         // in solr index document
-        Document systemMetadataDoc = getXPathDocumentParser().generateXmlDocument(
-                systemMetadataResource.getInputStream());
-        for (SolrField field : getXPathDocumentParser().getFields()) {
+        Document systemMetadataDoc = XmlDocumentUtility.generateXmlDocument(systemMetadataResource
+                .getInputStream());
+        for (ISolrField field : systemMetadata200Subprocessor.getFieldList()) {
             compareFields(result, systemMetadataDoc, field, pid);
         }
     }
@@ -111,17 +115,17 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
                 .getBean("fgdcstd00111999Subprocessor");
 
         Resource scienceMetadataResource = (Resource) context.getBean("fdgc01111999SciMeta");
-        Document scienceMetadataDoc = getXPathDocumentParser().generateXmlDocument(
-                scienceMetadataResource.getInputStream());
+        Document scienceMetadataDoc = XmlDocumentUtility
+                .generateXmlDocument(scienceMetadataResource.getInputStream());
         for (ISolrField field : fgdcSubProcessor.getFieldList()) {
             compareFields(result, scienceMetadataDoc, field, pid);
         }
 
         // test system metadata fields in system metadata config match those
         // in solr index document
-        Document systemMetadataDoc = getXPathDocumentParser().generateXmlDocument(
-                systemMetadataResource.getInputStream());
-        for (SolrField field : getXPathDocumentParser().getFields()) {
+        Document systemMetadataDoc = XmlDocumentUtility.generateXmlDocument(systemMetadataResource
+                .getInputStream());
+        for (ISolrField field : systemMetadata200Subprocessor.getFieldList()) {
             compareFields(result, systemMetadataDoc, field, pid);
         }
     }
@@ -175,7 +179,6 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
                 System.out.println("Solr Value: " + solrValue);
                 Assert.assertEquals(docValue.getTime(), solrValue.getTime());
             } else if (solrValueObject instanceof ArrayList) {
-                // if (!fieldToCompare.getName().equals("text")) {
                 ArrayList solrValueArray = (ArrayList) solrValueObject;
                 ArrayList documentValueArray = new ArrayList();
                 for (SolrElementField sef : fields) {
@@ -185,7 +188,6 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
                 System.out.println("Solr Value: " + solrValueArray);
                 Assert.assertTrue(CollectionUtils.isEqualCollection(documentValueArray,
                         solrValueArray));
-                // }
             } else {
                 Assert.assertTrue(
                         "Unknown solr value object type for field: " + docField.getName(), false);
@@ -194,4 +196,15 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
         }
     }
 
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        systemMetadata200Subprocessor = (BaseXPathDocumentSubprocessor) context
+                .getBean("systemMetadata200Subprocessor");
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
 }

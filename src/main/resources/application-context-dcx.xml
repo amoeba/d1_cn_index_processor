@@ -4,6 +4,7 @@
 
 	<bean id="dublinCoreExtendedSubprocessor"
 	  	class="org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor">
+	  	<property name="xmlNamespaceConfig" ref="xmlNamespaceConfig" />
 		<property name="matchDocuments">
 			<list>
 				<value>http://ns.dataone.org/metadata/schema/onedcx/v1.0</value>

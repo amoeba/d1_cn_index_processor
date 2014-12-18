@@ -35,7 +35,7 @@ public class XMLNamespaceConfig implements NamespaceContext {
 
     /** Used in XPathDocumentParser holds a list of prefixes and namespaces for use in XPath Queries
      *
-     * @see XPathDocumentParser
+     * @see SolrIndexService
      */
 
     private List<XMLNamespace> namespaceList = null;

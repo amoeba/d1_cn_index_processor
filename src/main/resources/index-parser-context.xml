@@ -56,12 +56,11 @@
  <bean id="documentParsers" class="java.util.ArrayList" autowire="byName">
   <constructor-arg>
    <list>
-    <bean class="org.dataone.cn.indexer.XPathDocumentParser">
-     <constructor-arg name="fields" ref="xpath_system_metadata_100" />
-     <constructor-arg name="xmlNamespaceConfig" ref="xmlNamespaceConfig" />
+    <bean class="org.dataone.cn.indexer.SolrIndexService">
      <property name="solrQueryUri" value="${solr.query.uri}" />
 	 <property name="solrIndexUri" value="${solr.index.uri}" />
      <property name="httpService" ref="httpService" />
+     <property name="systemMetadataProcessor" ref="systemMetadata200Subprocessor" />
      <property name="subprocessors">
       <list>
        <ref bean="eml200Subprocessor" />

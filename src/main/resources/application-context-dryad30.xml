@@ -4,6 +4,7 @@
 
 	<bean id="dryad30Subprocessor"
 	  	class="org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor">
+	  	<property name="xmlNamespaceConfig" ref="xmlNamespaceConfig" />
 		<property name="matchDocuments">
 			<list>
 				<value>http://purl.org/dryad/terms/</value>

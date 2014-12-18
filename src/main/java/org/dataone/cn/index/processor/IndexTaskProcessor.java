@@ -31,7 +31,8 @@ import org.dataone.client.v2.formats.ObjectFormatCache;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.index.task.IndexTaskRepository;
-import org.dataone.cn.indexer.XPathDocumentParser;
+import org.dataone.cn.indexer.SolrIndexService;
+import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.cn.indexer.resourcemap.ForesiteResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMapFactory;
@@ -69,7 +70,7 @@ public class IndexTaskProcessor {
     private IndexTaskRepository repo;
 
     @Autowired
-    private ArrayList<XPathDocumentParser> documentParsers;
+    private ArrayList<SolrIndexService> documentParsers;
 
     @Autowired
     private IndexTaskProcessingStrategy deleteProcessor;
@@ -309,7 +310,7 @@ public class IndexTaskProcessor {
                 System.currentTimeMillis());
     }
 
-    private XPathDocumentParser getXPathDocumentParser() {
+    private SolrIndexService getXPathDocumentParser() {
         return documentParsers.get(0);
     }
 
@@ -326,7 +327,7 @@ public class IndexTaskProcessor {
     private Document loadDocument(IndexTask task) {
         Document docObject = null;
         try {
-            docObject = getXPathDocumentParser().loadDocument(task.getObjectPath());
+            docObject = XmlDocumentUtility.loadDocument(task.getObjectPath());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

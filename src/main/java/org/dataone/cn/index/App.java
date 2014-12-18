@@ -41,7 +41,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dataone.cn.indexer.XPathDocumentParser;
+import org.dataone.cn.indexer.SolrIndexService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
@@ -55,7 +55,7 @@ public class App {
     private String processingProperties = "/etc/dataone/indexing/index_processor.properties";
     private String taskListPath = "/tmp/indexing/index_tasks.txt";
     private String objectBasePath = "";
-    public List<XPathDocumentParser> parserList = null;
+    public List<SolrIndexService> parserList = null;
     Log log = LogFactory.getLog(App.class);
 
     /**
@@ -169,8 +169,8 @@ public class App {
      */
     public long run() {
         context = getContext();
-        parserList = (List<XPathDocumentParser>) context.getBean(DOCUMENT_PARSERS);
-        XPathDocumentParser parser = parserList.get(0);
+        parserList = (List<SolrIndexService>) context.getBean(DOCUMENT_PARSERS);
+        SolrIndexService parser = parserList.get(0);
 
         IndexingTaskList tasks = loadTasks(taskListPath);
 
@@ -189,7 +189,7 @@ public class App {
                 // (task.pid.equals("__test_object_valid_eml__sciMD-eml-201-NoLastLForCR__"))
                 // {
                 InputStream smdStream = new FileInputStream(task.sysMetaPath);
-                parser.process(task.pid, smdStream, task.objectPath);
+                parser.insertIntoIndex(task.pid, smdStream, task.objectPath);
                 log.info("Processing complete for PID = " + task.pid);
                 // }
             } catch (Exception e) {

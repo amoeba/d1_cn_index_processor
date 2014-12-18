@@ -107,7 +107,7 @@ public class SolrDoc {
         return searchField;
     }
 
-    public void LoadFromElement(Element docElement, List<String> validFields) {
+    public void loadFromElement(Element docElement, List<String> validFields) {
         fieldList = new ArrayList<SolrElementField>();
         NodeList values = docElement.getChildNodes();
         for (int i = 0; i < values.getLength(); i++) {

@@ -28,8 +28,10 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFactory;
 
-import org.dataone.cn.indexer.XPathDocumentParser;
+import org.dataone.cn.indexer.XMLNamespaceConfig;
+import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.w3c.dom.Document;
 
@@ -52,7 +54,11 @@ import org.w3c.dom.Document;
  * Date: 9/22/11
  * Time: 3:24 PM
  */
-public class AbstractDocumentSubprocessor implements IDocumentSubprocessor {
+public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
+
+    private static XPathFactory xpathFactory = null;
+    private static XPath xpath = null;
+    private static XMLNamespaceConfig xmlNamespaceConfig = null;
 
     /**
      * If xpath returns true execute the processDocument Method
@@ -60,12 +66,12 @@ public class AbstractDocumentSubprocessor implements IDocumentSubprocessor {
     private List<String> matchDocuments = null;
     private List<ISolrField> fieldList = new ArrayList<ISolrField>();
 
-    public List<String> getMatchDocuments() {
-        return matchDocuments;
+    static {
+        xpathFactory = XPathFactory.newInstance();
+        xpath = xpathFactory.newXPath();
     }
 
-    public void setMatchDocuments(List<String> matchDocuments) {
-        this.matchDocuments = matchDocuments;
+    public BaseXPathDocumentSubprocessor() {
     }
 
     /**
@@ -87,10 +93,11 @@ public class AbstractDocumentSubprocessor implements IDocumentSubprocessor {
             InputStream is) throws Exception {
 
         SolrDoc metaDocument = docs.get(identifier);
-
-        // get the stream as a Document
-        Document doc = XPathDocumentParser.generateXmlDocument(is);
-        
+        if (metaDocument == null) {
+            metaDocument = new SolrDoc();
+            docs.put(identifier, metaDocument);
+        }
+        Document doc = XmlDocumentUtility.generateXmlDocument(is);
         for (ISolrField solrField : fieldList) {
             try {
                 metaDocument.getFieldList().addAll(solrField.getFields(doc, identifier));
@@ -98,7 +105,6 @@ public class AbstractDocumentSubprocessor implements IDocumentSubprocessor {
                 e.printStackTrace();
             }
         }
-
         return docs;
     }
 
@@ -110,7 +116,7 @@ public class AbstractDocumentSubprocessor implements IDocumentSubprocessor {
      */
     public boolean canProcess(String formatId) {
         return matchDocuments.contains(formatId);
-    }   
+    }
 
     public void initExpression(XPath xpathObject) {
         for (ISolrField solrField : fieldList) {
@@ -124,5 +130,19 @@ public class AbstractDocumentSubprocessor implements IDocumentSubprocessor {
 
     public void setFieldList(List<ISolrField> fieldList) {
         this.fieldList = fieldList;
+        initExpression(xpath);
+    }
+
+    public List<String> getMatchDocuments() {
+        return matchDocuments;
+    }
+
+    public void setMatchDocuments(List<String> matchDocuments) {
+        this.matchDocuments = matchDocuments;
+    }
+
+    public static void setXmlNamespaceConfig(XMLNamespaceConfig xmlNamespaceConfig) {
+        BaseXPathDocumentSubprocessor.xmlNamespaceConfig = xmlNamespaceConfig;
+        xpath.setNamespaceContext(xmlNamespaceConfig);
     }
 }

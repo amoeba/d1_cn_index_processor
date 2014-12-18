@@ -4,6 +4,7 @@
 
 	<bean id="dryad31Subprocessor"
 	  	class="org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor">
+	  	<property name="xmlNamespaceConfig" ref="xmlNamespaceConfig" />
 		<property name="matchDocuments">
 			<list>
 				<value>http://datadryad.org/profile/v3.1</value>

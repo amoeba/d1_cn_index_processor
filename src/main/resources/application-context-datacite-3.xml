@@ -4,6 +4,7 @@
 
 	<bean id="datacite3Subprocessor"
 	  	class="org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor">
+	  	<property name="xmlNamespaceConfig" ref="xmlNamespaceConfig" />
 		<property name="matchDocuments">
 			<list>
 				<value>http://datacite.org/schema/kernel-3.1</value>

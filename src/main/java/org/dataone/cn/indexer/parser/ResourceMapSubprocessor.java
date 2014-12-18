@@ -33,7 +33,7 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.log4j.Logger;
-import org.dataone.cn.indexer.XPathDocumentParser;
+import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.cn.indexer.resourcemap.ResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMapFactory;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
@@ -59,13 +59,13 @@ import org.xml.sax.SAXException;
  * Date: 9/26/11
  * Time: 3:51 PM
  */
-public class ResourceMapSubprocessor extends AbstractDocumentSubprocessor implements
-        IDocumentSubprocessor {
+public class ResourceMapSubprocessor implements IDocumentSubprocessor {
 
     private static Logger logger = Logger.getLogger(ResourceMapSubprocessor.class.getName());
 
     private HTTPService httpService = null;
     private String solrQueryUri = null;
+    private List<String> matchDocuments = null;
 
     /**
      * Implements IDocumentSubprocessor.processDocument method.
@@ -80,15 +80,15 @@ public class ResourceMapSubprocessor extends AbstractDocumentSubprocessor implem
         SolrDoc resourceMapDoc = docs.get(identifier);
         List<SolrDoc> processedDocs = new ArrayList<SolrDoc>();
         try {
-            Document doc = XPathDocumentParser.generateXmlDocument(is);
+            Document doc = XmlDocumentUtility.generateXmlDocument(is);
             processedDocs = processResourceMap(resourceMapDoc, doc);
         } catch (OREParserException oreException) {
             logger.error("Unable to parse resource map: " + identifier
                     + ".  Unrecoverable parse exception:  task will not be re-tried.");
         } catch (SAXException e) {
-        	logger.error("Unable to parse resource map: " + identifier
+            logger.error("Unable to parse resource map: " + identifier
                     + ".  Unrecoverable parse exception:  task will not be re-tried.");
-		}
+        }
         Map<String, SolrDoc> processedDocsMap = new HashMap<String, SolrDoc>();
         for (SolrDoc processedDoc : processedDocs) {
             processedDocsMap.put(processedDoc.getIdentifier(), processedDoc);
@@ -122,5 +122,17 @@ public class ResourceMapSubprocessor extends AbstractDocumentSubprocessor implem
 
     public void setSolrQueryUri(String solrQueryUri) {
         this.solrQueryUri = solrQueryUri;
+    }
+
+    public List<String> getMatchDocuments() {
+        return matchDocuments;
+    }
+
+    public void setMatchDocuments(List<String> matchDocuments) {
+        this.matchDocuments = matchDocuments;
+    }
+
+    public boolean canProcess(String formatId) {
+        return matchDocuments.contains(formatId);
     }
 }

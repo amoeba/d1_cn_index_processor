@@ -4,6 +4,7 @@
 
  <bean id="ornlMercury10Subprocessor"
   class="org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor">
+    <property name="xmlNamespaceConfig" ref="xmlNamespaceConfig" />
   	<property name="matchDocuments">
 		<list>
 			<value>http://purl.org/ornl/schema/mercury/terms/v1.0</value>

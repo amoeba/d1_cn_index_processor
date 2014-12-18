@@ -38,7 +38,7 @@ import javax.xml.xpath.XPathFactory;
 import org.dataone.cn.index.processor.IndexVisibilityDelegateHazelcastImpl;
 import org.dataone.cn.indexer.XMLNamespace;
 import org.dataone.cn.indexer.XMLNamespaceConfig;
-import org.dataone.cn.indexer.XPathDocumentParser;
+import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.service.types.v1.Identifier;
@@ -98,7 +98,7 @@ public class XPathResourceMap implements ResourceMap {
 
     public XPathResourceMap(String objectFilePath) throws OREParserException {
         try {
-            Document doc = XPathDocumentParser.loadDocument(objectFilePath);
+            Document doc = XmlDocumentUtility.loadDocument(objectFilePath);
             init(doc);
         } catch (Exception e) {
             throw new OREParserException(e);
@@ -110,7 +110,7 @@ public class XPathResourceMap implements ResourceMap {
             this.indexVisibilityDelegate = ivd;
         }
         try {
-            Document doc = XPathDocumentParser.loadDocument(filePath);
+            Document doc = XmlDocumentUtility.loadDocument(filePath);
             init(doc);
         } catch (Exception e) {
             throw new OREParserException(e);

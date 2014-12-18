@@ -33,12 +33,7 @@ import org.dataone.cn.indexer.solrhttp.SolrDoc;
  * Date: 9/22/11
  * Time: 1:41 PM
  */
-
-/**Retrieves science metadata document from ID using {@link IDocumentProvider}.  After retrievval document is processed
- * and fields added to {@link SolrDoc} to be indexed.
- *
- */
-public class ScienceMetadataDocumentSubprocessor extends AbstractDocumentSubprocessor implements
+public class ScienceMetadataDocumentSubprocessor extends BaseXPathDocumentSubprocessor implements
         IDocumentSubprocessor {
 
     @Override

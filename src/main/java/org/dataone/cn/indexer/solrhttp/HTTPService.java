@@ -386,7 +386,7 @@ public class HTTPService {
 
     private SolrDoc parseDoc(Element docElement) {
         SolrDoc doc = new SolrDoc();
-        doc.LoadFromElement(docElement, validSolrFieldNames);
+        doc.loadFromElement(docElement, validSolrFieldNames);
         return doc;
     }
 

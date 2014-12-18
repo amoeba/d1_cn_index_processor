@@ -28,10 +28,11 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.dataone.cn.indexer.XPathDocumentParser;
+import org.dataone.cn.indexer.SolrIndexService;
+import org.dataone.cn.indexer.XmlDocumentUtility;
+import org.dataone.cn.indexer.parser.BaseXPathDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.ISolrField;
 import org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor;
-import org.dataone.cn.indexer.parser.SolrField;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.configuration.Settings;
 import org.junit.Assert;
@@ -49,7 +50,10 @@ public abstract class BaseSolrFieldXPathTest {
     protected final String hostname = Settings.getConfiguration().getString("cn.router.hostname");
 
     @Autowired
-    private ArrayList<XPathDocumentParser> documentParsers;
+    private ArrayList<SolrIndexService> documentParsers;
+
+    @Autowired
+    private BaseXPathDocumentSubprocessor systemMetadata200Subprocessor;
 
     protected void testXPathParsing(ScienceMetadataDocumentSubprocessor docProcessor,
             Resource sysMetadata, Resource sciMetadata, HashMap<String, String> expectedValues,
@@ -57,17 +61,17 @@ public abstract class BaseSolrFieldXPathTest {
         Integer fieldCount = Integer.valueOf(0);
 
         if (sysMetadata != null) {
-            Document systemMetadataDoc = getXPathDocumentParser().generateXmlDocument(
-                    sysMetadata.getInputStream());
-            for (SolrField field : getXPathDocumentParser().getFields()) {
+            Document systemMetadataDoc = XmlDocumentUtility.generateXmlDocument(sysMetadata
+                    .getInputStream());
+            for (ISolrField field : systemMetadata200Subprocessor.getFieldList()) {
                 boolean compared = compareFields(expectedValues, systemMetadataDoc, field, pid);
                 if (compared) {
                     fieldCount++;
                 }
             }
         }
-        Document scienceMetadataDoc = getXPathDocumentParser().generateXmlDocument(
-                sciMetadata.getInputStream());
+        Document scienceMetadataDoc = XmlDocumentUtility.generateXmlDocument(sciMetadata
+                .getInputStream());
         for (ISolrField field : docProcessor.getFieldList()) {
             boolean compared = compareFields(expectedValues, scienceMetadataDoc, field, pid);
             if (compared) {
@@ -144,7 +148,7 @@ public abstract class BaseSolrFieldXPathTest {
         return fieldsCompared;
     }
 
-    protected XPathDocumentParser getXPathDocumentParser() {
+    protected SolrIndexService getXPathDocumentParser() {
         return documentParsers.get(0);
     }
 
