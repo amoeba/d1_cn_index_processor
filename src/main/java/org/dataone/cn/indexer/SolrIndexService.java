@@ -22,6 +22,7 @@
 
 package org.dataone.cn.indexer;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,12 +37,22 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.log4j.Logger;
+import org.dataone.cn.hazelcast.HazelcastClientFactory;
+import org.dataone.cn.indexer.parser.IDocumentDeleteSubprocessor;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementAdd;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
+import org.dataone.configuration.Settings;
+import org.dataone.service.types.v1.Identifier;
+import org.dataone.service.types.v2.SystemMetadata;
+import org.dataone.service.util.TypeMarshaller;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.xml.sax.SAXException;
+
+import com.hazelcast.client.HazelcastClient;
+import com.hazelcast.core.IMap;
 
 /**
  * Top level document processing class.  
@@ -63,24 +74,68 @@ import org.xml.sax.SAXException;
 public class SolrIndexService {
 
     private static Logger log = Logger.getLogger(SolrIndexService.class);
-
-    private String solrindexUri = null;
-    private String solrQueryUri = null;
-
-    /**
-     * Document Sub Processors are executed after the fields have been processed
-     * they are also allowed to add or replace existing data in the field list
-     */
-    private List<IDocumentSubprocessor> subprocessors = null;
-    private IDocumentSubprocessor systemMetadataProcessor = null;
-
     private static final String OUTPUT_ENCODING = "UTF-8";
 
+    private static final String HZ_OBJECT_PATH = Settings.getConfiguration().getString(
+            "dataone.hazelcast.objectPath");
+    private static final String HZ_SYSTEM_METADATA = Settings.getConfiguration().getString(
+            "dataone.hazelcast.systemMetadata");
+
+    private HazelcastClient hzClient;
+    private IMap<Identifier, String> objectPaths;
+    private IMap<Identifier, SystemMetadata> systemMetadataMap;
+
+    private List<IDocumentSubprocessor> subprocessors = null;
+    private List<IDocumentDeleteSubprocessor> deleteSubprocessors = null;
+    private IDocumentSubprocessor systemMetadataProcessor = null;
+
+    @Autowired
     private HTTPService httpService = null;
 
-    long startTime = 0;
+    @Autowired
+    private String solrIndexUri = null;
+
+    @Autowired
+    private String solrQueryUri = null;
 
     public SolrIndexService() {
+    }
+
+    public void removeFromIndex(String identifier) throws Exception {
+
+        startHazelClient();
+
+        Map<String, SolrDoc> docs = new HashMap<String, SolrDoc>();
+
+        for (IDocumentDeleteSubprocessor deleteSubprocessor : getDeleteSubprocessors()) {
+            docs.putAll(deleteSubprocessor.processDocForDelete(identifier, docs));
+        }
+        List<SolrDoc> docsToUpdate = new ArrayList<SolrDoc>();
+        List<String> idsToIndex = new ArrayList<String>();
+        for (String idToUpdate : docs.keySet()) {
+            if (docs.get(idToUpdate) != null) {
+                docsToUpdate.add(docs.get(idToUpdate));
+            } else {
+                idsToIndex.add(idToUpdate);
+            }
+        }
+
+        SolrElementAdd addCommand = getAddCommand(docsToUpdate);
+        sendCommand(addCommand);
+
+        deleteDocFromIndex(identifier);
+
+        for (String idToIndex : idsToIndex) {
+            Identifier pid = new Identifier();
+            pid.setValue(idToIndex);
+            SystemMetadata sysMeta = systemMetadataMap.get(pid);
+            if (SolrDoc.visibleInIndex(sysMeta)) {
+                String objectPath = objectPaths.get(pid);
+                ByteArrayOutputStream os = new ByteArrayOutputStream();
+                TypeMarshaller.marshalTypeToOutputStream(sysMeta, os);
+                insertIntoIndex(idToIndex, new ByteArrayInputStream(os.toByteArray()), objectPath);
+            }
+        }
     }
 
     /**
@@ -130,12 +185,9 @@ public class SolrIndexService {
             }
         }
 
-        // TODO: get list of unmerged documents and do single http request for
-        // all
-        // unmerged documents
         for (SolrDoc mergeDoc : docs.values()) {
-            if (!mergeDoc.isMerged()) {
-                mergeWithIndexedDocument(mergeDoc);
+            for (IDocumentSubprocessor subprocessor : getSubprocessors()) {
+                subprocessor.mergeWithIndexedDocument(mergeDoc);
             }
         }
 
@@ -146,50 +198,6 @@ public class SolrIndexService {
             log.trace(baos.toString());
         }
         sendCommand(addCommand);
-    }
-
-    /**
-     * Merge updates with existing solr documents
-     * 
-     * This method appears to re-set the data package field data into the
-     * document about to be updated in the solr index. Since packaging
-     * information is derived from the package document (resource map), this
-     * information is not present when processing a document contained in a data
-     * package. This method replaces those values from the existing solr index
-     * record for the document being processed. -- sroseboo, 1-18-12
-     * 
-     * @param indexDocument
-     * @return
-     * @throws IOException
-     * @throws EncoderException
-     * @throws XPathExpressionException
-     */
-    // TODO:combine merge function with resourcemap merge function
-    private SolrDoc mergeWithIndexedDocument(SolrDoc indexDocument) throws IOException,
-            EncoderException, XPathExpressionException {
-        if (httpService == null) {
-            return indexDocument;
-        }
-        List<String> ids = new ArrayList<String>();
-        ids.add(indexDocument.getIdentifier());
-        List<SolrDoc> indexedDocuments = httpService.getDocumentsById(solrQueryUri, ids);
-        SolrDoc indexedDocument = indexedDocuments == null || indexedDocuments.size() <= 0 ? null
-                : indexedDocuments.get(0);
-        if (indexedDocument == null || indexedDocument.getFieldList().size() <= 0) {
-            return indexDocument;
-        } else {
-            for (SolrElementField field : indexedDocument.getFieldList()) {
-                if ((field.getName().equals(SolrElementField.FIELD_ISDOCUMENTEDBY)
-                        || field.getName().equals(SolrElementField.FIELD_DOCUMENTS) || field
-                        .getName().equals(SolrElementField.FIELD_RESOURCEMAP))
-                        && !indexDocument.hasFieldWithValue(field.getName(), field.getValue())) {
-                    indexDocument.addField(field);
-                }
-            }
-
-            indexDocument.setMerged(true);
-            return indexDocument;
-        }
     }
 
     private void sendCommand(SolrElementAdd addCommand) throws IOException {
@@ -206,12 +214,16 @@ public class SolrIndexService {
         return new SolrElementAdd(docs);
     }
 
+    private void deleteDocFromIndex(String identifier) {
+        httpService.sendSolrDelete(identifier);
+    }
+
     public String getSolrindexUri() {
-        return solrindexUri;
+        return solrIndexUri;
     }
 
     public void setSolrIndexUri(String solrindexUri) {
-        this.solrindexUri = solrindexUri;
+        this.solrIndexUri = solrindexUri;
     }
 
     public void setHttpService(HTTPService service) {
@@ -237,8 +249,19 @@ public class SolrIndexService {
         return subprocessors;
     }
 
+    public List<IDocumentDeleteSubprocessor> getDeleteSubprocessors() {
+        if (this.deleteSubprocessors == null) {
+            this.deleteSubprocessors = new ArrayList<IDocumentDeleteSubprocessor>();
+        }
+        return deleteSubprocessors;
+    }
+
     public void setSubprocessors(List<IDocumentSubprocessor> subprocessorList) {
         this.subprocessors = subprocessorList;
+    }
+
+    public void setDeleteSubprocessors(List<IDocumentDeleteSubprocessor> deleteSubprocessorList) {
+        this.deleteSubprocessors = deleteSubprocessorList;
     }
 
     public IDocumentSubprocessor getSystemMetadataProcessor() {
@@ -247,5 +270,13 @@ public class SolrIndexService {
 
     public void setSystemMetadataProcessor(IDocumentSubprocessor systemMetadataProcessor) {
         this.systemMetadataProcessor = systemMetadataProcessor;
+    }
+
+    private void startHazelClient() {
+        if (this.hzClient == null) {
+            this.hzClient = HazelcastClientFactory.getStorageClient();
+            this.objectPaths = this.hzClient.getMap(HZ_OBJECT_PATH);
+            this.systemMetadataMap = this.hzClient.getMap(HZ_SYSTEM_METADATA);
+        }
     }
 }

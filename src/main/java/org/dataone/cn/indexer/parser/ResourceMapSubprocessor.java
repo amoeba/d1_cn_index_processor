@@ -38,7 +38,9 @@ import org.dataone.cn.indexer.resourcemap.ResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMapFactory;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
+import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dspace.foresite.OREParserException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -63,9 +65,39 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
 
     private static Logger logger = Logger.getLogger(ResourceMapSubprocessor.class.getName());
 
+    @Autowired
     private HTTPService httpService = null;
+
+    @Autowired
     private String solrQueryUri = null;
+
     private List<String> matchDocuments = null;
+    private List<String> fieldsToMerge = new ArrayList<String>();
+
+    /**
+     * Merge updates with existing solr documents
+     * 
+     * @param indexDocument
+     * @return
+     * @throws IOException
+     * @throws EncoderException
+     * @throws XPathExpressionException
+     */
+    public SolrDoc mergeWithIndexedDocument(SolrDoc indexDocument) throws IOException,
+            EncoderException, XPathExpressionException {
+
+        SolrDoc solrDoc = httpService.retrieveDocumentFromSolrServer(indexDocument.getIdentifier(),
+                solrQueryUri);
+        if (solrDoc != null) {
+            for (SolrElementField field : solrDoc.getFieldList()) {
+                if (fieldsToMerge.contains(field.getName())
+                        && !indexDocument.hasFieldWithValue(field.getName(), field.getValue())) {
+                    indexDocument.addField(field);
+                }
+            }
+        }
+        return indexDocument;
+    }
 
     /**
      * Implements IDocumentSubprocessor.processDocument method.
@@ -134,5 +166,13 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
 
     public boolean canProcess(String formatId) {
         return matchDocuments.contains(formatId);
+    }
+
+    public List<String> getFieldsToMerge() {
+        return fieldsToMerge;
+    }
+
+    public void setFieldsToMerge(List<String> fieldsToMerge) {
+        this.fieldsToMerge = fieldsToMerge;
     }
 }

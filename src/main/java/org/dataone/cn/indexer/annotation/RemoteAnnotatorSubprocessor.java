@@ -1,5 +1,6 @@
 package org.dataone.cn.indexer.annotation;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,10 +11,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.xml.xpath.XPathExpressionException;
+
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 
+import org.apache.commons.codec.EncoderException;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -37,7 +41,6 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.tdb.TDBFactory;
 
-
 /**
  * The intent of this subprocessor is to fetch annotations about the given 
  * documents as housed in an external store and add them to the solr index.
@@ -48,240 +51,246 @@ import com.hp.hpl.jena.tdb.TDBFactory;
  */
 public class RemoteAnnotatorSubprocessor implements IDocumentSubprocessor {
 
-	private static Log log = LogFactory.getLog(RemoteAnnotatorSubprocessor.class);
+    private static Log log = LogFactory.getLog(RemoteAnnotatorSubprocessor.class);
 
     private List<ISolrDataField> fieldList = new ArrayList<ISolrDataField>();
 
-	public List<ISolrDataField> getFieldList() {
-		return fieldList;
-	}
+    public List<ISolrDataField> getFieldList() {
+        return fieldList;
+    }
 
-	public void setFieldList(List<ISolrDataField> fieldList) {
-		this.fieldList = fieldList;
-	}
+    public void setFieldList(List<ISolrDataField> fieldList) {
+        this.fieldList = fieldList;
+    }
 
-	@Override
-	public boolean canProcess(String formatId) {
-		// process any document, looking for annotations about said document
-		return true;
-	}
-	
-	@Override
-	public Map<String, SolrDoc> processDocument(String identifier,
-			Map<String, SolrDoc> docs, InputStream is) throws Exception {
-		
-		// for each document, check if there are any annotations
-		Iterator<Entry<String, SolrDoc>> entries = docs.entrySet().iterator();
-		while (entries.hasNext()) {
-			Entry<String, SolrDoc> entry = entries.next();
-			String pid = entry.getKey();
-			SolrDoc solrDoc = entry.getValue();
-			
-			// check for annotations, and add them if found
-			SolrDoc annotations = lookUpAnnotations(pid);
-			if (annotations != null) {
-				Iterator<SolrElementField> annotationIter = annotations.getFieldList().iterator();
-				// each field can have multiple values
-				while (annotationIter.hasNext()) {
-					SolrElementField annotation = annotationIter.next();
-					solrDoc.addField(annotation);
-				}
-			}
-		}
-		
-		// return the collection that we have augmented
-		return docs;
-	}
-	
+    @Override
+    public boolean canProcess(String formatId) {
+        // process any document, looking for annotations about said document
+        return true;
+    }
+
+    @Override
+    public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs,
+            InputStream is) throws Exception {
+
+        // for each document, check if there are any annotations
+        Iterator<Entry<String, SolrDoc>> entries = docs.entrySet().iterator();
+        while (entries.hasNext()) {
+            Entry<String, SolrDoc> entry = entries.next();
+            String pid = entry.getKey();
+            SolrDoc solrDoc = entry.getValue();
+
+            // check for annotations, and add them if found
+            SolrDoc annotations = lookUpAnnotations(pid);
+            if (annotations != null) {
+                Iterator<SolrElementField> annotationIter = annotations.getFieldList().iterator();
+                // each field can have multiple values
+                while (annotationIter.hasNext()) {
+                    SolrElementField annotation = annotationIter.next();
+                    solrDoc.addField(annotation);
+                }
+            }
+        }
+
+        // return the collection that we have augmented
+        return docs;
+    }
+
     /**
-	 * Look up annotations from annotator service
-	 * @see "http://docs.annotatorjs.org/en/latest/storage.html"
-	 * @param pid the identifier to fetch annotations about
-	 * @return
-	 */
-	private SolrDoc lookUpAnnotations(String pid) {
+     * Look up annotations from annotator service
+     * @see "http://docs.annotatorjs.org/en/latest/storage.html"
+     * @param pid the identifier to fetch annotations about
+     * @return
+     */
+    private SolrDoc lookUpAnnotations(String pid) {
 
-		String annotatorUrl = null;
-		String consumerKey = null;
-		try {
-			
-			annotatorUrl = Settings.getConfiguration().getString("annotator.store.url");
-			consumerKey = Settings.getConfiguration().getString("annotator.consumerKey");
+        String annotatorUrl = null;
+        String consumerKey = null;
+        try {
 
-			// skip if not configured to query the annotator-store
-			if (annotatorUrl == null || annotatorUrl.length() == 0) {
-				return null;
-			}
-			
-			// TODO: query for matching PID only - wasting time iterating over full list
-			//String urlParameters = "pid=" + URLEncoder.encode(pid, "UTF-8");
-			String urlParameters = "consumer=" + consumerKey;
-			
-			String url = annotatorUrl + "?" + urlParameters;
-			HttpClient client = new HttpClient();
-			HttpMethod method = new GetMethod(url);
-			method.addRequestHeader("Accept", "application/json");
-			client.executeMethod(method);
-			InputStream is = method.getResponseBodyAsStream();
-			
-			String results = IOUtils.toString(is, "UTF-8");
-			log.debug("RESULTS: " + results);
-			JSONObject jo = (JSONObject) JSONValue.parse(results);
-			
-			JSONArray rows = (JSONArray) jo.get("rows");
-			int count = rows.size();
-			SolrDoc annotations = new SolrDoc();
-			
-			// use catch-all annotation field for the tags
-			String tagKey = "annotation_sm";
-			
-			// track the comments here
-			String commentKey = "comment_sm";
-			
-			for (int i = 0; i < count; i++){
-				JSONObject row = (JSONObject) rows.get(i);
-				
-				// skip this row if it is not about this pid
-				// FIXME: Bug in annotator-store prevents effective search by pid
-				String pidValue = row.get("pid").toString();
-				if (!pidValue.equals(pid)) {
-					continue;
-				}
-				
-				// index the (semantic) tags
-				// if the annotation told us the target index field, then use it
-				Object field = row.get("field");
-				if (field != null) {
-					tagKey = field.toString();
-				}
-				
-				// do not index rejected annotations
-				Object reject = row.get("reject");
-				if (reject != null && Boolean.parseBoolean(reject.toString())) {
-					// include empty index values to force removal
-					if (!annotations.hasFieldWithValue(tagKey, "")) {
-						annotations.addField(new SolrElementField(tagKey, ""));
-					}
-					if (!annotations.hasFieldWithValue(commentKey, "")) {
-						annotations.addField(new SolrElementField(commentKey, ""));
-					}
-					continue;
-				}
-				
-				Object obj = row.get("tags");
-				if (obj instanceof JSONArray) {
-					JSONArray tags = (JSONArray) obj;
-					for (Object tag: tags) {
-						String value = tag.toString();
-						if (!annotations.hasFieldWithValue(tagKey, value)) {
-							annotations.addField(new SolrElementField(tagKey, value));
-						}
-					}
-				} else {
-					String value = obj.toString();
-					if (!annotations.hasFieldWithValue(tagKey, value)) {
-						annotations.addField(new SolrElementField(tagKey, value));
-					}
-				}
+            annotatorUrl = Settings.getConfiguration().getString("annotator.store.url");
+            consumerKey = Settings.getConfiguration().getString("annotator.consumerKey");
 
-				// index the comments
-				Object commentObj = row.get("text");
-				if (commentObj != null) {
-					String value = commentObj.toString();
-					if (value != null && value.length() > 0) {
-						if (!annotations.hasFieldWithValue(commentKey, value)) {
-							annotations.addField(new SolrElementField(commentKey, value));
-						}
-					}
-				}
-			}
-			
-			// expand the tags, adding expanded concepts to the existing fields
-			for (String tag: annotations.getAllFieldValues(tagKey)) {
-				try {
-					// get the expanded tags
-					Map<String, Set<String>> expandedConcepts = this.expandConcepts(tag);
-					for (Map.Entry<String, Set<String>> entry: expandedConcepts.entrySet()) {
-						for (String value: entry.getValue()) {
-							String name = entry.getKey();
-							if (!annotations.hasFieldWithValue(name, value)) {
-								annotations.addField(new SolrElementField(name, value));
-							}
-						}
-					}
-				} catch (Exception e) {
-					log.error("Problem exapnding concept: " + tag, e);
-				}	
-			}
-			
-			// return them
-			return annotations;
-			
-		} catch (Exception e) {
-			log.error("Could not lookup annotation using: " + annotatorUrl, e);
-		}
-		
-		return null;
-	}
-	
-	protected Map<String, Set<String>> expandConcepts(String uri) throws Exception {
-		
-		// return structure allows multi-valued fields
-		Map<String, Set<String>> conceptFields = new HashMap<String, Set<String>>();
-		
-		if (uri == null || uri.length() < 1) {
-			return conceptFields;
-		}
-		
-		// get the triples tore dataset
-		Dataset dataset = TripleStoreService.getInstance().getDataset();
-		
-    	// load the ontology
-    	boolean loaded = dataset.containsNamedModel(uri);
-		if (!loaded) {
-			OntModel ontModel = ModelFactory.createOntologyModel();
-			//InputStream sourceStream = new URI(uri).toURL().openStream();
-			// TODO: look up physical source from bioportal
-			ontModel.read(uri);
-			dataset.addNamedModel(uri, ontModel);
-		}
-		
-		// process each field query
-		for (ISolrDataField field: fieldList) {
-			String q = null;
-			if (field instanceof SparqlField) {
-				q = ((SparqlField) field).getQuery();
-				q = q.replaceAll("\\$CONCEPT_URI", uri);
-				q = q.replaceAll("\\$GRAPH_NAME", uri);
-				Query query = QueryFactory.create(q);
-				QueryExecution qexec = QueryExecutionFactory.create(query, dataset);
-				ResultSet results = qexec.execSelect();
-				
-				// each field might have multiple solution values
-				String name = field.getName();
-				Set<String> values = new TreeSet<String>();
-				
-				while (results.hasNext()) {
-					
-					QuerySolution solution = results.next();
-					log.debug(solution.toString());
+            // skip if not configured to query the annotator-store
+            if (annotatorUrl == null || annotatorUrl.length() == 0) {
+                return null;
+            }
 
-					// the value[s] for that field
-					if (solution.contains(name)) {
-						String value = solution.get(field.getName()).toString();
-						values.add(value);
-					}
-				}
-				conceptFields.put(name, values);
+            // TODO: query for matching PID only - wasting time iterating over full list
+            //String urlParameters = "pid=" + URLEncoder.encode(pid, "UTF-8");
+            String urlParameters = "consumer=" + consumerKey;
 
-			}
-		}
-		
-		// clean up the triple store
-		TDBFactory.release(dataset);
+            String url = annotatorUrl + "?" + urlParameters;
+            HttpClient client = new HttpClient();
+            HttpMethod method = new GetMethod(url);
+            method.addRequestHeader("Accept", "application/json");
+            client.executeMethod(method);
+            InputStream is = method.getResponseBodyAsStream();
+
+            String results = IOUtils.toString(is, "UTF-8");
+            log.debug("RESULTS: " + results);
+            JSONObject jo = (JSONObject) JSONValue.parse(results);
+
+            JSONArray rows = (JSONArray) jo.get("rows");
+            int count = rows.size();
+            SolrDoc annotations = new SolrDoc();
+
+            // use catch-all annotation field for the tags
+            String tagKey = "annotation_sm";
+
+            // track the comments here
+            String commentKey = "comment_sm";
+
+            for (int i = 0; i < count; i++) {
+                JSONObject row = (JSONObject) rows.get(i);
+
+                // skip this row if it is not about this pid
+                // FIXME: Bug in annotator-store prevents effective search by pid
+                String pidValue = row.get("pid").toString();
+                if (!pidValue.equals(pid)) {
+                    continue;
+                }
+
+                // index the (semantic) tags
+                // if the annotation told us the target index field, then use it
+                Object field = row.get("field");
+                if (field != null) {
+                    tagKey = field.toString();
+                }
+
+                // do not index rejected annotations
+                Object reject = row.get("reject");
+                if (reject != null && Boolean.parseBoolean(reject.toString())) {
+                    // include empty index values to force removal
+                    if (!annotations.hasFieldWithValue(tagKey, "")) {
+                        annotations.addField(new SolrElementField(tagKey, ""));
+                    }
+                    if (!annotations.hasFieldWithValue(commentKey, "")) {
+                        annotations.addField(new SolrElementField(commentKey, ""));
+                    }
+                    continue;
+                }
+
+                Object obj = row.get("tags");
+                if (obj instanceof JSONArray) {
+                    JSONArray tags = (JSONArray) obj;
+                    for (Object tag : tags) {
+                        String value = tag.toString();
+                        if (!annotations.hasFieldWithValue(tagKey, value)) {
+                            annotations.addField(new SolrElementField(tagKey, value));
+                        }
+                    }
+                } else {
+                    String value = obj.toString();
+                    if (!annotations.hasFieldWithValue(tagKey, value)) {
+                        annotations.addField(new SolrElementField(tagKey, value));
+                    }
+                }
+
+                // index the comments
+                Object commentObj = row.get("text");
+                if (commentObj != null) {
+                    String value = commentObj.toString();
+                    if (value != null && value.length() > 0) {
+                        if (!annotations.hasFieldWithValue(commentKey, value)) {
+                            annotations.addField(new SolrElementField(commentKey, value));
+                        }
+                    }
+                }
+            }
+
+            // expand the tags, adding expanded concepts to the existing fields
+            for (String tag : annotations.getAllFieldValues(tagKey)) {
+                try {
+                    // get the expanded tags
+                    Map<String, Set<String>> expandedConcepts = this.expandConcepts(tag);
+                    for (Map.Entry<String, Set<String>> entry : expandedConcepts.entrySet()) {
+                        for (String value : entry.getValue()) {
+                            String name = entry.getKey();
+                            if (!annotations.hasFieldWithValue(name, value)) {
+                                annotations.addField(new SolrElementField(name, value));
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    log.error("Problem exapnding concept: " + tag, e);
+                }
+            }
+
+            // return them
+            return annotations;
+
+        } catch (Exception e) {
+            log.error("Could not lookup annotation using: " + annotatorUrl, e);
+        }
+
+        return null;
+    }
+
+    protected Map<String, Set<String>> expandConcepts(String uri) throws Exception {
+
+        // return structure allows multi-valued fields
+        Map<String, Set<String>> conceptFields = new HashMap<String, Set<String>>();
+
+        if (uri == null || uri.length() < 1) {
+            return conceptFields;
+        }
+
+        // get the triples tore dataset
+        Dataset dataset = TripleStoreService.getInstance().getDataset();
+
+        // load the ontology
+        boolean loaded = dataset.containsNamedModel(uri);
+        if (!loaded) {
+            OntModel ontModel = ModelFactory.createOntologyModel();
+            //InputStream sourceStream = new URI(uri).toURL().openStream();
+            // TODO: look up physical source from bioportal
+            ontModel.read(uri);
+            dataset.addNamedModel(uri, ontModel);
+        }
+
+        // process each field query
+        for (ISolrDataField field : fieldList) {
+            String q = null;
+            if (field instanceof SparqlField) {
+                q = ((SparqlField) field).getQuery();
+                q = q.replaceAll("\\$CONCEPT_URI", uri);
+                q = q.replaceAll("\\$GRAPH_NAME", uri);
+                Query query = QueryFactory.create(q);
+                QueryExecution qexec = QueryExecutionFactory.create(query, dataset);
+                ResultSet results = qexec.execSelect();
+
+                // each field might have multiple solution values
+                String name = field.getName();
+                Set<String> values = new TreeSet<String>();
+
+                while (results.hasNext()) {
+
+                    QuerySolution solution = results.next();
+                    log.debug(solution.toString());
+
+                    // the value[s] for that field
+                    if (solution.contains(name)) {
+                        String value = solution.get(field.getName()).toString();
+                        values.add(value);
+                    }
+                }
+                conceptFields.put(name, values);
+
+            }
+        }
+
+        // clean up the triple store
+        TDBFactory.release(dataset);
 
         return conceptFields;
-		        
-	}
+
+    }
+
+    public SolrDoc mergeWithIndexedDocument(SolrDoc indexDocument) throws IOException,
+            EncoderException, XPathExpressionException {
+        // TODO Auto-generated method stub
+        return indexDocument;
+    }
 
 }

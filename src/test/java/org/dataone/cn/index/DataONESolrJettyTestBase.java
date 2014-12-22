@@ -24,7 +24,6 @@ package org.dataone.cn.index;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.SolrJettyTestBase;
@@ -53,10 +52,10 @@ import org.springframework.core.io.Resource;
 public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
 
     protected ApplicationContext context;
-    protected ArrayList<SolrIndexService> documentParsers;
+    private SolrIndexService solrIndexService;
 
     protected void addEmlToSolrIndex(Resource sysMetaFile) throws Exception {
-        SolrIndexService indexService = getSolrIndexService();
+        SolrIndexService indexService = solrIndexService;
         SystemMetadata smd = TypeMarshaller.unmarshalTypeFromStream(SystemMetadata.class,
                 sysMetaFile.getInputStream());
         // path to actual science metadata document
@@ -66,7 +65,7 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
     }
 
     protected void addSysAndSciMetaToSolrIndex(Resource sysMeta, Resource sciMeta) throws Exception {
-        SolrIndexService indexService = getSolrIndexService();
+        SolrIndexService indexService = solrIndexService;
         SystemMetadata smd = TypeMarshaller.unmarshalTypeFromStream(SystemMetadata.class,
                 sysMeta.getInputStream());
         String path = sciMeta.getFile().getAbsolutePath();
@@ -129,7 +128,7 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
         if (context == null) {
             context = new ClassPathXmlApplicationContext("org/dataone/cn/index/test-context.xml");
         }
-        documentParsers = (ArrayList) context.getBean("documentParsers");
+        solrIndexService = (SolrIndexService) context.getBean("solrIndexService");
     }
 
     protected void startJettyAndSolr() throws Exception {
@@ -171,9 +170,4 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
         log.info("Jetty Assigned Port#" + port);
         return jetty;
     }
-
-    protected SolrIndexService getSolrIndexService() {
-        return documentParsers.get(0);
-    }
-
 }

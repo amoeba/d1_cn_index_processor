@@ -15,7 +15,8 @@ xmlns:context="http://www.springframework.org/schema/context"
     
     <import resource="classpath:application-context-systemmeta200.xml" />
  	<import resource="classpath:application-context-resourcemap.xml" />
-    	
+    <import resource="classpath:application-context-delete-subprocessors.xml" />
+        	
 	<import resource="classpath:application-context-eml-base.xml" />
  	<import resource="classpath:application-context-eml200.xml" />
  	<import resource="classpath:application-context-eml201.xml" />

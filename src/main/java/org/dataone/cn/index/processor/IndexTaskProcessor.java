@@ -23,7 +23,6 @@
 package org.dataone.cn.index.processor;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -31,7 +30,6 @@ import org.dataone.client.v2.formats.ObjectFormatCache;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.index.task.IndexTaskRepository;
-import org.dataone.cn.indexer.SolrIndexService;
 import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.cn.indexer.resourcemap.ForesiteResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMap;
@@ -65,12 +63,14 @@ import com.hazelcast.core.IMap;
 public class IndexTaskProcessor {
 
     private static Logger logger = Logger.getLogger(IndexTaskProcessor.class.getName());
+    private static final String FORMAT_TYPE_DATA = "DATA";
+    private static final String HZ_OBJECT_PATH = Settings.getConfiguration().getString(
+            "dataone.hazelcast.objectPath");
+    private static final String HZ_SYSTEM_METADATA = Settings.getConfiguration().getString(
+            "dataone.hazelcast.systemMetadata");
 
     @Autowired
     private IndexTaskRepository repo;
-
-    @Autowired
-    private ArrayList<SolrIndexService> documentParsers;
 
     @Autowired
     private IndexTaskProcessingStrategy deleteProcessor;
@@ -81,20 +81,12 @@ public class IndexTaskProcessor {
     @Autowired
     private HTTPService httpService;
 
-    private static final String FORMAT_TYPE_DATA = "DATA";
+    @Autowired
+    private String solrQueryUri;
 
     private HazelcastClient hzClient;
-
-    private static final String HZ_OBJECT_PATH = Settings.getConfiguration().getString(
-            "dataone.hazelcast.objectPath");
-
-    private static final String HZ_SYSTEM_METADATA = Settings.getConfiguration().getString(
-            "dataone.hazelcast.systemMetadata");
-
     private IMap<Identifier, String> objectPaths;
     private IMap<Identifier, SystemMetadata> systemMetadata;
-
-    private String solrQueryUri;
 
     public IndexTaskProcessor() {
     }
@@ -308,10 +300,6 @@ public class IndexTaskProcessor {
     private List<IndexTask> getIndexTaskRetryQueue() {
         return repo.findByStatusAndNextExecutionLessThan(IndexTask.STATUS_FAILED,
                 System.currentTimeMillis());
-    }
-
-    private SolrIndexService getXPathDocumentParser() {
-        return documentParsers.get(0);
     }
 
     private IndexTask saveTask(IndexTask task) {

@@ -12,10 +12,7 @@
 	<import resource="classpath:index-parser-context.xml"/>
 	
 	<bean id="updateProcessor" class="org.dataone.cn.index.processor.IndexTaskUpdateProcessor" />
-	<bean id="deleteProcessor" class="org.dataone.cn.index.processor.IndexTaskDeleteProcessor">
-		<property name="solrQueryUri" value="${solr.query.uri}" />
-		<property name="solrIndexUri" value="${solr.index.uri}" />
-	</bean>
+	<bean id="deleteProcessor" class="org.dataone.cn.index.processor.IndexTaskDeleteProcessor" />
 
 	<bean id="indexTaskProcessor" class="org.dataone.cn.index.processor.IndexTaskProcessor" >
 		<property name="solrQueryUri" value="${solr.query.uri}" />

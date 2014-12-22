@@ -50,7 +50,7 @@ public abstract class BaseSolrFieldXPathTest {
     protected final String hostname = Settings.getConfiguration().getString("cn.router.hostname");
 
     @Autowired
-    private ArrayList<SolrIndexService> documentParsers;
+    private SolrIndexService solrIndexService;
 
     @Autowired
     private BaseXPathDocumentSubprocessor systemMetadata200Subprocessor;
@@ -147,9 +147,4 @@ public abstract class BaseSolrFieldXPathTest {
         }
         return fieldsCompared;
     }
-
-    protected SolrIndexService getXPathDocumentParser() {
-        return documentParsers.get(0);
-    }
-
 }

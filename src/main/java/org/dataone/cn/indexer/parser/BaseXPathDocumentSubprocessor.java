@@ -22,14 +22,17 @@
 
 package org.dataone.cn.indexer.parser;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.codec.EncoderException;
 import org.dataone.cn.indexer.XMLNamespaceConfig;
 import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
@@ -58,7 +61,6 @@ public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
 
     private static XPathFactory xpathFactory = null;
     private static XPath xpath = null;
-    private static XMLNamespaceConfig xmlNamespaceConfig = null;
 
     /**
      * If xpath returns true execute the processDocument Method
@@ -142,7 +144,12 @@ public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
     }
 
     public static void setXmlNamespaceConfig(XMLNamespaceConfig xmlNamespaceConfig) {
-        BaseXPathDocumentSubprocessor.xmlNamespaceConfig = xmlNamespaceConfig;
         xpath.setNamespaceContext(xmlNamespaceConfig);
+    }
+
+    @Override
+    public SolrDoc mergeWithIndexedDocument(SolrDoc indexDocument) throws IOException,
+            EncoderException, XPathExpressionException {
+        return indexDocument;
     }
 }

@@ -258,7 +258,7 @@ public class HTTPService {
                 SolrElementField.FIELD_RESOURCEMAP, true);
     }
 
-    private List<SolrDoc> getDocumentsByField(String uir, List<String> fieldValues,
+    public List<SolrDoc> getDocumentsByField(String uir, List<String> fieldValues,
             String queryField, boolean maxRows) throws IOException, XPathExpressionException,
             EncoderException {
 

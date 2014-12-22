@@ -10,6 +10,7 @@
  	
  	<import resource="file:/etc/dataone/index/index-generation-context/application-context-resourcemap.xml" />
  	<import resource="file:/etc/dataone/index/index-generation-context/application-context-systemmeta200.xml" />
+	<import resource="file:/etc/dataone/index/index-generation-context/application-context-delete-subprocessors.xml" />
  		
 	<import resource="file:/etc/dataone/index/index-generation-context/application-context-eml-base.xml" />
  	<import resource="file:/etc/dataone/index/index-generation-context/application-context-eml200.xml" />
@@ -34,7 +35,7 @@
     
     <import resource="file:/etc/dataone/index/index-generation-context/application-context-datacite-base.xml" />
     <import resource="file:/etc/dataone/index/index-generation-context/application-context-datacite-3.xml" />
-	
+
 	<import resource="classpath:index-processor-context.xml"/>
 	
 	<bean id="log4jInitialization"

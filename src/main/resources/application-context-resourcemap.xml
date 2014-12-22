@@ -8,8 +8,13 @@
 				<value>http://www.openarchives.org/ore/terms</value>
 			</list>
 		</property>	
-		<property name="httpService" ref="httpService"></property>
-		<property name="solrQueryUri" value="${solr.query.uri}"></property>
+		<property name="fieldsToMerge">
+     		<list>
+     			<value>resourceMap</value>
+     			<value>documents</value>
+     			<value>isDocumentedBy</value>
+     		</list>
+     	</property>
 	</bean>
 
 </beans>
