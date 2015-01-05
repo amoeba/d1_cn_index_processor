@@ -23,6 +23,18 @@
 		<property name="relationSourceFormatId" value="http://www.openarchives.org/ore/terms"></property>
 		<property name="relationSourceField" value="resourceMap"></property>
 	</bean>
+	
+	<!--  for removing annotations about other documents in the index -->
+	<bean id="annotationDeleteSubprocessor" class="org.dataone.cn.indexer.parser.BaseDocumentDeleteSubprocessor">
+		<property name="biDirectionalRelationFields">
+			<list>
+				<value>annotates_sm</value>
+				<value>annotated_by_sm</value>
+			</list>
+		</property>
+		<property name="relationSourceFormatId" value="http://docs.annotatorjs.org/en/v1.2.x/annotation-format.html"></property>
+		<property name="relationSourceField" value="annotated_by_sm"></property>
+	</bean>
  
  </beans>
  

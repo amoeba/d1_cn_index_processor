@@ -22,8 +22,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.ISolrDataField;
+import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.Dataset;
@@ -52,10 +54,34 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
     public static final String FIELD_COMMENT = "comment_sm";
 
     private static Log log = LogFactory.getLog(AnnotatorSubprocessor.class);
+    
+    @Autowired
+    private HTTPService httpService = null;
+
+    @Autowired
+    private String solrQueryUri = null;
 
     private List<String> matchDocuments = null;
+    
+    private List<String> fieldsToMerge = new ArrayList<String>();
 
     private List<ISolrDataField> fieldList = new ArrayList<ISolrDataField>();
+
+    public HTTPService getHttpService() {
+        return httpService;
+    }
+
+    public void setHttpService(HTTPService httpService) {
+        this.httpService = httpService;
+    }
+
+    public String getSolrQueryUri() {
+        return solrQueryUri;
+    }
+
+    public void setSolrQueryUri(String solrQueryUri) {
+        this.solrQueryUri = solrQueryUri;
+    }
 
     public List<String> getMatchDocuments() {
         return matchDocuments;
@@ -65,12 +91,12 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
         this.matchDocuments = matchDocuments;
     }
 
-    public List<ISolrDataField> getFieldList() {
-        return fieldList;
+    public List<String> getFieldsToMerge() {
+        return fieldsToMerge;
     }
 
-    public void setFieldList(List<ISolrDataField> fieldList) {
-        this.fieldList = fieldList;
+    public void setFieldsToMerge(List<String> fieldsToMerge) {
+        this.fieldsToMerge = fieldsToMerge;
     }
 
     /**
@@ -286,9 +312,28 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 
     }
 
+    /**
+     * Merge updates with existing solr documents
+     * 
+     * @param indexDocument
+     * @return
+     * @throws IOException
+     * @throws EncoderException
+     * @throws XPathExpressionException
+     */
     public SolrDoc mergeWithIndexedDocument(SolrDoc indexDocument) throws IOException,
             EncoderException, XPathExpressionException {
-        // TODO Auto-generated method stub
+
+        SolrDoc solrDoc = httpService.retrieveDocumentFromSolrServer(indexDocument.getIdentifier(),
+                solrQueryUri);
+        if (solrDoc != null) {
+            for (SolrElementField field : solrDoc.getFieldList()) {
+                if (fieldsToMerge.contains(field.getName())
+                        && !indexDocument.hasFieldWithValue(field.getName(), field.getValue())) {
+                    indexDocument.addField(field);
+                }
+            }
+        }
         return indexDocument;
     }
 }
