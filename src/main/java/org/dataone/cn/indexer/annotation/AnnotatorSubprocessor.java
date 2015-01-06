@@ -99,7 +99,15 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
         this.fieldsToMerge = fieldsToMerge;
     }
 
-    /**
+    public List<ISolrDataField> getFieldList() {
+		return fieldList;
+	}
+
+	public void setFieldList(List<ISolrDataField> fieldList) {
+		this.fieldList = fieldList;
+	}
+
+	/**
      * Returns true if subprocessor should be run against object
      * 
      * @param formatId the the document to be processed
