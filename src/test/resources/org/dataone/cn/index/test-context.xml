@@ -40,10 +40,11 @@ xmlns:context="http://www.springframework.org/schema/context"
 
     <import resource="classpath:application-context-datacite-base.xml" />
     <import resource="classpath:application-context-datacite-3.xml" />
-    
+    <!--
     <import resource="classpath:application-context-prov-base.xml" />
     <import resource="classpath:application-context-provone100.xml" />
-
+    -->
+    
     <import resource="classpath:application-context-oa.xml" />
     
     
