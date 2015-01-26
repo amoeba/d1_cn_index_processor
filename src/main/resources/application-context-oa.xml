@@ -15,10 +15,6 @@
 				<ref bean="annotation.standard" />
 				<ref bean="annotation.characteristic" />
 				<ref bean="annotation.creator" />
-				<ref bean="prov.wasDerivedFrom" />
-				<ref bean="prov.wasGeneratedBy" />
-				<ref bean="prov.wasInformedBy" />
-				<ref bean="prov.used" />
 			</list>
 		</property>	
 	</bean>
