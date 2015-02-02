@@ -21,6 +21,7 @@
  */
 
 package org.dataone.cn.indexer.parser;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +38,6 @@ import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.springframework.beans.factory.annotation.Autowired;
-
 
 public class BaseDocumentDeleteSubprocessor implements IDocumentDeleteSubprocessor {
 

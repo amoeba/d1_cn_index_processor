@@ -70,6 +70,7 @@ import org.xml.sax.SAXException;
 public class HTTPService {
 
     private static final String CHAR_ENCODING = "UTF-8";
+    private static final String XML_CONTENT_TYPE = "text/xml";
 
     final static String PARAM_START = "start";
     final static String PARAM_ROWS = "rows";
@@ -105,11 +106,21 @@ public class HTTPService {
      */
 
     public void sendUpdate(String uri, SolrElementAdd data, String encoding) throws IOException {
+        this.sendUpdate(uri, data, encoding, XML_CONTENT_TYPE);
+    }
+
+    public void sendUpdate(String uri, SolrElementAdd data) throws IOException {
+        sendUpdate(uri, data, CHAR_ENCODING, XML_CONTENT_TYPE);
+    }
+
+    public void sendUpdate(String uri, SolrElementAdd data, String encoding, String contentType)
+            throws IOException {
         InputStream inputStreamResponse = null;
         HttpPost post = null;
         HttpResponse response = null;
         try {
             post = new HttpPost(uri);
+            post.setHeader("Content-Type", contentType);
             post.setEntity(new OutputStreamHttpEntity(data, encoding));
             response = getHttpClient().execute(post);
             HttpEntity responseEntity = response.getEntity();
@@ -123,16 +134,18 @@ public class HTTPService {
         }
     }
 
-    public void sendUpdate(String uri, SolrElementAdd data) throws IOException {
-        sendUpdate(uri, data, CHAR_ENCODING);
+    private void sendPost(String uri, String data) throws IOException {
+        sendPost(uri, data, CHAR_ENCODING, XML_CONTENT_TYPE);
     }
 
-    private void sendPost(String uri, String data, String encoding) throws IOException {
+    private void sendPost(String uri, String data, String encoding, String contentType)
+            throws IOException {
         InputStream inputStreamResponse = null;
         HttpPost post = null;
         HttpResponse response = null;
         try {
             post = new HttpPost(uri);
+            post.setHeader("Content-Type", contentType);
             ByteArrayEntity entity = new ByteArrayEntity(data.getBytes());
             entity.setContentEncoding(encoding);
             post.setEntity(entity);
@@ -155,7 +168,7 @@ public class HTTPService {
             IOUtils.write("<?xml version=\"1.1\" encoding=\"utf-8\"?>\n", outputStream,
                     CHAR_ENCODING);
             IOUtils.write("<delete><id>" + pid + "</id></delete>", outputStream, CHAR_ENCODING);
-            sendPost(getSolrIndexUri(), outputStream.toString(), CHAR_ENCODING);
+            sendPost(getSolrIndexUri(), outputStream.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
