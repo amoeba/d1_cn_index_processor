@@ -175,8 +175,8 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         csiroExpected.put("blockedReplicationMN", "");
         csiroExpected.put("obsoletes", "csiro_c_abayadultprawns");
         csiroExpected.put("obsoletedBy", "csiro_e_abayadultprawns");
-        csiroExpected.put("dateUploaded", solrDateConverter.convert("2012-03-22T13:55:48.348202"));
-        csiroExpected.put("dateModified", solrDateConverter.convert("2012-03-22T13:55:48.360604"));
+        csiroExpected.put("dateUploaded", solrDateConverter.convert("2012-03-22T13:55:48.348Z"));
+        csiroExpected.put("dateModified", solrDateConverter.convert("2012-03-22T13:55:48.360Z"));
         csiroExpected.put("datasource", "test_documents");
         csiroExpected.put("authoritativeMN", "test_documents");
         csiroExpected.put("replicaMN", "");

@@ -18,12 +18,13 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 
 import org.apache.commons.codec.EncoderException;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.ISolrDataField;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
@@ -54,6 +55,7 @@ public class RemoteAnnotatorSubprocessor implements IDocumentSubprocessor {
     private static Log log = LogFactory.getLog(RemoteAnnotatorSubprocessor.class);
 
     private List<ISolrDataField> fieldList = new ArrayList<ISolrDataField>();
+    private HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
 
     public List<ISolrDataField> getFieldList() {
         return fieldList;
@@ -121,11 +123,11 @@ public class RemoteAnnotatorSubprocessor implements IDocumentSubprocessor {
             String urlParameters = "consumer=" + consumerKey;
 
             String url = annotatorUrl + "?" + urlParameters;
-            HttpClient client = new HttpClient();
-            HttpMethod method = new GetMethod(url);
-            method.addRequestHeader("Accept", "application/json");
-            client.executeMethod(method);
-            InputStream is = method.getResponseBodyAsStream();
+            HttpClient client = httpClientBuilder.build();
+            HttpGet method = new HttpGet(url);
+            method.addHeader("Accept", "application/json");
+            HttpResponse response = client.execute(method);
+            InputStream is = response.getEntity().getContent();
 
             String results = IOUtils.toString(is, "UTF-8");
             log.debug("RESULTS: " + results);

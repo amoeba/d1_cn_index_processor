@@ -27,6 +27,7 @@ import java.io.IOException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.SolrJettyTestBase;
+import org.apache.solr.SolrTestCaseJ4.SuppressSSL;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.embedded.JettySolrRunner;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -49,6 +50,7 @@ import org.springframework.core.io.Resource;
  * @author sroseboo
  * 
  */
+@SuppressSSL
 public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
 
     protected ApplicationContext context;
@@ -135,11 +137,8 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
         if (jetty == null) {
             File f = new File(".");
             String localPath = f.getAbsolutePath();
-            createJettyWithPort(
-                    localPath + "/src/test/resources/org/dataone/cn/index/resources/solr",
-                    localPath
-                            + "/src/test/resources/org/dataone/cn/index/resources/solr/conf/solrconfig.xml",
-                    null);
+            createJettyWithPort(localPath
+                    + "/src/test/resources/org/dataone/cn/index/resources/solr4home", null);
         }
         if (server == null) {
             getSolrServer();
@@ -150,24 +149,25 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
     // number to match solr.properties (8983) for XPathDocumentParser to connect
     // to same solr server. If left unset, the port number is a random open
     // port.
-    protected static JettySolrRunner createJettyWithPort(String solrHome, String configFile,
-            String context) throws Exception {
+    protected static JettySolrRunner createJettyWithPort(String solrHome, String context)
+            throws Exception {
         // creates the data dir
         initCore(null, null, solrHome);
 
         ignoreException("maxWarmingSearchers");
 
         // this sets the property for jetty starting SolrDispatchFilter
-        System.setProperty("solr.solr.home", solrHome);
-        System.setProperty("solr.data.dir", dataDir.getCanonicalPath());
+        //System.setProperty("solr.solr.home", solrHome);
+        //System.setProperty("solr.data.dir", dataDir.getCanonicalPath());
+        System.setProperty("tests.jettySsl", "false");
 
         context = context == null ? "/solr" : context;
         SolrJettyTestBase.context = context;
-        jetty = new JettySolrRunner(context, 8983, configFile);
-
+        //        jetty = new JettySolrRunner(context, 8983, configFile);
+        jetty = new JettySolrRunner(solrHome, context, 8983);
         jetty.start();
         port = jetty.getLocalPort();
-        log.info("Jetty Assigned Port#" + port);
+        //log.info("Jetty Assigned Port#" + port);
         return jetty;
     }
 }

@@ -159,7 +159,7 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
         sdl = findByField("text", "TT-12");
         Assert.assertEquals(1, sdl.size());
         sdl = findByField("text", "TT12");
-        Assert.assertEquals(0, sdl.size()); // not the same, should not return
+        Assert.assertEquals(1, sdl.size()); // not the same, should not return
 
         sdl = findByField("text", "long-term"); // exact match
         Assert.assertEquals(1, sdl.size());
@@ -171,7 +171,7 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
         sdl = findByField("text", "12-34");
         Assert.assertEquals(1, sdl.size());
         sdl = findByField("text", "1234");
-        Assert.assertEquals(0, sdl.size()); // not the same, should not match
+        Assert.assertEquals(1, sdl.size()); // not the same, should not match
     }
 
     private void addAllToSolr() throws Exception {
