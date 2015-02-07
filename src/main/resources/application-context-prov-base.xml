@@ -7,7 +7,7 @@
     
     <!-- Define common PROV beans, referenced from the ProvONE application contexts -->
     <bean id="prov.wasDerivedFrom" class="org.dataone.cn.indexer.annotation.SparqlField">
-        <constructor-arg name="name" value="wasDerivedFrom_sm" />
+        <constructor-arg name="name" value="prov_wasDerivedFrom" />
         <constructor-arg name="query">
             <value>
                 <![CDATA[
@@ -19,7 +19,7 @@
                 PREFIX ore:     <http://www.openarchives.org/ore/terms/> 
                 PREFIX dcterms: <http://purl.org/dc/terms/>
 
-                SELECT (str(?pidValue) as ?pid) (str(?wasDerivedFromValue) as ?wasDerivedFrom_sm)
+                SELECT (str(?pidValue) as ?pid) (str(?wasDerivedFromValue) as ?prov_wasDerivedFrom)
                 FROM <$GRAPH_NAME>
                 WHERE { 
                         
@@ -34,7 +34,7 @@
     </bean>
     
     <bean id="prov.wasGeneratedBy" class="org.dataone.cn.indexer.annotation.SparqlField">
-        <constructor-arg name="name" value="wasGeneratedBy_sm" />
+        <constructor-arg name="name" value="prov_wasGeneratedBy" />
         <constructor-arg name="query">
             <value>
                 <![CDATA[
@@ -46,7 +46,7 @@
                 PREFIX ore:     <http://www.openarchives.org/ore/terms/> 
                 PREFIX dcterms: <http://purl.org/dc/terms/>
 
-                SELECT (str(?pidValue) as ?pid) (str(?wasGeneratedByValue) as ?wasGeneratedBy_sm)
+                SELECT (str(?pidValue) as ?pid) (str(?wasGeneratedByValue) as ?prov_wasGeneratedBy)
                 FROM <$GRAPH_NAME>
                 WHERE { 
                         
@@ -61,7 +61,7 @@
     </bean>
     
     <bean id="prov.wasInformedBy" class="org.dataone.cn.indexer.annotation.SparqlField">
-        <constructor-arg name="name" value="wasInformedBy_sm" />
+        <constructor-arg name="name" value="prov_wasInformedBy" />
         <constructor-arg name="query">
             <value>
                 <![CDATA[
@@ -73,7 +73,7 @@
                 PREFIX ore:     <http://www.openarchives.org/ore/terms/> 
                 PREFIX dcterms: <http://purl.org/dc/terms/>
 
-                SELECT (str(?pidValue) as ?pid) (str(?wasInformedByValue) as ?wasInformedBy_sm)
+                SELECT (str(?pidValue) as ?pid) (str(?wasInformedByValue) as ?prov_wasInformedBy)
                 FROM <$GRAPH_NAME>
                 WHERE { 
                         
@@ -88,7 +88,7 @@
     </bean>
     
     <bean id="prov.used" class="org.dataone.cn.indexer.annotation.SparqlField">
-        <constructor-arg name="name" value="used_sm" />
+        <constructor-arg name="name" value="prov_used" />
         <constructor-arg name="query">
             <value>
                 <![CDATA[
@@ -100,7 +100,7 @@
                 PREFIX ore:     <http://www.openarchives.org/ore/terms/> 
                 PREFIX dcterms: <http://purl.org/dc/terms/>
 
-                SELECT (str(?pidValue) as ?pid) (str(?usedValue) as ?used_sm)
+                SELECT (str(?pidValue) as ?pid) (str(?usedValue) as ?prov_used)
                 FROM <$GRAPH_NAME>
                 WHERE { 
                         
@@ -115,7 +115,7 @@
     </bean>
     
     <bean id="prov.generatedByProgram" class="org.dataone.cn.indexer.annotation.SparqlField">
-        <constructor-arg name="name" value="generatedByProgram_sm" />
+        <constructor-arg name="name" value="prov_generatedByProgram" />
         <constructor-arg name="query">
             <value>
                 <![CDATA[
@@ -127,7 +127,7 @@
                 PREFIX ore:     <http://www.openarchives.org/ore/terms/> 
                 PREFIX dcterms: <http://purl.org/dc/terms/>
                 
-                SELECT (str(?pidValue) as ?pid) (str(?programPidValue) as ?generatedByProgram_sm)
+                SELECT (str(?pidValue) as ?pid) (str(?programPidValue) as ?prov_generatedByProgram)
                 FROM <$GRAPH_NAME>
                 WHERE {
                 
@@ -143,7 +143,7 @@
     </bean>
 
     <bean id="prov.generatedByExecution" class="org.dataone.cn.indexer.annotation.SparqlField">
-        <constructor-arg name="name" value="generatedByExecution_sm" />
+        <constructor-arg name="name" value="prov_generatedByExecution" />
         <constructor-arg name="query">
             <value>
                 <![CDATA[
@@ -155,7 +155,7 @@
                 PREFIX ore:     <http://www.openarchives.org/ore/terms/> 
                 PREFIX dcterms: <http://purl.org/dc/terms/>
                 
-                SELECT (str(?pidValue) as ?pid) (str(?executionPidValue) as ?generatedByExecution_sm)
+                SELECT (str(?pidValue) as ?pid) (str(?executionPidValue) as ?prov_generatedByExecution)
                 FROM <$GRAPH_NAME>
                 WHERE {
                 
@@ -169,7 +169,7 @@
     </bean>
 
     <bean id="prov.generatedByUser" class="org.dataone.cn.indexer.annotation.SparqlField">
-        <constructor-arg name="name" value="generatedByUser_sm" />
+        <constructor-arg name="name" value="prov_generatedByUser" />
         <constructor-arg name="query">
             <value>
                 <![CDATA[
@@ -181,13 +181,13 @@
                 PREFIX ore:     <http://www.openarchives.org/ore/terms/> 
                 PREFIX dcterms: <http://purl.org/dc/terms/>
                 
-                SELECT (str(?pidValue) as ?pid) ?generatedByUser_sm
+                SELECT (str(?pidValue) as ?pid) ?prov_generatedByUser
                 FROM <$GRAPH_NAME>
                 WHERE {
                 
                     ?derived_data prov:wasGeneratedBy ?execution .
                     ?execution prov:qualifiedAssociation ?association .
-                    ?association prov:agent ?generatedByUser_sm .
+                    ?association prov:agent ?prov_generatedByUser .
                     ?derived_data dcterms:identifier ?pidValue .
                 }
                 ]]>
@@ -196,7 +196,7 @@
     </bean>
 
     <bean id="prov.usedByProgram" class="org.dataone.cn.indexer.annotation.SparqlField">
-        <constructor-arg name="name" value="usedByProgram_sm" />
+        <constructor-arg name="name" value="prov_usedByProgram" />
         <constructor-arg name="query">
             <value>
                 <![CDATA[
@@ -208,7 +208,7 @@
                 PREFIX ore:     <http://www.openarchives.org/ore/terms/> 
                 PREFIX dcterms: <http://purl.org/dc/terms/>
                 
-                SELECT (str(?pidValue) as ?pid) (str(?programPidValue) as ?usedByProgram_sm)
+                SELECT (str(?pidValue) as ?pid) (str(?programPidValue) as ?prov_usedByProgram)
                 FROM <$GRAPH_NAME>
                 WHERE {
                 
@@ -224,7 +224,7 @@
     </bean>
 
     <bean id="prov.usedByExecution" class="org.dataone.cn.indexer.annotation.SparqlField">
-        <constructor-arg name="name" value="usedByExecution_sm" />
+        <constructor-arg name="name" value="prov_usedByExecution" />
         <constructor-arg name="query">
             <value>
                 <![CDATA[
@@ -236,7 +236,7 @@
                 PREFIX ore:     <http://www.openarchives.org/ore/terms/> 
                 PREFIX dcterms: <http://purl.org/dc/terms/>
                 
-                SELECT (str(?pidValue) as ?pid) (str(?executionIdValue) as ?usedByExecution_sm)
+                SELECT (str(?pidValue) as ?pid) (str(?executionIdValue) as ?prov_usedByExecution)
                 FROM <$GRAPH_NAME>
                 WHERE {
                 
@@ -250,7 +250,7 @@
     </bean>
 
     <bean id="prov.usedByUser" class="org.dataone.cn.indexer.annotation.SparqlField">
-        <constructor-arg name="name" value="usedByUser_sm" />
+        <constructor-arg name="name" value="prov_usedByUser" />
         <constructor-arg name="query">
             <value>
                 <![CDATA[
@@ -262,13 +262,13 @@
                 PREFIX ore:     <http://www.openarchives.org/ore/terms/> 
                 PREFIX dcterms: <http://purl.org/dc/terms/>
 
-                SELECT (str(?pidValue) as ?pid) ?usedByUser_sm
+                SELECT (str(?pidValue) as ?pid) ?prov_usedByUser
                 FROM <$GRAPH_NAME>
                 WHERE {
                 
                     ?execution prov:used ?primary_data .
                     ?execution prov:qualifiedAssociation ?association .
-                    ?association prov:agent ?usedByUser_sm .
+                    ?association prov:agent ?prov_usedByUser .
                     ?primary_data dcterms:identifier ?pidValue .
                 }                
                 ]]>
@@ -276,8 +276,8 @@
         </constructor-arg>
     </bean>
 
-    <bean id="prov.hadExecution" class="org.dataone.cn.indexer.annotation.SparqlField">
-        <constructor-arg name="name" value="hadExecution_sm" />
+    <bean id="prov.wasExecutedByExecution" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="prov_wasExecutedByExecution" />
         <constructor-arg name="query">
             <value>
                 <![CDATA[
@@ -289,7 +289,7 @@
                 PREFIX ore:     <http://www.openarchives.org/ore/terms/> 
                 PREFIX dcterms: <http://purl.org/dc/terms/>
                 
-                SELECT (str(?pidValue) as ?pid) (str(?executionIdValue) as ?hadExecution_sm)
+                SELECT (str(?pidValue) as ?pid) (str(?executionIdValue) as ?prov_wasExecutedByExecution)
                 FROM <$GRAPH_NAME>
                 WHERE {
                 
@@ -303,9 +303,36 @@
         </constructor-arg>
     </bean>
 
+    <bean id="prov.wasExecutedByUser" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="prov_wasExecutedByUser" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+                PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#> 
+                PREFIX owl:     <http://www.w3.org/2002/07/owl#> 
+                PREFIX prov:    <http://www.w3.org/ns/prov#> 
+                PREFIX provone: <http://purl.org/provone/2015/15/ontology#>
+                PREFIX ore:     <http://www.openarchives.org/ore/terms/> 
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                                
+                SELECT (str(?pidValue) as ?pid) ?prov_wasExecutedByUser
+                FROM <$GRAPH_NAME>
+                WHERE {
+                
+                    ?execution prov:qualifiedAssociation ?association .
+                    ?association prov:hadPlan ?program .
+                    ?association prov:agent ?prov_wasExecutedByUser
+                    ?program dcterms:identifier ?pidValue .
+                }                
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
     <!-- Being such a generic field, we may want to move instanceOfClass to an appication-context-rdf.xml file -->
     <bean id="prov.instanceOfClass" class="org.dataone.cn.indexer.annotation.SparqlField">
-        <constructor-arg name="name" value="instanceOfClass_sm" />
+        <constructor-arg name="name" value="prov_instanceOfClass" />
         <constructor-arg name="query">
             <value>
                 <![CDATA[
@@ -317,11 +344,11 @@
                 PREFIX ore:     <http://www.openarchives.org/ore/terms/> 
                 PREFIX dcterms: <http://purl.org/dc/terms/>
                 
-                SELECT (str(?pidValue) as ?pid) ?instanceOfClass_sm
+                SELECT (str(?pidValue) as ?pid) ?prov_instanceOfClass
                 FROM <$GRAPH_NAME>
                 WHERE {
                 
-                    ?subject rdf:type ?instanceOfClass_sm .
+                    ?subject rdf:type ?prov_instanceOfClass .
                     ?subject dcterms:identifier ?pidValue .
                 }                
                 ]]>
