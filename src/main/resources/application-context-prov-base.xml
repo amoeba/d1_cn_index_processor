@@ -348,8 +348,8 @@
                 FROM <$GRAPH_NAME>
                 WHERE {
                     ?derived_data prov:wasDerivedFrom ?source_data .
-                    ?source_data cito:documentedBy ?source_metadata .
-                    ?source_metadata dcterms:identifier ?pidValue .
+                    ?derived_data cito:documentedBy ?derived_metadata .
+                    ?derived_metadata dcterms:identifier ?pidValue .
                     ?source_data dcterms:identifier ?sourceDataPidValue .
                 }                
                 ]]>
@@ -357,6 +357,33 @@
         </constructor-arg>
     </bean>
     
+    <bean id="prov.hasDerivations" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="prov_hasDerivations" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+                PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#> 
+                PREFIX owl:     <http://www.w3.org/2002/07/owl#> 
+                PREFIX prov:    <http://www.w3.org/ns/prov#> 
+                PREFIX provone: <http://purl.org/provone/2015/15/ontology#>
+                PREFIX ore:     <http://www.openarchives.org/ore/terms/> 
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX cito:    <http://purl.org/spar/cito/>
+                
+                SELECT (str(?pidValue) as ?pid) (str(?derivedDataPidValue) as ?prov_hasDerivations)
+                FROM <$GRAPH_NAME>
+                WHERE {
+                    ?derived_data prov:wasDerivedFrom ?source_data .
+                    ?source_data cito:documentedBy ?source_metadata .
+                    ?source_metadata dcterms:identifier ?pidValue .
+                    ?derived_data dcterms:identifier ?derivedDataPidValue .
+                }                
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
     <!-- Being such a generic field, we may want to move instanceOfClass to an appication-context-rdf.xml file -->
     <bean id="prov.instanceOfClass" class="org.dataone.cn.indexer.annotation.SparqlField">
         <constructor-arg name="name" value="prov_instanceOfClass" />
