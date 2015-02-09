@@ -728,7 +728,12 @@
        southBoundCoord,species,submitter,term,title,topic,updateDate,webUrl,
        westBoundCoord,writePermission,attributeName,
        attributeLabel,attributeDescription,attributeUnit,attribute,
-       authorSurName, authorGivenName</str>
+       authorSurName, authorGivenName,prov_wasDerivedFrom,prov_wasGeneratedBy,
+       prov_wasInformedBy,prov_used,prov_generatedByProgram,
+       prov_generatedByExecution,prov_generatedByUser,prov_usedByProgram,
+       prov_usedByExecution,prov_usedByUser,prov_wasExecutedByExecution,
+       prov_wasExecutedByUser,prov_hasSources,prov_hasDerivations,
+       prov_instanceOfClass</str>
      </lst>
     <!-- In addition to defaults, "appends" params can be specified
          to identify values which should be appended to the list of
