@@ -35,6 +35,7 @@
      	<property name="deleteSubprocessors">
      		<list>
      			<ref bean="resourceMapDeleteSubprocessor" />
+     			<ref bean="annotationDeleteSubprocessor" />
      		</list>
      	</property>
 	</bean>
