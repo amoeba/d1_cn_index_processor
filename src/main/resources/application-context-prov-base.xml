@@ -322,7 +322,7 @@
                 
                     ?execution prov:qualifiedAssociation ?association .
                     ?association prov:hadPlan ?program .
-                    ?association prov:agent ?prov_wasExecutedByUser
+                    ?association prov:agent ?prov_wasExecutedByUser .
                     ?program dcterms:identifier ?pidValue .
                 }                
                 ]]>
