@@ -213,6 +213,8 @@ public class IndexTaskProcessor {
                     if (foundId == false) {
                         Identifier pid = new Identifier();
                         pid.setValue(id);
+                        logger.debug("Identifier " + id + 
+                        	" was not found in the referenced id list in the Solr search index.");
                         SystemMetadata smd = systemMetadata.get(pid);
                         if (smd != null && notVisibleInIndex(smd)) {
                             numberOfIndexedOrRemovedReferences++;
