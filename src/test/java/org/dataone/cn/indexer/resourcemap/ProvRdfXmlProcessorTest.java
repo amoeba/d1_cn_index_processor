@@ -146,8 +146,15 @@ public class ProvRdfXmlProcessorTest extends BaseSolrFieldXPathTest {
 		
     	// A map for the sub processor to populate
     	Map<String, SolrDoc> docs = new TreeMap<String, SolrDoc>();
-    	docs.put(identifier, new SolrDoc());
     	
+    	// Build a minimal SolrDoc keyed by the id
+    	SolrDoc solrDoc = new SolrDoc();
+    	SolrElementField identifierField = new SolrElementField();
+    	identifierField.setName(SolrElementField.FIELD_ID);
+    	identifierField.setValue(identifier);
+		solrDoc.addField(identifierField);
+    	docs.put(identifier, solrDoc);
+    	    	
     	// The returned map with processed Solr documents
     	Map<String, SolrDoc> solrDocs = provRdfXmlSubProcessor.processDocument(identifier, docs, resourceMap);
     	
