@@ -96,6 +96,13 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
 		this.fieldList = fieldList;
 	}
 
+	/**
+	 * Process an individual RDF/XML document, returning a map of processed documents to be indexed
+	 * 
+	 * @param identifier  the identifier of the document to process
+	 * @param docs  a map of Solr documents keyed by identifier
+	 * @param is  the input stream representation of the RDF/XML document to be processed
+	 */
 	@Override
     public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs, InputStream is) throws Exception {
         SolrDoc resourceMapDoc = docs.get(identifier);
@@ -104,11 +111,14 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
         for (SolrDoc processedDoc : processedDocs) {
             processedDocsMap.put(processedDoc.getIdentifier(), processedDoc);
         }
-        // make sure to merge any docs that are currently being processed
-        Map<String, SolrDoc> mergedDocuments = mergeDocs(docs, processedDocsMap);
-        return mergedDocuments;
+
+        return processedDocsMap;
     }
     
+	/* 
+	 * Process triple statements found in an RDF/XML input stream document and return a list 
+	 * of Solr documents to be indexed
+	 */
     private List<SolrDoc> process(SolrDoc indexDocument, InputStream is) throws Exception {
     	
     	// get the triplestore dataset
@@ -183,66 +193,30 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
 		// clean up the triple store
 		TDBFactory.release(dataset);
 
-		// merge the existing index with the new[er] values
-        Map<String, SolrDoc> existingDocuments = getSolrDocs(documentsToIndex.keySet());
-        Map<String, SolrDoc> mergedDocuments = mergeDocs(documentsToIndex, existingDocuments);
-        mergedDocuments.put(indexDocument.getIdentifier(), indexDocument);
-        
-        return new ArrayList<SolrDoc>(mergedDocuments.values());
+        return new ArrayList<SolrDoc>(documentsToIndex.values());
     }
     
-    private Map<String, SolrDoc> getSolrDocs(Set<String> ids) throws Exception {
-        Map<String, SolrDoc> list = new HashMap<String, SolrDoc>();
-        if (ids != null) {
-            for (String id : ids) {
-            	SolrDoc doc = httpService.retrieveDocumentFromSolrServer(id, solrQueryUri);
-                if (doc != null) {
-                    list.put(id, doc);
-                }
-            }
-        }
-        return list;
-    }
-    
-    private Map<String, SolrDoc> mergeDocs(Map<String, SolrDoc> pending, Map<String, SolrDoc> existing) throws Exception {
-
-    	Map<String, SolrDoc> merged = new HashMap<String, SolrDoc>();
-    	Iterator<String> pendingIter = pending.keySet().iterator();
-    	while (pendingIter.hasNext()) {
-    		String id = pendingIter.next();
-    		SolrDoc pendingDoc = pending.get(id);
-    		SolrDoc existingDoc = existing.get(id);
-    		SolrDoc mergedDoc = new SolrDoc();
-    		if (existingDoc != null) {
-    			// merge the existing fields
-    			for (SolrElementField field: existingDoc.getFieldList()) {
-    				mergedDoc.addField(field);
-    				
-    			}
-    		}
-    		// add the pending
-    		for (SolrElementField field: pendingDoc.getFieldList()) {
-    			if (field.getName().equals(SolrElementField.FIELD_ID) && mergedDoc.hasField(SolrElementField.FIELD_ID)) {
-    				continue;
-    			}
-    			
-				// only add if we don't already have it
-				if (!mergedDoc.hasFieldWithValue(field.getName(), field.getValue())) {
-					mergedDoc.addField(field);
-				}	
-			}
-    		
-    		// include in results
-			merged.put(id, mergedDoc);
-    	}
-    	return merged;
-    }
 
 
+    /**
+     * Merge document updates with existing fields in the index
+     * 
+     * @param indexDocument  the document to index
+     */
 	@Override
 	public SolrDoc mergeWithIndexedDocument(SolrDoc indexDocument)
 			throws IOException, EncoderException, XPathExpressionException {
-		// TODO: actually perform merging 
+        
+		SolrDoc solrDoc = httpService.retrieveDocumentFromSolrServer(indexDocument.getIdentifier(),
+                solrQueryUri);
+        if (solrDoc != null) {
+            for (SolrElementField field : solrDoc.getFieldList()) {
+                if ( !indexDocument.hasFieldWithValue(field.getName(), field.getValue()) ) {
+                    indexDocument.addField(field);
+                }
+            }
+        }
+        
 		return indexDocument;
 	}
 
