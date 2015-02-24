@@ -258,6 +258,22 @@
    		<field name="geohash_8" 			type="text_general" 	indexed="true" stored="true" multiValued="true"/>
    		<field name="geohash_9" 			type="text_general" 	indexed="true" stored="true" multiValued="true"/>
 
+        <!-- Provenance-based fields -->
+        <field name="prov_wasDerivedFrom"         type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="prov_wasGeneratedBy"         type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="prov_wasInformedBy"          type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="prov_used"                   type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="prov_generatedByProgram"     type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="prov_generatedByExecution"   type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="prov_generatedByUser"        type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="prov_usedByProgram"          type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="prov_usedByExecution"        type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="prov_usedByUser"             type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="prov_wasExecutedByExecution" type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="prov_wasExecutedByUser"      type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="prov_hasSources"             type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="prov_hasDerivations"         type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="prov_instanceOfClass"        type="string" indexed="true" stored="true" multiValued="true" />
 
    <!--
      Some fields such as popularity and manu_exact could be modified to
