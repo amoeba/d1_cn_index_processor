@@ -48,10 +48,10 @@ import com.hp.hpl.jena.tdb.TDBFactory;
  */
 public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 
-    public static final String FIELD_ANNOTATION = "annotation_sm";
-    public static final String FIELD_ANNOTATES = "annotates_sm";
-    public static final String FIELD_ANNOTATED_BY = "annotated_by_sm";
-    public static final String FIELD_COMMENT = "comment_sm";
+    public static final String FIELD_ANNOTATION = "sem_annotation";
+    public static final String FIELD_ANNOTATES = "sem_annotates";
+    public static final String FIELD_ANNOTATED_BY = "sem_annotated_by";
+    public static final String FIELD_COMMENT = "sem_comment";
 
     private static Log log = LogFactory.getLog(AnnotatorSubprocessor.class);
     
@@ -144,7 +144,10 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
             while (annotationIter.hasNext()) {
                 SolrElementField annotation = annotationIter.next();
                 referencedDoc.addField(annotation);
+                log.debug("ADDING annotation to " + referencedPid + ": " + annotation.getName() + "=" + annotation.getValue());
             }
+        } else {
+        	log.warn("Annotations were not found when parsing: " + annotationId);
         }
 
         // return the collection that we have augmented
@@ -332,15 +335,23 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
     public SolrDoc mergeWithIndexedDocument(SolrDoc indexDocument) throws IOException,
             EncoderException, XPathExpressionException {
 
-        SolrDoc solrDoc = httpService.retrieveDocumentFromSolrServer(indexDocument.getIdentifier(),
-                solrQueryUri);
-        if (solrDoc != null) {
-            for (SolrElementField field : solrDoc.getFieldList()) {
-                if (fieldsToMerge.contains(field.getName())
-                        && !indexDocument.hasFieldWithValue(field.getName(), field.getValue())) {
-                    indexDocument.addField(field);
+    	log.debug("LOOKING UP EXISTING doc: " + indexDocument.getIdentifier() + " from: " + solrQueryUri);
+
+        SolrDoc existingSolrDoc = httpService.retrieveDocumentFromSolrServer(indexDocument.getIdentifier(), solrQueryUri);
+        if (existingSolrDoc != null) {
+            for (SolrElementField field : indexDocument.getFieldList()) {
+                log.debug("CHECKING new field: " + field.getName() +  "=" + field.getValue());
+                if (!existingSolrDoc.hasFieldWithValue(field.getName(), field.getValue())) {
+                	existingSolrDoc.addField(field);
+                    log.debug("ADDING new field/value to existing index doc " + existingSolrDoc.getIdentifier() + ": " + field.getName() +  "=" + field.getValue());
+                } else {
+                    log.debug("field name/value already exists in index: " + field.getName() +  "=" + field.getValue());
                 }
             }
+            // return the augmented one that exists already
+            return existingSolrDoc;
+        } else {
+        	log.warn("COULD NOT LOCATE EXISTING DOC FOR: " + indexDocument.getIdentifier());
         }
         return indexDocument;
     }

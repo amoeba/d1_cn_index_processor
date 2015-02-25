@@ -5,15 +5,28 @@
 
 	<bean id="annotatorSubprocessor" class="org.dataone.cn.indexer.annotation.AnnotatorSubprocessor">
 		
+		<!-- match annotation documents -->
+		<property name="matchDocuments">
+			<list>
+				<value>http://docs.annotatorjs.org/en/v1.2.x/annotation-format.html</value>
+			</list>
+		</property>
 		<property name="fieldList">
 			<list>
 				<ref bean="annotation.expansion" />
 			</list>
-		</property>	
+		</property>
+		<property name="fieldsToMerge">
+     		<list>
+     			<value>sem_annotation</value>
+     			<value>sem_annotates</value>
+     			<value>sem_annotated_by</value>
+     		</list>
+     	</property>	
 	</bean>
 	
 	<bean id="annotation.expansion" class="org.dataone.cn.indexer.annotation.SparqlField">
-		<constructor-arg name="name" value="annotation_sm" />
+		<constructor-arg name="name" value="sem_annotation" />
 		<constructor-arg name="query">
 			<value>
 				<![CDATA[
@@ -21,10 +34,10 @@
 				PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
 				PREFIX owl: <http://www.w3.org/2002/07/owl#> 
 				
-				SELECT ?annotation_sm
+				SELECT ?sem_annotation
 				FROM <$GRAPH_NAME>				
 				WHERE { 
-						<$CONCEPT_URI> rdfs:subClassOf+ ?annotation_sm .
+						<$CONCEPT_URI> rdfs:subClassOf+ ?sem_annotation .
 				 	} 
 				 ]]>
 			</value>

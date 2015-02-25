@@ -362,6 +362,12 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
         <field name="prov_hasSources"             type="string" indexed="true" stored="true" multiValued="true" />
         <field name="prov_hasDerivations"         type="string" indexed="true" stored="true" multiValued="true" />
         <field name="prov_instanceOfClass"        type="string" indexed="true" stored="true" multiValued="true" />
+        
+        <!-- semantic fields -->
+        <field name="sem_annotation"        type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="sem_annotated_by"        type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="sem_annotates"        type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="sem_comment"        type="string" indexed="true" stored="true" multiValued="true" />
            		
 <!-- ======================================================================= -->
         <!-- Dynamic field definitions.  If a field name is not found, dynamicFields
@@ -379,6 +385,17 @@ both match, the first appearing in the schema will be used.  -->
         <dynamicField name="*_f" type="sfloat" indexed="true" stored="true"/>
         <dynamicField name="*_d" type="sdouble" indexed="true" stored="true"/>
         <dynamicField name="*_dt" type="date" indexed="true" stored="true"/>
+        
+        <!--  allow multivalued dynamic fields -->
+        <dynamicField name="*_im" type="sint" indexed="true" stored="true" multiValued="true"/>
+        <dynamicField name="*_sm" type="string" indexed="true" stored="true" multiValued="true"/>
+        <dynamicField name="*_lm" type="slong" indexed="true" stored="true" multiValued="true"/>
+        <dynamicField name="*_tm" type="text" indexed="true" stored="true" multiValued="true"/>
+        <dynamicField name="*_bm" type="boolean" indexed="true" stored="true" multiValued="true"/>
+        <dynamicField name="*_fm" type="sfloat" indexed="true" stored="true" multiValued="true"/>
+        <dynamicField name="*_dm" type="sdouble" indexed="true" stored="true" multiValued="true"/>
+        <dynamicField name="*_dtm" type="date" indexed="true" stored="true" multiValued="true"/>
+        
     </fields>
 
 <!-- ======================================================================= -->

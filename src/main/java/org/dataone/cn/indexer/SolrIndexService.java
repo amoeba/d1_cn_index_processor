@@ -187,7 +187,8 @@ public class SolrIndexService {
 
         for (SolrDoc mergeDoc : docs.values()) {
             for (IDocumentSubprocessor subprocessor : getSubprocessors()) {
-                subprocessor.mergeWithIndexedDocument(mergeDoc);
+                SolrDoc mergedDoc = subprocessor.mergeWithIndexedDocument(mergeDoc);
+                docs.put(mergedDoc.getIdentifier(), mergedDoc);   
             }
         }
 

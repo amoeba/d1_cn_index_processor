@@ -1,7 +1,7 @@
 {
   "pid": "peggym.130.4", 
   "id": "annotation.130.4",   
-  "field": "annotation_sm", 
+  "field": "sem_annotation", 
   "reject": false, 
   "ranges": [
     {

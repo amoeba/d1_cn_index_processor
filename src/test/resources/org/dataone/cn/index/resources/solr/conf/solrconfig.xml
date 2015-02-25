@@ -728,12 +728,21 @@
        southBoundCoord,species,submitter,term,title,topic,updateDate,webUrl,
        westBoundCoord,writePermission,attributeName,
        attributeLabel,attributeDescription,attributeUnit,attribute,
-       authorSurName, authorGivenName,prov_wasDerivedFrom,prov_wasGeneratedBy,
+       authorSurName,authorSurNameSort,authorGivenName,prov_wasDerivedFrom,prov_wasGeneratedBy,
        prov_wasInformedBy,prov_used,prov_generatedByProgram,
        prov_generatedByExecution,prov_generatedByUser,prov_usedByProgram,
        prov_usedByExecution,prov_usedByUser,prov_wasExecutedByExecution,
        prov_wasExecutedByUser,prov_hasSources,prov_hasDerivations,
-       prov_instanceOfClass</str>
+       prov_instanceOfClass,
+       geohash_1,
+       geohash_2,
+       geohash_3,
+       geohash_4,
+       geohash_5,
+       geohash_6,
+       geohash_7,
+       geohash_8,
+       geohash_9</str>
      </lst>
     <!-- In addition to defaults, "appends" params can be specified
          to identify values which should be appended to the list of

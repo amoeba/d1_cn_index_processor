@@ -138,10 +138,10 @@ public class RemoteAnnotatorSubprocessor implements IDocumentSubprocessor {
             SolrDoc annotations = new SolrDoc();
 
             // use catch-all annotation field for the tags
-            String tagKey = "annotation_sm";
+            String tagKey = "sem_annotation";
 
             // track the comments here
-            String commentKey = "comment_sm";
+            String commentKey = "sem_comment";
 
             for (int i = 0; i < count; i++) {
                 JSONObject row = (JSONObject) rows.get(i);

@@ -274,6 +274,12 @@
         <field name="prov_hasSources"             type="string" indexed="true" stored="true" multiValued="true" />
         <field name="prov_hasDerivations"         type="string" indexed="true" stored="true" multiValued="true" />
         <field name="prov_instanceOfClass"        type="string" indexed="true" stored="true" multiValued="true" />
+        
+        <!-- semantic fields -->
+        <field name="sem_annotation"        type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="sem_annotated_by"        type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="sem_annotates"        type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="sem_comment"        type="string" indexed="true" stored="true" multiValued="true" />
 
    <!--
      Some fields such as popularity and manu_exact could be modified to

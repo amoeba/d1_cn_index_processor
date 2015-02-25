@@ -53,9 +53,9 @@ import org.w3c.dom.Document;
  */
 public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
 
-    private static Logger logger = Logger.getLogger(SolrIndexFieldTest.class.getName());
+    protected static Logger logger = Logger.getLogger(SolrIndexFieldTest.class.getName());
 
-    private BaseXPathDocumentSubprocessor systemMetadata200Subprocessor;
+    protected BaseXPathDocumentSubprocessor systemMetadata200Subprocessor;
 
     @Test
     public void testSystemMetadataAndEml210ScienceData() throws Exception {
@@ -130,7 +130,7 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
         }
     }
 
-    private void compareFields(SolrDocument solrResult, Document metadataDoc,
+    protected void compareFields(SolrDocument solrResult, Document metadataDoc,
             ISolrField fieldToCompare, String identifier) throws Exception {
         List<SolrElementField> fields = fieldToCompare.getFields(metadataDoc, identifier);
         if (fields.isEmpty() == false) {
@@ -140,6 +140,7 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
             System.out.println("Comparing value for field " + docField.getName());
             if (solrValueObject == null) {
                 if (!"text".equals(docField.getName())) {
+                    System.out.println("Null result value for field name:  " + docField.getName() + ", actual: " + docField.getValue() );
                     Assert.assertTrue(docField.getValue() == null || "".equals(docField.getValue()));
                 }
             } else if (solrValueObject instanceof String) {
