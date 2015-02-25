@@ -146,7 +146,6 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
 				log.debug("Executing SPARQL query: " + query.toString());
 				QueryExecution qexec = QueryExecutionFactory.create(query, dataset);
 				ResultSet results = qexec.execSelect();
-				log.debug("SPARQL query results size: " + results.getRowNumber());
 				while (results.hasNext()) {
 					SolrDoc solrDoc = null;
 					QuerySolution solution = results.next();
