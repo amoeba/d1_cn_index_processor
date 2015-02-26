@@ -1,5 +1,5 @@
 /**
- * This work was created" by participants in the DataONE project, and is
+ * This work was crfield name: eated" by participants in the DataONE project, and is
  * jointly copyrighted by participating institutions in DataONE. For 
  * more information on DataONE, see our web site at http://dataone.org.
  *
@@ -22,6 +22,8 @@
 
 package org.dataone.cn.indexer.resourcemap;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,37 +34,35 @@ import java.util.TreeMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dataone.cn.index.BaseSolrFieldXPathTest;
+import org.dataone.cn.index.DataONESolrJettyTestBase;
 import org.dataone.cn.indexer.annotation.RdfXmlSubprocessor;
 import org.dataone.cn.indexer.convert.SolrDateConverter;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * RDF/XML Subprocessor test for provenance field handling
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "../../index/test-context.xml", "test-context-provenance.xml" })
-public class ProvRdfXmlProcessorTest extends BaseSolrFieldXPathTest {
+public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
 	
 	/* Log it */
 	private static Log log = LogFactory.getLog(ProvRdfXmlProcessorTest.class);
 	
+	/* the conext with provenance-specific bean definitions */
+	private ApplicationContext provenanceContext = null;        
+
 	/* the RDF/XML resource map to parse */
-	@Autowired
 	private Resource provAlaWaiNS02MatlabProcessing2RDF;
 	
 	/* An instance of the RDF/XML Subprocessor */
-	@Autowired
 	private RdfXmlSubprocessor provRdfXmlSubprocessor;
 	
 	/* A date converter for many date strings */
@@ -86,57 +86,37 @@ public class ProvRdfXmlProcessorTest extends BaseSolrFieldXPathTest {
     private String WAS_EXECUTED_BY_USER_FIELD      = "prov_wasExecutedByUser";      
     private String HAS_SOURCES_FIELD               = "prov_hasSources";             
     private String HAS_DERIVATIONS_FIELD           = "prov_hasDerivations";         
-    private String INSTANCE_OF_CLASS_FIELD         = "prov_instanceOfClass";        
+    private String INSTANCE_OF_CLASS_FIELD         = "prov_instanceOfClass";
     
     /**
-     * Set up the test data
+     * Set up the Solr service and test data
      * 
      * @throws Exception
      */
     @Before
 	public void setUp() throws Exception {
 		
-    	// For data output object pid
-    	expectedFields.put(WAS_DERIVED_FROM_FIELD, "https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-ctd-data.1.txt");
+    	// Start up the embedded Jetty server and Solr service
+    	super.setUp();
     	
-    	// For data output object pids
-    	expectedFields.put(WAS_GENERATED_BY_FIELD, "urn:uuid:6EC8CAB7-2063-4440-BA23-364313C145FC");
+    	// load the prov context beans
+    	loadProvenanceContext();
     	
-    	// Not added to the test resource map yet
-    	//expectedFields.put(WAS_INFORMED_BY_FIELD, "");
+    	// instantiate the subprocessor
+    	provRdfXmlSubprocessor = (RdfXmlSubprocessor) context.getBean("provRdfXmlSubprocessor");
     	
-    	expectedFields.put(USED_FIELD, "https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-ctd-data.1.txt");
     	
-    	// For data output object pids
-    	expectedFields.put(GENERATED_BY_PROGRAM_FIELD, 
-    			"https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-schedule_AW02XX_001CTDXXXXR00_processing.1.m" +
-    			"||" +
-    			"https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-Configure.1.m" +
-    			"||" +
-    			"https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-DataProcessor.1.m");
-    	expectedFields.put(GENERATED_BY_EXECUTION_FIELD, "urn:uuid:6EC8CAB7-2063-4440-BA23-364313C145FC");
-    	expectedFields.put(GENERATED_BY_USER_FIELD, "urn:uuid:D89221AD-E251-4CCB-B515-09D869DB1A61");
-    	
-    	// For data input object pids
-    	expectedFields.put(USED_BY_PROGRAM_FIELD          , "https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-schedule_AW02XX_001CTDXXXXR00_processing.1.m");
-    	expectedFields.put(USED_BY_PROGRAM_FIELD          , "https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-Configure.1.m");
-    	expectedFields.put(USED_BY_PROGRAM_FIELD          , "https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-DataProcessor.1.m");
-    	expectedFields.put(USED_BY_EXECUTION_FIELD        , "https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-ctd-data.1.txt");
-    	
-    	expectedFields.put(USED_BY_USER_FIELD             , "urn:uuid:D89221AD-E251-4CCB-B515-09D869DB1A61");
-    	expectedFields.put(WAS_EXECUTED_BY_EXECUTION_FIELD, "urn:uuid:6EC8CAB7-2063-4440-BA23-364313C145FC");
-    	expectedFields.put(WAS_EXECUTED_BY_USER_FIELD     , "urn:uuid:D89221AD-E251-4CCB-B515-09D869DB1A61");
-    	
-    	// For metadata object pids
-    	expectedFields.put(HAS_SOURCES_FIELD              , "https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-ctd-data.1.txt");
-    	
-    	// For metadata object pids 
-    	expectedFields.put(HAS_DERIVATIONS_FIELD          , "https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-image-data-AW02XX_001CTDXXXXR00_20150203_10day.1.jpg");
-    	
-    	// For data input object pids
-    	expectedFields.put(INSTANCE_OF_CLASS_FIELD        , "http://www.openarchives.org/ore/terms/ResourceMap");
 	}
-    
+
+    /**
+     * Clean up, bring down the Solr service
+     */
+	@After
+    public void tearDown() throws Exception {
+    	super.tearDown();
+    	
+    }
+	
     /* 
      * Compare the indexed provenance Solr fields to the expected fields
      */
@@ -161,18 +141,18 @@ public class ProvRdfXmlProcessorTest extends BaseSolrFieldXPathTest {
     	// A list of Solr fields filtered by the target object identifier
     	List<SolrElementField> fields = solrDocs.get(referencedPid).getFieldList();
     	
-    	// compare the expected and indexed fields
+    	// compare the expected and processed fields
     	for (SolrElementField field : fields) {
     		String name = field.getName();
     		String value = field.getValue();
-    		
+    		log.debug("Field name: " + name);
     		String expectedValue = expectedFields.get(name);
     		
     		if (expectedValue != null) {
     			List<String> expectedValues = Arrays.asList(StringUtils.split(expectedValue, "||"));
     			if ( expectedValues != null && !expectedValues.isEmpty() ) {
-    				log.debug("Checking value: " + value);
-    				log.debug("in expected: " + expectedValues);
+    				log.debug("Checking value:\t" + value);
+    				log.debug("in expected: \t" + expectedValues);
     				Assert.assertTrue(expectedValues.contains(value));
     			}
     		}    	
@@ -187,44 +167,76 @@ public class ProvRdfXmlProcessorTest extends BaseSolrFieldXPathTest {
      * 
      * @throws Exception
      */
-    @Ignore
     @Test
     public void testProvenanceFields() throws Exception {
     	
     	log.debug("Testing RDF/XML provenance indexing of ala-wai-ns02-matlab-processing.2.rdf: ");
-
-    	// Ensure fields associated with the resource map (and execution) are indexed
-        compareFields(expectedFields, provAlaWaiNS02MatlabProcessing2RDF.getInputStream(), 
-            provRdfXmlSubprocessor, "ala-wai-ns02-matlab-processing.2.rdf", 
-            "ala-wai-ns02-matlab-processing.2.rdf");    		
+    	
     	// Ensure fields associated with the data input objects are indexed
+    	expectedFields.clear();
+    	expectedFields.put(USED_BY_PROGRAM_FIELD, 
+    			"ala-wai-canal-ns02-matlab-processing-schedule_AW02XX_001CTDXXXXR00_processing.1.m" + "||" +
+    			"ala-wai-canal-ns02-matlab-processing-Configure.1.m" + "||" +
+    			"ala-wai-canal-ns02-matlab-processing-DataProcessor.1.m");
+    	expectedFields.put(USED_BY_EXECUTION_FIELD, "urn:uuid:6EC8CAB7-2063-4440-BA23-364313C145FC");
+    	expectedFields.put(INSTANCE_OF_CLASS_FIELD, "http://purl.org/provone/2015/15/ontology#Data");
+    	expectedFields.put(USED_BY_USER_FIELD, "urn:uuid:D89221AD-E251-4CCB-B515-09D869DB1A61");
     	compareFields(expectedFields, provAlaWaiNS02MatlabProcessing2RDF.getInputStream(), 
             provRdfXmlSubprocessor, "ala-wai-ns02-matlab-processing.2.rdf", 
             "ala-wai-canal-ns02-ctd-data.1.txt");
     	
     	// Ensure fields associated with the data output objects are indexed
+    	expectedFields.clear();
+    	expectedFields.put(WAS_GENERATED_BY_FIELD, "urn:uuid:6EC8CAB7-2063-4440-BA23-364313C145FC");
+    	expectedFields.put(WAS_DERIVED_FROM_FIELD, "ala-wai-canal-ns02-ctd-data.1.txt");
+    	expectedFields.put(GENERATED_BY_PROGRAM_FIELD, 
+    			"ala-wai-canal-ns02-matlab-processing-schedule_AW02XX_001CTDXXXXR00_processing.1.m" + "||" +
+    			"ala-wai-canal-ns02-matlab-processing-Configure.1.m" + "||" +
+    			"ala-wai-canal-ns02-matlab-processing-DataProcessor.1.m");
+    	expectedFields.put(GENERATED_BY_EXECUTION_FIELD, "urn:uuid:6EC8CAB7-2063-4440-BA23-364313C145FC");
+    	expectedFields.put(GENERATED_BY_USER_FIELD, "urn:uuid:D89221AD-E251-4CCB-B515-09D869DB1A61");
+    	expectedFields.put(INSTANCE_OF_CLASS_FIELD, "http://purl.org/provone/2015/15/ontology#Data");
     	compareFields(expectedFields, provAlaWaiNS02MatlabProcessing2RDF.getInputStream(), 
             provRdfXmlSubprocessor, "ala-wai-ns02-matlab-processing.2.rdf",
             "ala-wai-canal-ns02-image-data-AW02XX_001CTDXXXXR00_20150203_10day.1.jpg");
-
+        
     	// Ensure fields associated with the data input object's metadata are indexed
-    	compareFields(expectedFields, provAlaWaiNS02MatlabProcessing2RDF.getInputStream(), 
-            provRdfXmlSubprocessor, "ala-wai-ns02-matlab-processing.2.rdf", 
-            "ala-wai-canal-ns02-ctd-data.eml.1.xml");
+    	//expectedFields.clear();
+    	//expectedFields.put(HAS_DERIVATIONS_FIELD, "ala-wai-canal-ns02-image-data-AW02XX_001CTDXXXXR00_20150203_10day.1.jpg");
+    	//compareFields(expectedFields, provAlaWaiNS02MatlabProcessing2RDF.getInputStream(), 
+        //    provRdfXmlSubprocessor, "ala-wai-ns02-matlab-processing.2.rdf", 
+        //    "ala-wai-canal-ns02-ctd-data.eml.1.xml");
     	
     	// Ensure fields associated with the data output object's metadata are indexed
-    	compareFields(expectedFields, provAlaWaiNS02MatlabProcessing2RDF.getInputStream(), 
-            provRdfXmlSubprocessor, "ala-wai-ns02-matlab-processing.2.rdf", 
-            "ala-wai-canal-ns02-image-data.eml.1.xml");
+    	//expectedFields.clear();
+    	//expectedFields.put(HAS_SOURCES_FIELD, "ala-wai-canal-ns02-ctd-data.1.txt");
+    	//compareFields(expectedFields, provAlaWaiNS02MatlabProcessing2RDF.getInputStream(), 
+        //    provRdfXmlSubprocessor, "ala-wai-ns02-matlab-processing.2.rdf", 
+        //    "ala-wai-canal-ns02-image-data.eml.1.xml");
 
     }
     
     /**
-     *  Default test
+     *  Default test - is JUnit working as expected?
      */
+    @Ignore
     @Test
-    public void equalsTest() {
+    public void testInit() {
     	Assert.assertTrue(1 == 1);
     	
     }
+    
+    /* Load the provence context beans */
+    protected void loadProvenanceContext() throws IOException {
+        if (provenanceContext == null) {
+        	provenanceContext = 
+        			new ClassPathXmlApplicationContext(
+        				"org/dataone/cn/indexer/resourcemap/test-context-provenance.xml");
+        }
+        
+        provAlaWaiNS02MatlabProcessing2RDF = 
+        	(Resource) provenanceContext.getBean("provAlaWaiNS02MatlabProcessing2RDF");
+        
+    }
+
 }
