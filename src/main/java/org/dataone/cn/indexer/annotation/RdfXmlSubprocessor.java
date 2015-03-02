@@ -99,16 +99,33 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
 
 	@Override
     public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs, InputStream is) throws Exception {
-        SolrDoc resourceMapDoc = docs.get(identifier);
+		if ( log.isTraceEnabled() ) {
+			log.trace("INCOMING DOCS: ");
+			for (SolrDoc doc : docs.values()) {
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				doc.serialize(baos, "UTF-8");
+				log.trace(baos.toString());
+			}
+		}
+		SolrDoc resourceMapDoc = docs.get(identifier);
         List<SolrDoc> processedDocs = process(resourceMapDoc, is);
 
-        Map<String, SolrDoc> processedDocsMap = new HashMap<String, SolrDoc>();
         for (SolrDoc processedDoc : processedDocs) {
-            processedDocsMap.put(processedDoc.getIdentifier(), processedDoc);
+            docs.put(processedDoc.getIdentifier(), processedDoc);
         }
         // make sure to merge any docs that are currently being processed
         //Map<String, SolrDoc> mergedDocuments = mergeDocs(docs, processedDocsMap);
-        return processedDocsMap;
+
+		if ( log.isTraceEnabled() ) {
+			log.trace("OUTGOING DOCS: ");
+			for (SolrDoc doc : docs.values()) {
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				doc.serialize(baos, "UTF-8");
+				log.trace(baos.toString());
+			}
+		}
+
+        return docs;
     }
     
     private List<SolrDoc> process(SolrDoc indexDocument, InputStream is) throws Exception {
