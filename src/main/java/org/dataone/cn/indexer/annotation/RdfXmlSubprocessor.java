@@ -107,8 +107,8 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
             processedDocsMap.put(processedDoc.getIdentifier(), processedDoc);
         }
         // make sure to merge any docs that are currently being processed
-        Map<String, SolrDoc> mergedDocuments = mergeDocs(docs, processedDocsMap);
-        return mergedDocuments;
+        //Map<String, SolrDoc> mergedDocuments = mergeDocs(docs, processedDocsMap);
+        return processedDocsMap;
     }
     
     private List<SolrDoc> process(SolrDoc indexDocument, InputStream is) throws Exception {
@@ -143,13 +143,13 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
 				q = ((SparqlField) field).getQuery();
 				q = q.replaceAll("\\$GRAPH_NAME", name);
 				Query query = QueryFactory.create(q);
-				log.debug("Executing SPARQL query: " + query.toString());
+				log.trace("Executing SPARQL query:\n" + query.toString());
 				QueryExecution qexec = QueryExecutionFactory.create(query, dataset);
 				ResultSet results = qexec.execSelect();
 				while (results.hasNext()) {
 					SolrDoc solrDoc = null;
 					QuerySolution solution = results.next();
-					log.debug(solution.toString());
+					log.trace(solution.toString());
 					
 					// find the index document we are trying to augment with the annotation
 					if (solution.contains("pid")) {
@@ -177,7 +177,7 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
 						if (!solrDoc.hasFieldWithValue(f.getName(), f.getValue())) {
 							solrDoc.addField(f);
 						}
-					}
+					}					
 				}
 			}
 		}
@@ -206,6 +206,9 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
         return list;
     }
     
+    /*
+     * Merge existing documents from the Solr index with pending documents
+     */
     private Map<String, SolrDoc> mergeDocs(Map<String, SolrDoc> pending, Map<String, SolrDoc> existing) throws Exception {
 
     	Map<String, SolrDoc> merged = new HashMap<String, SolrDoc>();
@@ -237,6 +240,16 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
     		// include in results
 			merged.put(id, mergedDoc);
     	}
+		
+    	if (log.isTraceEnabled()) {
+			log.trace("Merged docs with existing from the Solr index: ");
+			for ( SolrDoc solrDoc : merged.values() ) {
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				solrDoc.serialize(baos, "UTF-8");
+				log.trace("document to index: " + baos.toString());
+			}
+		}
+
     	return merged;
     }
 
