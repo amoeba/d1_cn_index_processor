@@ -23,9 +23,15 @@
 package org.dataone.cn.indexer.resourcemap;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,18 +41,43 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dataone.cn.index.DataONESolrJettyTestBase;
+import org.dataone.cn.index.generator.IndexTaskGenerator;
+import org.dataone.cn.index.processor.IndexTaskProcessor;
+import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.indexer.annotation.RdfXmlSubprocessor;
 import org.dataone.cn.indexer.convert.SolrDateConverter;
+import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
+import org.dataone.configuration.Settings;
+import org.dataone.service.types.v1.AccessPolicy;
+import org.dataone.service.types.v1.Checksum;
+import org.dataone.service.types.v1.Identifier;
+import org.dataone.service.types.v1.NodeReference;
+import org.dataone.service.types.v1.ObjectFormatIdentifier;
+import org.dataone.service.types.v1.Permission;
+import org.dataone.service.types.v1.Subject;
+import org.dataone.service.types.v1.util.AccessUtil;
+import org.dataone.service.types.v1.util.ChecksumUtil;
+import org.dataone.service.types.v2.SystemMetadata;
+import org.dataone.service.util.TypeMarshaller;
+import org.jibx.runtime.JiBXException;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
+
+import com.hazelcast.config.ClasspathXmlConfig;
+import com.hazelcast.config.Config;
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IMap;
 
 /**
  * RDF/XML Subprocessor test for provenance field handling
@@ -55,13 +86,44 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
 	
 	/* Log it */
 	private static Log log = LogFactory.getLog(ProvRdfXmlProcessorTest.class);
-	
+
+	/* The hazelcast system metadata map name */
+    private static final String systemMetadataMapName = Settings.getConfiguration().getString(
+            "dataone.hazelcast.systemMetadata");
+    
+    /* The hazelcast object path map name */
+    private static final String objectPathName = Settings.getConfiguration().getString(
+            "dataone.hazelcast.objectPath");
+    
+    /* A hazelcast instance */
+    private static HazelcastInstance hzMember;
+    
+    /* The hazelcast system metadata map */
+    private static IMap<Identifier, SystemMetadata> sysMetaMap;
+    
+    /* The hazelcast object path map */
+    private static IMap<Identifier, String> objectPaths;
+
 	/* the conext with provenance-specific bean definitions */
 	private ApplicationContext provenanceContext = null;        
 
+	/* The index task processor used to process tasks in the queue */
+    private IndexTaskProcessor processor;
+    
+    /* The task generator that adds tasks to the queue */
+    private IndexTaskGenerator generator;
+
 	/* the RDF/XML resource map to parse */
 	private Resource provAlaWaiNS02MatlabProcessing2RDF;
-	
+
+	/* The three Matlab scripts involved in the processing */
+    private Resource provAlaWaiNS02MatlabProcessingDataProcessor1m;
+    private Resource provAlaWaiNS02MatlabProcessingConfigure1m;
+    private Resource provAlaWaiNS02MatlabProcessingScheduleAW02XX_001CTDXXXXR00Processing1m;
+    
+    /* The EML science metadata describing the processing */
+    private Resource provAlaWaiNS02MatlabProcessingEML1xml;
+
 	/* An instance of the RDF/XML Subprocessor */
 	private RdfXmlSubprocessor provRdfXmlSubprocessor;
 	
@@ -87,9 +149,28 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
     private String HAS_SOURCES_FIELD               = "prov_hasSources";             
     private String HAS_DERIVATIONS_FIELD           = "prov_hasDerivations";         
     private String INSTANCE_OF_CLASS_FIELD         = "prov_instanceOfClass";
-    
+
     /**
-     * Set up the Solr service and test data
+     * For all tests, bring up Hazelcast
+     * @throws Exception
+     */
+    @BeforeClass
+    public static void init() throws Exception {
+        Hazelcast.shutdownAll();
+        configureHazelCast();
+    }
+
+    /**
+     * After all tests, shut down Hazelcast
+     * @throws Exception
+     */
+    @AfterClass
+    public static void cleanup() throws Exception {
+        Hazelcast.shutdownAll();
+    }
+
+    /**
+     * For each test, set up the Solr service and test data
      * 
      * @throws Exception
      */
@@ -100,16 +181,15 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
     	super.setUp();
     	
     	// load the prov context beans
-    	loadProvenanceContext();
+    	configureSpringResources();
     	
     	// instantiate the subprocessor
     	provRdfXmlSubprocessor = (RdfXmlSubprocessor) context.getBean("provRdfXmlSubprocessor");
-    	
-    	
+    	    	
 	}
 
     /**
-     * Clean up, bring down the Solr service
+     * For each test, clean up, bring down the Solr service
      */
 	@After
     public void tearDown() throws Exception {
@@ -118,7 +198,7 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
     }
 	
     /* 
-     * Compare the indexed provenance Solr fields to the expected fields
+     * Compares the indexed provenance Solr fields to the expected fields
      */
     protected boolean compareFields(HashMap<String, String> expectedFields, InputStream resourceMap,
     		RdfXmlSubprocessor provRdfXmlSubProcessor, String identifier, String referencedPid)
@@ -163,10 +243,12 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
     }
     
     /**
-     * Test if the provenance fields in resource maps are indexed correctly
+     * Test if the provenance fields in resource maps are processed correctly with the 
+     * RdfXmlsubprocessor. This test does not add content to Hazelcast or Solr.
      * 
      * @throws Exception
      */
+    @Ignore
     @Test
     public void testProvenanceFields() throws Exception {
     	
@@ -217,6 +299,59 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
     }
     
     /**
+     * Test the end to end index processing of a resource map with provenance statements
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testInsertProvResourceMap() throws Exception {
+    	
+    	/* variables used to populate system metadata for each resource */
+    	File object = null;
+    	String formatId = null;
+    	
+    	NodeReference nodeid = new NodeReference();
+    	nodeid.setValue("urn:node:mnTestXXXX");
+    	
+    	String userDN = "uid=tester,o=testers,dc=dataone,dc=org";
+
+    	// Insert the three processing files into the task queue
+    	String script1 = "ala-wai-canal-ns02-matlab-processing-DataProcessor.1.m";
+        formatId = "plain/text";
+        insertResource(script1, formatId, provAlaWaiNS02MatlabProcessingDataProcessor1m, nodeid, userDN);
+        
+    	String script2 = "ala-wai-canal-ns02-matlab-processing-Configure.1.m";
+        formatId = "plain/text";
+        insertResource(script2, formatId, provAlaWaiNS02MatlabProcessingConfigure1m, nodeid, userDN);
+        
+    	String script3 = "ala-wai-canal-ns02-matlab-processing-schedule_AW02XX_001CTDXXXXR00_processing.1.m";
+        formatId = "plain/text";
+        insertResource(script3, formatId, 
+        	provAlaWaiNS02MatlabProcessingScheduleAW02XX_001CTDXXXXR00Processing1m, nodeid, userDN);
+
+    	// Insert the EML file into the task queue
+    	String emlDoc = "ala-wai-canal-ns02-matlab-processing.eml.1.xml";
+        formatId = "eml://ecoinformatics.org/eml-2.1.1";
+        insertResource(emlDoc, formatId, provAlaWaiNS02MatlabProcessingEML1xml, nodeid, userDN);
+
+        // Insert the resource map into the task queue
+    	String resourceMap = "ala-wai-canal-ns02-matlab-processing.2.rdf";
+        formatId = "http://www.openarchives.org/ore/terms";
+        insertResource(resourceMap, formatId, provAlaWaiNS02MatlabProcessing2RDF, nodeid, userDN);
+    	    	
+    	// now process the tasks
+    	processor.processIndexTaskQueue();
+        
+    	// ensure everything indexed properly
+    	assertPresentInSolrIndex(script1);
+        assertPresentInSolrIndex(script2);
+        assertPresentInSolrIndex(script3);
+        assertPresentInSolrIndex(emlDoc);
+        assertPresentInSolrIndex(resourceMap);
+    	
+    }
+    
+    /**
      *  Default test - is JUnit working as expected?
      */
     @Ignore
@@ -226,17 +361,208 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
     	
     }
     
-    /* Load the provence context beans */
-    protected void loadProvenanceContext() throws IOException {
-        if (provenanceContext == null) {
+    /* Load the indexer and provenance context beans */
+    protected void configureSpringResources() throws IOException {
+
+    	// Instantiate the generator and processor from the test-context beans
+        processor = (IndexTaskProcessor) context.getBean("indexTaskProcessor");
+        generator = (IndexTaskGenerator) context.getBean("indexTaskGenerator");
+
+        // instantiate the RDF resource to be tested
+    	if (provenanceContext == null) {
         	provenanceContext = 
         			new ClassPathXmlApplicationContext(
         				"org/dataone/cn/indexer/resourcemap/test-context-provenance.xml");
-        }
-        
+        }        
         provAlaWaiNS02MatlabProcessing2RDF = 
         	(Resource) provenanceContext.getBean("provAlaWaiNS02MatlabProcessing2RDF");
-        
+
+        provAlaWaiNS02MatlabProcessingDataProcessor1m = 
+            	(Resource) provenanceContext.getBean("provAlaWaiNS02MatlabProcessingDataProcessor1m");
+
+        provAlaWaiNS02MatlabProcessingConfigure1m = 
+            	(Resource) provenanceContext.getBean("provAlaWaiNS02MatlabProcessingConfigure1m");
+
+        provAlaWaiNS02MatlabProcessingScheduleAW02XX_001CTDXXXXR00Processing1m = 
+            	(Resource) provenanceContext.getBean("provAlaWaiNS02MatlabProcessingScheduleAW02XX_001CTDXXXXR00Processing1m");
+
+        provAlaWaiNS02MatlabProcessingEML1xml = 
+            	(Resource) provenanceContext.getBean("provAlaWaiNS02MatlabProcessingEML1xml");
+
+    }
+    
+    /* 
+     * Configure a Hazelcast instance to store system metadata and object paths 
+     */
+    private static void configureHazelCast() {
+        Config hzConfig = new ClasspathXmlConfig("org/dataone/configuration/hazelcast.xml");
+
+        log.debug("Hazelcast Group Config:\n" + hzConfig.getGroupConfig());
+        log.debug("Hazelcast Maps: ");
+        for (String mapName : hzConfig.getMapConfigs().keySet()) {
+            log.debug(mapName + " ");
+        }
+        log.debug("");
+        hzMember = Hazelcast.newHazelcastInstance(hzConfig);
+        log.debug("Hazelcast member hzMember name: " + hzMember.getName());
+
+        sysMetaMap = hzMember.getMap(systemMetadataMapName);
+        objectPaths = hzMember.getMap(objectPathName);
     }
 
+    /* Delete a solr entry based on its identifier */
+    private void deleteFromSolr(String pid) throws Exception {
+    	HTTPService httpService = (HTTPService) context.getBean("httpService");
+    	httpService.sendSolrDelete(pid);
+    	
+    }
+    
+	/*
+	 * Generate system metadata for the object being uploaded
+	 * 
+	 * @param pidStr  the identifier string of this object
+	 * @param formatIdStr  the object format identifier of this object
+	 * @param nodeId  the Member Node identifier
+	 * @param subjectStr  the subject DN string of the submitter/rightsholder
+	 * @param object  the object to be uploaded
+	 * @return
+	 */
+	protected SystemMetadata generateSystemMetadata(String pidStr, 
+		String formatIdStr, NodeReference nodeId, String subjectStr, File object) {
+		SystemMetadata sysmeta = new SystemMetadata();
+		
+		// Used to calculate checksum
+		InputStream fileInputStream = null;
+		
+		try {
+			fileInputStream = new FileInputStream(object);
+		} catch (FileNotFoundException fnfe) {
+			log.debug("Couldn't find file. Error was: " + fnfe.getMessage());
+			fnfe.printStackTrace();
+			
+		}
+		
+		// Set the serial version, although the CN will modify it
+		sysmeta.setSerialVersion(new BigInteger("1"));
+		
+		// Set the identifier
+		Identifier pid = new Identifier();
+		pid.setValue(pidStr);
+		sysmeta.setIdentifier(pid);
+		
+		// Set the object format identifier
+		ObjectFormatIdentifier formatId = new ObjectFormatIdentifier();
+		formatId.setValue(formatIdStr);
+		sysmeta.setFormatId(formatId);
+
+		// Set the size
+		long size = object.length();
+		sysmeta.setSize(new BigInteger(String.valueOf(size)));
+		
+		// Set the checksum
+		try {
+			Checksum checksum = ChecksumUtil.checksum(fileInputStream, "SHA-1");
+			sysmeta.setChecksum(checksum);
+			
+		} catch (NoSuchAlgorithmException e) {
+			log.debug("Unknown algorithm. Error was: " + e.getMessage());
+			e.printStackTrace();
+			
+		} catch (IOException fnfe) {
+			log.debug("Couldn't find file. Error was: " + fnfe.getMessage());
+			fnfe.printStackTrace();
+			
+		}
+		
+		// Set the submitter and rightsholder
+		Subject subject = new Subject();
+		subject.setValue(subjectStr);
+		sysmeta.setSubmitter(subject);
+		sysmeta.setRightsHolder(subject);
+		
+		// Set the access policy to allow public read
+		AccessPolicy policy = AccessUtil.createSingleRuleAccessPolicy(
+				new String[]{"public"}, new Permission[]{Permission.READ});
+		sysmeta.setAccessPolicy(policy);
+
+		// Set the upload and modification dates
+		Date now = new Date();
+		sysmeta.setDateUploaded(now);
+		sysmeta.setDateSysMetadataModified(now);
+		
+		// Set the node fields
+		sysmeta.setOriginMemberNode(nodeId);
+		sysmeta.setAuthoritativeMemberNode(nodeId);
+				
+		if ( log.isTraceEnabled() ) {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			try {
+				TypeMarshaller.marshalTypeToOutputStream(sysmeta, baos);
+				log.trace(baos.toString());
+
+			} catch (JiBXException e) {
+				fail("System metadata could not be parsed. Check for errors: " + e.getMessage());
+				
+			} catch (IOException e) {
+				fail("System metadata could not be read. Check for errors: " + e.getMessage());
+				
+			}
+		}
+		return sysmeta;
+		
+	}
+
+	/*
+	 * Insert members of the resource map into the index task queue by first generating
+	 * system metadata for each, then crating the tasks
+	 */
+	private void insertResource(String pid, String formatId, 
+		Resource resource, NodeReference nodeid, String userDN) throws IOException {
+		
+		// Get the File object of the resource to calculate size, checksum, etc.
+		File object = resource.getFile();
+		
+		// Build the system metadata
+    	SystemMetadata sysMeta = 
+        		generateSystemMetadata(pid, formatId,
+        				nodeid, userDN, object);
+    	// Add the system metadata to hazelcast, and create an index task in the queue
+        addSystemMetadata(resource, sysMeta);
+	}
+
+	/*
+	 * Trigger an index task to be processed given an object as a Resource and the 
+	 * system metadata describing it
+	 * 
+	 * @param object  the object as a Resource
+	 * @param sysmeta  the system metadata describing the object
+	 */
+    private void addSystemMetadata(Resource object, SystemMetadata sysmeta) {
+    	
+    	String path = null;
+    	try {
+			path = object.getFile().getPath();
+			
+		} catch (IOException e) {
+			fail("Couldn't get the path to the resource: " + object.getFilename());
+			
+		}
+    	try {
+			// insert the system metadata into Hazelcast
+			sysMetaMap.put(sysmeta.getIdentifier(), sysmeta);			
+			// insert the object path into Hazelcast
+			objectPaths.put(sysmeta.getIdentifier(), path);
+
+    	} catch (RuntimeException e) {
+			e.printStackTrace();
+			fail("Couldn't insert into Hazelcast: " + e.getMessage());
+			
+			
+		}
+    	
+    	// Trigger the index task creation
+    	IndexTask task = generator.processSystemMetaDataUpdate(sysmeta, path);
+    	log.debug("Index task returned: " + task.getPid());
+    	
+    }
 }
