@@ -248,7 +248,6 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
      * 
      * @throws Exception
      */
-    @Ignore
     @Test
     public void testProvenanceFields() throws Exception {
     	
@@ -317,15 +316,15 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
 
     	// Insert the three processing files into the task queue
     	String script1 = "ala-wai-canal-ns02-matlab-processing-DataProcessor.1.m";
-        formatId = "plain/text";
+        formatId = "text/plain";
         insertResource(script1, formatId, provAlaWaiNS02MatlabProcessingDataProcessor1m, nodeid, userDN);
         
     	String script2 = "ala-wai-canal-ns02-matlab-processing-Configure.1.m";
-        formatId = "plain/text";
+        formatId = "text/plain";
         insertResource(script2, formatId, provAlaWaiNS02MatlabProcessingConfigure1m, nodeid, userDN);
         
     	String script3 = "ala-wai-canal-ns02-matlab-processing-schedule_AW02XX_001CTDXXXXR00_processing.1.m";
-        formatId = "plain/text";
+        formatId = "text/plain";
         insertResource(script3, formatId, 
         	provAlaWaiNS02MatlabProcessingScheduleAW02XX_001CTDXXXXR00Processing1m, nodeid, userDN);
 
@@ -354,7 +353,6 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
     /**
      *  Default test - is JUnit working as expected?
      */
-    @Ignore
     @Test
     public void testInit() {
     	Assert.assertTrue(1 == 1);
