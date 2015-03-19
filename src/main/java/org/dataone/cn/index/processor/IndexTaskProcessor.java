@@ -181,6 +181,10 @@ public class IndexTaskProcessor {
                 ready = false;
                 logger.error("Unable to parse ORE doc: " + task.getPid()
                         + ".  Unrecoverable parse error: task will not be re-tried.");
+                if ( logger.isTraceEnabled() ) {
+                	oreException.printStackTrace();
+                	
+                }
             } catch (Exception e) {
                 ready = false;
                 logger.error("unable to load resource for pid: " + task.getPid()
