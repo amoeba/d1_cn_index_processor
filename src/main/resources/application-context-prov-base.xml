@@ -50,9 +50,11 @@
                 FROM <$GRAPH_NAME>
                 WHERE { 
                         
-                    ?result         prov:wasGeneratedBy ?activity .
-                    ?result         dcterms:identifier  ?pidValue . 
-                    ?activity       dcterms:identifier  ?wasGeneratedByValue .
+                    ?result         prov:wasGeneratedBy       ?activity .
+                    ?activity       prov:qualifiedAssociation ?association .
+                    ?association    prov:hadPlan              ?program .
+                    ?result         dcterms:identifier        ?pidValue . 
+                    ?program        dcterms:identifier        ?wasGeneratedByValue .
                         
                     } 
                  ]]>
@@ -104,9 +106,11 @@
                 FROM <$GRAPH_NAME>
                 WHERE { 
                         
-                    ?activity       prov:used           ?data .
-                    ?activity       dcterms:identifier  ?pidValue . 
-                    ?data           dcterms:identifier  ?usedValue .
+                    ?activity       prov:used                 ?data .
+                    ?activity       prov:qualifiedAssociation ?association .
+                    ?association    prov:hadPlan              ?program .
+                    ?program        dcterms:identifier        ?pidValue . 
+                    ?data           dcterms:identifier        ?usedValue .
                         
                     } 
                  ]]>
