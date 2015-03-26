@@ -124,6 +124,12 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
     /* The EML science metadata describing the processing */
     private Resource provAlaWaiNS02MatlabProcessingEML1xml;
 
+    /* The input data being processed */
+    private Resource provAlaWaiNS02CTDData1txt;
+    
+    /* The processed output image */
+    private Resource provAlaWaiNS02ImageDataAW02XX_001CTDXXXXR00_20150203_10day1jpg;
+    
 	/* An instance of the RDF/XML Subprocessor */
 	private RdfXmlSubprocessor provRdfXmlSubprocessor;
 	
@@ -138,6 +144,7 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
     private String WAS_GENERATED_BY_FIELD          = "prov_wasGeneratedBy";         
     private String WAS_INFORMED_BY_FIELD           = "prov_wasInformedBy";          
     private String USED_FIELD                      = "prov_used";                   
+    private String GENERATED_FIELD                 = "prov_generated";                   
     private String GENERATED_BY_PROGRAM_FIELD      = "prov_generatedByProgram";     
     private String GENERATED_BY_EXECUTION_FIELD    = "prov_generatedByExecution";   
     private String GENERATED_BY_USER_FIELD         = "prov_generatedByUser";        
@@ -154,17 +161,19 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
      * For all tests, bring up Hazelcast
      * @throws Exception
      */
-    @BeforeClass
+    //@BeforeClass
     public static void init() throws Exception {
-        Hazelcast.shutdownAll();
+    	// Start up Hazelcast
         configureHazelCast();
+
+        
     }
 
     /**
      * After all tests, shut down Hazelcast
      * @throws Exception
      */
-    @AfterClass
+    //@AfterClass
     public static void cleanup() throws Exception {
         Hazelcast.shutdownAll();
     }
@@ -180,6 +189,9 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
     	// Start up the embedded Jetty server and Solr service
     	super.setUp();
     	
+    	// Start up Hazelcast
+        //configureHazelCast();
+
     	// load the prov context beans
     	configureSpringResources();
     	
@@ -268,7 +280,6 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
     	
     	// Ensure fields associated with the data output objects are indexed
     	expectedFields.clear();
-    	expectedFields.put(WAS_GENERATED_BY_FIELD, "urn:uuid:6EC8CAB7-2063-4440-BA23-364313C145FC");
     	expectedFields.put(WAS_DERIVED_FROM_FIELD, "ala-wai-canal-ns02-ctd-data.1.txt");
     	expectedFields.put(GENERATED_BY_PROGRAM_FIELD, 
     			"ala-wai-canal-ns02-matlab-processing-schedule_AW02XX_001CTDXXXXR00_processing.1.m" + "||" +
@@ -280,7 +291,14 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
     	compareFields(expectedFields, provAlaWaiNS02MatlabProcessing2RDF.getInputStream(), 
             provRdfXmlSubprocessor, "ala-wai-ns02-matlab-processing.2.rdf",
             "ala-wai-canal-ns02-image-data-AW02XX_001CTDXXXXR00_20150203_10day.1.jpg");
-        
+        // Ensure fields associated with program objects are indexed
+    	expectedFields.clear();
+    	expectedFields.put(USED_FIELD, "ala-wai-canal-ns02-ctd-data.1.txt");
+    	expectedFields.put(GENERATED_FIELD, "ala-wai-canal-ns02-image-data-AW02XX_001CTDXXXXR00_20150203_10day.1.jpg");
+    	compareFields(expectedFields, provAlaWaiNS02MatlabProcessing2RDF.getInputStream(), 
+                provRdfXmlSubprocessor, "ala-wai-ns02-matlab-processing.2.rdf",
+                "ala-wai-canal-ns02-matlab-processing-schedule_AW02XX_001CTDXXXXR00_processing.1.m");
+    	
     	// Ensure fields associated with the data input object's metadata are indexed
     	//expectedFields.clear();
     	//expectedFields.put(HAS_DERIVATIONS_FIELD, "ala-wai-canal-ns02-image-data-AW02XX_001CTDXXXXR00_20150203_10day.1.jpg");
@@ -302,7 +320,8 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
      * 
      * @throws Exception
      */
-    @Test
+    @Ignore
+    //@Test
     public void testInsertProvResourceMap() throws Exception {
     	
     	/* variables used to populate system metadata for each resource */
@@ -333,6 +352,16 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
         formatId = "eml://ecoinformatics.org/eml-2.1.1";
         insertResource(emlDoc, formatId, provAlaWaiNS02MatlabProcessingEML1xml, nodeid, userDN);
 
+    	// Insert the output image into the task queue
+    	String jpgImage = "ala-wai-ns02-image-data-AW02XX_001CTDXXXXR00_20150203_10day.1.jpg";
+        formatId = "image/jpeg";
+        insertResource(jpgImage, formatId, provAlaWaiNS02ImageDataAW02XX_001CTDXXXXR00_20150203_10day1jpg, nodeid, userDN);
+
+    	// Insert the CTD data into the task queue
+    	String ctdData = "ala-wai-ns02-ctd-data.1.txt";
+        formatId = "text/plain";
+        insertResource(ctdData, formatId, provAlaWaiNS02CTDData1txt, nodeid, userDN);
+
         // Insert the resource map into the task queue
     	String resourceMap = "ala-wai-canal-ns02-matlab-processing.2.rdf";
         formatId = "http://www.openarchives.org/ore/terms";
@@ -346,6 +375,8 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
         assertPresentInSolrIndex(script2);
         assertPresentInSolrIndex(script3);
         assertPresentInSolrIndex(emlDoc);
+        assertPresentInSolrIndex(jpgImage);
+        assertPresentInSolrIndex(ctdData);
         assertPresentInSolrIndex(resourceMap);
     	
     }
@@ -387,6 +418,11 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
         provAlaWaiNS02MatlabProcessingEML1xml = 
             	(Resource) provenanceContext.getBean("provAlaWaiNS02MatlabProcessingEML1xml");
 
+        provAlaWaiNS02CTDData1txt = 
+            	(Resource) provenanceContext.getBean("provAlaWaiNS02CTDData1txt");
+        
+        provAlaWaiNS02ImageDataAW02XX_001CTDXXXXR00_20150203_10day1jpg =
+        		(Resource) provenanceContext.getBean("provAlaWaiNS02ImageDataAW02XX_001CTDXXXXR00_20150203_10day1jpg");
     }
     
     /* 
@@ -401,11 +437,23 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
             log.debug(mapName + " ");
         }
         log.debug("");
-        hzMember = Hazelcast.newHazelcastInstance(hzConfig);
-        log.debug("Hazelcast member hzMember name: " + hzMember.getName());
+        if ( Hazelcast.getAllHazelcastInstances().isEmpty() ) {
+            hzMember = Hazelcast.newHazelcastInstance(hzConfig);
+            log.debug("Hazelcast new hzMember name: " + hzMember.getName());
+        	
+        } else {
+        	if ( hzConfig.getInstanceName() != null ){
+        		hzMember = Hazelcast.getHazelcastInstanceByName(hzConfig.getInstanceName());
+        		log.debug("Hazelcast existing hzMember name: " + hzMember.getName());
+        		
+        	} else {
+        		fail("AAAAGH");
+        		
+        	}
 
-        sysMetaMap = hzMember.getMap(systemMetadataMapName);
-        objectPaths = hzMember.getMap(objectPathName);
+            sysMetaMap = hzMember.getMap(systemMetadataMapName);
+            objectPaths = hzMember.getMap(objectPathName);
+        }
     }
 
     /* Delete a solr entry based on its identifier */

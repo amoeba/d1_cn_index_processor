@@ -13,9 +13,9 @@
 		<property name="fieldList">
 			<list>
                 <ref bean="prov.wasDerivedFrom" />
-                <ref bean="prov.wasGeneratedBy" />
                 <ref bean="prov.wasInformedBy" />
                 <ref bean="prov.used" />
+                <ref bean="prov.generated" />
                 <ref bean="prov.generatedByProgram" />
                 <ref bean="prov.generatedByExecution" />
                 <ref bean="prov.generatedByUser" />

@@ -348,9 +348,9 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
 
         <!-- Provenance-based fields -->
         <field name="prov_wasDerivedFrom"         type="string" indexed="true" stored="true" multiValued="true" />
-        <field name="prov_wasGeneratedBy"         type="string" indexed="true" stored="true" multiValued="true" />
         <field name="prov_wasInformedBy"          type="string" indexed="true" stored="true" multiValued="true" />
         <field name="prov_used"                   type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="prov_generated"              type="string" indexed="true" stored="true" multiValued="true" />
         <field name="prov_generatedByProgram"     type="string" indexed="true" stored="true" multiValued="true" />
         <field name="prov_generatedByExecution"   type="string" indexed="true" stored="true" multiValued="true" />
         <field name="prov_generatedByUser"        type="string" indexed="true" stored="true" multiValued="true" />

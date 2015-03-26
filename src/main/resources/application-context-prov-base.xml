@@ -33,8 +33,8 @@
         </constructor-arg>
     </bean>
     
-    <bean id="prov.wasGeneratedBy" class="org.dataone.cn.indexer.annotation.SparqlField">
-        <constructor-arg name="name" value="prov_wasGeneratedBy" />
+    <bean id="prov.generated" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="prov_generated" />
         <constructor-arg name="query">
             <value>
                 <![CDATA[
@@ -46,22 +46,22 @@
                 PREFIX ore:     <http://www.openarchives.org/ore/terms/> 
                 PREFIX dcterms: <http://purl.org/dc/terms/>
 
-                SELECT (str(?pidValue) as ?pid) (str(?wasGeneratedByValue) as ?prov_wasGeneratedBy)
+                SELECT (str(?pidValue) as ?pid) (str(?generatedValue) as ?prov_generated)
                 FROM <$GRAPH_NAME>
                 WHERE { 
                         
                     ?result         prov:wasGeneratedBy       ?activity .
                     ?activity       prov:qualifiedAssociation ?association .
                     ?association    prov:hadPlan              ?program .
-                    ?result         dcterms:identifier        ?pidValue . 
-                    ?program        dcterms:identifier        ?wasGeneratedByValue .
+                    ?result         dcterms:identifier        ?generatedValue . 
+                    ?program        dcterms:identifier        ?pidValue .
                         
                     } 
                  ]]>
             </value>
         </constructor-arg>
     </bean>
-    
+
     <bean id="prov.wasInformedBy" class="org.dataone.cn.indexer.annotation.SparqlField">
         <constructor-arg name="name" value="prov_wasInformedBy" />
         <constructor-arg name="query">
