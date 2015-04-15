@@ -28,6 +28,7 @@ import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.log4j.Logger;
 
 /**
  * User: Porter Date: 7/25/11 Time: 4:14 PM Contains constants FILED_XXXX for
@@ -36,6 +37,8 @@ import org.apache.commons.lang.StringEscapeUtils;
  * @see SolrElementAdd
  */
 public class SolrElementField {
+
+    private static Logger log = Logger.getLogger(SolrElementField.class);
 
     public static final String FIELD_ID = "id";
     public static final String FIELD_OBJECTFORMAT = "formatId";
@@ -124,6 +127,10 @@ public class SolrElementField {
         IOUtils.write(ELEMENT_FIELD_CLOSE, outputStream, encoding);
 
         outputStream.flush();
+
+        if (log.isDebugEnabled() && name.equals(FIELD_ID)) {
+            log.debug("SolrElementField serializing ID field with value: " + value);
+        }
     }
 
     public boolean isEscapeXML() {

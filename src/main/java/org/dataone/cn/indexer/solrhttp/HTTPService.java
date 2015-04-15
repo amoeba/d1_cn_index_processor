@@ -378,9 +378,7 @@ public class HTTPService {
         for (int i = 0; i < nodeList.getLength(); i++) {
             Element docElement = (Element) nodeList.item(i);
             docList.add(parseDoc(docElement));
-
         }
-
         return docList;
     }
 

@@ -148,7 +148,6 @@ public class SolrDoc {
         if (identifier == null) {
             identifier = getFirstFieldValue(SolrElementField.FIELD_ID);
         }
-
         return identifier;
     }
 
