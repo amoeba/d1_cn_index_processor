@@ -22,13 +22,14 @@
 
 package org.dataone.cn.indexer.solrhttp;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.message.BasicHeader;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.message.BasicHeader;
+import org.apache.log4j.Logger;
 
 /**
   * User: Porter
@@ -40,6 +41,8 @@ import java.io.OutputStream;
  */
 
 public class OutputStreamHttpEntity implements HttpEntity {
+
+    private static Logger log = Logger.getLogger(OutputStreamHttpEntity.class);
 
     private Header contentType;
 
@@ -74,7 +77,6 @@ public class OutputStreamHttpEntity implements HttpEntity {
         return contentType;
     }
 
-
     /**Content-Type: text/xml; charset=<ContentType>
      *
      * @return
@@ -82,7 +84,6 @@ public class OutputStreamHttpEntity implements HttpEntity {
     public Header getContentEncoding() {
         return new BasicHeader("Content-Type", "text/xml; charset=" + encoding + "");
     }
-
 
     public InputStream getContent() throws IOException, IllegalStateException {
         throw new Error("MethodNotImplemented");
@@ -92,6 +93,10 @@ public class OutputStreamHttpEntity implements HttpEntity {
         add.serialize(outputStream, encoding);
         outputStream.flush();
         outputStream.close();
+        if (log.isInfoEnabled()) {
+            log.info("Creating HTTP Output Stream for " + add.getDocList().size() + ": ");
+            add.serialize(System.out, "UTF-8");
+        }
     }
 
     public boolean isStreaming() {

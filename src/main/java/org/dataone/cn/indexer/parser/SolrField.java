@@ -36,6 +36,7 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.dataone.cn.indexer.convert.IConverter;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.w3c.dom.Document;
@@ -60,6 +61,9 @@ import org.xml.sax.SAXException;
  */
 
 public class SolrField implements ISolrField {
+
+    private static Logger log = Logger.getLogger(SolrField.class);
+
     protected String name = null;
     protected String xpath = null;
     protected boolean multivalue = false;
@@ -188,6 +192,13 @@ public class SolrField implements ISolrField {
                 }
                 if (StringUtils.isNotEmpty(value) && allowedValue(value)) {
                     fields.add(new SolrElementField(name, value));
+                    if (log.isInfoEnabled()) {
+                        if (SolrElementField.FIELD_ID.equals(name)) {
+                            log.info("SolrField parsing id field, value is: " + value);
+                        } else if (SolrElementField.FIELD_BEGIN_DATE.equals(name)) {
+                            log.info("SolrField parsing begin date field, value is: " + value);
+                        }
+                    }
                 }
             }
         } catch (Exception ex) {
