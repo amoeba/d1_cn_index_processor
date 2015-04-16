@@ -93,8 +93,8 @@ public class OutputStreamHttpEntity implements HttpEntity {
         add.serialize(outputStream, encoding);
         outputStream.flush();
         outputStream.close();
-        if (log.isDebugEnabled()) {
-            log.debug("Creating HTTP Output Stream for " + add.getDocList().size() + ": ");
+        if (log.isInfoEnabled()) {
+            log.info("Creating HTTP Output Stream for " + add.getDocList().size() + ": ");
             add.serialize(System.out, "UTF-8");
         }
     }

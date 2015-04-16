@@ -192,8 +192,12 @@ public class SolrField implements ISolrField {
                 }
                 if (StringUtils.isNotEmpty(value) && allowedValue(value)) {
                     fields.add(new SolrElementField(name, value));
-                    if (name.equals("id") && log.isDebugEnabled()) {
-                        log.debug("SolrField parsing id field, value is: " + value);
+                    if (log.isInfoEnabled()) {
+                        if (SolrElementField.FIELD_ID.equals(name)) {
+                            log.info("SolrField parsing id field, value is: " + value);
+                        } else if (SolrElementField.FIELD_BEGIN_DATE.equals(name)) {
+                            log.info("SolrField parsing begin date field, value is: " + value);
+                        }
                     }
                 }
             }

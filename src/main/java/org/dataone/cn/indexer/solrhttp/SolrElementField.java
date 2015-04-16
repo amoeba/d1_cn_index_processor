@@ -128,8 +128,12 @@ public class SolrElementField {
 
         outputStream.flush();
 
-        if (log.isDebugEnabled() && name.equals(FIELD_ID)) {
-            log.debug("SolrElementField serializing ID field with value: " + value);
+        if (log.isInfoEnabled()) {
+            if (FIELD_ID.equals(name)) {
+                log.info("SolrElementField serializing ID field with value: " + value);
+            } else if (FIELD_BEGIN_DATE.equals(name)) {
+                log.info("SolrElementField serializing beginDate field with value: " + value);
+            }
         }
     }
 
