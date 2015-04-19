@@ -231,7 +231,15 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
     	Map<String, SolrDoc> solrDocs = provRdfXmlSubProcessor.processDocument(identifier, docs, resourceMap);
     	
     	// A list of Solr fields filtered by the target object identifier
-    	List<SolrElementField> fields = solrDocs.get(referencedPid).getFieldList();
+    	System.out.println("referencedPid: " + referencedPid);
+    	
+    	SolrDoc referencedPidDoc = solrDocs.get(referencedPid);
+    	
+    	if ( referencedPidDoc == null) {
+    		fail("Failed to find a SolrDoc for referencedPid: " + referencedPid);
+    		
+    	}
+    	List<SolrElementField> fields = referencedPidDoc.getFieldList();
     	
     	// compare the expected and processed fields
     	for (SolrElementField field : fields) {

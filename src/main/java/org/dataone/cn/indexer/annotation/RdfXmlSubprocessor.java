@@ -20,12 +20,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.bind.DatatypeConverter;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.codec.EncoderException;
@@ -109,23 +111,21 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
 		}
 		SolrDoc resourceMapDoc = docs.get(identifier);
         List<SolrDoc> processedDocs = process(resourceMapDoc, is);
-
+        Map<String, SolrDoc> processedDocsMap = new HashMap<String, SolrDoc>();
         for (SolrDoc processedDoc : processedDocs) {
-            docs.put(processedDoc.getIdentifier(), processedDoc);
+            processedDocsMap.put(processedDoc.getIdentifier(), processedDoc);
         }
-        // make sure to merge any docs that are currently being processed
-        //Map<String, SolrDoc> mergedDocuments = mergeDocs(docs, processedDocsMap);
 
 		if ( log.isTraceEnabled() ) {
 			log.trace("OUTGOING DOCS: ");
-			for (SolrDoc doc : docs.values()) {
+			for (SolrDoc doc : processedDocsMap.values()) {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				doc.serialize(baos, "UTF-8");
 				log.trace(baos.toString());
 			}
 		}
 
-        return docs;
+        return processedDocsMap;
     }
     
     private List<SolrDoc> process(SolrDoc indexDocument, InputStream is) throws Exception {
@@ -257,6 +257,18 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
     		// include in results
 			merged.put(id, mergedDoc);
     	}
+    	
+		// add existing if not yet merged (needed if existing map size > pending map size)
+    	Iterator<String> existingIter = existing.keySet().iterator();
+    	
+    	while ( existingIter.hasNext() ) {
+    	    String existingId = existingIter.next();
+    	    
+    	    if ( ! merged.containsKey(existingId) ) {
+    	        merged.put(existingId, existing.get(existingId));
+    	        
+    	    }
+    	}
 		
     	if (log.isTraceEnabled()) {
 			log.trace("Merged docs with existing from the Solr index: ");
@@ -274,8 +286,62 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
 	@Override
 	public SolrDoc mergeWithIndexedDocument(SolrDoc indexDocument)
 			throws IOException, EncoderException, XPathExpressionException {
-		// TODO: actually perform merging 
-		return indexDocument;
+    	
+		log.trace("Looking up existing doc: " + indexDocument.getIdentifier() + " from: " + solrQueryUri);
+
+        SolrDoc existingSolrDoc = httpService.retrieveDocumentFromSolrServer(indexDocument.getIdentifier(), solrQueryUri);
+        if (existingSolrDoc != null) {
+            for (SolrElementField field : indexDocument.getFieldList()) {
+                log.debug("Checking new field: " + field.getName() +  "=" + field.getValue());
+                
+                // Temporary hack to deal with Solr handling of date formats as strings (00:00:00Z != 00:00:00.000Z)
+                if (!existingSolrDoc.hasFieldWithValue(field.getName(), field.getValue())) {
+                	
+                	List<String> existingFieldValues = existingSolrDoc.getAllFieldValues(field.getName());
+            		boolean foundExactDate = false;
+                	Date solrDateTime = null;
+					Date newDateTime = null;
+                	for (String existingFieldValue : existingFieldValues) {
+						try {
+							solrDateTime = DatatypeConverter.parseDate(existingFieldValue).getTime();
+							newDateTime = DatatypeConverter.parseDate(field.getValue()).getTime();
+							
+						} catch (Exception e) {
+							// Not a parseable date, move on
+							continue;
+							
+						}
+						// The field value converts to a date, and matches an existing value as a date
+                		if ( newDateTime.equals(solrDateTime) ) {
+                			foundExactDate =  true;
+                			break;
+                			
+                		}
+            			
+            		}
+                	
+                	// None of the existing fields match when converted to a date. Add it.
+                	if ( ! foundExactDate ) {
+                    	existingSolrDoc.addField(field);
+                        log.debug("Adding new field/value to existing index doc " + 
+                    	          existingSolrDoc.getIdentifier() + ": " + 
+                        		  field.getName() +  "=" + field.getValue());
+                		
+                	}
+                	
+                } else {
+                    log.debug("field name/value already exists in index: " + field.getName() +  "=" + field.getValue());
+                    
+                }
+            }
+            // return the augmented one that exists already
+            return existingSolrDoc;
+            
+        } else {
+        	log.warn("Could not locate existing document for: " + indexDocument.getIdentifier());
+        	
+        }
+        return indexDocument;
 	}
 
 
