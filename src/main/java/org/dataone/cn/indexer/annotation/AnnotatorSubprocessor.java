@@ -273,18 +273,24 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
         if (uri == null || uri.length() < 1) {
             return conceptFields;
         }
+        
+        // no need to have a graph for each concept when they sare the same model
+        String namespace = uri;
+        if (namespace.contains("#")) {
+        	namespace = namespace.split("#")[0];
+        }
 
         // get the triples tore dataset
         Dataset dataset = TripleStoreService.getInstance().getDataset();
 
         // load the ontology
-        boolean loaded = dataset.containsNamedModel(uri);
+        boolean loaded = dataset.containsNamedModel(namespace);
         if (!loaded) {
             OntModel ontModel = ModelFactory.createOntologyModel();
             //InputStream sourceStream = new URI(uri).toURL().openStream();
             // TODO: look up physical source from bioportal
-            ontModel.read(uri);
-            dataset.addNamedModel(uri, ontModel);
+            ontModel.read(namespace);
+            dataset.addNamedModel(namespace, ontModel);
         }
 
         // process each field query
@@ -293,7 +299,7 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
             if (field instanceof SparqlField) {
                 q = ((SparqlField) field).getQuery();
                 q = q.replaceAll("\\$CONCEPT_URI", uri);
-                q = q.replaceAll("\\$GRAPH_NAME", uri);
+                q = q.replaceAll("\\$GRAPH_NAME", namespace);
                 Query query = QueryFactory.create(q);
                 QueryExecution qexec = QueryExecutionFactory.create(query, dataset);
                 ResultSet results = qexec.execSelect();
