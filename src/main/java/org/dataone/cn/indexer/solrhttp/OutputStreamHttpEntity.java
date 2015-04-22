@@ -90,13 +90,10 @@ public class OutputStreamHttpEntity implements HttpEntity {
     }
 
     public void writeTo(OutputStream outputStream) throws IOException {
+        log.info("Creating HTTP Output Stream for " + add.getDocList().size() + " docs: ");
         add.serialize(outputStream, encoding);
         outputStream.flush();
         outputStream.close();
-        if (log.isInfoEnabled()) {
-            log.info("Creating HTTP Output Stream for " + add.getDocList().size() + ": ");
-            add.serialize(System.out, "UTF-8");
-        }
     }
 
     public boolean isStreaming() {
