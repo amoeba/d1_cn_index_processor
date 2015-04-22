@@ -129,11 +129,12 @@ public class SolrElementField {
         outputStream.flush();
 
         if (log.isInfoEnabled()) {
-            if (FIELD_ID.equals(name)) {
-                log.info("SolrElementField serializing ID field with value: " + value);
-            } else if (FIELD_BEGIN_DATE.equals(name)) {
-                log.info("SolrElementField serializing beginDate field with value: " + value);
-            }
+            log.info("SolrElementField serializing field: " + name + " with value: " + value);
+            //            if (FIELD_ID.equals(name)) {
+            //                log.info("SolrElementField serializing ID field with value: " + value);
+            //            } else if (FIELD_BEGIN_DATE.equals(name)) {
+            //                log.info("SolrElementField serializing beginDate field with value: " + value);
+            //            }
         }
     }
 
