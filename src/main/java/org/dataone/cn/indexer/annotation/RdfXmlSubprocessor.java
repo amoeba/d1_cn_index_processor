@@ -125,7 +125,10 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
 			}
 		}
 
-        return processedDocsMap;
+		// Merge previously processed (but yet to be indexed) documents
+		Map<String, SolrDoc> mergedDocs = mergeDocs(docs, processedDocsMap);
+		
+        return mergedDocs;
     }
     
     private List<SolrDoc> process(SolrDoc indexDocument, InputStream is) throws Exception {
@@ -229,6 +232,7 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
     private Map<String, SolrDoc> mergeDocs(Map<String, SolrDoc> pending, Map<String, SolrDoc> existing) throws Exception {
 
     	Map<String, SolrDoc> merged = new HashMap<String, SolrDoc>();
+    	
     	Iterator<String> pendingIter = pending.keySet().iterator();
     	while (pendingIter.hasNext()) {
     		String id = pendingIter.next();
