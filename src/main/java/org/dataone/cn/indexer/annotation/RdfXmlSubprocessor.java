@@ -116,17 +116,17 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
             processedDocsMap.put(processedDoc.getIdentifier(), processedDoc);
         }
 
-		if ( log.isTraceEnabled() ) {
-			log.trace("OUTGOING DOCS: ");
-			for (SolrDoc doc : processedDocsMap.values()) {
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				doc.serialize(baos, "UTF-8");
-				log.trace(baos.toString());
-			}
-		}
-
 		// Merge previously processed (but yet to be indexed) documents
 		Map<String, SolrDoc> mergedDocs = mergeDocs(docs, processedDocsMap);
+        
+		if ( log.isTraceEnabled() ) {
+            log.trace("OUTGOING DOCS: ");
+            for (SolrDoc doc : mergedDocs.values()) {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                doc.serialize(baos, "UTF-8");
+                log.trace(baos.toString());
+            }
+        }
 		
         return mergedDocs;
     }
