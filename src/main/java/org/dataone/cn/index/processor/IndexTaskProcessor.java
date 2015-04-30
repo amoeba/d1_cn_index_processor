@@ -117,8 +117,10 @@ public class IndexTaskProcessor {
     private void processTask(IndexTask task) {
         try {
             if (task.isDeleteTask()) {
+                logger.info("Indexing delete task for pid: " + task.getPid());
                 deleteProcessor.process(task);
             } else {
+                logger.info("Indexing update task for pid: " + task.getPid());
                 updateProcessor.process(task);
             }
         } catch (Exception e) {
@@ -127,6 +129,7 @@ public class IndexTaskProcessor {
             return;
         }
         repo.delete(task);
+        logger.info("Indexing complete for pid: " + task.getPid());
     }
 
     private void handleFailedTask(IndexTask task) {
@@ -142,6 +145,8 @@ public class IndexTaskProcessor {
             task.markInProgress();
             task = saveTask(task);
 
+            logger.info("Start of indexing pid: " + task.getPid());
+
             if (task != null && task.isDeleteTask()) {
                 return task;
             }
@@ -149,6 +154,7 @@ public class IndexTaskProcessor {
             if (task != null && !isObjectPathReady(task)) {
                 task.markNew();
                 saveTask(task);
+                logger.info("Task for pid: " + task.getPid() + " not processed.");
                 task = null;
                 continue;
             }
@@ -156,7 +162,9 @@ public class IndexTaskProcessor {
             if (task != null && !isResourceMapReadyToIndex(task, queue)) {
                 task.markNew();
                 saveTask(task);
+                logger.info("Task for pid: " + task.getPid() + " not processed.");
                 task = null;
+                continue;
             }
         }
         return task;
@@ -181,9 +189,9 @@ public class IndexTaskProcessor {
                 ready = false;
                 logger.error("Unable to parse ORE doc: " + task.getPid()
                         + ".  Unrecoverable parse error: task will not be re-tried.");
-                if ( logger.isTraceEnabled() ) {
-                	oreException.printStackTrace();
-                	
+                if (logger.isTraceEnabled()) {
+                    oreException.printStackTrace();
+
                 }
             } catch (Exception e) {
                 ready = false;
@@ -217,8 +225,9 @@ public class IndexTaskProcessor {
                     if (foundId == false) {
                         Identifier pid = new Identifier();
                         pid.setValue(id);
-                        logger.debug("Identifier " + id + 
-                        	" was not found in the referenced id list in the Solr search index.");
+                        logger.debug("Identifier "
+                                + id
+                                + " was not found in the referenced id list in the Solr search index.");
                         SystemMetadata smd = systemMetadata.get(pid);
                         if (smd != null && notVisibleInIndex(smd)) {
                             numberOfIndexedOrRemovedReferences++;
@@ -251,7 +260,8 @@ public class IndexTaskProcessor {
             String objectPath = retrieveObjectPath(task.getPid());
             if (objectPath == null) {
                 ok = false;
-                logger.info("Object path for pid: " + task.getPid() + " is not available.");
+                logger.info("Object path for pid: " + task.getPid()
+                        + " is not available.  Task will be retried");
             }
             task.setObjectPath(objectPath);
         }
