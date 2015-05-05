@@ -101,14 +101,12 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
 
 	@Override
     public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs, InputStream is) throws Exception {
-		if ( log.isTraceEnabled() ) {
-			log.trace("INCOMING DOCS: ");
-			for (SolrDoc doc : docs.values()) {
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				doc.serialize(baos, "UTF-8");
-				log.trace(baos.toString());
-			}
+		
+	    if ( log.isTraceEnabled() ) {
+			log.trace("INCOMING DOCS to processDocument(): ");
+            serializeDocuments(docs);
 		}
+	    
 		SolrDoc resourceMapDoc = docs.get(identifier);
         List<SolrDoc> processedDocs = process(resourceMapDoc, is);
         Map<String, SolrDoc> processedDocsMap = new HashMap<String, SolrDoc>();
@@ -116,19 +114,44 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
             processedDocsMap.put(processedDoc.getIdentifier(), processedDoc);
         }
 
+        if ( log.isTraceEnabled() ) {
+            log.trace("PREMERGED DOCS from processDocument(): ");
+            serializeDocuments(processedDocsMap);
+        }
+
 		// Merge previously processed (but yet to be indexed) documents
 		Map<String, SolrDoc> mergedDocs = mergeDocs(docs, processedDocsMap);
         
 		if ( log.isTraceEnabled() ) {
-            log.trace("OUTGOING DOCS: ");
-            for (SolrDoc doc : mergedDocs.values()) {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                doc.serialize(baos, "UTF-8");
-                log.trace(baos.toString());
-            }
+            log.trace("OUTGOING DOCS from processDocument(): ");
+            serializeDocuments(mergedDocs);
         }
 		
         return mergedDocs;
+    }
+
+    /**
+     * Serialize documents to be indexed for debugging
+     * 
+     * @param docs
+     * @throws IOException
+     */
+    private void serializeDocuments(Map<String, SolrDoc> docs) {
+        StringBuilder documents = new StringBuilder();
+        documents.append("<docs>");
+        
+        for (SolrDoc doc : docs.values()) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            try {
+                doc.serialize(baos, "UTF-8");
+                
+            } catch (IOException e) {
+                log.trace("Couldn't serialize documents: " + e.getMessage());
+            }
+            documents.append(baos.toString());
+        }
+        documents.append("</docs>");
+        log.trace(documents.toString());
     }
     
     private List<SolrDoc> process(SolrDoc indexDocument, InputStream is) throws Exception {
@@ -275,13 +298,9 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
     	}
 		
     	if (log.isTraceEnabled()) {
-			log.trace("Merged docs with existing from the Solr index: ");
-			for ( SolrDoc solrDoc : merged.values() ) {
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				solrDoc.serialize(baos, "UTF-8");
-				log.trace("document to index: " + baos.toString());
-			}
-		}
+			log.trace("MERGED DOCS with existing from the Solr index: ");
+			serializeDocuments(merged);
+    	}
 
     	return merged;
     }
