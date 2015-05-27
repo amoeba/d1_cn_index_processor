@@ -30,7 +30,6 @@ import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -38,7 +37,6 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.tdb.TDBFactory;
 
 /**
  * The intent of this subprocessor is to fetch annotations about the given 
@@ -64,6 +62,12 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
     private String solrQueryUri = null;
 
     private List<String> matchDocuments = null;
+    
+    private List<String> ontologyList = null;
+    
+    private OntModel ontModel = null;
+    
+    private boolean initialized = false;
     
     private List<String> fieldsToMerge = new ArrayList<String>();
 
@@ -93,7 +97,15 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
         this.matchDocuments = matchDocuments;
     }
 
-    public List<String> getFieldsToMerge() {
+    public List<String> getOntologyList() {
+		return ontologyList;
+	}
+
+	public void setOntologyList(List<String> ontologyList) {
+		this.ontologyList = ontologyList;
+	}
+
+	public List<String> getFieldsToMerge() {
         return fieldsToMerge;
     }
 
@@ -274,34 +286,38 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
             return conceptFields;
         }
         
-        // no need to have a graph for each concept when they sare the same model
+        if (!this.initialized) {
+            ontModel = ModelFactory.createOntologyModel();
+	       
+	        // add the ontologies configured
+	        if (this.ontologyList != null && ontologyList.size() > 0) {
+	        	for (String ontologyUri: ontologyList) {
+	        		log.warn("loading ontology: " + ontologyUri);
+	            	ontModel.read(ontologyUri);
+	        	}
+	        }
+        	initialized = true;
+	        
+        }
+        //load the ontology if needed
         String namespace = uri;
         if (namespace.contains("#")) {
         	namespace = namespace.split("#")[0];
+        	boolean loaded = (ontModel.getOntClass(uri) != null);
+            if (!loaded) {
+                ontModel.read(namespace);
+            }
         }
-
-        // get the triples tore dataset
-        Dataset dataset = TripleStoreService.getInstance().getDataset();
-
-        // load the ontology
-        boolean loaded = dataset.containsNamedModel(namespace);
-        if (!loaded) {
-            OntModel ontModel = ModelFactory.createOntologyModel();
-            //InputStream sourceStream = new URI(uri).toURL().openStream();
-            // TODO: look up physical source from bioportal
-            ontModel.read(namespace);
-            dataset.addNamedModel(namespace, ontModel);
-        }
-
+        
         // process each field query
         for (ISolrDataField field : fieldList) {
             String q = null;
             if (field instanceof SparqlField) {
                 q = ((SparqlField) field).getQuery();
                 q = q.replaceAll("\\$CONCEPT_URI", uri);
-                q = q.replaceAll("\\$GRAPH_NAME", namespace);
+                //q = q.replaceAll("\\$GRAPH_NAME", namespace);
                 Query query = QueryFactory.create(q);
-                QueryExecution qexec = QueryExecutionFactory.create(query, dataset);
+                QueryExecution qexec = QueryExecutionFactory.create(query, ontModel);
                 ResultSet results = qexec.execSelect();
 
                 // each field might have multiple solution values
@@ -323,9 +339,6 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 
             }
         }
-
-        // clean up the triple store
-        TDBFactory.release(dataset);
 
         return conceptFields;
 
