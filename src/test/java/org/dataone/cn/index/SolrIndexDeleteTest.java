@@ -807,6 +807,9 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     @AfterClass
     public static void cleanup() throws Exception {
         Hazelcast.shutdownAll();
+        hzMember = null;
+        objectPaths = null;
+        sysMetaMap = null;
     }
 
     @BeforeClass
