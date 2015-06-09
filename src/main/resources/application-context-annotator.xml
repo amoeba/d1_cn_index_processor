@@ -54,5 +54,77 @@
 		</constructor-arg>
 		<!--property name="multivalue" value="false" /-->
 	</bean>
+	
+	<!-- bioportal-based annotation -->
+	<bean id="annotation.bioportal.expansion" class="org.dataone.cn.indexer.annotation.SparqlField">
+		<constructor-arg name="name" value="sem_annotation_bioportal_sm" />
+		<constructor-arg name="query">
+			<value>
+				<![CDATA[
+				PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+				PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+				PREFIX owl: <http://www.w3.org/2002/07/owl#> 
+				
+				SELECT ?sem_annotation_bioportal_sm
+				WHERE { 
+						<$CONCEPT_URI> rdfs:subClassOf+ ?sem_annotation_bioportal_sm .
+				 	} 
+				 ]]>
+			</value>
+		</constructor-arg>
+	</bean>
+	<bean id="annotation.bioportal.raw" class="org.dataone.cn.indexer.annotation.SparqlField">
+		<constructor-arg name="name" value="sem_annotation_bioportal_raw_sm" />
+		<constructor-arg name="query">
+			<value>
+				<![CDATA[
+				PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+				PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+				PREFIX owl: <http://www.w3.org/2002/07/owl#> 
+				
+				SELECT ?sem_annotation_bioportal_raw_sm
+				WHERE { 
+						<$CONCEPT_URI> rdf:about ?sem_annotation_bioportal_raw_sm .
+				 	} 
+				 ]]>
+			</value>
+		</constructor-arg>
+	</bean>
+	
+		<!-- esor-based annotation -->
+	<bean id="annotation.esor.expansion" class="org.dataone.cn.indexer.annotation.SparqlField">
+		<constructor-arg name="name" value="sem_annotation_esor_sm" />
+		<constructor-arg name="query">
+			<value>
+				<![CDATA[
+				PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+				PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+				PREFIX owl: <http://www.w3.org/2002/07/owl#> 
+				
+				SELECT ?sem_annotation_esor_sm
+				WHERE { 
+						<$CONCEPT_URI> rdfs:subClassOf+ ?sem_annotation_esor_sm .
+				 	} 
+				 ]]>
+			</value>
+		</constructor-arg>
+	</bean>
+	<bean id="annotation.esor.raw" class="org.dataone.cn.indexer.annotation.SparqlField">
+		<constructor-arg name="name" value="sem_annotation_esor_raw_sm" />
+		<constructor-arg name="query">
+			<value>
+				<![CDATA[
+				PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+				PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+				PREFIX owl: <http://www.w3.org/2002/07/owl#> 
+				
+				SELECT ?sem_annotation_esor_raw_sm
+				WHERE { 
+						<$CONCEPT_URI> rdf:about ?sem_annotation_esor_raw_sm .
+				 	} 
+				 ]]>
+			</value>
+		</constructor-arg>
+	</bean>
 
 </beans>
