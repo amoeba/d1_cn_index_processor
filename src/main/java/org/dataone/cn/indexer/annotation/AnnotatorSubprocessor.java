@@ -363,6 +363,12 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
             for (SolrElementField field : indexDocument.getFieldList()) {
                 log.debug("CHECKING new field: " + field.getName() +  "=" + field.getValue());
                 
+                // check if we should be merging this field in the index
+                if (!fieldsToMerge.contains(field.getName())) {
+                    log.debug("SKIPPING field (not in fieldsToMerge): " + field.getName());
+            		continue;
+            	}
+                
                 // Temporary hack to deal with Solr handling of date formats as strings (00:00:00Z != 00:00:00.000Z)
                 if (!existingSolrDoc.hasFieldWithValue(field.getName(), field.getValue())) {
                 	
