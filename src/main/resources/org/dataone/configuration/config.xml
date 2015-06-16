@@ -6,4 +6,5 @@
   
   <!-- Provides the DNS hostname -->
   <properties fileName="file:/etc/dataone/node.properties" />
+  <properties fileName="file:/etc/dataone/index/d1client.properties" />
 </configuration>
