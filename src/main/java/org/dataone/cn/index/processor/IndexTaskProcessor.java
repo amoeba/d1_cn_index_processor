@@ -42,7 +42,6 @@ import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.ObjectFormatIdentifier;
 import org.dataone.service.types.v2.ObjectFormat;
 import org.dataone.service.types.v2.SystemMetadata;
-import org.dataone.service.types.v2.util.ObjectFormatServiceImpl;
 import org.dspace.foresite.OREParserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
@@ -288,8 +287,7 @@ public class IndexTaskProcessor {
         try {
             ObjectFormatIdentifier formatId = new ObjectFormatIdentifier();
             formatId.setValue(task.getFormatId());
-            //format = ObjectFormatCache.getInstance().getFormat(formatId);
-            format = ObjectFormatServiceImpl.getInstance().getFormat(formatId);
+            format = ObjectFormatCache.getInstance().getFormat(formatId);
         } catch (BaseException e) {
             logger.error(e.getMessage(), e);
             return false;
