@@ -14,6 +14,8 @@
 		<property name="fieldList">
 			<list>
 				<ref bean="annotation.expansion" />
+				<ref bean="annotation.bioportal.expansion" />
+				<ref bean="annotation.esor.expansion" />
 			</list>
 		</property>
 		<property name="fieldsToMerge">

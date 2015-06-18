@@ -36,7 +36,29 @@ public class AnnotatorSubprocessorTest {
 				assertTrue(conceptSet.contains(expectedUri));
 				return;
 			}
-			fail("Should have returned expected concept already");
+			fail("Should have returned expected concept");
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		
+	}
+	
+	@Test
+	public void testConceptExpansionECSO() {
+		
+		try {
+			String subclassUri = "http://purl.dataone.org/odo/ECSO_00000039";
+			String superclassUri = "http://purl.dataone.org/odo/ECSO_00000010";
+
+			Map<String, Set<String>> concepts = annotatorSubprocessor.expandConcepts(subclassUri);
+			for (Set<String> conceptSet: concepts.values()) {
+				assertTrue(conceptSet.contains(superclassUri));
+				return;
+			}
+			fail("Should have returned superclass concept");
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
