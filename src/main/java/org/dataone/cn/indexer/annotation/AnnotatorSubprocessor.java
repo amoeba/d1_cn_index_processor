@@ -300,14 +300,14 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 	        
         }
         //load the ontology if needed
-        String namespace = uri;
-        if (namespace.contains("#")) {
-        	namespace = namespace.split("#")[0];
-        	boolean loaded = (ontModel.getOntClass(uri) != null);
-            if (!loaded) {
-                ontModel.read(namespace);
-            }
-        }
+//        String namespace = uri;
+//        if (namespace.contains("#")) {
+//        	namespace = namespace.split("#")[0];
+//        	boolean loaded = (ontModel.getOntClass(uri) != null);
+//            if (!loaded) {
+//                ontModel.read(namespace);
+//            }
+//        }
         
         // process each field query
         for (ISolrDataField field : fieldList) {
