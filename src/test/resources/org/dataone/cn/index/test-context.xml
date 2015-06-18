@@ -38,12 +38,24 @@ xmlns:context="http://www.springframework.org/schema/context"
 
     <import resource="classpath:application-context-datacite-base.xml" />
     <import resource="classpath:application-context-datacite-3.xml" />
+
+    <import resource="classpath:application-context-isotc211-base.xml" />
+    <import resource="classpath:application-context-isotc211.xml" />
     
     <!-- 
     This import overrides default postgres datasource for testing.
     	 To test with postgres, comment out the following import 
 	-->
 	<import resource="classpath:org/dataone/configuration/hsql-datasource.xml" />
+	
+	<bean id="fgdc_scan_Sys" class="org.springframework.core.io.ClassPathResource">
+		<constructor-arg type="java.lang.String"
+		value="org/dataone/cn/index/resources/d1_testdocs/fgdc/68e96cf6-fb14-42aa-bbea-6da546ccb507-scan_201407_2172.SystemMetadata.xml" />
+	</bean>
+	<bean id="fgdc_scan_Sci" class="org.springframework.core.io.ClassPathResource">
+		<constructor-arg type="java.lang.String"
+		value="org/dataone/cn/index/resources/d1_testdocs/fgdc/68e96cf6-fb14-42aa-bbea-6da546ccb507-scan_201407_2172.xml" />
+	</bean>	
 	
 	<bean id="peggym1271Sys" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String" 
@@ -218,4 +230,43 @@ xmlns:context="http://www.springframework.org/schema/context"
         value="org/dataone/cn/index/resources/d1_testdocs/datacite/datacite-science-metadata-2.xml"/>
     </bean>
     
+   	<bean id="isotc211_nodc_1_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/gov.noaa.nodc:9900233.System.Metadata"/>
+    </bean>
+    
+    <bean id="isotc211_nodc_1_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/gov.noaa.nodc:9900233"/>
+    </bean>
+
+   	<bean id="isotc211_nodc_2_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/gov.noaa.nodc:GHRSST-NEODAAS-L2P-AVHRR17_L.System.Metadata"/>
+    </bean>
+    
+    <bean id="isotc211_nodc_2_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/gov.noaa.nodc:GHRSST-NEODAAS-L2P-AVHRR17_L"/>
+    </bean>
+
+   	<bean id="isotc211_iarc_1_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/iso19139_8bd65007-f4b7-4b6e-8e71-05d7cf48a620_0.System.Metadata"/>
+    </bean>
+    
+    <bean id="isotc211_iarc_1_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/iso19139_8bd65007-f4b7-4b6e-8e71-05d7cf48a620_0"/>
+    </bean>
+    
+   	<bean id="isotc211_iarc_2_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/iso19139_bcc7e1be-2683-433c-b351-bc061f35ceb8_0.System.Metadata"/>
+    </bean>
+    
+    <bean id="isotc211_iarc_2_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/iso19139_bcc7e1be-2683-433c-b351-bc061f35ceb8_0"/>
+    </bean>
 </beans>

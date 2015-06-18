@@ -53,6 +53,7 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
     private static Logger logger = Logger.getLogger(SolrIndexFieldTest.class.getName());
 
     // TODO: test resource map / data packaging index properties?
+
     @Test
     public void testSystemMetadataAndEml210ScienceData() throws Exception {
         // peggym.130.4 system metadata document for eml2.1.0 science metadata
@@ -111,6 +112,48 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
                 .getBean("fgdcstd00111999Subprocessor");
 
         Resource scienceMetadataResource = (Resource) context.getBean("fdgc01111999SciMeta");
+        Document scienceMetadataDoc = getXPathDocumentParser().generateXmlDocument(
+                scienceMetadataResource.getInputStream());
+        for (ISolrField field : fgdcSubProcessor.getFieldList()) {
+            compareFields(result, scienceMetadataDoc, field, pid);
+        }
+
+        // test system metadata fields in system metadata config match those
+        // in solr index document
+        Document systemMetadataDoc = getXPathDocumentParser().generateXmlDocument(
+                systemMetadataResource.getInputStream());
+        for (SolrField field : getXPathDocumentParser().getFields()) {
+            compareFields(result, systemMetadataDoc, field, pid);
+        }
+    }
+
+    @Test
+    public void testLooping() throws Exception {
+        testComplexSystemMetadataAndFgdcScienceData();
+        testComplexSystemMetadataAndFgdcScienceData();
+        testComplexSystemMetadataAndFgdcScienceData();
+        testComplexSystemMetadataAndFgdcScienceData();
+        testComplexSystemMetadataAndFgdcScienceData();
+    }
+
+    @Test
+    public void testComplexSystemMetadataAndFgdcScienceData() throws Exception {
+        String pid = "68e96cf6-fb14-42aa-bbea-6da546ccb507-scan_201407_2172.xml";
+        Resource systemMetadataResource = (Resource) context.getBean("fgdc_scan_Sys");
+        Resource sciMetadataResource = (Resource) context.getBean("fgdc_scan_Sci");
+        addSysAndSciMetaToSolrIndex(systemMetadataResource, sciMetadataResource);
+
+        SolrDocument result = assertPresentInSolrIndex(pid);
+
+        HTTPService httpService = (HTTPService) context.getBean("httpService");
+
+        SolrDoc solrDoc = httpService.retrieveDocumentFromSolrServer(pid,
+                "http://localhost:8983/solr/select/");
+
+        ScienceMetadataDocumentSubprocessor fgdcSubProcessor = (ScienceMetadataDocumentSubprocessor) context
+                .getBean("fgdcstd00111999Subprocessor");
+
+        Resource scienceMetadataResource = (Resource) context.getBean("fgdc_scan_Sci");
         Document scienceMetadataDoc = getXPathDocumentParser().generateXmlDocument(
                 scienceMetadataResource.getInputStream());
         for (ISolrField field : fgdcSubProcessor.getFieldList()) {

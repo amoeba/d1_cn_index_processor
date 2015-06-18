@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<ns1:systemMetadata xmlns:ns1="http://ns.dataone.org/service/types/v1">
+	<serialVersion>2</serialVersion>
+	<identifier>gov.noaa.nodc:GHRSST-NEODAAS-L2P-AVHRR17_L</identifier>
+	<formatId>http://www.isotc211.org/2005/gmd</formatId>
+	<size>22406</size>
+	<checksum algorithm="SHA-1">ee5d7c92a8c3285f49a8f216f929f14c6b51d5a3</checksum>
+	<submitter>NODC</submitter>
+	<rightsHolder>NODC</rightsHolder>
+	<accessPolicy>
+		<allow>
+			<subject>public</subject>
+			<permission>read</permission>
+		</allow>
+	</accessPolicy>
+	<replicationPolicy numberReplicas="2" replicationAllowed="true"/>
+	<dateUploaded>2015-05-08T01:47:41.356045</dateUploaded>
+	<dateSysMetadataModified>2015-05-08T01:47:41.391065Z</dateSysMetadataModified>
+	<originMemberNode>urn:node:NODC</originMemberNode>
+	<authoritativeMemberNode>urn:node:NODC</authoritativeMemberNode>
+</ns1:systemMetadata>

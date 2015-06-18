@@ -79,6 +79,7 @@
        <ref bean="qualifiedDublicCoreSubprocessor" />
        <ref bean="dublinCoreExtendedSubprocessor" />
        <ref bean="datacite3Subprocessor" />
+       <ref bean="isotc211Subprocessor" />
       </list>
      </property>
     </bean>
@@ -167,6 +168,27 @@
     	<constructor-arg name="prefix" value="xsi" />
     	<constructor-arg name="namespace" value="http://www.w3.org/2001/XMLSchema-instance" />
     </bean> 
+    
+    <bean class="org.dataone.cn.indexer.XMLNamespace">
+ 		<constructor-arg name="prefix" value="gmd" />
+ 	   	<constructor-arg name="namespace" value="http://www.isotc211.org/2005/gmd" />
+	</bean>
+
+    <bean class="org.dataone.cn.indexer.XMLNamespace">
+ 		<constructor-arg name="prefix" value="gco" />
+ 	   	<constructor-arg name="namespace" value="http://www.isotc211.org/2005/gco" />
+	</bean>
+	
+    <bean class="org.dataone.cn.indexer.XMLNamespace">
+ 		<constructor-arg name="prefix" value="gmx" />
+ 	   	<constructor-arg name="namespace" value="http://www.isotc211.org/2005/gmx" />
+	</bean>
+
+    <bean class="org.dataone.cn.indexer.XMLNamespace">
+ 		<constructor-arg name="prefix" value="gml" />
+ 	   	<constructor-arg name="namespace" value="http://www.opengis.net/gml/3.2" />
+	</bean> 
+    
    </list>
   </constructor-arg>
  </bean>
