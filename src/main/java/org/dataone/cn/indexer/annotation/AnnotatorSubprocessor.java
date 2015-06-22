@@ -251,7 +251,7 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
                 for (String tag : annotations.getAllFieldValues(tagKey)) {
                     try {
                         // get the expanded tags
-                        Map<String, Set<String>> expandedConcepts = this.expandConcepts(tag);
+                        Map<String, Set<String>> expandedConcepts = this.expandConcepts(tagKey, tag);
                         for (Map.Entry<String, Set<String>> entry : expandedConcepts.entrySet()) {
                             for (String value : entry.getValue()) {
                                 String name = entry.getKey();
@@ -277,7 +277,7 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
         return null;
     }
 
-    protected Map<String, Set<String>> expandConcepts(String uri) throws Exception {
+    protected Map<String, Set<String>> expandConcepts(String fieldName, String uri) throws Exception {
 
         // return structure allows multi-valued fields
         Map<String, Set<String>> conceptFields = new HashMap<String, Set<String>>();
@@ -322,6 +322,10 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 
                 // each field might have multiple solution values
                 String name = field.getName();
+                // only expand for the given field name
+                if (!fieldName.equals(name)) {
+                	continue;
+                }
                 Set<String> values = new TreeSet<String>();
 
                 while (results.hasNext()) {
