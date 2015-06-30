@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<d1:systemMetadata xsi:schemaLocation="http://ns.dataone.org/service/types/v2.0 http://ns.dataone.org/service/types/v2.0" xmlns:d1="http://ns.dataone.org/service/types/v2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<serialVersion>2</serialVersion>
+	<identifier>iso19139_bcc7e1be-2683-433c-b351-bc061f35ceb8_0</identifier>
+	<formatId>http://www.isotc211.org/2005/gmd</formatId>
+	<size>15406</size>
+	<checksum algorithm="SHA-1">225d7c92a8c3285f49a8f216f929f14c6b51d5a3</checksum>
+	<submitter>CN=jlong,O=International Arctic Research Center,ST=AK,C=US</submitter>
+	<rightsHolder>CN=jlong,O=International Arctic Research Center,ST=AK,C=US</rightsHolder>
+	<accessPolicy>
+		<allow>
+			<subject>public</subject>
+			<permission>read</permission>
+		</allow>
+	</accessPolicy>
+	<replicationPolicy numberReplicas="3" replicationAllowed="true"/>
+	<dateUploaded>2015-05-08T01:47:41.356045</dateUploaded>
+	<dateSysMetadataModified>2015-05-08T01:47:41.391065Z</dateSysMetadataModified>
+	<originMemberNode>urn:node:IARC</originMemberNode>
+	<authoritativeMemberNode>urn:node:IARC</authoritativeMemberNode>
+</d1:systemMetadata>
