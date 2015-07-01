@@ -137,12 +137,10 @@ public class SolrIndexService {
             }
         }
     }
-
+    
     /**
      * Given a PID, system metadata input stream, and an optional document
-     * path, populate the set of SOLR fields for the document and update the
-     * index. Note that if the document is a resource map, then records that it
-     * references will be updated as well.
+     * path, populate the set of SOLR fields for the document. 
      * 
      * @param id
      * @param systemMetaDataStream
@@ -154,7 +152,7 @@ public class SolrIndexService {
      * @throws XPathExpressionException
      * @throws EncoderException
      */
-    public void insertIntoIndex(String id, InputStream systemMetaDataStream, String objectPath)
+    public SolrElementAdd processObject(String id, InputStream systemMetaDataStream, String objectPath)
             throws IOException, SAXException, ParserConfigurationException,
             XPathExpressionException, EncoderException {
 
@@ -198,6 +196,34 @@ public class SolrIndexService {
             addCommand.serialize(baos, OUTPUT_ENCODING);
             log.trace(baos.toString());
         }
+        
+        return addCommand;
+    }
+
+    /**
+     * Given a PID, system metadata input stream, and an optional document
+     * path, populate the set of SOLR fields for the document and update the
+     * index. Note that if the document is a resource map, then records that it
+     * references will be updated as well.
+     * 
+     * @param id
+     * @param systemMetaDataStream
+     * @param objectPath
+     * @return
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     * @throws XPathExpressionException
+     * @throws EncoderException
+     */
+    public void insertIntoIndex(String id, InputStream systemMetaDataStream, String objectPath)
+            throws IOException, SAXException, ParserConfigurationException,
+            XPathExpressionException, EncoderException {
+
+        // get the add command for solr
+        SolrElementAdd addCommand = processObject(id, systemMetaDataStream, objectPath);
+        
+        // send it
         sendCommand(addCommand);
     }
 
