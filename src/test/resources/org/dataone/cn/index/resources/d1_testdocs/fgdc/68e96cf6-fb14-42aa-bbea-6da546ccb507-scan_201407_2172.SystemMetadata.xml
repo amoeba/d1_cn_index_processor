@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<d1:systemMetadata xmlns:d1="http://ns.dataone.org/service/types/v1">
+<d1:systemMetadata xmlns:d1="http://ns.dataone.org/service/types/v2.0">
 	<serialVersion>1</serialVersion>
 	<identifier>68e96cf6-fb14-42aa-bbea-6da546ccb507-scan_201407_2172.xml</identifier>
 	<formatId>FGDC-STD-001-1998</formatId>
