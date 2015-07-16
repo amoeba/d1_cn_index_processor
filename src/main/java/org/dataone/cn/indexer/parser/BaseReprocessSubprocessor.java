@@ -67,24 +67,33 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
 	@Override
     public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs, InputStream is)
             throws Exception {
-
-        SolrDoc indexedDoc = httpService.retrieveDocumentFromSolrServer(identifier, solrQueryUri);
-        
-        if (indexedDoc != null) {
-        	for (String fieldName: relationFields) {
-	        	String relationFieldId = indexedDoc.getFirstFieldValue(fieldName);
-	        	if (relationFieldId != null) {
-		            Identifier relatedPid = new Identifier();
-		            relatedPid.setValue(relationFieldId);
-		            
-		            // queue a reprocessing of this related document
-					SystemMetadata smd = HazelcastClientFactory.getSystemMetadataMap().get(relatedPid);
-		            String objectPath = HazelcastClientFactory.getObjectPathMap().get(relatedPid);
-					indexTaskGenerator.processSystemMetaDataUpdate(smd, objectPath);
+		
+		Identifier id = new Identifier();
+		id.setValue(identifier);
+		SystemMetadata sysMeta = HazelcastClientFactory.getSystemMetadataMap().get(id);
+		
+		// only need to reprocess for series Id
+		if (sysMeta.getSeriesId() != null) {
+			
+	        SolrDoc indexedDoc = httpService.retrieveDocumentFromSolrServer(identifier, solrQueryUri);
+	        
+	        if (indexedDoc != null) {
+	        	for (String fieldName: relationFields) {
+		        	String relationFieldId = indexedDoc.getFirstFieldValue(fieldName);
+		        	if (relationFieldId != null) {
+			            Identifier relatedPid = new Identifier();
+			            relatedPid.setValue(relationFieldId);
+			            
+			            // queue a reprocessing of this related document
+						SystemMetadata relatedSysMeta = HazelcastClientFactory.getSystemMetadataMap().get(relatedPid);
+			            String objectPath = HazelcastClientFactory.getObjectPathMap().get(relatedPid);
+						indexTaskGenerator.processSystemMetaDataUpdate(relatedSysMeta, objectPath);
+		        	}
 	        	}
-        	}
-            
-        }
+	            
+	        }
+		}
+		
         return docs;
     }
 	
