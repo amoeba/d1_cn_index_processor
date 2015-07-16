@@ -80,6 +80,7 @@ public class SolrFieldXPathDryad31Test extends BaseSolrFieldXPathTest {
                         "package  Zanette, Lorenzo Roberto Sgobaro  Miller, Sophie D. L.  Faria, Christiana M. A.  Almond, Edd J.  Huggins, Tim J.  Jordan, William C.  Bourke, Andrew F. G.  2012-05-22T19:49:50Z  2012-05-22T19:49:50Z  Data from: Reproductive conflict in bumblebees and the evolution of worker policing  http://dx.doi.org/10.5061/dryad.m4h77  Worker policing (mutual repression of reproduction) in the eusocial Hymenoptera represents a leading example of how coercion can facilitate cooperation. The occurrence of worker policing in “primitively” eusocial species with low mating frequencies, which lack relatedness differences conducive to policing, suggests that separate factors may underlie the origin and maintenance of worker policing. We tested this hypothesis by investigating conflict over male parentage in the primitively eusocial, monandrous bumblebee, Bombus terrestris. Using observations, experiments, and microsatellite genotyping, we found that: (a) worker- but not queen-laid male eggs are nearly all eaten (by queens, reproductive, and nonreproductive workers) soon after being laid, so accounting for low observed frequencies of larval and adult worker-produced males; (b) queen- and worker-laid male eggs have equal viabilities; (c) workers discriminate between queen- and worker-laid eggs using cues on eggs and egg cells that almost certainly originate from queens. The cooccurrence in B. terrestris of these three key elements of “classical” worker policing as found in the highly eusocial, polyandrous honeybees provides novel support for the hypothesis that worker policing can originate in the absence of relatedness differences maintaining it. Worker policing in B. terrestris almost certainly arose via reproductive competition among workers, that is, as \"selfish\" policing.  kin selection  inclusive fitness theory  worker reproduction  social insect  Bombus terrestris  United Kingdom  http://dx.doi.org/10.1111/j.1558-5646.2012.01709.x  Evolution  http://dx.doi.org/10.5061/dryad.m4h77/1  http://dx.doi.org/10.5061/dryad.m4h77/2  http://dx.doi.org/10.5061/dryad.m4h77/3  http://dx.doi.org/10.5061/dryad.m4h77/4  http://dx.doi.org/10.5061/dryad.m4h77/5  http://dx.doi.org/10.5061/dryad.m4h77/6 http:/dx.doi.org/10.5061/dryad.m4h77");
         // system metadata
         dryadDataPackage1Expected.put("id", dryadDataPackage1Pid);
+        dryadDataPackage1Expected.put("seriesId", "");
         dryadDataPackage1Expected.put("formatId", "http://datadryad.org/profile/v3.1");
         dryadDataPackage1Expected.put("formatType", "METADATA");
         dryadDataPackage1Expected.put("size", "3686");
@@ -93,6 +94,7 @@ public class SolrFieldXPathDryad31Test extends BaseSolrFieldXPathTest {
         dryadDataPackage1Expected.put("blockedReplicationMN", "");
         dryadDataPackage1Expected.put("obsoletes", "");
         dryadDataPackage1Expected.put("obsoletedBy", "");
+        dryadDataPackage1Expected.put("archived", "false");
         dryadDataPackage1Expected
                 .put("dateUploaded", dateConverter.convert("2012-05-22T19:49:50Z"));
         dryadDataPackage1Expected.put("dateModified", "2012-06-27T14:30:30.009Z");
@@ -136,6 +138,7 @@ public class SolrFieldXPathDryad31Test extends BaseSolrFieldXPathTest {
                         "file  deposited  Zanette, Lorenzo Roberto Sgobaro  Miller, Sophie D. L.  Faria, Christiana M. A.  Almond, Edd J.  Huggins, Tim J.  Jordan, William C.  Bourke, Andrew F. G.  Table A1  http://dx.doi.org/10.5061/dryad.m4h77/1  http://creativecommons.org/publicdomain/zero/1.0/  kin selection  inclusive fitness theory  worker reproduction  social insect  Bombus terrestris  United Kingdom  2012-05-22T19:49:50Z  2012-06-27T14:30:34Z  Made available in DSpace on 2012-05-22T19:49:50Z (GMT). No. of bitstreams: 2\r\nTable A1.txt: 1097 bytes, checksum: 51bb09788be23c41fb1722dd53e84a05 (MD5)\r\nREADME.txt: 881 bytes, checksum: 676d5b3cb9ad3fc5400431a15bdba044 (MD5)  http://dx.doi.org/10.5061/dryad.m4h77 http:/dx.doi.org/10.5061/dryad.m4h77/1");
         // system metadata
         dryadDataFile1Expected.put("id", dryadDataFile1Pid);
+        dryadDataFile1Expected.put("seriesId", "");
         dryadDataFile1Expected.put("formatId", "http://datadryad.org/profile/v3.1");
         dryadDataFile1Expected.put("formatType", "METADATA");
         dryadDataFile1Expected.put("size", "2042");
@@ -149,6 +152,7 @@ public class SolrFieldXPathDryad31Test extends BaseSolrFieldXPathTest {
         dryadDataFile1Expected.put("blockedReplicationMN", "");
         dryadDataFile1Expected.put("obsoletes", "");
         dryadDataFile1Expected.put("obsoletedBy", "");
+        dryadDataFile1Expected.put("archived", "false");
         dryadDataFile1Expected.put("dateUploaded", dateConverter.convert("2012-05-22T19:49:50Z"));
         dryadDataFile1Expected.put("dateModified",
                 dateConverter.convert("2012-06-27T14:30:34.473Z"));

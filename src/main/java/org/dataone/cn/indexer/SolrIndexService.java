@@ -137,7 +137,7 @@ public class SolrIndexService {
             }
         }
     }
-    
+
     /**
      * Given a PID, system metadata input stream, and an optional document
      * path, populate the set of SOLR fields for the document. 
@@ -152,8 +152,8 @@ public class SolrIndexService {
      * @throws XPathExpressionException
      * @throws EncoderException
      */
-    public SolrElementAdd processObject(String id, InputStream systemMetaDataStream, String objectPath)
-            throws IOException, SAXException, ParserConfigurationException,
+    public SolrElementAdd processObject(String id, InputStream systemMetaDataStream,
+            String objectPath) throws IOException, SAXException, ParserConfigurationException,
             XPathExpressionException, EncoderException {
 
         Map<String, SolrDoc> docs = new HashMap<String, SolrDoc>();
@@ -163,40 +163,45 @@ public class SolrIndexService {
             log.error("Error parsing system metadata for id: " + id + e.getMessage());
             e.printStackTrace();
         }
-        String formatId = docs.get(id).getFirstFieldValue(SolrElementField.FIELD_OBJECTFORMAT);
 
-        for (IDocumentSubprocessor subprocessor : getSubprocessors()) {
-            if (subprocessor.canProcess(formatId)) {
-                try {
-                    // note that resource map processing touches all objects
-                    // referenced by the resource map.
-                    FileInputStream objectStream = new FileInputStream(objectPath);
-                    if (!objectStream.getFD().valid()) {
-                        log.error("Could not load OBJECT file for ID,Path=" + id + ", "
-                                + objectPath);
-                    } else {
-                        docs = subprocessor.processDocument(id, docs, objectStream);
+        String archived = docs.get(id).getFirstFieldValue(SolrElementField.FIELD_ARCHIVED);
+        if (archived != null && "true".equals(archived)) {
+            // do not add science metadata attributes
+        } else {
+            String formatId = docs.get(id).getFirstFieldValue(SolrElementField.FIELD_OBJECTFORMAT);
+            for (IDocumentSubprocessor subprocessor : getSubprocessors()) {
+                if (subprocessor.canProcess(formatId)) {
+                    try {
+                        // note that resource map processing touches all objects
+                        // referenced by the resource map.
+                        FileInputStream objectStream = new FileInputStream(objectPath);
+                        if (!objectStream.getFD().valid()) {
+                            log.error("Could not load OBJECT file for ID,Path=" + id + ", "
+                                    + objectPath);
+                        } else {
+                            docs = subprocessor.processDocument(id, docs, objectStream);
+                        }
+                    } catch (Exception e) {
+                        log.error(e.getMessage());
                     }
-                } catch (Exception e) {
-                    log.error(e.getMessage());
                 }
             }
         }
-
+        Map<String, SolrDoc> mergedDocs = new HashMap<String, SolrDoc>();
         for (SolrDoc mergeDoc : docs.values()) {
             for (IDocumentSubprocessor subprocessor : getSubprocessors()) {
-                SolrDoc mergedDoc = subprocessor.mergeWithIndexedDocument(mergeDoc);
-                docs.put(mergedDoc.getIdentifier(), mergedDoc);   
+                mergeDoc = subprocessor.mergeWithIndexedDocument(mergeDoc);
             }
+            mergedDocs.put(mergeDoc.getIdentifier(), mergeDoc);
         }
 
-        SolrElementAdd addCommand = getAddCommand(new ArrayList<SolrDoc>(docs.values()));
+        SolrElementAdd addCommand = getAddCommand(new ArrayList<SolrDoc>(mergedDocs.values()));
         if (log.isTraceEnabled()) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             addCommand.serialize(baos, OUTPUT_ENCODING);
             log.trace(baos.toString());
         }
-        
+
         return addCommand;
     }
 
@@ -222,7 +227,7 @@ public class SolrIndexService {
 
         // get the add command for solr
         SolrElementAdd addCommand = processObject(id, systemMetaDataStream, objectPath);
-        
+
         // send it
         sendCommand(addCommand);
     }

@@ -24,11 +24,16 @@ package org.dataone.cn.index;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.SolrJettyTestBase;
 import org.apache.solr.SolrTestCaseJ4.SuppressSSL;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.embedded.JettyConfig;
 import org.apache.solr.client.solrj.embedded.JettySolrRunner;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
@@ -36,12 +41,16 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.params.ModifiableSolrParams;
 import org.dataone.cn.indexer.SolrIndexService;
+import org.dataone.cn.indexer.parser.ISolrField;
+import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.service.types.v2.SystemMetadata;
+import org.dataone.service.util.DateTimeMarshaller;
 import org.dataone.service.util.TypeMarshaller;
 import org.junit.Assert;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
+import org.w3c.dom.Document;
 
 /**
  * Solr unit test framework is dependent on JUnit 4.7. Later versions of junit
@@ -75,11 +84,12 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
                 .insertIntoIndex(smd.getIdentifier().getValue(), sysMeta.getInputStream(), path);
     }
 
-    protected SolrDocument assertPresentInSolrIndex(String pid) throws SolrServerException {
+    protected SolrDocument assertPresentInSolrIndex(String pid) throws SolrServerException,
+            IOException {
         ModifiableSolrParams solrParams = new ModifiableSolrParams();
         solrParams.set("q", "id:" + ClientUtils.escapeQueryChars(pid));
         solrParams.set("fl", "*");
-        QueryResponse qr = getSolrServer().query(solrParams);
+        QueryResponse qr = getSolrClient().query(solrParams);
         Assert.assertFalse(qr.getResults().isEmpty());
         SolrDocument result = qr.getResults().get(0);
         String id = (String) result.getFieldValue("id");
@@ -87,33 +97,103 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
         return result;
     }
 
-    protected SolrDocumentList findByField(String field, String value) throws SolrServerException {
+    protected SolrDocumentList findByField(String field, String value) throws SolrServerException,
+            IOException {
         return findByQueryString(field + ":" + value);
     }
 
-    protected SolrDocumentList findByQueryString(String query) throws SolrServerException {
+    protected SolrDocumentList findByQueryString(String query) throws SolrServerException,
+            IOException {
         ModifiableSolrParams solrParams = new ModifiableSolrParams();
         solrParams.set("q", query);
-        QueryResponse qr = getSolrServer().query(solrParams);
+        QueryResponse qr = getSolrClient().query(solrParams);
         return qr.getResults();
     }
 
     public void sendSolrDeleteAll() throws SolrServerException, IOException {
-        getSolrServer().deleteByQuery("*:*");
+        getSolrClient().deleteByQuery("*:*");
     }
 
-    protected void assertNotPresentInSolrIndex(String pid) throws SolrServerException {
+    protected void assertNotPresentInSolrIndex(String pid) throws SolrServerException, IOException {
         ModifiableSolrParams solrParams = new ModifiableSolrParams();
         solrParams.set("q", "id:" + pid);
-        QueryResponse qr = getSolrServer().query(solrParams);
+        QueryResponse qr = getSolrClient().query(solrParams);
         Assert.assertTrue(qr.getResults().isEmpty());
     }
 
-    protected SolrDocumentList getAllSolrDocuments() throws SolrServerException {
+    protected SolrDocumentList getAllSolrDocuments() throws SolrServerException, IOException {
         ModifiableSolrParams solrParams = new ModifiableSolrParams();
         solrParams.set("q", "*:*");
-        QueryResponse qr = getSolrServer().query(solrParams);
+        QueryResponse qr = getSolrClient().query(solrParams);
         return qr.getResults();
+    }
+
+    protected void compareFields(SolrDocument solrResult, Document metadataDoc,
+            ISolrField fieldToCompare, String identifier) throws Exception {
+        List<SolrElementField> fields = fieldToCompare.getFields(metadataDoc, identifier);
+        if (fields.isEmpty() == false) {
+            SolrElementField docField = fields.get(0);
+            Object solrValueObject = solrResult.getFieldValue(docField.getName());
+
+            System.out.println("Comparing value for field " + docField.getName());
+            if (solrValueObject == null) {
+                if (!"text".equals(docField.getName())) {
+                    System.out.println("Null result value for field name:  " + docField.getName()
+                            + ", actual: " + docField.getValue());
+                    Assert.assertTrue(docField.getValue() == null || "".equals(docField.getValue()));
+                }
+            } else if (solrValueObject instanceof String) {
+                String solrValue = (String) solrValueObject;
+                String docValue = docField.getValue();
+                System.out.println("Doc Value:  " + docValue);
+                System.out.println("Solr Value: " + solrValue);
+                Assert.assertEquals(docField.getValue(), solrValue);
+            } else if (solrValueObject instanceof Boolean) {
+                Boolean solrValue = (Boolean) solrValueObject;
+                Boolean docValue = Boolean.valueOf(docField.getValue());
+                System.out.println("Doc Value:  " + docValue);
+                System.out.println("Solr Value: " + solrValue);
+                Assert.assertEquals(docValue, solrValue);
+            } else if (solrValueObject instanceof Integer) {
+                Integer solrValue = (Integer) solrValueObject;
+                Integer docValue = Integer.valueOf(docField.getValue());
+                System.out.println("Doc Value:  " + docValue);
+                System.out.println("Solr Value: " + solrValue);
+                Assert.assertEquals(docValue, solrValue);
+            } else if (solrValueObject instanceof Long) {
+                Long solrValue = (Long) solrValueObject;
+                Long docValue = Long.valueOf(docField.getValue());
+                System.out.println("Doc Value:  " + docValue);
+                System.out.println("Solr Value: " + solrValue);
+                Assert.assertEquals(docValue, solrValue);
+            } else if (solrValueObject instanceof Float) {
+                Float solrValue = (Float) solrValueObject;
+                Float docValue = Float.valueOf(docField.getValue());
+                System.out.println("Doc Value:  " + docValue);
+                System.out.println("Solr Value: " + solrValue);
+                Assert.assertEquals(docValue, solrValue);
+            } else if (solrValueObject instanceof Date) {
+                Date solrValue = (Date) solrValueObject;
+                Date docValue = DateTimeMarshaller.deserializeDateToUTC(docField.getValue());
+                System.out.println("Doc Value:  " + docValue);
+                System.out.println("Solr Value: " + solrValue);
+                Assert.assertEquals(docValue.getTime(), solrValue.getTime());
+            } else if (solrValueObject instanceof ArrayList) {
+                ArrayList solrValueArray = (ArrayList) solrValueObject;
+                ArrayList documentValueArray = new ArrayList();
+                for (SolrElementField sef : fields) {
+                    documentValueArray.add(sef.getValue());
+                }
+                System.out.println("Doc Value:  " + documentValueArray);
+                System.out.println("Solr Value: " + solrValueArray);
+                Assert.assertTrue(CollectionUtils.isEqualCollection(documentValueArray,
+                        solrValueArray));
+            } else {
+                Assert.assertTrue(
+                        "Unknown solr value object type for field: " + docField.getName(), false);
+            }
+            System.out.println("");
+        }
     }
 
     public void setUp() throws Exception {
@@ -135,13 +215,11 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
 
     protected void startJettyAndSolr() throws Exception {
         if (jetty == null) {
+            JettyConfig jconfig = JettyConfig.builder().setPort(8983).build();
             File f = new File(".");
             String localPath = f.getAbsolutePath();
             createJettyWithPort(localPath
-                    + "/src/test/resources/org/dataone/cn/index/resources/solr4home", null);
-        }
-        if (server == null) {
-            getSolrServer();
+                    + "/src/test/resources/org/dataone/cn/index/resources/solr5home", jconfig);
         }
     }
 
@@ -149,25 +227,9 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
     // number to match solr.properties (8983) for XPathDocumentParser to connect
     // to same solr server. If left unset, the port number is a random open
     // port.
-    protected static JettySolrRunner createJettyWithPort(String solrHome, String context)
+    protected static JettySolrRunner createJettyWithPort(String solrHome, JettyConfig config)
             throws Exception {
-        // creates the data dir
-        initCore(null, null, solrHome);
-
-        ignoreException("maxWarmingSearchers");
-
-        // this sets the property for jetty starting SolrDispatchFilter
-        //System.setProperty("solr.solr.home", solrHome);
-        //System.setProperty("solr.data.dir", dataDir.getCanonicalPath());
-        System.setProperty("tests.jettySsl", "false");
-
-        context = context == null ? "/solr" : context;
-        SolrJettyTestBase.context = context;
-        //        jetty = new JettySolrRunner(context, 8983, configFile);
-        jetty = new JettySolrRunner(solrHome, context, 8983);
-        jetty.start();
-        port = jetty.getLocalPort();
-        //log.info("Jetty Assigned Port#" + port);
+        createJetty(solrHome, config);
         return jetty;
     }
 }

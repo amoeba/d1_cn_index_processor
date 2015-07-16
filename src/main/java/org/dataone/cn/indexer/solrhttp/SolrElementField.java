@@ -41,6 +41,7 @@ public class SolrElementField {
     private static Logger log = Logger.getLogger(SolrElementField.class);
 
     public static final String FIELD_ID = "id";
+    public static final String FIELD_SERIES_ID = "seriesId";
     public static final String FIELD_OBJECTFORMAT = "formatId";
     public static final String FIELD_SIZE = "size";
     public static final String FIELD_CHECKSUM = "checksum";
@@ -52,6 +53,7 @@ public class SolrElementField {
     public static final String FIELD_PREF_REP_MN = "preferredRelicationNM";
     public static final String FIELD_BLOCKED_REP_MN = "blockedReplicationMN";
     public static final String FIELD_OBSOLETES = "obsoletes";
+    public static final String FIELD_ARCHIVED = "archived";
     public static final String FIELD_DATEUPLOADED = "dateUploaded";
     public static final String FIELD_DATEMODIFIED = "dateModified";
     public static final String FIELD_ORIGIN_MN = "datasource";

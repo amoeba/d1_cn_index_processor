@@ -80,6 +80,7 @@ public class SolrField implements ISolrField {
     protected String splitOnString = null;
     protected boolean substringBefore = false;
     protected boolean substringAfter = false;
+    protected String defaultValue = null;
 
     public SolrField() {
     }
@@ -231,6 +232,10 @@ public class SolrField implements ISolrField {
                     finalValue = nodeValue;
                     usedValues.add(finalValue);
                 }
+            }
+        } else {
+            if (this.defaultValue != null) {
+                finalValue = defaultValue;
             }
         }
         return finalValue;
@@ -385,5 +390,13 @@ public class SolrField implements ISolrField {
 
     public void setSubstringAfter(boolean substringAfter) {
         this.substringAfter = substringAfter;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
     }
 }

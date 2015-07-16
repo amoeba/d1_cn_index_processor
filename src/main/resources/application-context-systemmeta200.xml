@@ -13,6 +13,11 @@
 						value="/d200:systemMetadata/identifier/text()" />
 				</bean>
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
+					<constructor-arg name="name" value="seriesId" />
+					<constructor-arg name="xpath"
+						value="/d200:systemMetadata/seriesId/text()" />
+				</bean>
+				<bean class="org.dataone.cn.indexer.parser.SolrField">
 					<constructor-arg name="name" value="formatId" />
 					<constructor-arg name="xpath"
 						value="/d200:systemMetadata/formatId/text()" />
@@ -79,6 +84,12 @@
 					<constructor-arg name="xpath"
 						value="/d200:systemMetadata/obsoletedBy/text()" />
 				</bean>
+				<bean class="org.dataone.cn.indexer.parser.SolrField">
+					<constructor-arg name="name" value="archived" />
+					<constructor-arg name="xpath"
+						value="/d200:systemMetadata/archived/text()" />
+					<property name="defaultValue" value="false" />
+				</bean>				
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
 					<constructor-arg name="name" value="dateUploaded" />
 					<constructor-arg name="xpath"

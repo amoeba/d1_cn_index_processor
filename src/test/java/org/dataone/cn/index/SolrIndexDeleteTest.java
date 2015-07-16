@@ -110,13 +110,25 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
      * @throws Exception
      */
     @Test
-    public void testDeleteSingleDocFromIndex() throws Exception {
+    public void testArchiveSingleDocFromIndex() throws Exception {
         String pid = "peggym.130.4";
         deleteAll();
         addSystemMetadata(peggym1304Sys);
         processor.processIndexTaskQueue();
         assertPresentInSolrIndex(pid);
         addSystemMetadata(peggym1304SysArchived);
+        processor.processIndexTaskQueue();
+        assertPresentInSolrIndex(pid);
+    }
+
+    @Test
+    public void testDeleteSingleDocFromIndex() throws Exception {
+        String pid = "peggym.130.4";
+        deleteAll();
+        addSystemMetadata(peggym1304Sys);
+        processor.processIndexTaskQueue();
+        assertPresentInSolrIndex(pid);
+        deleteSystemMetadata(peggym1304Sys);
         processor.processIndexTaskQueue();
         assertNotPresentInSolrIndex(pid);
     }
@@ -197,12 +209,12 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
 
         processor.processIndexTaskQueue();
         // verify data package info correct in index
-        verifyDataPackageNoResourceMap();
+        verifyDataPackageArchivedResourceMap();
         // update package object (resource map)
         addSystemMetadata(peggym1304Sys);
         processor.processIndexTaskQueue();
         // verify again
-        verifyDataPackageNoResourceMap();
+        verifyDataPackageArchivedResourceMap();
     }
 
     /**
@@ -340,6 +352,30 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         assertNotPresentInSolrIndex("peggym.resourcemap");
     }
 
+    private void verifyDataPackageArchivedResourceMap() throws Exception {
+        SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
+        Assert.assertNotNull(data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP));
+        Assert.assertNotNull(data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY));
+        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
+
+        data = assertPresentInSolrIndex("peggym.128.1");
+        Assert.assertNotNull(data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP));
+        Assert.assertNotNull(data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY));
+        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
+
+        data = assertPresentInSolrIndex("peggym.129.1");
+        Assert.assertNotNull(data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP));
+        Assert.assertNotNull(data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY));
+        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
+
+        SolrDocument scienceMetadata = assertPresentInSolrIndex("peggym.130.4");
+        Assert.assertNotNull(scienceMetadata.getFieldValues(SolrElementField.FIELD_RESOURCEMAP));
+        Assert.assertNull(scienceMetadata.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY));
+        Assert.assertNotNull(scienceMetadata.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
+
+        assertPresentInSolrIndex("peggym.resourcemap");
+    }
+
     private void verifyDataPackageNo1304() throws Exception {
         assertPresentInSolrIndex("peggym.127.1");
 
@@ -348,11 +384,11 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
                 ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
         Assert.assertEquals("peggym.resourcemap",
                 ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(0));
-        Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY));
+        Assert.assertNotNull(data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY));
         Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
 
         assertPresentInSolrIndex("peggym.129.1");
-        assertNotPresentInSolrIndex("peggym.130.4");
+        assertPresentInSolrIndex("peggym.130.4");
         assertPresentInSolrIndex("peggym.resourcemap");
     }
 
@@ -371,7 +407,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     }
 
     private void verifyDataPackageNo1271() throws Exception {
-        assertNotPresentInSolrIndex("peggym.127.1");
+        assertPresentInSolrIndex("peggym.127.1");
         SolrDocument data = assertPresentInSolrIndex("peggym.128.1");
         Assert.assertEquals(1,
                 ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
@@ -395,8 +431,8 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
 
         Collection documentsCollection = scienceMetadata
                 .getFieldValues(SolrElementField.FIELD_DOCUMENTS);
-        Assert.assertEquals(2, documentsCollection.size());
-        Assert.assertFalse(documentsCollection.contains("peggym.127.1"));
+        Assert.assertEquals(3, documentsCollection.size());
+        Assert.assertTrue(documentsCollection.contains("peggym.127.1"));
         Assert.assertTrue(documentsCollection.contains("peggym.128.1"));
         Assert.assertTrue(documentsCollection.contains("peggym.129.1"));
 

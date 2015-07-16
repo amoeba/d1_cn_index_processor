@@ -84,6 +84,7 @@ public class SolrFieldDublinCoreTest extends BaseSolrFieldXPathTest {
 
         // system metadata
         dcxExpected.put("id", "ipumsi_6-3_br_2000_dc.xml");
+        dcxExpected.put("seriesId", "");
         dcxExpected.put("formatId", "http://ns.dataone.org/metadata/schema/onedcx/v1.0");
         dcxExpected.put("formatType", "METADATA");
         dcxExpected.put("size", "14949");
@@ -98,6 +99,7 @@ public class SolrFieldDublinCoreTest extends BaseSolrFieldXPathTest {
         dcxExpected.put("blockedReplicationMN", "");
         dcxExpected.put("obsoletes", "");
         dcxExpected.put("obsoletedBy", "");
+        dcxExpected.put("archived", "false");
         dcxExpected.put("dateUploaded", dateConverter.convert("2014-08-28T20:55:19.003582"));
         dcxExpected.put("dateModified", dateConverter.convert("2014-08-28T20:55:19.034555Z"));
         dcxExpected.put("datasource", "urn:node:mnTestMPC");

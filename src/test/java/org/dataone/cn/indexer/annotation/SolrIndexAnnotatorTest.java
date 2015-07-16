@@ -22,26 +22,15 @@
 
 package org.dataone.cn.indexer.annotation;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.solr.common.SolrDocument;
-import org.dataone.cn.index.SolrIndexFieldTest;
+import org.dataone.cn.index.DataONESolrJettyTestBase;
 import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.cn.indexer.parser.BaseXPathDocumentSubprocessor;
-import org.dataone.cn.indexer.parser.ISolrDataField;
 import org.dataone.cn.indexer.parser.ISolrField;
 import org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor;
-import org.dataone.cn.indexer.solrhttp.HTTPService;
-import org.dataone.cn.indexer.solrhttp.SolrDoc;
-import org.dataone.cn.indexer.solrhttp.SolrElementField;
-import org.dataone.service.util.DateTimeMarshaller;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.Resource;
@@ -54,7 +43,9 @@ import org.w3c.dom.Document;
  * @author sroseboo
  * 
  */
-public class SolrIndexAnnotatorTest extends SolrIndexFieldTest {
+public class SolrIndexAnnotatorTest extends DataONESolrJettyTestBase {
+
+    protected BaseXPathDocumentSubprocessor systemMetadata200Subprocessor;
 
     @Test
     public void testSystemMetadataEml210AndAnnotation() throws Exception {
@@ -69,11 +60,6 @@ public class SolrIndexAnnotatorTest extends SolrIndexFieldTest {
 
         // retrieve solrDocument for peggym130.4 from solr server by pid
         SolrDocument result = assertPresentInSolrIndex(pid);
-
-        HTTPService httpService = (HTTPService) context.getBean("httpService");
-
-        SolrDoc solrDoc = httpService.retrieveDocumentFromSolrServer(pid,
-                "http://localhost:8983/solr/select/");
 
         // test science metadata fields in eml210 config match actual fields in
         // solr index document
@@ -94,47 +80,46 @@ public class SolrIndexAnnotatorTest extends SolrIndexFieldTest {
         for (ISolrField field : systemMetadata200Subprocessor.getFieldList()) {
             compareFields(result, systemMetadataDoc, field, pid);
         }
-        
+
         //test the annotator fields
         Resource annotationSysMeta = (Resource) context.getBean("annotation1304Sys");
         Resource annotationResource = (Resource) context.getBean("annotation1304");
         //byte[] annotationBytes = IOUtils.toByteArray(annotationResource.getInputStream());
-        
+
         //add the annotation
         addSysAndSciMetaToSolrIndex(annotationSysMeta, annotationResource);
 
-        // check for the annotation value
-        solrDoc = httpService.retrieveDocumentFromSolrServer(pid, "http://localhost:8983/solr/select/");
         result = assertPresentInSolrIndex(pid);
-        for (String field: result.getFieldNames()) {
-    		System.out.println("FIELD NAME=" + field + ", VALUE=" + result.getFieldValue(field));
+        for (String field : result.getFieldNames()) {
+            System.out.println("FIELD NAME=" + field + ", VALUE=" + result.getFieldValue(field));
         }
-        
+
         Collection<Object> annotationValues = result.getFieldValues("sem_annotation");
         //List<String> annotationValues = solrDoc.getAllFieldValues("sem_annotation");
-        
+
         if (annotationValues != null && !annotationValues.isEmpty()) {
-        	for (Object annotationValue: annotationValues) {
-        		System.out.println("annotationValue: " + annotationValue);
-        	}
+            for (Object annotationValue : annotationValues) {
+                System.out.println("annotationValue: " + annotationValue);
+            }
         } else {
-    		System.out.println("NO VALUES FOUND FOR sem_annotation!");
+            System.out.println("NO VALUES FOUND FOR sem_annotation!");
 
         }
-        
+
         assertTrue("sem_annotation should have multiple values", !annotationValues.isEmpty());
-        
+
         // check the fields in the science metadata again to make sure we did not overwrite them
         for (ISolrField field : eml210.getFieldList()) {
             compareFields(result, scienceMetadataDoc, field, pid);
         }
-        
 
     }
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        systemMetadata200Subprocessor = (BaseXPathDocumentSubprocessor) context
+                .getBean("systemMetadata200Subprocessor");
     }
 
     @After

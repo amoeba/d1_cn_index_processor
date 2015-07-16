@@ -73,6 +73,7 @@ public class SolrFieldDataCiteTest extends BaseSolrFieldXPathTest {
 
         // system metadata
         datacite1Expected.put("id", pid1);
+        datacite1Expected.put("seriesId", "");
         datacite1Expected.put("formatId", "http://datacite.org/schema/kernel-3.0");
         datacite1Expected.put("formatType", "METADATA");
         datacite1Expected.put("size", "8849");
@@ -87,6 +88,7 @@ public class SolrFieldDataCiteTest extends BaseSolrFieldXPathTest {
         datacite1Expected.put("blockedReplicationMN", "");
         datacite1Expected.put("obsoletes", "");
         datacite1Expected.put("obsoletedBy", "");
+        datacite1Expected.put("archived", "false");
         datacite1Expected.put("dateUploaded", dateConverter.convert("2014-08-28T20:55:19.003582"));
         datacite1Expected.put("dateModified", dateConverter.convert("2014-08-28T20:55:19.034555Z"));
         datacite1Expected.put("datasource", "urn:node:mnTestDASH");

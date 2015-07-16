@@ -128,6 +128,7 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
 
         // system metadata
         eml210Expected.put("id", "peggym.130.4");
+        eml210Expected.put("seriesId", "");
         eml210Expected.put("formatId", "eml://ecoinformatics.org/eml-2.1.0");
         eml210Expected.put("formatType", "METADATA");
         eml210Expected.put("size", "36281");
@@ -141,6 +142,7 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
         eml210Expected.put("blockedReplicationMN", "");
         eml210Expected.put("obsoletes", "peggym.130.3");
         eml210Expected.put("obsoletedBy", "peggym.130.5");
+        eml210Expected.put("archived", "false");
         eml210Expected.put("dateUploaded", dateConverter.convert("2011-08-31T15:59:50.071163"));
         eml210Expected.put("dateModified", dateConverter.convert("2011-08-31T15:59:50.072921"));
         eml210Expected.put("datasource", "test_documents");

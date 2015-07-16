@@ -112,9 +112,10 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
 
         // system metadata
         nodc1Expected.put("id", pid1);
+        nodc1Expected.put("seriesId", "");
         nodc1Expected.put("formatId", isotc211FormatId);
         nodc1Expected.put("formatType", "");
-        //        nodc1Expected.put("formatType", "METADATA");
+        // nodc1Expected.put("formatType", "METADATA");
         nodc1Expected.put("size", "11406");
         nodc1Expected.put("checksum", "ff5d7c92a8c3285f49a8f216f929f14c6b5335a3");
         nodc1Expected.put("checksumAlgorithm", "SHA-1");
@@ -126,6 +127,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         nodc1Expected.put("blockedReplicationMN", "");
         nodc1Expected.put("obsoletes", "");
         nodc1Expected.put("obsoletedBy", "");
+        nodc1Expected.put("archived", "false");
         nodc1Expected.put("dateUploaded", dateConverter.convert("2015-05-08T01:47:41.356045"));
         nodc1Expected.put("dateModified", dateConverter.convert("2015-05-08T01:47:41.391065Z"));
         nodc1Expected.put("datasource", "urn:node:NODC");
@@ -185,9 +187,10 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
 
         // system metadata
         nodc2Expected.put("id", pid2);
+        nodc2Expected.put("seriesId", "");
         nodc2Expected.put("formatId", isotc211FormatId);
         nodc2Expected.put("formatType", "");
-        //nodc2Expected.put("formatType", "METADATA");
+        //odc2Expected.put("formatType", "METADATA");
         nodc2Expected.put("size", "22406");
         nodc2Expected.put("checksum", "ee5d7c92a8c3285f49a8f216f929f14c6b51d5a3");
         nodc2Expected.put("checksumAlgorithm", "SHA-1");
@@ -199,6 +202,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         nodc2Expected.put("blockedReplicationMN", "");
         nodc2Expected.put("obsoletes", "");
         nodc2Expected.put("obsoletedBy", "");
+        nodc2Expected.put("archived", "false");
         nodc2Expected.put("dateUploaded", dateConverter.convert("2015-05-08T01:47:41.356045"));
         nodc2Expected.put("dateModified", dateConverter.convert("2015-05-08T01:47:41.391065Z"));
         nodc2Expected.put("datasource", "urn:node:NODC");
@@ -253,9 +257,10 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
 
         // system metadata
         iarc1Expected.put("id", pid3);
+        iarc1Expected.put("seriesId", "");
         iarc1Expected.put("formatId", isotc211FormatId);
         iarc1Expected.put("formatType", "");
-        //        iarc1Expected.put("formatType", "METADATA");
+        //iarc1Expected.put("formatType", "METADATA");
         iarc1Expected.put("size", "12917");
         iarc1Expected.put("checksum", "037282cbe6fdfc99ed9f3b49a0ddb05d38e11704");
         iarc1Expected.put("checksumAlgorithm", "SHA-1");
@@ -269,6 +274,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         iarc1Expected.put("blockedReplicationMN", "");
         iarc1Expected.put("obsoletes", "");
         iarc1Expected.put("obsoletedBy", "");
+        iarc1Expected.put("archived", "false");
         iarc1Expected.put("dateUploaded", dateConverter.convert("2015-05-08T01:47:46.858771"));
         iarc1Expected.put("dateModified", dateConverter.convert("2015-05-08T01:47:46.893356Z"));
         iarc1Expected.put("datasource", "urn:node:IARC");
@@ -325,9 +331,10 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
 
         // system metadata
         iarc2Expected.put("id", pid4);
+        iarc2Expected.put("seriesId", "");
         iarc2Expected.put("formatId", isotc211FormatId);
         iarc2Expected.put("formatType", "");
-        //iarc2Expected.put("formatType", "METADATA");
+        // iarc2Expected.put("formatType", "METADATA");
         iarc2Expected.put("size", "15406");
         iarc2Expected.put("checksum", "225d7c92a8c3285f49a8f216f929f14c6b51d5a3");
         iarc2Expected.put("checksumAlgorithm", "SHA-1");
@@ -341,6 +348,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         iarc2Expected.put("blockedReplicationMN", "");
         iarc2Expected.put("obsoletes", "");
         iarc2Expected.put("obsoletedBy", "");
+        iarc2Expected.put("archived", "false");
         iarc2Expected.put("dateUploaded", dateConverter.convert("2015-05-08T01:47:41.356045"));
         iarc2Expected.put("dateModified", dateConverter.convert("2015-05-08T01:47:41.391065Z"));
         iarc2Expected.put("datasource", "urn:node:IARC");
