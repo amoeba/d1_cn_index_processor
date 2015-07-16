@@ -122,7 +122,6 @@
 			<groupId>org.dataone</groupId>
 			<artifactId>d1_cn_index_generator</artifactId>
 			<version>${d1_cn_index_generator_version}</version>
-			<scope>test</scope>
 		</dependency>
         <dependency>
             <groupId>com.hazelcast</groupId>
