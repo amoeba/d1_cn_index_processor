@@ -44,15 +44,11 @@ import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementAdd;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
-import org.dataone.configuration.Settings;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v2.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.xml.sax.SAXException;
-
-import com.hazelcast.client.HazelcastClient;
-import com.hazelcast.core.IMap;
 
 /**
  * Top level document processing class.  
@@ -76,15 +72,6 @@ public class SolrIndexService {
     private static Logger log = Logger.getLogger(SolrIndexService.class);
     private static final String OUTPUT_ENCODING = "UTF-8";
 
-    private static final String HZ_OBJECT_PATH = Settings.getConfiguration().getString(
-            "dataone.hazelcast.objectPath");
-    private static final String HZ_SYSTEM_METADATA = Settings.getConfiguration().getString(
-            "dataone.hazelcast.systemMetadata");
-
-    private HazelcastClient hzClient;
-    private IMap<Identifier, String> objectPaths;
-    private IMap<Identifier, SystemMetadata> systemMetadataMap;
-
     private List<IDocumentSubprocessor> subprocessors = null;
     private List<IDocumentDeleteSubprocessor> deleteSubprocessors = null;
     private IDocumentSubprocessor systemMetadataProcessor = null;
@@ -103,7 +90,6 @@ public class SolrIndexService {
 
     public void removeFromIndex(String identifier) throws Exception {
 
-        startHazelClient();
 
         Map<String, SolrDoc> docs = new HashMap<String, SolrDoc>();
 
@@ -128,9 +114,9 @@ public class SolrIndexService {
         for (String idToIndex : idsToIndex) {
             Identifier pid = new Identifier();
             pid.setValue(idToIndex);
-            SystemMetadata sysMeta = systemMetadataMap.get(pid);
+            SystemMetadata sysMeta = HazelcastClientFactory.getSystemMetadataMap().get(pid);
             if (SolrDoc.visibleInIndex(sysMeta)) {
-                String objectPath = objectPaths.get(pid);
+                String objectPath = HazelcastClientFactory.getObjectPathMap().get(pid);
                 ByteArrayOutputStream os = new ByteArrayOutputStream();
                 TypeMarshaller.marshalTypeToOutputStream(sysMeta, os);
                 insertIntoIndex(idToIndex, new ByteArrayInputStream(os.toByteArray()), objectPath);
@@ -304,11 +290,5 @@ public class SolrIndexService {
         this.systemMetadataProcessor = systemMetadataProcessor;
     }
 
-    private void startHazelClient() {
-        if (this.hzClient == null) {
-            this.hzClient = HazelcastClientFactory.getStorageClient();
-            this.objectPaths = this.hzClient.getMap(HZ_OBJECT_PATH);
-            this.systemMetadataMap = this.hzClient.getMap(HZ_SYSTEM_METADATA);
-        }
-    }
+    
 }

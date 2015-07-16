@@ -36,7 +36,6 @@ import org.dataone.cn.indexer.resourcemap.ResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMapFactory;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
-import org.dataone.configuration.Settings;
 import org.dataone.service.exceptions.BaseException;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.ObjectFormatIdentifier;
@@ -46,9 +45,6 @@ import org.dspace.foresite.OREParserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.w3c.dom.Document;
-
-import com.hazelcast.client.HazelcastClient;
-import com.hazelcast.core.IMap;
 
 /**
  * IndexTaskProcessor is the controller class for processing IndexTasks. These
@@ -64,11 +60,7 @@ public class IndexTaskProcessor {
 
     private static Logger logger = Logger.getLogger(IndexTaskProcessor.class.getName());
     private static final String FORMAT_TYPE_DATA = "DATA";
-    private static final String HZ_OBJECT_PATH = Settings.getConfiguration().getString(
-            "dataone.hazelcast.objectPath");
-    private static final String HZ_SYSTEM_METADATA = Settings.getConfiguration().getString(
-            "dataone.hazelcast.systemMetadata");
-
+    
     @Autowired
     private IndexTaskRepository repo;
 
@@ -83,11 +75,7 @@ public class IndexTaskProcessor {
 
     @Autowired
     private String solrQueryUri;
-
-    private HazelcastClient hzClient;
-    private IMap<Identifier, String> objectPaths;
-    private IMap<Identifier, SystemMetadata> systemMetadata;
-
+    
     public IndexTaskProcessor() {
     }
 
@@ -98,7 +86,6 @@ public class IndexTaskProcessor {
      * job.
      */
     public void processIndexTaskQueue() {
-        startHazelClient();
         List<IndexTask> queue = getIndexTaskQueue();
         IndexTask task = getNextIndexTask(queue);
         while (task != null) {
@@ -228,7 +215,7 @@ public class IndexTaskProcessor {
                         logger.debug("Identifier "
                                 + id
                                 + " was not found in the referenced id list in the Solr search index.");
-                        SystemMetadata smd = systemMetadata.get(pid);
+                        SystemMetadata smd = HazelcastClientFactory.getSystemMetadataMap().get(pid);
                         if (smd != null && notVisibleInIndex(smd)) {
                             numberOfIndexedOrRemovedReferences++;
                         }
@@ -298,15 +285,7 @@ public class IndexTaskProcessor {
     private String retrieveObjectPath(String pid) {
         Identifier PID = new Identifier();
         PID.setValue(pid);
-        return objectPaths.get(PID);
-    }
-
-    private void startHazelClient() {
-        if (this.hzClient == null) {
-            this.hzClient = HazelcastClientFactory.getStorageClient();
-            this.objectPaths = this.hzClient.getMap(HZ_OBJECT_PATH);
-            this.systemMetadata = this.hzClient.getMap(HZ_SYSTEM_METADATA);
-        }
+        return HazelcastClientFactory.getObjectPathMap().get(PID);
     }
 
     private List<IndexTask> getIndexTaskQueue() {

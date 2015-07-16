@@ -4,19 +4,13 @@ import org.apache.log4j.Logger;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.indexer.resourcemap.IndexVisibilityDelegate;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
-import org.dataone.configuration.Settings;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v2.SystemMetadata;
-
-import com.hazelcast.core.IMap;
 
 public class IndexVisibilityDelegateHazelcastImpl implements IndexVisibilityDelegate {
 
     private static Logger logger = Logger.getLogger(IndexVisibilityDelegateHazelcastImpl.class
             .getName());
-
-    private static final String HZ_SYSTEM_METADATA = Settings.getConfiguration().getString(
-            "dataone.hazelcast.systemMetadata");
 
     public IndexVisibilityDelegateHazelcastImpl() {
     }
@@ -24,9 +18,8 @@ public class IndexVisibilityDelegateHazelcastImpl implements IndexVisibilityDele
     public boolean isDocumentVisible(Identifier pid) {
         boolean visible = false;
         try {
-            IMap<Identifier, SystemMetadata> systemMetadataMap = HazelcastClientFactory
-                    .getStorageClient().getMap(HZ_SYSTEM_METADATA);
-            SystemMetadata systemMetadata = systemMetadataMap.get(pid);
+            
+            SystemMetadata systemMetadata = HazelcastClientFactory.getSystemMetadataMap().get(pid);
             if (SolrDoc.visibleInIndex(systemMetadata)) {
                 visible = true;
             }
@@ -39,9 +32,7 @@ public class IndexVisibilityDelegateHazelcastImpl implements IndexVisibilityDele
     public boolean documentExists(Identifier pid) {
         boolean exists = false;
         try {
-            IMap<Identifier, SystemMetadata> systemMetadataMap = HazelcastClientFactory
-                    .getStorageClient().getMap(HZ_SYSTEM_METADATA);
-            SystemMetadata systemMetadata = systemMetadataMap.get(pid);
+            SystemMetadata systemMetadata = HazelcastClientFactory.getSystemMetadataMap().get(pid);
             if (systemMetadata != null) {
                 exists = true;
             }

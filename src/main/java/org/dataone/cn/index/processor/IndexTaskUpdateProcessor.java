@@ -30,15 +30,11 @@ import org.apache.log4j.Logger;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.indexer.SolrIndexService;
-import org.dataone.configuration.Settings;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v2.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.xml.sax.SAXParseException;
-
-import com.hazelcast.client.HazelcastClient;
-import com.hazelcast.core.IMap;
 
 public class IndexTaskUpdateProcessor implements IndexTaskProcessingStrategy {
 
@@ -46,12 +42,7 @@ public class IndexTaskUpdateProcessor implements IndexTaskProcessingStrategy {
 
     @Autowired
     private SolrIndexService solrIndexService;
-
-    private HazelcastClient hzClient;
-    private IMap<Identifier, SystemMetadata> systemMetadata;
-    private static final String HZ_SYSTEM_METADATA = Settings.getConfiguration().getString(
-            "dataone.hazelcast.systemMetadata");
-
+    
     public void process(IndexTask task) throws Exception {
         InputStream smdStream = new ByteArrayInputStream(task.getSysMetadata().getBytes());
         try {
@@ -60,10 +51,9 @@ public class IndexTaskUpdateProcessor implements IndexTaskProcessingStrategy {
             logger.error(spe);
             logger.error("Caught SAX parse exception on: " + task.getPid()
                     + ". re-trying with fresh copy of system metadata.");
-            startHazelClient();
             Identifier pid = new Identifier();
             pid.setValue(task.getPid());
-            SystemMetadata smd = this.systemMetadata.get(pid);
+            SystemMetadata smd = HazelcastClientFactory.getSystemMetadataMap().get(pid);
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             TypeMarshaller.marshalTypeToOutputStream(smd, os);
             solrIndexService.insertIntoIndex(task.getPid(),
@@ -73,10 +63,4 @@ public class IndexTaskUpdateProcessor implements IndexTaskProcessingStrategy {
 
     }
 
-    private void startHazelClient() {
-        if (this.hzClient == null) {
-            this.hzClient = HazelcastClientFactory.getStorageClient();
-            this.systemMetadata = this.hzClient.getMap(HZ_SYSTEM_METADATA);
-        }
-    }
 }
