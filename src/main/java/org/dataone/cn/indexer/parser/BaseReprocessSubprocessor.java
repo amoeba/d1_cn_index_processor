@@ -24,6 +24,8 @@ package org.dataone.cn.indexer.parser;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +38,7 @@ import org.dataone.cn.index.generator.IndexTaskGenerator;
 import org.dataone.cn.index.processor.IndexTaskProcessor;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
+import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.service.exceptions.BaseException;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.ObjectFormatIdentifier;
@@ -72,25 +75,34 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
 		id.setValue(identifier);
 		SystemMetadata sysMeta = HazelcastClientFactory.getSystemMetadataMap().get(id);
 		
+		Identifier seriesId = sysMeta.getSeriesId();
+		
 		// only need to reprocess for series Id
-		if (sysMeta.getSeriesId() != null) {
-			
-	        SolrDoc indexedDoc = httpService.retrieveDocumentFromSolrServer(identifier, solrQueryUri);
-	        
-	        if (indexedDoc != null) {
-	        	for (String fieldName: relationFields) {
-		        	String relationFieldId = indexedDoc.getFirstFieldValue(fieldName);
-		        	if (relationFieldId != null) {
-			            Identifier relatedPid = new Identifier();
-			            relatedPid.setValue(relationFieldId);
-			            
-			            // queue a reprocessing of this related document
-						SystemMetadata relatedSysMeta = HazelcastClientFactory.getSystemMetadataMap().get(relatedPid);
-			            String objectPath = HazelcastClientFactory.getObjectPathMap().get(relatedPid);
-						indexTaskGenerator.processSystemMetaDataUpdate(relatedSysMeta, objectPath);
+		if (seriesId != null) {
+			// find the other objects in the series
+			List<SolrDoc> previousDocs = httpService.getDocumentsByField(solrQueryUri, Collections.singletonList(seriesId.getValue()), 
+					SolrElementField.FIELD_SERIES_ID, true);
+				        
+	        if (previousDocs != null && !previousDocs.isEmpty()) {
+	        	List<Identifier> pidsToProcess = new ArrayList<Identifier>();
+	        	for (SolrDoc indexedDoc: previousDocs) {
+		        	for (String fieldName: relationFields) {
+		        		// are there relations that need to be reindexed?
+			        	String relationFieldId = indexedDoc.getFirstFieldValue(fieldName);
+			        	if (relationFieldId != null) {
+				            Identifier relatedPid = new Identifier();
+				            relatedPid.setValue(relationFieldId);
+				            // only need to reprocess related docs once
+				            if (!pidsToProcess.contains(relatedPid)) {
+				            	pidsToProcess.add(relatedPid);
+				            	// queue a reprocessing of this related document
+								SystemMetadata relatedSysMeta = HazelcastClientFactory.getSystemMetadataMap().get(relatedPid);
+					            String objectPath = HazelcastClientFactory.getObjectPathMap().get(relatedPid);
+								indexTaskGenerator.processSystemMetaDataUpdate(relatedSysMeta, objectPath);
+				            }
+			        	}
 		        	}
 	        	}
-	            
 	        }
 		}
 		
