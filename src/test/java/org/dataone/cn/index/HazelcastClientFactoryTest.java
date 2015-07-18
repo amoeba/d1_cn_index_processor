@@ -18,7 +18,10 @@ public class HazelcastClientFactoryTest {
     
 	public static void startHazelcast() {
 
-        if (hzMember == null) {
+        if (HazelcastClientFactory.getStorageClient() == null) {
+        	
+            System.out.println("Starting Hazelcast");
+            
             Config hzConfig = new ClasspathXmlConfig("org/dataone/configuration/hazelcast.xml");
 
             System.out.println("Hazelcast Group Config:\n" + hzConfig.getGroupConfig());
