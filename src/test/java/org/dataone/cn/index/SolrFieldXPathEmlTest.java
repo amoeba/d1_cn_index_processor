@@ -128,7 +128,7 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
 
         // system metadata
         eml210Expected.put("id", "peggym.130.4");
-        eml210Expected.put("seriesId", "");
+        eml210Expected.put("seriesId", "peggym.130");
         eml210Expected.put("formatId", "eml://ecoinformatics.org/eml-2.1.0");
         eml210Expected.put("formatType", "METADATA");
         eml210Expected.put("size", "36281");

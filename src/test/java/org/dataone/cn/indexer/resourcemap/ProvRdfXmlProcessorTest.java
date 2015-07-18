@@ -40,7 +40,9 @@ import java.util.TreeMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.DataONESolrJettyTestBase;
+import org.dataone.cn.index.HazelcastClientFactoryTest;
 import org.dataone.cn.index.generator.IndexTaskGenerator;
 import org.dataone.cn.index.processor.IndexTaskProcessor;
 import org.dataone.cn.index.task.IndexTask;
@@ -49,7 +51,6 @@ import org.dataone.cn.indexer.convert.SolrDateConverter;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
-import org.dataone.configuration.Settings;
 import org.dataone.service.types.v1.AccessPolicy;
 import org.dataone.service.types.v1.Checksum;
 import org.dataone.service.types.v1.Identifier;
@@ -63,7 +64,6 @@ import org.dataone.service.types.v2.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
 import org.jibx.runtime.JiBXException;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -73,12 +73,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
 
-import com.hazelcast.config.ClasspathXmlConfig;
-import com.hazelcast.config.Config;
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
-
 /**
  * RDF/XML Subprocessor test for provenance field handling
  */
@@ -86,23 +80,6 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
 	
 	/* Log it */
 	private static Log log = LogFactory.getLog(ProvRdfXmlProcessorTest.class);
-
-	/* The hazelcast system metadata map name */
-    private static final String systemMetadataMapName = Settings.getConfiguration().getString(
-            "dataone.hazelcast.systemMetadata");
-    
-    /* The hazelcast object path map name */
-    private static final String objectPathName = Settings.getConfiguration().getString(
-            "dataone.hazelcast.objectPath");
-    
-    /* A hazelcast instance */
-    private static HazelcastInstance hzMember;
-    
-    /* The hazelcast system metadata map */
-    private static IMap<Identifier, SystemMetadata> sysMetaMap;
-    
-    /* The hazelcast object path map */
-    private static IMap<Identifier, String> objectPaths;
 
 	/* the conext with provenance-specific bean definitions */
 	private ApplicationContext provenanceContext = null;        
@@ -157,26 +134,11 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
     private String HAS_DERIVATIONS_FIELD           = "prov_hasDerivations";         
     private String INSTANCE_OF_CLASS_FIELD         = "prov_instanceOfClass";
 
-    /**
-     * For all tests, bring up Hazelcast
-     * @throws Exception
-     */
-    //@BeforeClass
-    public static void init() throws Exception {
-    	// Start up Hazelcast
-        configureHazelCast();
 
-        
-    }
-
-    /**
-     * After all tests, shut down Hazelcast
-     * @throws Exception
-     */
-    //@AfterClass
-    public static void cleanup() throws Exception {
-        Hazelcast.shutdownAll();
-    }
+    @BeforeClass
+	public static void init() {
+		HazelcastClientFactoryTest.startHazelcast();
+	}
 
     /**
      * For each test, set up the Solr service and test data
@@ -189,8 +151,6 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
     	// Start up the embedded Jetty server and Solr service
     	super.setUp();
     	
-    	// Start up Hazelcast
-        //configureHazelCast();
 
     	// load the prov context beans
     	configureSpringResources();
@@ -433,36 +393,6 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
         		(Resource) provenanceContext.getBean("provAlaWaiNS02ImageDataAW02XX_001CTDXXXXR00_20150203_10day1jpg");
     }
     
-    /* 
-     * Configure a Hazelcast instance to store system metadata and object paths 
-     */
-    private static void configureHazelCast() {
-        Config hzConfig = new ClasspathXmlConfig("org/dataone/configuration/hazelcast.xml");
-
-        log.debug("Hazelcast Group Config:\n" + hzConfig.getGroupConfig());
-        log.debug("Hazelcast Maps: ");
-        for (String mapName : hzConfig.getMapConfigs().keySet()) {
-            log.debug(mapName + " ");
-        }
-        log.debug("");
-        if ( Hazelcast.getAllHazelcastInstances().isEmpty() ) {
-            hzMember = Hazelcast.newHazelcastInstance(hzConfig);
-            log.debug("Hazelcast new hzMember name: " + hzMember.getName());
-        	
-        } else {
-        	if ( hzConfig.getInstanceName() != null ){
-        		hzMember = Hazelcast.getHazelcastInstanceByName(hzConfig.getInstanceName());
-        		log.debug("Hazelcast existing hzMember name: " + hzMember.getName());
-        		
-        	} else {
-        		fail("AAAAGH");
-        		
-        	}
-
-            sysMetaMap = hzMember.getMap(systemMetadataMapName);
-            objectPaths = hzMember.getMap(objectPathName);
-        }
-    }
 
     /* Delete a solr entry based on its identifier */
     private void deleteFromSolr(String pid) throws Exception {
@@ -603,9 +533,9 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
 		}
     	try {
 			// insert the system metadata into Hazelcast
-			sysMetaMap.put(sysmeta.getIdentifier(), sysmeta);			
+    		HazelcastClientFactory.getSystemMetadataMap().put(sysmeta.getIdentifier(), sysmeta);			
 			// insert the object path into Hazelcast
-			objectPaths.put(sysmeta.getIdentifier(), path);
+    		HazelcastClientFactory.getObjectPathMap().put(sysmeta.getIdentifier(), path);
 
     	} catch (RuntimeException e) {
 			e.printStackTrace();

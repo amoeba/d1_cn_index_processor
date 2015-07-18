@@ -29,25 +29,17 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.solr.common.SolrDocument;
+import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.generator.IndexTaskGenerator;
 import org.dataone.cn.index.processor.IndexTaskProcessor;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
-import org.dataone.configuration.Settings;
-import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v2.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.core.io.Resource;
-
-import com.hazelcast.config.ClasspathXmlConfig;
-import com.hazelcast.config.Config;
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
 
 /**
  * Solr unit test framework is dependent on JUnit 4.7. Later versions of junit
@@ -59,14 +51,6 @@ import com.hazelcast.core.IMap;
 public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
 
     private static Logger logger = Logger.getLogger(SolrIndexDeleteTest.class.getName());
-
-    private static final String systemMetadataMapName = Settings.getConfiguration().getString(
-            "dataone.hazelcast.systemMetadata");
-    private static final String objectPathName = Settings.getConfiguration().getString(
-            "dataone.hazelcast.objectPath");
-    private static HazelcastInstance hzMember;
-    private static IMap<Identifier, SystemMetadata> sysMetaMap;
-    private static IMap<Identifier, String> objectPaths;
 
     private IndexTaskProcessor processor;
     private IndexTaskGenerator generator;
@@ -86,6 +70,11 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     private Resource peggymResourcemap1OverlapSys;
     private Resource peggymResourcemap2OverlapSys;
 
+    @BeforeClass
+	public static void init() {
+		HazelcastClientFactoryTest.startHazelcast();
+	}
+    
     /**
      * Unit test of the HTTPService.sendSolrDelete(pid) method. Inserts record
      * into solr index using XPathDocumentParser. Does not use index task
@@ -810,9 +799,9 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }
-        sysMetaMap.put(sysmeta.getIdentifier(), sysmeta);
+        HazelcastClientFactory.getSystemMetadataMap().put(sysmeta.getIdentifier(), sysmeta);
         //sysMetaMap.put(sysmeta.getIdentifier(), sysmeta);
-        objectPaths.putAsync(sysmeta.getIdentifier(), path);
+        HazelcastClientFactory.getObjectPathMap().putAsync(sysmeta.getIdentifier(), path);
         generator.processSystemMetaDataUpdate(sysmeta, path);
     }
 
@@ -825,9 +814,9 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
             logger.error(ex.getMessage(), ex);
             fail("Test SystemMetadata misconfiguration - Exception " + ex);
         }
-        sysMetaMap.remove(sysmeta.getIdentifier());
+        HazelcastClientFactory.getSystemMetadataMap().remove(sysmeta.getIdentifier());
         //sysMetaMap.removeAsync(sysmeta.getIdentifier());
-        objectPaths.removeAsync(sysmeta.getIdentifier());
+        HazelcastClientFactory.getObjectPathMap().removeAsync(sysmeta.getIdentifier());
         generator.processSystemMetaDataDelete(sysmeta);
     }
 
@@ -840,19 +829,6 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         super.tearDown();
     }
 
-    @AfterClass
-    public static void cleanup() throws Exception {
-        Hazelcast.shutdownAll();
-        hzMember = null;
-        objectPaths = null;
-        sysMetaMap = null;
-    }
-
-    @BeforeClass
-    public static void init() throws Exception {
-        Hazelcast.shutdownAll();
-        configureHazelCast();
-    }
 
     private void configureSpringResources() {
         processor = (IndexTaskProcessor) context.getBean("indexTaskProcessor");
@@ -874,22 +850,6 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
                 .getBean("peggymResourcemap2ComplicatedSys");
         peggymResourcemap1OverlapSys = (Resource) context.getBean("peggymResourcemap1OverlapSys");
         peggymResourcemap2OverlapSys = (Resource) context.getBean("peggymResourcemap2OverlapSys");
-    }
-
-    private static void configureHazelCast() {
-        Config hzConfig = new ClasspathXmlConfig("org/dataone/configuration/hazelcast.xml");
-
-        System.out.println("Hazelcast Group Config:\n" + hzConfig.getGroupConfig());
-        System.out.print("Hazelcast Maps: ");
-        for (String mapName : hzConfig.getMapConfigs().keySet()) {
-            System.out.print(mapName + " ");
-        }
-        System.out.println();
-        hzMember = Hazelcast.newHazelcastInstance(hzConfig);
-        System.out.println("Hazelcast member hzMember name: " + hzMember.getName());
-
-        sysMetaMap = hzMember.getMap(systemMetadataMapName);
-        objectPaths = hzMember.getMap(objectPathName);
     }
 
 }
