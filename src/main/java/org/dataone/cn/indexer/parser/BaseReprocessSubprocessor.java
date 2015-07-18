@@ -140,4 +140,12 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
 		return indexDocument;
 	}
 
+	public List<String> getRelationFields() {
+		return relationFields;
+	}
+
+	public void setRelationFields(List<String> relationFields) {
+		this.relationFields = relationFields;
+	}
+
 }
