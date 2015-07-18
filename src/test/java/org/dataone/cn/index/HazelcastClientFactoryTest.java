@@ -15,6 +15,10 @@ import com.hazelcast.core.HazelcastInstance;
 public class HazelcastClientFactoryTest {
 	
 	private static HazelcastInstance hzMember;
+	
+	static {
+		Hazelcast.shutdownAll();
+	}
     
 	public static void startHazelcast() {
 
