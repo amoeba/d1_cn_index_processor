@@ -10,11 +10,13 @@ import org.junit.Test;
 import com.hazelcast.config.ClasspathXmlConfig;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastException;
 import com.hazelcast.core.HazelcastInstance;
 
 public class HazelcastClientFactoryTest {
 	
 	private static HazelcastInstance hzMember;
+	private static boolean started = false;
 	
 	static {
 		Hazelcast.shutdownAll();
@@ -22,7 +24,7 @@ public class HazelcastClientFactoryTest {
     
 	public static void startHazelcast() {
 
-        if (hzMember == null) {
+        if (!started) {
         	        	
             System.out.println("Starting Hazelcast");
             
@@ -34,7 +36,13 @@ public class HazelcastClientFactoryTest {
                 System.out.print(mapName + " ");
             }
             System.out.println();
-            hzMember = Hazelcast.newHazelcastInstance(hzConfig);
+            try {
+            	hzMember = Hazelcast.newHazelcastInstance(hzConfig);
+            } catch (HazelcastException e) {
+            	started = true;
+            	// just carry on
+            }
+            
             System.out.println("Hazelcast member hzMember name: " + hzMember.getName());
 
         }
