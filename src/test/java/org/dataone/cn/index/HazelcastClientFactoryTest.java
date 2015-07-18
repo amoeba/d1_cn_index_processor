@@ -17,10 +17,6 @@ public class HazelcastClientFactoryTest {
 	
 	private static HazelcastInstance hzMember;
 	private static boolean started = false;
-	
-	static {
-		Hazelcast.shutdownAll();
-	}
     
 	public static void startHazelcast() {
 
