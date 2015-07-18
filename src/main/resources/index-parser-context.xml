@@ -30,6 +30,7 @@
 				<ref bean="provRdfXmlSubprocessor" />
 				<ref bean="annotatorSubprocessor" />
 				<ref bean="isotc211Subprocessor" />
+				<ref bean="reprocessResourceMapSubprocessor" />
 			</list>
      	</property>
      	<property name="deleteSubprocessors">
