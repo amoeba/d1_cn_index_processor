@@ -60,7 +60,7 @@ public class IndexTaskProcessor {
 
     private static Logger logger = Logger.getLogger(IndexTaskProcessor.class.getName());
     private static final String FORMAT_TYPE_DATA = "DATA";
-    
+
     @Autowired
     private IndexTaskRepository repo;
 
@@ -75,7 +75,7 @@ public class IndexTaskProcessor {
 
     @Autowired
     private String solrQueryUri;
-    
+
     public IndexTaskProcessor() {
     }
 
@@ -199,13 +199,14 @@ public class IndexTaskProcessor {
         int numberOfIndexedOrRemovedReferences = 0;
         try {
             updateDocuments = httpService.getDocumentsById(this.solrQueryUri, referencedIds);
-            numberOfIndexedOrRemovedReferences = updateDocuments.size();
+            numberOfIndexedOrRemovedReferences = 0;
             if (updateDocuments.size() != referencedIds.size()) {
                 for (String id : referencedIds) {
                     boolean foundId = false;
                     for (SolrDoc solrDoc : updateDocuments) {
-                        if (solrDoc.getIdentifier().equals(id)) {
+                        if (solrDoc.getIdentifier().equals(id) || id.equals(solrDoc.getSeriesId())) {
                             foundId = true;
+                            numberOfIndexedOrRemovedReferences++;
                             break;
                         }
                     }
@@ -221,6 +222,8 @@ public class IndexTaskProcessor {
                         }
                     }
                 }
+            } else {
+                numberOfIndexedOrRemovedReferences = updateDocuments.size();
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

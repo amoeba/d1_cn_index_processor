@@ -306,7 +306,6 @@ public class ForesiteResourceMap implements ResourceMap {
                 if (doc.getIdentifier().equals(resourceEntry.getIdentifier())
                         || resourceEntry.getIdentifier().equals(doc.getSeriesId())) {
                     mergedDocuments.add(_mergeMappedReference(resourceEntry, doc));
-                    break;
                 }
             }
         }
