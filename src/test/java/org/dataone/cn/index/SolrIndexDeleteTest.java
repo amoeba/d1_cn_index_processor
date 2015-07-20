@@ -36,10 +36,13 @@ import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.service.types.v2.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.core.io.Resource;
+
+import com.hazelcast.core.Hazelcast;
 
 /**
  * Solr unit test framework is dependent on JUnit 4.7. Later versions of junit
@@ -70,11 +73,6 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     private Resource peggymResourcemap1OverlapSys;
     private Resource peggymResourcemap2OverlapSys;
 
-    @BeforeClass
-	public static void init() {
-		HazelcastClientFactoryTest.startHazelcast();
-	}
-    
     /**
      * Unit test of the HTTPService.sendSolrDelete(pid) method. Inserts record
      * into solr index using XPathDocumentParser. Does not use index task
@@ -829,6 +827,16 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         super.tearDown();
     }
 
+    @BeforeClass
+    public static void init() {
+        Hazelcast.shutdownAll();
+        HazelcastClientFactoryTest.startHazelcast();
+    }
+
+    @AfterClass
+    public static void cleanup() throws Exception {
+        Hazelcast.shutdownAll();
+    }
 
     private void configureSpringResources() {
         processor = (IndexTaskProcessor) context.getBean("indexTaskProcessor");
