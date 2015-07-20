@@ -67,11 +67,12 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
 
     @BeforeClass
     public static void init() {
+        Hazelcast.shutdownAll();
         HazelcastClientFactoryTest.startHazelcast();
     }
 
     @AfterClass
-    public static void shutdown() throws Exception {
+    public static void cleanup() throws Exception {
         Hazelcast.shutdownAll();
     }
 
