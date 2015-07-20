@@ -37,7 +37,6 @@ import org.apache.commons.logging.LogFactory;
 import org.dataone.client.v2.formats.ObjectFormatCache;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.generator.IndexTaskGenerator;
-import org.dataone.cn.index.processor.IndexTaskProcessor;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
@@ -58,9 +57,6 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
 
     @Autowired
     IndexTaskGenerator indexTaskGenerator;
-
-    @Autowired
-    IndexTaskProcessor indexTaskProcessor;
 
     private List<String> matchDocuments = null;
 
@@ -125,7 +121,6 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
                                 log.debug("Processing objectPath===" + objectPath);
                                 indexTaskGenerator.processSystemMetaDataUpdate(relatedSysMeta,
                                         objectPath);
-                                //indexTaskProcessor.processIndexTaskQueue();
                             }
                         }
                     }
