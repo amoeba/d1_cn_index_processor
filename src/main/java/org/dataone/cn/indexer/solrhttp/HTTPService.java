@@ -256,7 +256,9 @@ public class HTTPService {
      */
     public List<SolrDoc> getDocumentsById(String uir, List<String> ids) throws IOException,
             XPathExpressionException, EncoderException {
-        return getDocumentsByField(uir, ids, SolrElementField.FIELD_ID, false);
+        List<SolrDoc> docs = getDocumentsByField(uir, ids, SolrElementField.FIELD_SERIES_ID, false);
+        docs.addAll(getDocumentsByField(uir, ids, SolrElementField.FIELD_ID, false));
+        return docs;
     }
 
     public List<SolrDoc> getDocumentById(String uir, String id) throws IOException,

@@ -173,6 +173,8 @@ public class SolrIndexService {
                 }
             }
         }
+
+        // If archived, do not merge existing record
         Map<String, SolrDoc> mergedDocs = new HashMap<String, SolrDoc>();
         for (SolrDoc mergeDoc : docs.values()) {
             for (IDocumentSubprocessor subprocessor : getSubprocessors()) {

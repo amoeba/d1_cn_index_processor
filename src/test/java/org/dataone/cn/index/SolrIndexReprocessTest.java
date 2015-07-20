@@ -39,9 +39,10 @@ import org.dataone.service.util.TypeMarshaller;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.core.io.Resource;
+
+import com.hazelcast.core.Hazelcast;
 
 /**
  * Solr unit test framework is dependent on JUnit 4.7. Later versions of junit
@@ -65,16 +66,19 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
     private Resource peggymResourcemapSeriesSys;
 
     @BeforeClass
-	public static void init() {
-		HazelcastClientFactoryTest.startHazelcast();
-	}
+    public static void init() {
+        HazelcastClientFactoryTest.startHazelcast();
+    }
 
-    
+    @AfterClass
+    public static void shutdown() throws Exception {
+        Hazelcast.shutdownAll();
+    }
+
     /**
      * Test reprocessing when new version of object in a data package is updated
      */
     @Test
-    @Ignore
     public void testReprocessDataPackage() throws Exception {
         // create/index data package
         deleteAll();
@@ -105,15 +109,14 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
         addSystemMetadata(peggymResourcemapSeriesSys);
         processor.processIndexTaskQueue();
     }
-    
+
     private void indexNewRevision(Resource resource) {
         addSystemMetadata(resource);
         processor.processIndexTaskQueue();
     }
 
-    
     private void verifyDataPackageNewRevision() throws Exception {
-    	SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
+        SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
         Assert.assertEquals(1,
                 ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
         Assert.assertEquals("peggym.resourcemap-series",
@@ -135,31 +138,36 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
         Assert.assertEquals("peggym.resourcemap-series",
                 ((List) scienceMetadata.getFieldValue(SolrElementField.FIELD_RESOURCEMAP)).get(0));
 
-        Collection documentsCollection = scienceMetadata.getFieldValues(SolrElementField.FIELD_DOCUMENTS);
+        Collection documentsCollection = scienceMetadata
+                .getFieldValues(SolrElementField.FIELD_DOCUMENTS);
         Assert.assertEquals(3, documentsCollection.size());
         Assert.assertTrue(documentsCollection.contains("peggym.127.1"));
         Assert.assertTrue(documentsCollection.contains("peggym.128.1"));
         Assert.assertTrue(documentsCollection.contains("peggym.129.1"));
-        
+
         // check that the new revision also has the resource map value on it
         SolrDocument scienceMetadataRevision = assertPresentInSolrIndex("peggym.130.5");
-        Assert.assertEquals(1,
-                ((List) scienceMetadataRevision.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
-        Assert.assertEquals("peggym.resourcemap-series",
-                ((List) scienceMetadataRevision.getFieldValue(SolrElementField.FIELD_RESOURCEMAP)).get(0));
+        Assert.assertEquals(1, ((List) scienceMetadataRevision
+                .getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
+        Assert.assertEquals("peggym.resourcemap-series", ((List) scienceMetadataRevision
+                .getFieldValue(SolrElementField.FIELD_RESOURCEMAP)).get(0));
 
         assertPresentInSolrIndex("peggym.resourcemap-series");
 
     }
-    
+
     private void verifyTestDataPackageIndexed() throws Exception {
         SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
         System.out.println("DATA=" + data);
-        Assert.assertEquals(1, ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
-        Assert.assertEquals("peggym.resourcemap-series", ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(0));
+        Assert.assertEquals(1,
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
+        Assert.assertEquals("peggym.resourcemap-series",
+                ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(0));
 
-        Assert.assertEquals(1, ((List) data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY)).size());
-        Assert.assertEquals("peggym.130.4", ((List) data.getFieldValue(SolrElementField.FIELD_ISDOCUMENTEDBY)).get(0));
+        Assert.assertEquals(1,
+                ((List) data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY)).size());
+        Assert.assertEquals("peggym.130.4",
+                ((List) data.getFieldValue(SolrElementField.FIELD_ISDOCUMENTEDBY)).get(0));
 
         Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
 
@@ -223,7 +231,7 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
         peggym1304Sys = (Resource) context.getBean("peggym1304Sys");
         peggym1305Sys = (Resource) context.getBean("peggym1305Sys");
         peggymResourcemapSeriesSys = (Resource) context.getBean("peggymResourcemapSeriesSys");
-        
+
     }
 
 }

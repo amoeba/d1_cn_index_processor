@@ -46,6 +46,7 @@ public class SolrDoc {
 
     // private Boolean resourceMap = null;
     private String identifier;
+    private String seriesId;
 
     private boolean merged = false;
 
@@ -148,8 +149,14 @@ public class SolrDoc {
         if (identifier == null) {
             identifier = getFirstFieldValue(SolrElementField.FIELD_ID);
         }
-
         return identifier;
+    }
+
+    public String getSeriesId() {
+        if (seriesId == null) {
+            seriesId = getFirstFieldValue(SolrElementField.FIELD_SERIES_ID);
+        }
+        return seriesId;
     }
 
     public void addField(SolrElementField field) {

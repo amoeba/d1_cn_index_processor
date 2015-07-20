@@ -300,18 +300,16 @@ public class ForesiteResourceMap implements ResourceMap {
 
     @Override
     public List<SolrDoc> mergeIndexedDocuments(List<SolrDoc> docs) {
-
         List<SolrDoc> mergedDocuments = new ArrayList<SolrDoc>();
-
         for (ResourceEntry resourceEntry : this.resourceMap.values()) {
             for (SolrDoc doc : docs) {
-                if (doc.getIdentifier().equals(resourceEntry.getIdentifier())) {
+                if (doc.getIdentifier().equals(resourceEntry.getIdentifier())
+                        || resourceEntry.getIdentifier().equals(doc.getSeriesId())) {
                     mergedDocuments.add(_mergeMappedReference(resourceEntry, doc));
                     break;
                 }
             }
         }
-
         return mergedDocuments;
     }
 
