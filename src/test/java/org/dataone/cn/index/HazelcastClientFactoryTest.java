@@ -1,8 +1,10 @@
 package org.dataone.cn.index;
 
+import org.apache.log4j.Logger;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v2.SystemMetadata;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -13,48 +15,54 @@ import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 
 public class HazelcastClientFactoryTest {
-	
-	private static HazelcastInstance hzMember;
-    
-	public static void startHazelcast() {
+
+    private static HazelcastInstance hzMember;
+    private static Logger logger = Logger.getLogger(HazelcastClientFactoryTest.class.getName());
+
+    public static void startHazelcast() {
 
         if (hzMember == null) {
-        	        	
-            System.out.println("Starting Hazelcast");
-            
+
+            logger.debug("Starting Hazelcast");
+
             Config hzConfig = new ClasspathXmlConfig("org/dataone/configuration/hazelcast.xml");
 
-            System.out.println("Hazelcast Group Config:\n" + hzConfig.getGroupConfig());
-            System.out.print("Hazelcast Maps: ");
+            logger.debug("Hazelcast Group Config:\n" + hzConfig.getGroupConfig());
+            logger.debug("Hazelcast Maps: ");
             for (String mapName : hzConfig.getMapConfigs().keySet()) {
-                System.out.print(mapName + " ");
+                logger.debug(mapName + " ");
             }
-            System.out.println();
+            logger.debug("");
             hzMember = Hazelcast.newHazelcastInstance(hzConfig);
-            
-            System.out.println("Hazelcast member hzMember name: " + hzMember.getName());
+
+            logger.debug("Hazelcast member hzMember name: " + hzMember.getName());
 
         }
     }
-	
-	@BeforeClass
-	public static void setUp() {
-		HazelcastClientFactoryTest.startHazelcast();
-	}
-	
-	@Test
-	public void testSystemMetadataMap() {
-		
-		int size = HazelcastClientFactory.getSystemMetadataMap().size();
-		SystemMetadata sysMeta = new SystemMetadata();
-		Identifier identifier = new Identifier();
-		identifier.setValue("blah");
-		sysMeta.setIdentifier(identifier);
-		HazelcastClientFactory.getSystemMetadataMap().put(identifier, sysMeta );
-		int newSize = HazelcastClientFactory.getSystemMetadataMap().size();
-		Assert.assertTrue(size + 1 == newSize);
 
-		HazelcastClientFactory.getSystemMetadataMap().remove(identifier);
+    @BeforeClass
+    public static void setUp() {
+        HazelcastClientFactoryTest.startHazelcast();
+    }
 
-	}
+    @AfterClass
+    public static void shutdown() throws Exception {
+        Hazelcast.shutdownAll();
+    }
+
+    @Test
+    public void testSystemMetadataMap() {
+
+        int size = HazelcastClientFactory.getSystemMetadataMap().size();
+        SystemMetadata sysMeta = new SystemMetadata();
+        Identifier identifier = new Identifier();
+        identifier.setValue("blah");
+        sysMeta.setIdentifier(identifier);
+        HazelcastClientFactory.getSystemMetadataMap().put(identifier, sysMeta);
+        int newSize = HazelcastClientFactory.getSystemMetadataMap().size();
+        Assert.assertTrue(size + 1 == newSize);
+
+        HazelcastClientFactory.getSystemMetadataMap().remove(identifier);
+
+    }
 }
