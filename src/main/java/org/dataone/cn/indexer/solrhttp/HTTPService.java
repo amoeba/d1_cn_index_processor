@@ -428,6 +428,7 @@ public class HTTPService {
             }
             fields.removeAll(copyDestinationFields);
             validSolrFieldNames = fields;
+            fields.remove("_version_");
         }
     }
 

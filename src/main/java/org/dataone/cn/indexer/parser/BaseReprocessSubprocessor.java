@@ -55,120 +55,124 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
 
     @Autowired
     private String solrQueryUri;
-    
+
     @Autowired
     IndexTaskGenerator indexTaskGenerator;
-    
+
     @Autowired
     IndexTaskProcessor indexTaskProcessor;
-    
+
     private List<String> matchDocuments = null;
 
     private List<String> relationFields;
-    
+
     public static Log log = LogFactory.getLog(BaseReprocessSubprocessor.class);
 
     public BaseReprocessSubprocessor() {
     }
 
-	@Override
-    public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs, InputStream is)
-            throws Exception {
-		
-		Identifier id = new Identifier();
-		id.setValue(identifier);
-		SystemMetadata sysMeta = HazelcastClientFactory.getSystemMetadataMap().get(id);
-		
-		Identifier seriesId = sysMeta.getSeriesId();
-		
-		log.debug("seriesId===" + seriesId);
-		
-		// only need to reprocess for series Id
-		if (seriesId != null) {
-			log.debug("seriesId===" + seriesId.getValue());
+    @Override
+    public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs,
+            InputStream is) throws Exception {
 
-			// find the other objects in the series
-			List<SolrDoc> previousDocs = httpService.getDocumentsByField(solrQueryUri, Collections.singletonList(seriesId.getValue()), 
-					SolrElementField.FIELD_SERIES_ID, true);
-			
-			log.debug("previousDocs===" + previousDocs);
+        Identifier id = new Identifier();
+        id.setValue(identifier);
+        SystemMetadata sysMeta = HazelcastClientFactory.getSystemMetadataMap().get(id);
 
-				        
-	        if (previousDocs != null && !previousDocs.isEmpty()) {
-	        	
-	        	List<Identifier> pidsToProcess = new ArrayList<Identifier>();
-	        	for (SolrDoc indexedDoc: previousDocs) {
-	    			log.debug("indexedDoc===" + indexedDoc);
+        Identifier seriesId = sysMeta.getSeriesId();
 
-		        	for (String fieldName: relationFields) {
-		        		// are there relations that need to be reindexed?
-			        	String relationFieldId = indexedDoc.getFirstFieldValue(fieldName);
-		    			log.debug("fieldName===" + fieldName);
+        log.debug("seriesId===" + seriesId);
 
-			        	if (relationFieldId != null) {
-				            Identifier relatedPid = new Identifier();
-				            relatedPid.setValue(relationFieldId);
-			    			log.debug("relatedPid===" + relatedPid.getValue());
+        // only need to reprocess for series Id
+        if (seriesId != null) {
+            log.debug("seriesId===" + seriesId.getValue());
 
-				            // only need to reprocess related docs once
-				            if (!pidsToProcess.contains(relatedPid)) {
-				    			log.debug("Processing relatedPid===" + relatedPid.getValue());
+            // find the other objects in the series
+            List<SolrDoc> previousDocs = httpService.getDocumentsByField(solrQueryUri,
+                    Collections.singletonList(seriesId.getValue()),
+                    SolrElementField.FIELD_SERIES_ID, true);
 
-				            	pidsToProcess.add(relatedPid);
-				            	// queue a reprocessing of this related document
-								SystemMetadata relatedSysMeta = HazelcastClientFactory.getSystemMetadataMap().get(relatedPid);
-					            String objectPath = HazelcastClientFactory.getObjectPathMap().get(relatedPid);
-				    			log.debug("Processing relatedSysMeta===" + relatedSysMeta);
-				    			log.debug("Processing objectPath===" + objectPath);
-								indexTaskGenerator.processSystemMetaDataUpdate(relatedSysMeta, objectPath);
-								indexTaskProcessor.processIndexTaskQueue();
-				            }
-			        	}
-		        	}
-	        	}
-	        }
-		}
-		
+            log.debug("previousDocs===" + previousDocs);
+
+            if (previousDocs != null && !previousDocs.isEmpty()) {
+
+                List<Identifier> pidsToProcess = new ArrayList<Identifier>();
+                for (SolrDoc indexedDoc : previousDocs) {
+                    log.debug("indexedDoc===" + indexedDoc);
+
+                    for (String fieldName : relationFields) {
+                        // are there relations that need to be reindexed?
+                        // TODO: should be for loop over field values, not just first value
+                        String relationFieldId = indexedDoc.getFirstFieldValue(fieldName);
+                        log.debug("fieldName===" + fieldName);
+
+                        if (relationFieldId != null) {
+                            Identifier relatedPid = new Identifier();
+                            relatedPid.setValue(relationFieldId);
+                            log.debug("relatedPid===" + relatedPid.getValue());
+
+                            // only need to reprocess related docs once
+                            if (!pidsToProcess.contains(relatedPid)) {
+                                log.debug("Processing relatedPid===" + relatedPid.getValue());
+
+                                pidsToProcess.add(relatedPid);
+                                // queue a reprocessing of this related document
+                                SystemMetadata relatedSysMeta = HazelcastClientFactory
+                                        .getSystemMetadataMap().get(relatedPid);
+                                String objectPath = HazelcastClientFactory.getObjectPathMap().get(
+                                        relatedPid);
+                                log.debug("Processing relatedSysMeta===" + relatedSysMeta);
+                                log.debug("Processing objectPath===" + objectPath);
+                                indexTaskGenerator.processSystemMetaDataUpdate(relatedSysMeta,
+                                        objectPath);
+                                //indexTaskProcessor.processIndexTaskQueue();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         return docs;
     }
-	
-	@Override
-	public boolean canProcess(String formatId) {
-		// if we are given match formats, use them
-		if (matchDocuments != null) {
-			return matchDocuments.contains(formatId);
-		} 
-		
-		// otherwise just make sure it's not a RESOURCE type
-		ObjectFormatIdentifier ofi = new ObjectFormatIdentifier();
-		ofi.setValue(formatId);
-		ObjectFormat objectFormat = null;
-		try {
-			objectFormat = ObjectFormatCache.getInstance().getFormat(ofi);
-		} catch (BaseException e) {
-			e.printStackTrace();
-		}
-		if (objectFormat != null) {
-			return !objectFormat.getFormatType().equalsIgnoreCase("RESOURCE");
-		}
-		
-		// no real harm processing again
-		return true;
-	}
 
-	@Override
-	public SolrDoc mergeWithIndexedDocument(SolrDoc indexDocument)
-			throws IOException, EncoderException, XPathExpressionException {
-		// just return the given document
-		return indexDocument;
-	}
+    @Override
+    public boolean canProcess(String formatId) {
+        // if we are given match formats, use them
+        if (matchDocuments != null) {
+            return matchDocuments.contains(formatId);
+        }
 
-	public List<String> getRelationFields() {
-		return relationFields;
-	}
+        // otherwise just make sure it's not a RESOURCE type
+        ObjectFormatIdentifier ofi = new ObjectFormatIdentifier();
+        ofi.setValue(formatId);
+        ObjectFormat objectFormat = null;
+        try {
+            objectFormat = ObjectFormatCache.getInstance().getFormat(ofi);
+        } catch (BaseException e) {
+            e.printStackTrace();
+        }
+        if (objectFormat != null) {
+            return !objectFormat.getFormatType().equalsIgnoreCase("RESOURCE");
+        }
 
-	public void setRelationFields(List<String> relationFields) {
-		this.relationFields = relationFields;
-	}
+        // no real harm processing again
+        return true;
+    }
+
+    @Override
+    public SolrDoc mergeWithIndexedDocument(SolrDoc indexDocument) throws IOException,
+            EncoderException, XPathExpressionException {
+        // just return the given document
+        return indexDocument;
+    }
+
+    public List<String> getRelationFields() {
+        return relationFields;
+    }
+
+    public void setRelationFields(List<String> relationFields) {
+        this.relationFields = relationFields;
+    }
 
 }
