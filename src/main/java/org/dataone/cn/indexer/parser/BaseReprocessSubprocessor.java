@@ -81,7 +81,7 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
 		
 		Identifier seriesId = sysMeta.getSeriesId();
 		
-		log.debug.println("seriesId===" + seriesId);
+		log.debug("seriesId===" + seriesId);
 		
 		// only need to reprocess for series Id
 		if (seriesId != null) {
