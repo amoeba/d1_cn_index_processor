@@ -107,7 +107,7 @@ xmlns:context="http://www.springframework.org/schema/context"
     </bean>
     <bean id="peggymResourcemapSeriesSys" class="org.springframework.core.io.ClassPathResource" >
          <constructor-arg type="java.lang.String" 
-        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap-series"/>   	
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap.series"/>   	
     </bean>
     <bean id="peggymResourcemap2Sys" class="org.springframework.core.io.ClassPathResource" >
          <constructor-arg type="java.lang.String" 

@@ -32,6 +32,8 @@ import java.util.Map;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.codec.EncoderException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dataone.client.v2.formats.ObjectFormatCache;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.generator.IndexTaskGenerator;
@@ -63,6 +65,8 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
     private List<String> matchDocuments = null;
 
     private List<String> relationFields;
+    
+    public static Log log = LogFactory.getLog(BaseReprocessSubprocessor.class);
 
     public BaseReprocessSubprocessor() {
     }
@@ -77,28 +81,47 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
 		
 		Identifier seriesId = sysMeta.getSeriesId();
 		
+		log.debug.println("seriesId===" + seriesId);
+		
 		// only need to reprocess for series Id
 		if (seriesId != null) {
+			log.debug("seriesId===" + seriesId.getValue());
+
 			// find the other objects in the series
 			List<SolrDoc> previousDocs = httpService.getDocumentsByField(solrQueryUri, Collections.singletonList(seriesId.getValue()), 
 					SolrElementField.FIELD_SERIES_ID, true);
+			
+			log.debug("previousDocs===" + previousDocs);
+
 				        
 	        if (previousDocs != null && !previousDocs.isEmpty()) {
+	        	
 	        	List<Identifier> pidsToProcess = new ArrayList<Identifier>();
 	        	for (SolrDoc indexedDoc: previousDocs) {
+	    			log.debug("indexedDoc===" + indexedDoc);
+
 		        	for (String fieldName: relationFields) {
 		        		// are there relations that need to be reindexed?
 			        	String relationFieldId = indexedDoc.getFirstFieldValue(fieldName);
+		    			log.debug("fieldName===" + fieldName);
+
 			        	if (relationFieldId != null) {
 				            Identifier relatedPid = new Identifier();
 				            relatedPid.setValue(relationFieldId);
+			    			log.debug("relatedPid===" + relatedPid.getValue());
+
 				            // only need to reprocess related docs once
 				            if (!pidsToProcess.contains(relatedPid)) {
+				    			log.debug("Processing relatedPid===" + relatedPid.getValue());
+
 				            	pidsToProcess.add(relatedPid);
 				            	// queue a reprocessing of this related document
 								SystemMetadata relatedSysMeta = HazelcastClientFactory.getSystemMetadataMap().get(relatedPid);
 					            String objectPath = HazelcastClientFactory.getObjectPathMap().get(relatedPid);
+				    			log.debug("Processing relatedSysMeta===" + relatedSysMeta);
+				    			log.debug("Processing objectPath===" + objectPath);
 								indexTaskGenerator.processSystemMetaDataUpdate(relatedSysMeta, objectPath);
+								indexTaskProcessor.processIndexTaskQueue();
 				            }
 			        	}
 		        	}

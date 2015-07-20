@@ -98,7 +98,7 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
         httpService.sendSolrDelete("peggym.127.1");
         httpService.sendSolrDelete("peggym.128.1");
         httpService.sendSolrDelete("peggym.129.1");
-        httpService.sendSolrDelete("peggym.resourcemap-series");
+        httpService.sendSolrDelete("peggym.resourcemap.series");
     }
 
     private void indexTestDataPackage() {
@@ -113,18 +113,25 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
     private void indexNewRevision(Resource resource) {
         addSystemMetadata(resource);
         processor.processIndexTaskQueue();
+        // wait for task to process?
+//        try {
+//			Thread.sleep(19000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
     }
 
     private void verifyDataPackageNewRevision() throws Exception {
         SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
         Assert.assertEquals(1,
                 ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
-        Assert.assertEquals("peggym.resourcemap-series",
+        Assert.assertEquals("peggym.resourcemap.series",
                 ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(0));
 
         Assert.assertEquals(1,
                 ((List) data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY)).size());
-        Assert.assertEquals("peggym.130.4",
+        Assert.assertEquals("peggym.130",
                 ((List) data.getFieldValue(SolrElementField.FIELD_ISDOCUMENTEDBY)).get(0));
 
         Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
@@ -135,7 +142,7 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
         SolrDocument scienceMetadata = assertPresentInSolrIndex("peggym.130.4");
         Assert.assertEquals(1,
                 ((List) scienceMetadata.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
-        Assert.assertEquals("peggym.resourcemap-series",
+        Assert.assertEquals("peggym.resourcemap.series",
                 ((List) scienceMetadata.getFieldValue(SolrElementField.FIELD_RESOURCEMAP)).get(0));
 
         Collection documentsCollection = scienceMetadata
@@ -147,12 +154,13 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
 
         // check that the new revision also has the resource map value on it
         SolrDocument scienceMetadataRevision = assertPresentInSolrIndex("peggym.130.5");
+        System.out.println("scienceMetadataRevision=====" + scienceMetadataRevision);
         Assert.assertEquals(1, ((List) scienceMetadataRevision
                 .getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
-        Assert.assertEquals("peggym.resourcemap-series", ((List) scienceMetadataRevision
+        Assert.assertEquals("peggym.resourcemap.series", ((List) scienceMetadataRevision
                 .getFieldValue(SolrElementField.FIELD_RESOURCEMAP)).get(0));
 
-        assertPresentInSolrIndex("peggym.resourcemap-series");
+        assertPresentInSolrIndex("peggym.resourcemap.series");
 
     }
 
@@ -161,12 +169,12 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
         System.out.println("DATA=" + data);
         Assert.assertEquals(1,
                 ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
-        Assert.assertEquals("peggym.resourcemap-series",
+        Assert.assertEquals("peggym.resourcemap.series",
                 ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(0));
 
         Assert.assertEquals(1,
                 ((List) data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY)).size());
-        Assert.assertEquals("peggym.130.4",
+        Assert.assertEquals("peggym.130",
                 ((List) data.getFieldValue(SolrElementField.FIELD_ISDOCUMENTEDBY)).get(0));
 
         Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
@@ -175,9 +183,11 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
         assertPresentInSolrIndex("peggym.129.1");
 
         SolrDocument scienceMetadata = assertPresentInSolrIndex("peggym.130.4");
+        Assert.assertEquals("peggym.130",
+                scienceMetadata.getFieldValue(SolrElementField.FIELD_SERIES_ID));
         Assert.assertEquals(1,
                 ((List) scienceMetadata.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
-        Assert.assertEquals("peggym.resourcemap-series",
+        Assert.assertEquals("peggym.resourcemap.series",
                 ((List) scienceMetadata.getFieldValue(SolrElementField.FIELD_RESOURCEMAP)).get(0));
 
         Collection documentsCollection = scienceMetadata
@@ -187,7 +197,7 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
         Assert.assertTrue(documentsCollection.contains("peggym.128.1"));
         Assert.assertTrue(documentsCollection.contains("peggym.129.1"));
 
-        assertPresentInSolrIndex("peggym.resourcemap-series");
+        assertPresentInSolrIndex("peggym.resourcemap.series");
     }
 
     private void addSystemMetadata(Resource systemMetadataResource) {
