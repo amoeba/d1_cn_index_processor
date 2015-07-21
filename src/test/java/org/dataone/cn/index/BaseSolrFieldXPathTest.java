@@ -28,7 +28,6 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.dataone.cn.indexer.SolrIndexService;
 import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.cn.indexer.parser.BaseXPathDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.ISolrField;
@@ -47,10 +46,8 @@ import org.w3c.dom.Document;
 @ContextConfiguration(locations = { "test-context.xml" })
 public abstract class BaseSolrFieldXPathTest {
 
-    protected final String hostname = Settings.getConfiguration().getString("cn.router.hostname");
-
-    @Autowired
-    private SolrIndexService solrIndexService;
+    protected static final String hostname = Settings.getConfiguration().getString(
+            "cn.router.hostname");
 
     @Autowired
     private BaseXPathDocumentSubprocessor systemMetadata200Subprocessor;
