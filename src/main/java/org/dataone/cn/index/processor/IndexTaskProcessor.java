@@ -200,30 +200,25 @@ public class IndexTaskProcessor {
         try {
             updateDocuments = httpService.getDocumentsById(this.solrQueryUri, referencedIds);
             numberOfIndexedOrRemovedReferences = 0;
-            if (updateDocuments.size() != referencedIds.size()) {
-                for (String id : referencedIds) {
-                    boolean foundId = false;
-                    for (SolrDoc solrDoc : updateDocuments) {
-                        if (solrDoc.getIdentifier().equals(id) || id.equals(solrDoc.getSeriesId())) {
-                            foundId = true;
-                            numberOfIndexedOrRemovedReferences++;
-                            break;
-                        }
-                    }
-                    if (foundId == false) {
-                        Identifier pid = new Identifier();
-                        pid.setValue(id);
-                        logger.debug("Identifier "
-                                + id
-                                + " was not found in the referenced id list in the Solr search index.");
-                        SystemMetadata smd = HazelcastClientFactory.getSystemMetadataMap().get(pid);
-                        if (smd != null && notVisibleInIndex(smd)) {
-                            numberOfIndexedOrRemovedReferences++;
-                        }
+            for (String id : referencedIds) {
+                boolean foundId = false;
+                for (SolrDoc solrDoc : updateDocuments) {
+                    if (solrDoc.getIdentifier().equals(id) || id.equals(solrDoc.getSeriesId())) {
+                        foundId = true;
+                        numberOfIndexedOrRemovedReferences++;
+                        break;
                     }
                 }
-            } else {
-                numberOfIndexedOrRemovedReferences = updateDocuments.size();
+                if (foundId == false) {
+                    Identifier pid = new Identifier();
+                    pid.setValue(id);
+                    logger.debug("Identifier " + id
+                            + " was not found in the referenced id list in the Solr search index.");
+                    SystemMetadata smd = HazelcastClientFactory.getSystemMetadataMap().get(pid);
+                    if (smd != null && notVisibleInIndex(smd)) {
+                        numberOfIndexedOrRemovedReferences++;
+                    }
+                }
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
