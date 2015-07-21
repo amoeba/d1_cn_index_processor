@@ -10,7 +10,7 @@
     <ore:isAggregatedBy>https://cn.dataone.org/cn/v1/resolve/peggym.resourcemap.series#aggregation</ore:isAggregatedBy>
     <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">peggym.130</dcterms:identifier>
     <j.0:documents rdf:resource="https://cn.dataone.org/cn/v1/resolve/peggym.127.1"/>
-    <j.0:documents rdf:resource="https://cn.dataone.org/cn/v1/resolve/peggym.128.1"/>
+    <j.0:documents rdf:resource="https://cn.dataone.org/cn/v1/resolve/peggym.128"/>
     <j.0:documents rdf:resource="https://cn.dataone.org/cn/v1/resolve/peggym.129.1"/>
   </rdf:Description>
   <rdf:Description rdf:nodeID="A0">
@@ -22,9 +22,9 @@
     <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">peggym.127.1</dcterms:identifier>
     <j.0:isDocumentedBy rdf:resource="https://cn.dataone.org/cn/v1/resolve/peggym.130"/>
   </rdf:Description>
-  <rdf:Description rdf:about="https://cn.dataone.org/cn/v1/resolve/peggym.128.1">
+  <rdf:Description rdf:about="https://cn.dataone.org/cn/v1/resolve/peggym.128">
     <ore:isAggregatedBy>https://cn.dataone.org/cn/v1/resolve/peggym.resourcemap.series#aggregation</ore:isAggregatedBy>
-    <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">peggym.128.1</dcterms:identifier>
+    <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">peggym.128</dcterms:identifier>
     <j.0:isDocumentedBy rdf:resource="https://cn.dataone.org/cn/v1/resolve/peggym.130"/>
   </rdf:Description>
   <rdf:Description rdf:about="https://cn.dataone.org/cn/v1/resolve/peggym.129.1">
@@ -38,7 +38,7 @@
     <dc:title>DataONE Aggregation</dc:title>
     <ore:aggregates rdf:resource="https://cn.dataone.org/cn/v1/resolve/peggym.130"/>
     <ore:aggregates rdf:resource="https://cn.dataone.org/cn/v1/resolve/peggym.127.1"/>
-    <ore:aggregates rdf:resource="https://cn.dataone.org/cn/v1/resolve/peggym.128.1"/>
+    <ore:aggregates rdf:resource="https://cn.dataone.org/cn/v1/resolve/peggym.128"/>
     <ore:aggregates rdf:resource="https://cn.dataone.org/cn/v1/resolve/peggym.129.1"/>
   </rdf:Description>
   <rdf:Description rdf:about="https://cn.dataone.org/cn/v1/resolve/peggym.resourcemap.series">

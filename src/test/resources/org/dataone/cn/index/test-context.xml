@@ -81,6 +81,10 @@ xmlns:context="http://www.springframework.org/schema/context"
         <constructor-arg type="java.lang.String" 
         value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.128.1"/>
     </bean>
+    <bean id="peggym1282Sys" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.128.2"/>
+    </bean>
 	<bean id="peggym1291Sys" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String" 
         value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.129.1"/>
