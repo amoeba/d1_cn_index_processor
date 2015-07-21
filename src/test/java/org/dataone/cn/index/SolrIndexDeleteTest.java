@@ -829,13 +829,13 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
 
     @BeforeClass
     public static void init() {
-        Hazelcast.shutdownAll();
+        //Hazelcast.shutdownAll();
         HazelcastClientFactoryTest.startHazelcast();
     }
 
     @AfterClass
     public static void cleanup() throws Exception {
-        Hazelcast.shutdownAll();
+        //Hazelcast.shutdownAll();
     }
 
     private void configureSpringResources() {

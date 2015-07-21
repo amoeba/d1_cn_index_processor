@@ -45,7 +45,7 @@ public class HazelcastClientFactoryTest {
         HazelcastClientFactoryTest.startHazelcast();
     }
 
-    @AfterClass
+    //@AfterClass
     public static void shutdown() throws Exception {
         Hazelcast.shutdownAll();
     }

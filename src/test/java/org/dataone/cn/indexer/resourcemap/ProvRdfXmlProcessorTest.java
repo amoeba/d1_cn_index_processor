@@ -64,6 +64,7 @@ import org.dataone.service.types.v2.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
 import org.jibx.runtime.JiBXException;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -72,6 +73,8 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
+
+import com.hazelcast.core.Hazelcast;
 
 /**
  * RDF/XML Subprocessor test for provenance field handling
@@ -139,6 +142,11 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
 	public static void init() {
 		HazelcastClientFactoryTest.startHazelcast();
 	}
+    
+    @AfterClass
+    public static void cleanup() throws Exception {
+        //Hazelcast.shutdownAll();
+    }
 
     /**
      * For each test, set up the Solr service and test data

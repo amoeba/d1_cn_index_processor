@@ -43,6 +43,7 @@ import org.dataone.service.types.v2.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,15 +69,11 @@ public class InvalidXmlCharTest {
 
     private static Logger logger = Logger.getLogger(InvalidXmlCharTest.class.getName());
 
-    @Before
+    @BeforeClass
     public static void setUp() {
         HazelcastClientFactoryTest.startHazelcast();
     }
 
-    @After
-    public void tearDown() throws Exception {
-        Hazelcast.shutdownAll();
-    }
 
     @Test
     public void testTaskWithBmpCharset() throws Exception {
