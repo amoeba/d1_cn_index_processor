@@ -28,7 +28,7 @@ import org.dataone.cn.indexer.convert.FgdcDateConverter;
 import org.dataone.cn.indexer.convert.IConverter;
 import org.dataone.cn.indexer.convert.SolrDateConverter;
 import org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,23 +73,23 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
     @Autowired
     private ScienceMetadataDocumentSubprocessor ornlMercury10Subprocessor;
 
-    private IConverter dateConverter = new FgdcDateConverter();
-    private IConverter solrDateConverter = new SolrDateConverter();
+    private static IConverter dateConverter = new FgdcDateConverter();
+    private static IConverter solrDateConverter = new SolrDateConverter();
 
     // solr/rule field name (from spring context fields) mapped to actual value
     // from xml documents (system and science metadata docs)
-    private HashMap<String, String> csiroExpected = new HashMap<String, String>();
-    private HashMap<String, String> fgdcNasaExpected = new HashMap<String, String>();
-    private HashMap<String, String> esriExpected = new HashMap<String, String>();
-    private HashMap<String, String> ornlMercuryExpected = new HashMap<String, String>();
+    private static HashMap<String, String> csiroExpected = new HashMap<String, String>();
+    private static HashMap<String, String> fgdcNasaExpected = new HashMap<String, String>();
+    private static HashMap<String, String> esriExpected = new HashMap<String, String>();
+    private static HashMap<String, String> ornlMercuryExpected = new HashMap<String, String>();
 
-    private String csiro_pid = "www.nbii.gov_metadata_mdata_CSIRO_csiro_d_abayadultprawns";
-    private String nasa_pid = "www.nbii.gov_metadata_mdata_NASA_nasa_d_FEDGPS1293";
-    private String esri_pid = "nikkis.180.1";
-    private String ornl_mercury_pid = "Map_ORR_Aspect_2m_1993.xml";
+    private static String csiro_pid = "www.nbii.gov_metadata_mdata_CSIRO_csiro_d_abayadultprawns";
+    private static String nasa_pid = "www.nbii.gov_metadata_mdata_NASA_nasa_d_FEDGPS1293";
+    private static String esri_pid = "nikkis.180.1";
+    private static String ornl_mercury_pid = "Map_ORR_Aspect_2m_1993.xml";
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         // science metadata
         csiroExpected
                 .put("abstract",
@@ -177,8 +177,8 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         csiroExpected.put("obsoletes", "csiro_c_abayadultprawns");
         csiroExpected.put("obsoletedBy", "csiro_e_abayadultprawns");
         csiroExpected.put("archived", "false");
-        csiroExpected.put("dateUploaded", solrDateConverter.convert("2012-03-22T13:55:48.348Z"));
-        csiroExpected.put("dateModified", solrDateConverter.convert("2012-03-22T13:55:48.360Z"));
+        csiroExpected.put("dateUploaded", solrDateConverter.convert("2012-03-22T13:55:48.348202"));
+        csiroExpected.put("dateModified", solrDateConverter.convert("2012-03-22T13:55:48.360604"));
         csiroExpected.put("datasource", "test_documents");
         csiroExpected.put("authoritativeMN", "test_documents");
         csiroExpected.put("replicaMN", "");
