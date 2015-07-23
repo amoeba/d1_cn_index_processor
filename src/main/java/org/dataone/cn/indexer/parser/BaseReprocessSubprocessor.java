@@ -35,8 +35,10 @@ import org.apache.commons.codec.EncoderException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dataone.client.v2.formats.ObjectFormatCache;
+import org.dataone.client.v2.itk.D1Client;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.generator.IndexTaskGenerator;
+import org.dataone.cn.indexer.parser.utility.SeriesIdResolver;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
@@ -97,31 +99,32 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
                     log.debug("indexedDoc===" + indexedDoc);
 
                     for (String fieldName : relationFields) {
-                        // are there relations that need to be reindexed?
-                        // TODO: should be for loop over field values, not just first value
-                        String relationFieldId = indexedDoc.getFirstFieldValue(fieldName);
                         log.debug("fieldName===" + fieldName);
 
-                        if (relationFieldId != null) {
-                            Identifier relatedPid = new Identifier();
-                            relatedPid.setValue(relationFieldId);
-                            log.debug("relatedPid===" + relatedPid.getValue());
+                        // are there relations that need to be reindexed?
+                        List<String> relationFieldValues = indexedDoc.getAllFieldValues(fieldName);
+                        if (relationFieldValues != null) {
 
-                            // only need to reprocess related docs once
-                            if (!pidsToProcess.contains(relatedPid)) {
-                                log.debug("Processing relatedPid===" + relatedPid.getValue());
+                        	for (String relationFieldValue : relationFieldValues) {
 
-                                pidsToProcess.add(relatedPid);
-                                // queue a reprocessing of this related document
-                                SystemMetadata relatedSysMeta = HazelcastClientFactory
-                                        .getSystemMetadataMap().get(relatedPid);
-                                String objectPath = HazelcastClientFactory.getObjectPathMap().get(
-                                        relatedPid);
-                                log.debug("Processing relatedSysMeta===" + relatedSysMeta);
-                                log.debug("Processing objectPath===" + objectPath);
-                                indexTaskGenerator.processSystemMetaDataUpdate(relatedSysMeta,
-                                        objectPath);
-                            }
+	                            // check if this is this a sid
+                        		Identifier relatedPid = new Identifier();
+                        		relatedPid.setValue(relationFieldValue);
+                        		relatedPid = SeriesIdResolver.getPid(relatedPid);
+
+	                            // only need to reprocess related docs once
+	                            if (!pidsToProcess.contains(relatedPid)) {
+	                                log.debug("Processing relatedPid===" + relatedPid.getValue());
+	
+	                                pidsToProcess.add(relatedPid);
+	                                // queue a reprocessing of this related document
+	                                SystemMetadata relatedSysMeta = HazelcastClientFactory.getSystemMetadataMap().get(relatedPid);
+	                                String objectPath = HazelcastClientFactory.getObjectPathMap().get(relatedPid);
+	                                log.debug("Processing relatedSysMeta===" + relatedSysMeta);
+	                                log.debug("Processing objectPath===" + objectPath);
+	                                indexTaskGenerator.processSystemMetaDataUpdate(relatedSysMeta, objectPath);
+	                            }
+	                        }
                         }
                     }
                 }
