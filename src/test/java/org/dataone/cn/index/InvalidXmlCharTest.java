@@ -41,8 +41,7 @@ import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v2.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,8 +50,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Document;
-
-import com.hazelcast.core.Hazelcast;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "test-context.xml" })
@@ -70,10 +67,14 @@ public class InvalidXmlCharTest {
     private static Logger logger = Logger.getLogger(InvalidXmlCharTest.class.getName());
 
     @BeforeClass
-    public static void setUp() {
-        HazelcastClientFactoryTest.startHazelcast();
+    public static void init() {
+        HazelcastClientFactoryTest.setUp();
     }
 
+    @AfterClass
+    public static void cleanup() throws Exception {
+        HazelcastClientFactoryTest.shutDown();
+    }
 
     @Test
     public void testTaskWithBmpCharset() throws Exception {

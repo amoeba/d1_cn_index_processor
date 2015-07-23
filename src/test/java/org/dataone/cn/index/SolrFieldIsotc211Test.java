@@ -127,7 +127,6 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         nodc1Expected.put("blockedReplicationMN", "");
         nodc1Expected.put("obsoletes", "");
         nodc1Expected.put("obsoletedBy", "");
-        nodc1Expected.put("archived", "false");
         nodc1Expected.put("dateUploaded", dateConverter.convert("2015-05-08T01:47:41.356045"));
         nodc1Expected.put("dateModified", dateConverter.convert("2015-05-08T01:47:41.391065Z"));
         nodc1Expected.put("datasource", "urn:node:NODC");
@@ -202,7 +201,6 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         nodc2Expected.put("blockedReplicationMN", "");
         nodc2Expected.put("obsoletes", "");
         nodc2Expected.put("obsoletedBy", "");
-        nodc2Expected.put("archived", "false");
         nodc2Expected.put("dateUploaded", dateConverter.convert("2015-05-08T01:47:41.356045"));
         nodc2Expected.put("dateModified", dateConverter.convert("2015-05-08T01:47:41.391065Z"));
         nodc2Expected.put("datasource", "urn:node:NODC");
@@ -274,7 +272,6 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         iarc1Expected.put("blockedReplicationMN", "");
         iarc1Expected.put("obsoletes", "");
         iarc1Expected.put("obsoletedBy", "");
-        iarc1Expected.put("archived", "false");
         iarc1Expected.put("dateUploaded", dateConverter.convert("2015-05-08T01:47:46.858771"));
         iarc1Expected.put("dateModified", dateConverter.convert("2015-05-08T01:47:46.893356Z"));
         iarc1Expected.put("datasource", "urn:node:IARC");
@@ -348,7 +345,6 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         iarc2Expected.put("blockedReplicationMN", "");
         iarc2Expected.put("obsoletes", "");
         iarc2Expected.put("obsoletedBy", "");
-        iarc2Expected.put("archived", "false");
         iarc2Expected.put("dateUploaded", dateConverter.convert("2015-05-08T01:47:41.356045"));
         iarc2Expected.put("dateModified", dateConverter.convert("2015-05-08T01:47:41.391065Z"));
         iarc2Expected.put("datasource", "urn:node:IARC");

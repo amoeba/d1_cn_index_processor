@@ -35,6 +35,7 @@ import org.dataone.cn.index.generator.IndexTaskGeneratorDaemon;
 import org.dataone.cn.index.processor.IndexTaskProcessorDaemon;
 import org.dataone.service.types.v2.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -79,9 +80,14 @@ public class IndexTaskProcessingIntegrationTest {
     @Autowired
     private Resource systemMetadataResource5;
 
-    //@BeforeClass
-    public static void setUp() {
-        HazelcastClientFactoryTest.startHazelcast();
+    @BeforeClass
+    public static void init() {
+        HazelcastClientFactoryTest.setUp();
+    }
+
+    @AfterClass
+    public static void cleanup() throws Exception {
+        HazelcastClientFactoryTest.shutDown();
     }
 
     @Test

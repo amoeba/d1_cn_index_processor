@@ -142,7 +142,6 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
         eml210Expected.put("blockedReplicationMN", "");
         eml210Expected.put("obsoletes", "peggym.130.3");
         eml210Expected.put("obsoletedBy", "peggym.130.5");
-        eml210Expected.put("archived", "false");
         eml210Expected.put("dateUploaded", dateConverter.convert("2011-08-31T15:59:50.071163"));
         eml210Expected.put("dateModified", dateConverter.convert("2011-08-31T15:59:50.072921"));
         eml210Expected.put("datasource", "test_documents");

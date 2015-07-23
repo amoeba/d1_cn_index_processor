@@ -53,7 +53,6 @@ public class SolrElementField {
     public static final String FIELD_PREF_REP_MN = "preferredRelicationNM";
     public static final String FIELD_BLOCKED_REP_MN = "blockedReplicationMN";
     public static final String FIELD_OBSOLETES = "obsoletes";
-    public static final String FIELD_ARCHIVED = "archived";
     public static final String FIELD_DATEUPLOADED = "dateUploaded";
     public static final String FIELD_DATEMODIFIED = "dateModified";
     public static final String FIELD_ORIGIN_MN = "datasource";

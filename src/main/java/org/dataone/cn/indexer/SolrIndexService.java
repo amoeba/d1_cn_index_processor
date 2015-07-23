@@ -90,7 +90,6 @@ public class SolrIndexService {
 
     public void removeFromIndex(String identifier) throws Exception {
 
-
         Map<String, SolrDoc> docs = new HashMap<String, SolrDoc>();
 
         for (IDocumentDeleteSubprocessor deleteSubprocessor : getDeleteSubprocessors()) {
@@ -150,31 +149,25 @@ public class SolrIndexService {
             e.printStackTrace();
         }
 
-        String archived = docs.get(id).getFirstFieldValue(SolrElementField.FIELD_ARCHIVED);
-        if (archived != null && "true".equals(archived)) {
-            // do not add science metadata attributes
-        } else {
-            String formatId = docs.get(id).getFirstFieldValue(SolrElementField.FIELD_OBJECTFORMAT);
-            for (IDocumentSubprocessor subprocessor : getSubprocessors()) {
-                if (subprocessor.canProcess(formatId)) {
-                    try {
-                        // note that resource map processing touches all objects
-                        // referenced by the resource map.
-                        FileInputStream objectStream = new FileInputStream(objectPath);
-                        if (!objectStream.getFD().valid()) {
-                            log.error("Could not load OBJECT file for ID,Path=" + id + ", "
-                                    + objectPath);
-                        } else {
-                            docs = subprocessor.processDocument(id, docs, objectStream);
-                        }
-                    } catch (Exception e) {
-                        log.error(e.getMessage());
+        String formatId = docs.get(id).getFirstFieldValue(SolrElementField.FIELD_OBJECTFORMAT);
+        for (IDocumentSubprocessor subprocessor : getSubprocessors()) {
+            if (subprocessor.canProcess(formatId)) {
+                try {
+                    // note that resource map processing touches all objects
+                    // referenced by the resource map.
+                    FileInputStream objectStream = new FileInputStream(objectPath);
+                    if (!objectStream.getFD().valid()) {
+                        log.error("Could not load OBJECT file for ID,Path=" + id + ", "
+                                + objectPath);
+                    } else {
+                        docs = subprocessor.processDocument(id, docs, objectStream);
                     }
+                } catch (Exception e) {
+                    log.error(e.getMessage());
                 }
             }
         }
 
-        // If archived, do not merge existing record
         Map<String, SolrDoc> mergedDocs = new HashMap<String, SolrDoc>();
         for (SolrDoc mergeDoc : docs.values()) {
             for (IDocumentSubprocessor subprocessor : getSubprocessors()) {
@@ -292,5 +285,4 @@ public class SolrIndexService {
         this.systemMetadataProcessor = systemMetadataProcessor;
     }
 
-    
 }

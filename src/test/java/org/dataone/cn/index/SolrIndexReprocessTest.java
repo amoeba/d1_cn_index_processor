@@ -42,8 +42,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.core.io.Resource;
 
-import com.hazelcast.core.Hazelcast;
-
 /**
  * Solr unit test framework is dependent on JUnit 4.7. Later versions of junit
  * will break the base test classes.
@@ -68,12 +66,12 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
 
     @BeforeClass
     public static void init() {
-        HazelcastClientFactoryTest.startHazelcast();
+        HazelcastClientFactoryTest.setUp();
     }
 
     @AfterClass
     public static void cleanup() throws Exception {
-        //Hazelcast.shutdownAll();
+        HazelcastClientFactoryTest.shutDown();
     }
 
     /**
@@ -90,7 +88,7 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
         processor.processIndexTaskQueue();
         // verify data package info correct in index
         verifyDataPackageNewRevision();
-        
+
         // add data revision
         indexNewRevision(peggym1282Sys);
         processor.processIndexTaskQueue();
@@ -122,12 +120,12 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
         addSystemMetadata(resource);
         processor.processIndexTaskQueue();
         // wait for task to process?
-//        try {
-//			Thread.sleep(19000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+        //        try {
+        //			Thread.sleep(19000);
+        //		} catch (InterruptedException e) {
+        //			// TODO Auto-generated catch block
+        //			e.printStackTrace();
+        //		}
     }
 
     private void verifyDataPackageNewRevision() throws Exception {
@@ -171,9 +169,9 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
         assertPresentInSolrIndex("peggym.resourcemap.series");
 
     }
-    
+
     private void verifyDataPackageNewDataRevision() throws Exception {
-    	SolrDocument dataOrig = assertPresentInSolrIndex("peggym.128.1");
+        SolrDocument dataOrig = assertPresentInSolrIndex("peggym.128.1");
         Assert.assertEquals(1,
                 ((List) dataOrig.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
         Assert.assertEquals("peggym.resourcemap.series",
@@ -183,7 +181,7 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
         Assert.assertEquals("peggym.130",
                 ((List) dataOrig.getFieldValue(SolrElementField.FIELD_ISDOCUMENTEDBY)).get(0));
         Assert.assertNull(dataOrig.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
-        
+
         SolrDocument dataNew = assertPresentInSolrIndex("peggym.128.2");
         Assert.assertEquals(1,
                 ((List) dataNew.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
@@ -194,7 +192,7 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
         Assert.assertEquals("peggym.130",
                 ((List) dataNew.getFieldValue(SolrElementField.FIELD_ISDOCUMENTEDBY)).get(0));
         Assert.assertNull(dataNew.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
-        
+
         // other items that have not changed
         SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
         Assert.assertEquals(1,

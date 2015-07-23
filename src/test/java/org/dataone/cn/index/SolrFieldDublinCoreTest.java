@@ -99,7 +99,6 @@ public class SolrFieldDublinCoreTest extends BaseSolrFieldXPathTest {
         dcxExpected.put("blockedReplicationMN", "");
         dcxExpected.put("obsoletes", "");
         dcxExpected.put("obsoletedBy", "");
-        dcxExpected.put("archived", "false");
         dcxExpected.put("dateUploaded", dateConverter.convert("2014-08-28T20:55:19.003582"));
         dcxExpected.put("dateModified", dateConverter.convert("2014-08-28T20:55:19.034555Z"));
         dcxExpected.put("datasource", "urn:node:mnTestMPC");

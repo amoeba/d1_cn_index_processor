@@ -127,7 +127,6 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
                 }
             }
         }
-
         return docs;
     }
 

@@ -176,7 +176,6 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         csiroExpected.put("blockedReplicationMN", "");
         csiroExpected.put("obsoletes", "csiro_c_abayadultprawns");
         csiroExpected.put("obsoletedBy", "csiro_e_abayadultprawns");
-        csiroExpected.put("archived", "false");
         csiroExpected.put("dateUploaded", solrDateConverter.convert("2012-03-22T13:55:48.348202"));
         csiroExpected.put("dateModified", solrDateConverter.convert("2012-03-22T13:55:48.360604"));
         csiroExpected.put("datasource", "test_documents");
@@ -298,7 +297,6 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         fgdcNasaExpected.put("blockedReplicationMN", "");
         fgdcNasaExpected.put("obsoletes", "nasa_d_FEDGPS1292");
         fgdcNasaExpected.put("obsoletedBy", "nasa_d_FEDGPS1294");
-        fgdcNasaExpected.put("archived", "false");
         fgdcNasaExpected.put("dateUploaded",
                 solrDateConverter.convert("2012-03-22T13:53:02.814057"));
         fgdcNasaExpected.put("dateModified",
@@ -395,7 +393,6 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         esriExpected.put("blockedReplicationMN", "");
         esriExpected.put("obsoletes", "");
         esriExpected.put("obsoletedBy", "");
-        esriExpected.put("archived", "false");
         esriExpected
                 .put("dateUploaded", solrDateConverter.convert("2010-02-26T00:00:00.000+00:00"));
         esriExpected
@@ -490,7 +487,6 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         ornlMercuryExpected.put("blockedReplicationMN", "");
         ornlMercuryExpected.put("obsoletes", "");
         ornlMercuryExpected.put("obsoletedBy", "");
-        ornlMercuryExpected.put("archived", "false");
         ornlMercuryExpected.put("dateUploaded",
                 solrDateConverter.convert("2014-06-11T09:33:32.000+00:00"));
         ornlMercuryExpected.put("dateModified",

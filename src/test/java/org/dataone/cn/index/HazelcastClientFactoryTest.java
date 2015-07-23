@@ -19,7 +19,7 @@ public class HazelcastClientFactoryTest {
     private static HazelcastInstance hzMember;
     private static Logger logger = Logger.getLogger(HazelcastClientFactoryTest.class.getName());
 
-    public static void startHazelcast() {
+    private static void startHazelcast() {
 
         if (hzMember == null) {
 
@@ -42,12 +42,15 @@ public class HazelcastClientFactoryTest {
 
     @BeforeClass
     public static void setUp() {
+        Hazelcast.shutdownAll();
+        hzMember = null;
         HazelcastClientFactoryTest.startHazelcast();
     }
 
-    //@AfterClass
-    public static void shutdown() throws Exception {
+    @AfterClass
+    public static void shutDown() {
         Hazelcast.shutdownAll();
+        hzMember = null;
     }
 
     @Test

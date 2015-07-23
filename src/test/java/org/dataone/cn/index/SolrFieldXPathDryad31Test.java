@@ -94,7 +94,6 @@ public class SolrFieldXPathDryad31Test extends BaseSolrFieldXPathTest {
         dryadDataPackage1Expected.put("blockedReplicationMN", "");
         dryadDataPackage1Expected.put("obsoletes", "");
         dryadDataPackage1Expected.put("obsoletedBy", "");
-        dryadDataPackage1Expected.put("archived", "false");
         dryadDataPackage1Expected
                 .put("dateUploaded", dateConverter.convert("2012-05-22T19:49:50Z"));
         dryadDataPackage1Expected.put("dateModified", "2012-06-27T14:30:30.009Z");
@@ -152,7 +151,6 @@ public class SolrFieldXPathDryad31Test extends BaseSolrFieldXPathTest {
         dryadDataFile1Expected.put("blockedReplicationMN", "");
         dryadDataFile1Expected.put("obsoletes", "");
         dryadDataFile1Expected.put("obsoletedBy", "");
-        dryadDataFile1Expected.put("archived", "false");
         dryadDataFile1Expected.put("dateUploaded", dateConverter.convert("2012-05-22T19:49:50Z"));
         dryadDataFile1Expected.put("dateModified",
                 dateConverter.convert("2012-06-27T14:30:34.473Z"));

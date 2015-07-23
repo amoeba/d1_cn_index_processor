@@ -147,7 +147,6 @@ This schema is copied into the dataone-cn-index buildout for deployment on cn no
         <field name="datasource"       		type="string"  indexed="true" stored="true" multiValued="false"/>
         <field name="obsoletes"       		type="string"   indexed="true" stored="true" multiValued="false"/>
         <field name="obsoletedBy"      		type="string"   indexed="true" stored="true" multiValued="false"/>
-        <field name="archived"              type="boolean"  indexed="true" stored="true" multiValued="false"/>
 
         <!-- Object relationships -->
         <field name="resourceMap"		type="string"   indexed="true" stored="true" multiValued="true"/>

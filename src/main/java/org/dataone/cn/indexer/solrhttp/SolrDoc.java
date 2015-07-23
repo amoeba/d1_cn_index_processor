@@ -256,7 +256,6 @@ public class SolrDoc {
         if (smd == null) {
             return false;
         }
-        //        return !(smd.getArchived() != null && smd.getArchived().booleanValue());
-        return true;
+        return !(smd.getArchived() != null && smd.getArchived().booleanValue());
     }
 }
