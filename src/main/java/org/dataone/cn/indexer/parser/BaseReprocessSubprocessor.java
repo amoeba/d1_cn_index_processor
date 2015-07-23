@@ -110,7 +110,15 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
 	                            // check if this is this a sid
                         		Identifier relatedPid = new Identifier();
                         		relatedPid.setValue(relationFieldValue);
-                        		relatedPid = SeriesIdResolver.getPid(relatedPid);
+                        		if (SeriesIdResolver.isSeriesId(relatedPid)) {
+                        			try {
+                        				relatedPid = SeriesIdResolver.getPid(relatedPid);
+                        			} catch (BaseException be) {
+                        				log.error("could not locate PID for given identifier: " + relatedPid.getValue(), be);
+                        				// nothing we can do but continue
+                        				continue;
+                        			}
+                        		}
 
 	                            // only need to reprocess related docs once
 	                            if (!pidsToProcess.contains(relatedPid)) {
