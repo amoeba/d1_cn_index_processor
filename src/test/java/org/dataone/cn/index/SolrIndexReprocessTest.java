@@ -119,13 +119,6 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
     private void indexNewRevision(Resource resource) {
         addSystemMetadata(resource);
         processor.processIndexTaskQueue();
-        // wait for task to process?
-        //        try {
-        //			Thread.sleep(19000);
-        //		} catch (InterruptedException e) {
-        //			// TODO Auto-generated catch block
-        //			e.printStackTrace();
-        //		}
     }
 
     private void verifyDataPackageNewRevision() throws Exception {
@@ -145,42 +138,48 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
         assertPresentInSolrIndex("peggym.128.1");
         assertPresentInSolrIndex("peggym.129.1");
 
+        // older revision of sciMeta should be taken out of data package
         SolrDocument scienceMetadata = assertPresentInSolrIndex("peggym.130.4");
-        Assert.assertEquals(1,
+        Assert.assertEquals(0,
                 ((List) scienceMetadata.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
-        Assert.assertEquals("peggym.resourcemap.series",
-                ((List) scienceMetadata.getFieldValue(SolrElementField.FIELD_RESOURCEMAP)).get(0));
-
+        // and documents relationships removed
         Collection documentsCollection = scienceMetadata
                 .getFieldValues(SolrElementField.FIELD_DOCUMENTS);
-        Assert.assertEquals(3, documentsCollection.size());
-        Assert.assertTrue(documentsCollection.contains("peggym.127.1"));
-        Assert.assertTrue(documentsCollection.contains("peggym.128"));
-        Assert.assertTrue(documentsCollection.contains("peggym.129.1"));
+        Assert.assertEquals(0, documentsCollection.size());
+        Assert.assertFalse(documentsCollection.contains("peggym.127.1"));
+        Assert.assertFalse(documentsCollection.contains("peggym.128"));
+        Assert.assertFalse(documentsCollection.contains("peggym.129.1"));
 
-        // check that the new revision also has the resource map value on it
+        // check that the new revision has the resource map/documents values on it
         SolrDocument scienceMetadataRevision = assertPresentInSolrIndex("peggym.130.5");
         System.out.println("scienceMetadataRevision=====" + scienceMetadataRevision);
         Assert.assertEquals(1, ((List) scienceMetadataRevision
                 .getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
         Assert.assertEquals("peggym.resourcemap.series", ((List) scienceMetadataRevision
                 .getFieldValue(SolrElementField.FIELD_RESOURCEMAP)).get(0));
-
+        
+        // make sure the documents values are in place on the new scimeta record
+        Collection documentsUpdatedCollection = scienceMetadataRevision
+                .getFieldValues(SolrElementField.FIELD_DOCUMENTS);
+        Assert.assertEquals(3, documentsUpdatedCollection.size());
+        Assert.assertTrue(documentsUpdatedCollection.contains("peggym.127.1"));
+        Assert.assertTrue(documentsUpdatedCollection.contains("peggym.128"));
+        Assert.assertTrue(documentsUpdatedCollection.contains("peggym.129.1"));
+        
+        // and of course, the ORE is still there
         assertPresentInSolrIndex("peggym.resourcemap.series");
 
     }
 
     private void verifyDataPackageNewDataRevision() throws Exception {
+    	// make sure the original data is not in the pacakge now
         SolrDocument dataOrig = assertPresentInSolrIndex("peggym.128.1");
-        Assert.assertEquals(1,
+        Assert.assertEquals(0,
                 ((List) dataOrig.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
-        Assert.assertEquals("peggym.resourcemap.series",
-                ((List) dataOrig.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(0));
-        Assert.assertEquals(1,
+        Assert.assertEquals(0,
                 ((List) dataOrig.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY)).size());
         Assert.assertEquals("peggym.130",
                 ((List) dataOrig.getFieldValue(SolrElementField.FIELD_ISDOCUMENTEDBY)).get(0));
-        Assert.assertNull(dataOrig.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
 
         SolrDocument dataNew = assertPresentInSolrIndex("peggym.128.2");
         Assert.assertEquals(1,
@@ -193,34 +192,31 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
                 ((List) dataNew.getFieldValue(SolrElementField.FIELD_ISDOCUMENTEDBY)).get(0));
         Assert.assertNull(dataNew.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
 
-        // other items that have not changed
+        // check other items that have not changed
         SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
         Assert.assertEquals(1,
                 ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
         Assert.assertEquals("peggym.resourcemap.series",
                 ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).get(0));
-
         Assert.assertEquals(1,
                 ((List) data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY)).size());
         Assert.assertEquals("peggym.130",
                 ((List) data.getFieldValue(SolrElementField.FIELD_ISDOCUMENTEDBY)).get(0));
-
         Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_DOCUMENTS));
 
         assertPresentInSolrIndex("peggym.129.1");
 
+        // make sure the older revision of scimeta is not in pacakge
         SolrDocument scienceMetadata = assertPresentInSolrIndex("peggym.130.4");
-        Assert.assertEquals(1,
+        Assert.assertEquals(0,
                 ((List) scienceMetadata.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
-        Assert.assertEquals("peggym.resourcemap.series",
-                ((List) scienceMetadata.getFieldValue(SolrElementField.FIELD_RESOURCEMAP)).get(0));
 
         Collection documentsCollection = scienceMetadata
                 .getFieldValues(SolrElementField.FIELD_DOCUMENTS);
-        Assert.assertEquals(3, documentsCollection.size());
-        Assert.assertTrue(documentsCollection.contains("peggym.127.1"));
-        Assert.assertTrue(documentsCollection.contains("peggym.128"));
-        Assert.assertTrue(documentsCollection.contains("peggym.129.1"));
+        Assert.assertEquals(0, documentsCollection.size());
+        Assert.assertFalse(documentsCollection.contains("peggym.127.1"));
+        Assert.assertFalse(documentsCollection.contains("peggym.128"));
+        Assert.assertFalse(documentsCollection.contains("peggym.129.1"));
 
         // check that the new revision also has the resource map value on it
         SolrDocument scienceMetadataRevision = assertPresentInSolrIndex("peggym.130.5");
@@ -229,6 +225,13 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
                 .getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
         Assert.assertEquals("peggym.resourcemap.series", ((List) scienceMetadataRevision
                 .getFieldValue(SolrElementField.FIELD_RESOURCEMAP)).get(0));
+        
+        Collection documentsCollectionRevision = scienceMetadataRevision
+                .getFieldValues(SolrElementField.FIELD_DOCUMENTS);
+        Assert.assertEquals(3, documentsCollectionRevision.size());
+        Assert.assertTrue(documentsCollectionRevision.contains("peggym.127.1"));
+        Assert.assertTrue(documentsCollectionRevision.contains("peggym.128"));
+        Assert.assertTrue(documentsCollectionRevision.contains("peggym.129.1"));
 
         assertPresentInSolrIndex("peggym.resourcemap.series");
 
@@ -236,7 +239,7 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
 
     private void verifyTestDataPackageIndexed() throws Exception {
         SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
-        System.out.println("DATA=" + data);
+        logger.debug("DATA=" + data);
         Assert.assertEquals(1,
                 ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
         Assert.assertEquals("peggym.resourcemap.series",
