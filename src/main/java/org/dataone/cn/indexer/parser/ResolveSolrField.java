@@ -44,7 +44,7 @@ public class ResolveSolrField extends SolrField {
     private static final String ROUTER_HOST_NAME = Settings.getConfiguration().getString(
             "cn.router.hostname", "cn.dataone.org");
 
-    private static final String RESOLVE_PATH = "https://" + ROUTER_HOST_NAME + "/cn/v1/resolve/";
+    private static final String RESOLVE_PATH = "https://" + ROUTER_HOST_NAME + "/cn/v2/resolve/";
 
     public ResolveSolrField(String name) {
         setName(name);
