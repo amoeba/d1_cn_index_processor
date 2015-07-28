@@ -73,7 +73,7 @@ public class SolrFieldXPathDryad31Test extends BaseSolrFieldXPathTest {
                         "Data from: Reproductive conflict in bumblebees and the evolution of worker policing");
         dryadDataPackage1Expected.put("keywords",
                 "kin selection#inclusive fitness theory#worker reproduction#social insect");
-        dryadDataPackage1Expected.put("fileID", "https://" + hostname + "/cn/v1/resolve/"
+        dryadDataPackage1Expected.put("fileID", "https://" + hostname + "/cn/v2/resolve/"
                 + dryadDataPackage1PidEncoded);
         dryadDataPackage1Expected
                 .put("text",
@@ -105,7 +105,7 @@ public class SolrFieldXPathDryad31Test extends BaseSolrFieldXPathTest {
         dryadDataPackage1Expected.put("writePermission", "");
         dryadDataPackage1Expected.put("changePermission", "");
         dryadDataPackage1Expected.put("isPublic", "true");
-        dryadDataPackage1Expected.put("dataUrl", "https://" + hostname + "/cn/v1/resolve/"
+        dryadDataPackage1Expected.put("dataUrl", "https://" + hostname + "/cn/v2/resolve/"
                 + dryadDataPackage1PidEncoded);
 
         //
@@ -128,7 +128,7 @@ public class SolrFieldXPathDryad31Test extends BaseSolrFieldXPathTest {
         dryadDataFile1Expected.put("title", "Table A1");
         dryadDataFile1Expected.put("keywords",
                 "kin selection#inclusive fitness theory#worker reproduction#social insect");
-        dryadDataFile1Expected.put("fileID", "https://" + hostname + "/cn/v1/resolve/"
+        dryadDataFile1Expected.put("fileID", "https://" + hostname + "/cn/v2/resolve/"
                 + dryadDataFile1PidEncoded);
         dryadDataFile1Expected.put("scientificName", "Bombus terrestris");
 
@@ -162,7 +162,7 @@ public class SolrFieldXPathDryad31Test extends BaseSolrFieldXPathTest {
         dryadDataFile1Expected.put("writePermission", "");
         dryadDataFile1Expected.put("changePermission", "");
         dryadDataFile1Expected.put("isPublic", "true");
-        dryadDataFile1Expected.put("dataUrl", "https://" + hostname + "/cn/v1/resolve/"
+        dryadDataFile1Expected.put("dataUrl", "https://" + hostname + "/cn/v2/resolve/"
                 + dryadDataFile1PidEncoded);
     }
 

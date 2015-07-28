@@ -148,7 +148,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         csiroExpected
                 .put("keywords",
                         "BIOMASS|LANDSAT TM|LANDSAT-5#adult prawn data#size#sex#reproductive stage#moult stage#parasites#Australlia#Gulf of Carpentaria#Albatross Bay");
-        csiroExpected.put("fileID", "https://" + hostname + "/cn/v1/resolve/" + csiro_pid);
+        csiroExpected.put("fileID", "https://" + hostname + "/cn/v2/resolve/" + csiro_pid);
 
         csiroExpected.put("attributeName", "");
         csiroExpected.put("attributeLabel", "");
@@ -187,7 +187,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
                 "CN=Dave Vieglais T799,O=Google,C=US,DC=cilogon,DC=org");
         csiroExpected.put("changePermission", "");
         csiroExpected.put("isPublic", "true");
-        csiroExpected.put("dataUrl", "https://" + hostname + "/cn/v1/resolve/" + csiro_pid);
+        csiroExpected.put("dataUrl", "https://" + hostname + "/cn/v2/resolve/" + csiro_pid);
 
         /************************************************/
         /** Second test object expected data ************/
@@ -263,7 +263,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         fgdcNasaExpected
                 .put("keywords",
                         "ENVIRONMENT#IMAGERY/BASE MAPS/EARTH COVER#PLANNING CADASTRE#EARTH SCIENCE > HUMAN DIMENSIONS > LAND USE/LAND COVER > LAND MANAGEMENT > GROUND CONTROL POINT#SATELLITES#GPS > GLOBAL POSITIONING SYSTEM#FED > FOREST ECOSYSTEM DYNAMICS#Easting#GIS#Northing#CONTINENT > NORTH AMERICA#CONTINENT > NORTH AMERICA > UNITED STATES OF AMERICA > MAINE");
-        fgdcNasaExpected.put("fileID", "https://" + hostname + "/cn/v1/resolve/" + nasa_pid);
+        fgdcNasaExpected.put("fileID", "https://" + hostname + "/cn/v2/resolve/" + nasa_pid);
 
         fgdcNasaExpected.put("attributeName", "AREA#PERIMETER#GPS_1293#GPS_1293-ID#CODE#NUM_MEAS");
         fgdcNasaExpected.put("attributeLabel", "");
@@ -310,7 +310,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
                 "CN=Dave Vieglais T799,O=Google,C=US,DC=cilogon,DC=org");
         fgdcNasaExpected.put("changePermission", "");
         fgdcNasaExpected.put("isPublic", "true");
-        fgdcNasaExpected.put("dataUrl", "https://" + hostname + "/cn/v1/resolve/" + nasa_pid);
+        fgdcNasaExpected.put("dataUrl", "https://" + hostname + "/cn/v2/resolve/" + nasa_pid);
 
         /**
          * Third test object nikkis.180.1 an example of ESRI variant of FGDC
@@ -364,7 +364,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
 
         esriExpected.put("keywords",
                 "Ndlovu SAEON Node#SAEON, South Africa#Kruger to Canoyns#biosphere#k2c#lowveld");
-        esriExpected.put("fileID", "https://" + hostname + "/cn/v1/resolve/" + esri_pid);
+        esriExpected.put("fileID", "https://" + hostname + "/cn/v2/resolve/" + esri_pid);
 
         esriExpected.put("attributeName", "FID#Shape#Id");
         esriExpected.put("attributeLabel", "FID#Shape#Id");
@@ -405,7 +405,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         esriExpected.put("writePermission", "");
         esriExpected.put("changePermission", "");
         esriExpected.put("isPublic", "true");
-        esriExpected.put("dataUrl", "https://" + hostname + "/cn/v1/resolve/" + esri_pid);
+        esriExpected.put("dataUrl", "https://" + hostname + "/cn/v2/resolve/" + esri_pid);
 
         // ornl-mercury
         ornlMercuryExpected
@@ -458,7 +458,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         ornlMercuryExpected
                 .put("keywords",
                         "TERRAIN ELEVATION|CAMERA|HELICOPTER#TERRAIN ELEVATION#HELICOPTER#CAMERA#Oak Ridge Reservation, TN, USA");
-        ornlMercuryExpected.put("fileID", "https://" + hostname + "/cn/v1/resolve/"
+        ornlMercuryExpected.put("fileID", "https://" + hostname + "/cn/v2/resolve/"
                 + ornl_mercury_pid);
 
         ornlMercuryExpected.put("attributeName", "");
@@ -499,7 +499,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         ornlMercuryExpected.put("writePermission", "");
         ornlMercuryExpected.put("changePermission", "");
         ornlMercuryExpected.put("isPublic", "true");
-        ornlMercuryExpected.put("dataUrl", "https://" + hostname + "/cn/v1/resolve/"
+        ornlMercuryExpected.put("dataUrl", "https://" + hostname + "/cn/v2/resolve/"
                 + ornl_mercury_pid);
     }
 
