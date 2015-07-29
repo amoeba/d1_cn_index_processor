@@ -57,7 +57,7 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
     private String solrQueryUri;
 
     @Autowired
-    private IndexTaskGenerator generator;
+    private IndexTaskGenerator indexTaskGenerator;
 
     private List<String> matchDocuments = null;
 
@@ -136,7 +136,7 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
                                             .get(relatedPid);
                                     log.debug("Processing relatedSysMeta===" + relatedSysMeta);
                                     log.debug("Processing objectPath===" + objectPath);
-                                    generator.processSystemMetaDataUpdate(relatedSysMeta,
+                                    indexTaskGenerator.processSystemMetaDataUpdate(relatedSysMeta,
                                             objectPath);
                                 }
                             }
