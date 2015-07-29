@@ -42,15 +42,20 @@ public class HazelcastClientFactoryTest {
 
     @BeforeClass
     public static void setUp() {
-        Hazelcast.shutdownAll();
-        hzMember = null;
+        //        Hazelcast.shutdownAll();
+        //        try {
+        //            Thread.sleep(3000);
+        //        } catch (InterruptedException e) {
+        //            e.printStackTrace();
+        //        }
+        //        hzMember = null;
         HazelcastClientFactoryTest.startHazelcast();
     }
 
     @AfterClass
     public static void shutDown() {
-        Hazelcast.shutdownAll();
-        hzMember = null;
+        //    Hazelcast.shutdownAll();
+        //   hzMember = null;
     }
 
     @Test

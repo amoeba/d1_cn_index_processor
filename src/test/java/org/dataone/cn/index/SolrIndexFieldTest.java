@@ -29,7 +29,9 @@ import org.dataone.cn.indexer.parser.BaseXPathDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.ISolrField;
 import org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.core.io.Resource;
 import org.w3c.dom.Document;
@@ -157,5 +159,15 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
     @After
     public void tearDown() throws Exception {
         super.tearDown();
+    }
+
+    @BeforeClass
+    public static void init() {
+        HazelcastClientFactoryTest.setUp();
+    }
+
+    @AfterClass
+    public static void cleanup() throws Exception {
+        HazelcastClientFactoryTest.shutDown();
     }
 }

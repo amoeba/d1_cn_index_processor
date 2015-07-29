@@ -24,6 +24,7 @@ package org.dataone.cn.index;
 
 import org.apache.solr.common.SolrDocumentList;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.core.io.Resource;
 
@@ -34,6 +35,11 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
     private Resource peggym1291Sys;
     private Resource peggym1304Sys;
     private Resource tao129301Sys;
+
+    @BeforeClass
+    public static void init() {
+        HazelcastClientFactoryTest.setUp();
+    }
 
     @Test
     public void testTokenizingPeriod() throws Exception {
