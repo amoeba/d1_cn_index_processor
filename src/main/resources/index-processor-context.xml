@@ -11,6 +11,8 @@
 	<import resource="classpath:task-index-context.xml"/>
 	<import resource="classpath:index-parser-context.xml"/>
 	
+	<bean id="indexTaskGenerator" class="org.dataone.cn.index.generator.IndexTaskGenerator" />
+	
 	<bean id="updateProcessor" class="org.dataone.cn.index.processor.IndexTaskUpdateProcessor" />
 	<bean id="deleteProcessor" class="org.dataone.cn.index.processor.IndexTaskDeleteProcessor" />
 
