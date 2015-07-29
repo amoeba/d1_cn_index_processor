@@ -35,7 +35,6 @@ import org.apache.commons.codec.EncoderException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dataone.client.v2.formats.ObjectFormatCache;
-import org.dataone.client.v2.itk.D1Client;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.generator.IndexTaskGenerator;
 import org.dataone.cn.indexer.parser.utility.SeriesIdResolver;
@@ -58,7 +57,7 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
     private String solrQueryUri;
 
     @Autowired
-    IndexTaskGenerator indexTaskGenerator;
+    private IndexTaskGenerator generator;
 
     private List<String> matchDocuments = null;
 
@@ -76,6 +75,10 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
         Identifier id = new Identifier();
         id.setValue(identifier);
         SystemMetadata sysMeta = HazelcastClientFactory.getSystemMetadataMap().get(id);
+
+        if (sysMeta == null) {
+            return docs;
+        }
 
         Identifier seriesId = sysMeta.getSeriesId();
 
@@ -105,34 +108,38 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
                         List<String> relationFieldValues = indexedDoc.getAllFieldValues(fieldName);
                         if (relationFieldValues != null) {
 
-                        	for (String relationFieldValue : relationFieldValues) {
+                            for (String relationFieldValue : relationFieldValues) {
 
-	                            // check if this is this a sid
-                        		Identifier relatedPid = new Identifier();
-                        		relatedPid.setValue(relationFieldValue);
-                        		if (SeriesIdResolver.isSeriesId(relatedPid)) {
-                        			try {
-                        				relatedPid = SeriesIdResolver.getPid(relatedPid);
-                        			} catch (BaseException be) {
-                        				log.error("could not locate PID for given identifier: " + relatedPid.getValue(), be);
-                        				// nothing we can do but continue
-                        				continue;
-                        			}
-                        		}
+                                // check if this is this a sid
+                                Identifier relatedPid = new Identifier();
+                                relatedPid.setValue(relationFieldValue);
+                                if (SeriesIdResolver.isSeriesId(relatedPid)) {
+                                    try {
+                                        relatedPid = SeriesIdResolver.getPid(relatedPid);
+                                    } catch (BaseException be) {
+                                        log.error("could not locate PID for given identifier: "
+                                                + relatedPid.getValue(), be);
+                                        // nothing we can do but continue
+                                        continue;
+                                    }
+                                }
 
-	                            // only need to reprocess related docs once
-	                            if (!pidsToProcess.contains(relatedPid)) {
-	                                log.debug("Processing relatedPid===" + relatedPid.getValue());
-	
-	                                pidsToProcess.add(relatedPid);
-	                                // queue a reprocessing of this related document
-	                                SystemMetadata relatedSysMeta = HazelcastClientFactory.getSystemMetadataMap().get(relatedPid);
-	                                String objectPath = HazelcastClientFactory.getObjectPathMap().get(relatedPid);
-	                                log.debug("Processing relatedSysMeta===" + relatedSysMeta);
-	                                log.debug("Processing objectPath===" + objectPath);
-	                                indexTaskGenerator.processSystemMetaDataUpdate(relatedSysMeta, objectPath);
-	                            }
-	                        }
+                                // only need to reprocess related docs once
+                                if (!pidsToProcess.contains(relatedPid)) {
+                                    log.debug("Processing relatedPid===" + relatedPid.getValue());
+
+                                    pidsToProcess.add(relatedPid);
+                                    // queue a reprocessing of this related document
+                                    SystemMetadata relatedSysMeta = HazelcastClientFactory
+                                            .getSystemMetadataMap().get(relatedPid);
+                                    String objectPath = HazelcastClientFactory.getObjectPathMap()
+                                            .get(relatedPid);
+                                    log.debug("Processing relatedSysMeta===" + relatedSysMeta);
+                                    log.debug("Processing objectPath===" + objectPath);
+                                    generator.processSystemMetaDataUpdate(relatedSysMeta,
+                                            objectPath);
+                                }
+                            }
                         }
                     }
                 }
