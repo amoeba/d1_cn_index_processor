@@ -11,8 +11,6 @@ xmlns:context="http://www.springframework.org/schema/context"
 
     <import resource="classpath:index-processor-context.xml"/>
     
-    <bean id="indexTaskGenerator" class="org.dataone.cn.index.generator.IndexTaskGenerator" />
-    
     <import resource="classpath:application-context-systemmeta200.xml" />
  	<import resource="classpath:application-context-resourcemap.xml" />
     <import resource="classpath:application-context-delete-subprocessors.xml" />
