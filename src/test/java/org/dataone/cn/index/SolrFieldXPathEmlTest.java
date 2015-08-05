@@ -40,6 +40,10 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
 
     @Autowired
     private Resource peggym1304Sys;
+    
+    @Autowired
+    private Resource peggym1304SysObsoletedBy;
+    
     @Autowired
     private Resource peggym1304Sci;
 
@@ -231,7 +235,7 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
      */
     @Test
     public void testEml210ScienceMetadataFields() throws Exception {
-        testXPathParsing(eml210Subprocessor, peggym1304Sys, peggym1304Sci, eml210Expected,
+        testXPathParsing(eml210Subprocessor, peggym1304SysObsoletedBy, peggym1304Sci, eml210Expected,
                 "peggym.130.4");
     }
 

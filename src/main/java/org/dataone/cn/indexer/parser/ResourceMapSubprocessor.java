@@ -33,12 +33,18 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.log4j.Logger;
+import org.dataone.cn.hazelcast.HazelcastClientFactory;
+import org.dataone.cn.index.processor.IndexTaskProcessingStrategy;
+import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.indexer.XmlDocumentUtility;
+import org.dataone.cn.indexer.parser.utility.SeriesIdResolver;
 import org.dataone.cn.indexer.resourcemap.ResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMapFactory;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
+import org.dataone.service.types.v1.Identifier;
+import org.dataone.service.types.v2.SystemMetadata;
 import org.dspace.foresite.OREParserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
@@ -70,6 +76,9 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
 
     @Autowired
     private String solrQueryUri = null;
+    
+    @Autowired
+    private IndexTaskProcessingStrategy deleteProcessor;
 
     private List<String> matchDocuments = null;
     private List<String> fieldsToMerge = new ArrayList<String>();
@@ -133,11 +142,51 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
 
         ResourceMap resourceMap = ResourceMapFactory.buildResourceMap(resourceMapDocument);
         List<String> documentIds = resourceMap.getAllDocumentIDs();
+        this.clearSidChain(indexDocument.getIdentifier(), documentIds);
         List<SolrDoc> updateDocuments = getHttpService().getDocumentsById(getSolrQueryUri(),
                 documentIds);
         List<SolrDoc> mergedDocuments = resourceMap.mergeIndexedDocuments(updateDocuments);
         mergedDocuments.add(indexDocument);
         return mergedDocuments;
+    }
+    
+    private void clearSidChain(String resourceMapIdentifier, List<String> relatedDocs) {
+    	
+		// check that we are, indeed, dealing with a SID-identified ORE
+    	Identifier identifier = new Identifier();
+    	identifier.setValue(resourceMapIdentifier);
+
+    	boolean containsSeriesId = true;
+        for (String relatedDoc : relatedDocs) {
+        	Identifier relatedPid = new Identifier();
+            relatedPid.setValue(relatedDoc);
+            if (SeriesIdResolver.isSeriesId(relatedPid)) {
+            	containsSeriesId = true;
+            	break;
+            }
+        }
+    	// if this package contains a SID, then we need to clear out old info
+		if (containsSeriesId ) {
+			Identifier pidToProcess = identifier;
+			while (pidToProcess != null) {
+				// queue a delete processing of all versions in the SID chain
+	            SystemMetadata sysmeta = HazelcastClientFactory.getSystemMetadataMap().get(pidToProcess);
+	            String objectPath = HazelcastClientFactory.getObjectPathMap().get(pidToProcess);
+	            logger.debug("Removing pidToProcess===" + pidToProcess.getValue());
+	            logger.debug("Removing objectPath===" + objectPath);
+	            
+	            IndexTask task = new IndexTask(sysmeta, objectPath);
+	    		try {
+	    			deleteProcessor.process(task);
+	    		} catch (Exception e) {
+	    			logger.error(e.getMessage(), e);
+	    		}
+	    		// go to the next one
+	        	pidToProcess = sysmeta.getObsoletes();
+			}
+        	
+    	}  
+        
     }
 
     public HTTPService getHttpService() {

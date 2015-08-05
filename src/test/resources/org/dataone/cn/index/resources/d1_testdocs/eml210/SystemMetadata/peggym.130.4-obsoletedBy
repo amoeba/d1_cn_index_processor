@@ -37,7 +37,7 @@
   </accessPolicy>
   <replicationPolicy replicationAllowed="true"/>
   <obsoletes>peggym.130.3</obsoletes>
-  <!--<obsoletedBy>peggym.130.5</obsoletedBy>-->
+  <obsoletedBy>peggym.130.5</obsoletedBy>
   <dateUploaded>2011-08-31T15:59:50.071163</dateUploaded>
   <dateSysMetadataModified>2011-08-31T15:59:50.072921</dateSysMetadataModified>
   <originMemberNode>test_documents</originMemberNode>
