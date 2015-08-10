@@ -34,6 +34,7 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.codec.EncoderException;
 import org.apache.log4j.Logger;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
+import org.dataone.cn.index.processor.IndexTaskDeleteProcessor;
 import org.dataone.cn.index.processor.IndexTaskProcessingStrategy;
 import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.indexer.XmlDocumentUtility;
@@ -78,7 +79,7 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
     private String solrQueryUri = null;
     
     @Autowired
-    private IndexTaskProcessingStrategy deleteProcessor;
+    private IndexTaskDeleteProcessor deleteProcessor;
 
     private List<String> matchDocuments = null;
     private List<String> fieldsToMerge = new ArrayList<String>();
