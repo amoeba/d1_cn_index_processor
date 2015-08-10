@@ -78,7 +78,7 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
     @Autowired
     private String solrQueryUri = null;
     
-    //@Autowired
+    @Autowired
     private IndexTaskDeleteProcessor deleteProcessor;
 
     private List<String> matchDocuments = null;
