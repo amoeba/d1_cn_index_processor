@@ -335,8 +335,15 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 
                     // the value[s] for that field
                     if (solution.contains(name)) {
-                        String value = solution.get(field.getName()).toString();
-                        values.add(value);
+                        boolean anon = solution.get(field.getName()).isAnon();
+
+                        // do not include anonymous nodes
+                        if (!anon) {
+	                        String value = solution.get(field.getName()).toString();
+	                        values.add(value);
+	                        log.debug("Not anonymous, adding: " + value);
+                        }
+
                     }
                 }
                 conceptFields.put(name, values);
