@@ -39,11 +39,13 @@ import java.util.Set;
 
 import org.apache.commons.io.input.ReaderInputStream;
 import org.apache.log4j.Logger;
+import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.processor.IndexVisibilityDelegateHazelcastImpl;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.ore.ResourceMapFactory;
 import org.dataone.service.types.v1.Identifier;
+import org.dataone.service.types.v2.SystemMetadata;
 import org.dspace.foresite.OREException;
 import org.dspace.foresite.OREParserException;
 import org.w3c.dom.Document;
@@ -213,6 +215,14 @@ public class ForesiteResourceMap implements ResourceMap {
 
     private SolrDoc _mergeMappedReference(ResourceEntry resourceEntry, SolrDoc mergeDocument) {
 
+    	Identifier identifier = new Identifier();
+    	identifier.setValue(mergeDocument.getIdentifier());
+    	SystemMetadata sysMeta = HazelcastClientFactory.getSystemMetadataMap().get(identifier);
+    	if (sysMeta.getObsoletedBy() != null) {
+    		// skip this one
+    		return mergeDocument;
+    	}
+    	
         if (mergeDocument.hasField(SolrElementField.FIELD_ID) == false) {
             mergeDocument.addField(new SolrElementField(SolrElementField.FIELD_ID, resourceEntry
                     .getIdentifier()));
