@@ -75,7 +75,7 @@ public class SolrElementAdd {
      */
     public void serialize(OutputStream outputStream, String encoding) throws IOException {
 
-        IOUtils.write("<?xml version=\"1.1\" encoding=\"utf-8\"?>\n", outputStream, encoding);
+        IOUtils.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n", outputStream, encoding);
         IOUtils.write(ELEMENT_ADD_OPEN, outputStream, encoding);
 
         for (SolrDoc doc : docList) {
