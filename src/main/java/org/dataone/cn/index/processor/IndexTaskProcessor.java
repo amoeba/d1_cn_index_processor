@@ -245,8 +245,10 @@ public class IndexTaskProcessor {
             String objectPath = retrieveObjectPath(task.getPid());
             if (objectPath == null) {
                 ok = false;
+                evictObjectPathEntry(task.getPid());
                 logger.info("Object path for pid: " + task.getPid()
-                        + " is not available.  Task will be retried");
+                        + " is not available.  Object path entry will be evicting from map.  "
+                        + "Task will be retried.");
             }
             task.setObjectPath(objectPath);
         }
@@ -257,11 +259,10 @@ public class IndexTaskProcessor {
                 // object path is present but doesnt correspond to a file
                 // this task is not ready to index.
                 ok = false;
-                logger.info("Object path exists for pid: "
-                        + task.getPid()
-                        + " however the file location: "
-                        + task.getObjectPath()
-                        + " does not exist.  Marking not ready - task will be marked new and retried.");
+                logger.info("Object path exists for pid: " + task.getPid()
+                        + " however the file location: " + task.getObjectPath()
+                        + " does not exist.  "
+                        + "Marking not ready - task will be marked new and retried.");
             }
         }
         return ok;
@@ -284,6 +285,12 @@ public class IndexTaskProcessor {
         Identifier PID = new Identifier();
         PID.setValue(pid);
         return HazelcastClientFactory.getObjectPathMap().get(PID);
+    }
+
+    private void evictObjectPathEntry(String pid) {
+        Identifier PID = new Identifier();
+        PID.setValue(pid);
+        HazelcastClientFactory.getObjectPathMap().evict(PID);
     }
 
     private List<IndexTask> getIndexTaskQueue() {
