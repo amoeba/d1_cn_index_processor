@@ -215,12 +215,7 @@ public class SolrIndexService {
 
     private void sendCommand(SolrElementAdd addCommand) throws IOException {
         HTTPService service = getHttpService();
-
-        try {
-            service.sendUpdate(getSolrindexUri(), addCommand, OUTPUT_ENCODING);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        service.sendUpdate(getSolrindexUri(), addCommand, OUTPUT_ENCODING);
     }
 
     private SolrElementAdd getAddCommand(List<SolrDoc> docs) {

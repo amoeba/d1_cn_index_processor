@@ -127,10 +127,13 @@ public class HTTPService {
             inputStreamResponse = responseEntity.getContent();
             if (response.getStatusLine().getStatusCode() != 200) {
                 writeError(null, data, inputStreamResponse, uri);
+                post.abort();
+                throw new IOException("unable to update solr, non 200 response code.");
             }
             post.abort();
         } catch (Exception ex) {
             writeError(ex, data, inputStreamResponse, uri);
+            throw new IOException(ex);
         }
     }
 
