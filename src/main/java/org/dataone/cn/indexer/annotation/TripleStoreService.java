@@ -2,6 +2,8 @@ package org.dataone.cn.indexer.annotation;
 
 import java.io.File;
 
+import org.dataone.configuration.Settings;
+
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.tdb.TDBFactory;
 
@@ -19,10 +21,14 @@ public class TripleStoreService {
 	}
 	
 	public Dataset getDataset() {
-		String directory = "./tdb";
+		String directory = Settings.getConfiguration().getString("index.tdb.directory", "./tdb");
 
     	// for testing, delete the triplestore each time
     	File dir = new File(directory);
+    	if (!dir.exists()) {
+        	dir.mkdirs();
+
+    	}
 //    	if (dir.exists()) {
 //    		dir.delete();
 //    	}
