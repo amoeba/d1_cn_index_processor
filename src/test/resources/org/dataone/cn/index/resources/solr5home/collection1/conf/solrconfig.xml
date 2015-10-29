@@ -435,8 +435,32 @@
      <lst name="defaults">
        <str name="echoParams">explicit</str>
        <int name="rows">10</int>
-     </lst>
-
+       <str name="q">*:*</str>
+       <str name="df">text</str>
+       <str name="fl">abstract,author,authoritativeMN,authorLastName,beginDate,
+       blockedReplicationMN,changePermission,checksum,checksumAlgorithm,class,
+       contactOrganization,datasource,dataUrl,dateModified,datePublished,dateUploaded,
+       decade,documents,eastBoundCoord,edition,endDate,family,fileID,formatId,
+       formatType,gcmdKeyword,genus,geoform,id,identifier,investigator,
+       isDocumentedBy,isPublic,isSpatial,keyConcept,keywords,kingdom,LTERSite,
+       namedLocation,noBoundingBox,northBoundCoord,numberReplicas,obsoletedBy,
+       obsoletes,ogcUrl,order,origin,originator,parameter,phylum,placeKey,
+       preferredReplicationMN,presentationCat,project,pubDate,purpose,readPermission,
+       relatedOrganizations,replicaMN,replicationAllowed,replicaVerifiedDate,
+       resourceMap,rightsHolder,scientificName,sensor,site,size,sku,source,
+       southBoundCoord,species,submitter,term,title,topic,updateDate,webUrl,
+       westBoundCoord,writePermission,attributeName,
+       attributeLabel,attributeDescription,attributeUnit,attribute,
+       authorSurName,authorSurNameSort,authorGivenName,
+       geohash_1, geohash_2,
+       geohash_3, geohash_4, geohash_5, geohash_6, geohash_7, geohash_8, geohash_9,
+		prov_wasDerivedFrom, prov_wasInformedBy, prov_used, prov_generated, prov_generatedByProgram, 
+		prov_generatedByExecution, prov_generatedByUser, prov_usedByProgram, 
+        prov_usedByExecution, prov_usedByUser, prov_wasExecutedByExecution, prov_wasExecutedByUser, prov_hasSources, 
+        prov_hasDerivations, prov_instanceOfClass, sem_annotation, sem_annotated_by, sem_annotates,sem_comment, 
+        seriesId
+       </str>
+	 </lst>
     </requestHandler>
 
   <!-- A request handler that returns indented JSON by default -->

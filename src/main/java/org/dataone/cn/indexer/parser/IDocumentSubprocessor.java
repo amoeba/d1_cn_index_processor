@@ -39,7 +39,6 @@ import org.dataone.cn.indexer.solrhttp.SolrDoc;
  * and documents associated to the indexed
  * document.
  *
- * User: Porter
  * Date: 9/22/11
  * Time: 1:33 PM
  */

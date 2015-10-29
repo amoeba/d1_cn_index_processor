@@ -62,9 +62,6 @@ import org.xml.sax.SAXException;
  * the server level - so if multiple threads write and commit then things could
  * get messy.
  * 
- * User: Porter
- * Date: 7/25/11
- * Time: 1:28 PM
  */
 
 public class SolrIndexService {

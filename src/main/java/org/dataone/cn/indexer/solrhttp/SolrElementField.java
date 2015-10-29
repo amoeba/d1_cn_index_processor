@@ -43,6 +43,7 @@ public class SolrElementField {
     public static final String FIELD_ID = "id";
     public static final String FIELD_SERIES_ID = "seriesId";
     public static final String FIELD_OBJECTFORMAT = "formatId";
+    public static final String FIELD_OBJECTFORMATTYPE = "formatType";
     public static final String FIELD_SIZE = "size";
     public static final String FIELD_CHECKSUM = "checksum";
     public static final String FIELD_CHECKSUMALGORITHM = "checksumAlgorithm";
@@ -53,6 +54,7 @@ public class SolrElementField {
     public static final String FIELD_PREF_REP_MN = "preferredRelicationNM";
     public static final String FIELD_BLOCKED_REP_MN = "blockedReplicationMN";
     public static final String FIELD_OBSOLETES = "obsoletes";
+    public static final String FIELD_OBSOLETED_BY = "obsoletedBy";
     public static final String FIELD_DATEUPLOADED = "dateUploaded";
     public static final String FIELD_DATEMODIFIED = "dateModified";
     public static final String FIELD_ORIGIN_MN = "datasource";
@@ -129,13 +131,8 @@ public class SolrElementField {
 
         outputStream.flush();
 
-        if (log.isInfoEnabled()) {
-            log.info("SolrElementField serializing field: " + name + " with value: " + value);
-            //            if (FIELD_ID.equals(name)) {
-            //                log.info("SolrElementField serializing ID field with value: " + value);
-            //            } else if (FIELD_BEGIN_DATE.equals(name)) {
-            //                log.info("SolrElementField serializing beginDate field with value: " + value);
-            //            }
+        if (log.isDebugEnabled()) {
+            log.debug("SolrElementField serializing field: " + name + " with value: " + value);
         }
     }
 

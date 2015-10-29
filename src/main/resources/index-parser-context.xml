@@ -27,10 +27,10 @@
 				<ref bean="qualifiedDublicCoreSubprocessor" />
 				<ref bean="dublinCoreExtendedSubprocessor" />
                 <ref bean="datacite3Subprocessor" />
-				<ref bean="provRdfXmlSubprocessor" />
-				<ref bean="annotatorSubprocessor" />
+ 			  	<ref bean="provRdfXmlSubprocessor" /> 
+			 	<ref bean="annotatorSubprocessor" />
 				<ref bean="isotc211Subprocessor" />
-				<ref bean="reprocessResourceMapSubprocessor" />
+  				<ref bean="reprocessResourceMapSubprocessor" /> 
 			</list>
      	</property>
      	<property name="deleteSubprocessors">
@@ -41,6 +41,7 @@
      	</property>
 	</bean>
 	
+	<bean id="subprocessorUtility" class="org.dataone.cn.indexer.parser.SubprocessorUtility" />
 	<bean id="dateConverter" class="org.dataone.cn.indexer.convert.SolrDateConverter" />
 	<bean id="fgdcDateConverter" class="org.dataone.cn.indexer.convert.FgdcDateConverter"/>
 	<bean id="solrLatitudeConverter" class="org.dataone.cn.indexer.convert.SolrLatitudeConverter" />

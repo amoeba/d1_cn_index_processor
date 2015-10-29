@@ -3,7 +3,6 @@ package org.dataone.cn.indexer.annotation;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.xml.bind.DatatypeConverter;
 import javax.xml.xpath.XPathExpressionException;
 
 import net.minidev.json.JSONArray;
@@ -20,10 +18,10 @@ import net.minidev.json.JSONValue;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.ISolrDataField;
+import org.dataone.cn.indexer.parser.SubprocessorUtility;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
@@ -53,8 +51,11 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
     public static final String FIELD_ANNOTATED_BY = "sem_annotated_by";
     public static final String FIELD_COMMENT = "sem_comment";
 
-    private static Log log = LogFactory.getLog(AnnotatorSubprocessor.class);
-    
+    private static Logger log = Logger.getLogger(AnnotatorSubprocessor.class.getName());
+
+    @Autowired
+    private SubprocessorUtility processorUtility;
+
     @Autowired
     private HTTPService httpService = null;
 
@@ -62,32 +63,16 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
     private String solrQueryUri = null;
 
     private List<String> matchDocuments = null;
-    
+
     private List<String> ontologyList = null;
-    
+
     private OntModel ontModel = null;
-    
+
     private boolean initialized = false;
-    
+
     private List<String> fieldsToMerge = new ArrayList<String>();
 
     private List<ISolrDataField> fieldList = new ArrayList<ISolrDataField>();
-
-    public HTTPService getHttpService() {
-        return httpService;
-    }
-
-    public void setHttpService(HTTPService httpService) {
-        this.httpService = httpService;
-    }
-
-    public String getSolrQueryUri() {
-        return solrQueryUri;
-    }
-
-    public void setSolrQueryUri(String solrQueryUri) {
-        this.solrQueryUri = solrQueryUri;
-    }
 
     public List<String> getMatchDocuments() {
         return matchDocuments;
@@ -98,14 +83,14 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
     }
 
     public List<String> getOntologyList() {
-		return ontologyList;
-	}
+        return ontologyList;
+    }
 
-	public void setOntologyList(List<String> ontologyList) {
-		this.ontologyList = ontologyList;
-	}
+    public void setOntologyList(List<String> ontologyList) {
+        this.ontologyList = ontologyList;
+    }
 
-	public List<String> getFieldsToMerge() {
+    public List<String> getFieldsToMerge() {
         return fieldsToMerge;
     }
 
@@ -114,14 +99,14 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
     }
 
     public List<ISolrDataField> getFieldList() {
-		return fieldList;
-	}
+        return fieldList;
+    }
 
-	public void setFieldList(List<ISolrDataField> fieldList) {
-		this.fieldList = fieldList;
-	}
+    public void setFieldList(List<ISolrDataField> fieldList) {
+        this.fieldList = fieldList;
+    }
 
-	/**
+    /**
      * Returns true if subprocessor should be run against object
      * 
      * @param formatId the the document to be processed
@@ -143,7 +128,16 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 
             // make sure we have a reference for the document we annotating
             if (referencedDoc == null) {
-                referencedDoc = new SolrDoc();
+                try {
+                    referencedDoc = httpService.retrieveDocumentFromSolrServer(referencedPid,
+                            solrQueryUri);
+                } catch (XPathExpressionException | IOException | EncoderException e) {
+                    log.error("");
+                }
+
+                if (referencedDoc == null) {
+                    referencedDoc = new SolrDoc();
+                }
                 docs.put(referencedPid, referencedDoc);
             }
 
@@ -157,11 +151,16 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
             Iterator<SolrElementField> annotationIter = annotations.getFieldList().iterator();
             while (annotationIter.hasNext()) {
                 SolrElementField annotation = annotationIter.next();
+                if (!fieldsToMerge.contains(annotation.getName())) {
+                    log.debug("SKIPPING field (not in fieldsToMerge): " + annotation.getName());
+                    continue;
+                }
                 referencedDoc.addField(annotation);
-                log.debug("ADDING annotation to " + referencedPid + ": " + annotation.getName() + "=" + annotation.getValue());
+                log.debug("ADDING annotation to " + referencedPid + ": " + annotation.getName()
+                        + "=" + annotation.getValue());
             }
         } else {
-        	log.warn("Annotations were not found when parsing: " + annotationId);
+            log.warn("Annotations were not found when parsing: " + annotationId);
         }
 
         // return the collection that we have augmented
@@ -251,7 +250,8 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
                 for (String tag : annotations.getAllFieldValues(tagKey)) {
                     try {
                         // get the expanded tags
-                        Map<String, Set<String>> expandedConcepts = this.expandConcepts(tagKey, tag);
+                        Map<String, Set<String>> expandedConcepts = this
+                                .expandConcepts(tagKey, tag);
                         for (Map.Entry<String, Set<String>> entry : expandedConcepts.entrySet()) {
                             for (String value : entry.getValue()) {
                                 String name = entry.getKey();
@@ -277,7 +277,8 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
         return null;
     }
 
-    protected Map<String, Set<String>> expandConcepts(String fieldName, String uri) throws Exception {
+    protected Map<String, Set<String>> expandConcepts(String fieldName, String uri)
+            throws Exception {
 
         // return structure allows multi-valued fields
         Map<String, Set<String>> conceptFields = new HashMap<String, Set<String>>();
@@ -285,30 +286,30 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
         if (uri == null || uri.length() < 1) {
             return conceptFields;
         }
-        
+
         if (!this.initialized) {
             ontModel = ModelFactory.createOntologyModel();
-	       
-	        // add the ontologies configured
-	        if (this.ontologyList != null && ontologyList.size() > 0) {
-	        	for (String ontologyUri: ontologyList) {
-	        		log.warn("loading ontology: " + ontologyUri);
-	            	ontModel.read(ontologyUri);
-	        	}
-	        }
-        	initialized = true;
-	        
+
+            // add the ontologies configured
+            if (this.ontologyList != null && ontologyList.size() > 0) {
+                for (String ontologyUri : ontologyList) {
+                    log.warn("loading ontology: " + ontologyUri);
+                    ontModel.read(ontologyUri);
+                }
+            }
+            initialized = true;
+
         }
         //load the ontology if needed
-//        String namespace = uri;
-//        if (namespace.contains("#")) {
-//        	namespace = namespace.split("#")[0];
-//        	boolean loaded = (ontModel.getOntClass(uri) != null);
-//            if (!loaded) {
-//                ontModel.read(namespace);
-//            }
-//        }
-        
+        //        String namespace = uri;
+        //        if (namespace.contains("#")) {
+        //        	namespace = namespace.split("#")[0];
+        //        	boolean loaded = (ontModel.getOntClass(uri) != null);
+        //            if (!loaded) {
+        //                ontModel.read(namespace);
+        //            }
+        //        }
+
         // process each field query
         for (ISolrDataField field : fieldList) {
             String q = null;
@@ -324,7 +325,7 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
                 String name = field.getName();
                 // only expand for the given field name
                 if (!fieldName.equals(name)) {
-                	continue;
+                    continue;
                 }
                 Set<String> values = new TreeSet<String>();
 
@@ -339,9 +340,9 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 
                         // do not include anonymous nodes
                         if (!anon) {
-	                        String value = solution.get(field.getName()).toString();
-	                        values.add(value);
-	                        log.debug("Not anonymous, adding: " + value);
+                            String value = solution.get(field.getName()).toString();
+                            values.add(value);
+                            log.debug("Not anonymous, adding: " + value);
                         }
 
                     }
@@ -366,63 +367,39 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
      */
     public SolrDoc mergeWithIndexedDocument(SolrDoc indexDocument) throws IOException,
             EncoderException, XPathExpressionException {
+        /*
+                log.debug("LOOKING UP EXISTING doc: " + indexDocument.getIdentifier() + " from: "
+                        + solrQueryUri);
 
-    	log.debug("LOOKING UP EXISTING doc: " + indexDocument.getIdentifier() + " from: " + solrQueryUri);
+                SolrDoc existingSolrDoc = httpService.retrieveDocumentFromSolrServer(
+                        indexDocument.getIdentifier(), solrQueryUri);
+                if (existingSolrDoc != null) {
+                    for (SolrElementField field : indexDocument.getFieldList()) {
+                        log.debug("CHECKING new field: " + field.getName() + "=" + field.getValue());
 
-        SolrDoc existingSolrDoc = httpService.retrieveDocumentFromSolrServer(indexDocument.getIdentifier(), solrQueryUri);
-        if (existingSolrDoc != null) {
-            for (SolrElementField field : indexDocument.getFieldList()) {
-                log.debug("CHECKING new field: " + field.getName() +  "=" + field.getValue());
-                
-                // check if we should be merging this field in the index
-//                if (!fieldsToMerge.contains(field.getName())) {
-//                    log.debug("SKIPPING field (not in fieldsToMerge): " + field.getName());
-//            		continue;
-//            	}
-                
-                // Temporary hack to deal with Solr handling of date formats as strings (00:00:00Z != 00:00:00.000Z)
-                if (!existingSolrDoc.hasFieldWithValue(field.getName(), field.getValue())) {
-                	
-                	List<String> existingFieldValues = existingSolrDoc.getAllFieldValues(field.getName());
-            		boolean foundExactDate = false;
-                	Date solrDateTime = null;
-					Date newDateTime = null;
-                	for (String existingFieldValue : existingFieldValues) {
-						try {
-							solrDateTime = DatatypeConverter.parseDate(existingFieldValue).getTime();
-							newDateTime = DatatypeConverter.parseDate(field.getValue()).getTime();
-							
-						} catch (Exception e) {
-							// Not a parseable date, move on
-							continue;
-							
-						}
-						// The field value converts to a date, and matches an existing value as a date
-                		if ( newDateTime.equals(solrDateTime) ) {
-                			foundExactDate =  true;
-                			break;
-                			
-                		}
-            			
-            		}
-                	
-                	// None of the existing fields match when converted to a date. Add it.
-                	if ( ! foundExactDate ) {
-                    	existingSolrDoc.addField(field);
-                        log.debug("ADDING new field/value to existing index doc " + 
-                    	          existingSolrDoc.getIdentifier() + ": " + 
-                        		  field.getName() +  "=" + field.getValue());
-                		
-                	}
+                        // check if we should be merging this field in the index
+                        //                if (!fieldsToMerge.contains(field.getName())) {
+                        //                    log.debug("SKIPPING field (not in fieldsToMerge): " + field.getName());
+                        //                    continue;
+                        //                }
+
+                        if (!existingSolrDoc.hasFieldWithValue(field.getName(), field.getValue())) {
+                            existingSolrDoc.addField(field);
+                            log.debug("ADDING new field/value to existing index doc "
+                                    + existingSolrDoc.getIdentifier() + ": " + field.getName() + "="
+                                    + field.getValue());
+
+                        } else {
+                            log.debug("field name/value already exists in index: " + field.getName() + "="
+                                    + field.getValue());
+                        }
+                    }
+                    // return the augmented one that exists already
+                    return existingSolrDoc;
                 } else {
-                    log.debug("field name/value already exists in index: " + field.getName() +  "=" + field.getValue());
+                    log.warn("COULD NOT LOCATE EXISTING DOC FOR: " + indexDocument.getIdentifier());
                 }
-            }
-            // return the augmented one that exists already
-            return existingSolrDoc;
-        } else {
-        	log.warn("COULD NOT LOCATE EXISTING DOC FOR: " + indexDocument.getIdentifier());
-        }
+                */
         return indexDocument;
     }
 }

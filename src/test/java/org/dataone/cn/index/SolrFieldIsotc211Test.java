@@ -115,7 +115,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         nodc1Expected.put("seriesId", "");
         nodc1Expected.put("formatId", isotc211FormatId);
         nodc1Expected.put("formatType", "");
-        // nodc1Expected.put("formatType", "METADATA");
+        nodc1Expected.put("formatType", "METADATA");
         nodc1Expected.put("size", "11406");
         nodc1Expected.put("checksum", "ff5d7c92a8c3285f49a8f216f929f14c6b5335a3");
         nodc1Expected.put("checksumAlgorithm", "SHA-1");
@@ -189,7 +189,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         nodc2Expected.put("seriesId", "");
         nodc2Expected.put("formatId", isotc211FormatId);
         nodc2Expected.put("formatType", "");
-        //odc2Expected.put("formatType", "METADATA");
+        nodc2Expected.put("formatType", "METADATA");
         nodc2Expected.put("size", "22406");
         nodc2Expected.put("checksum", "ee5d7c92a8c3285f49a8f216f929f14c6b51d5a3");
         nodc2Expected.put("checksumAlgorithm", "SHA-1");
@@ -258,7 +258,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         iarc1Expected.put("seriesId", "");
         iarc1Expected.put("formatId", isotc211FormatId);
         iarc1Expected.put("formatType", "");
-        //iarc1Expected.put("formatType", "METADATA");
+        iarc1Expected.put("formatType", "METADATA");
         iarc1Expected.put("size", "12917");
         iarc1Expected.put("checksum", "037282cbe6fdfc99ed9f3b49a0ddb05d38e11704");
         iarc1Expected.put("checksumAlgorithm", "SHA-1");
@@ -331,7 +331,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         iarc2Expected.put("seriesId", "");
         iarc2Expected.put("formatId", isotc211FormatId);
         iarc2Expected.put("formatType", "");
-        // iarc2Expected.put("formatType", "METADATA");
+        iarc2Expected.put("formatType", "METADATA");
         iarc2Expected.put("size", "15406");
         iarc2Expected.put("checksum", "225d7c92a8c3285f49a8f216f929f14c6b51d5a3");
         iarc2Expected.put("checksumAlgorithm", "SHA-1");
