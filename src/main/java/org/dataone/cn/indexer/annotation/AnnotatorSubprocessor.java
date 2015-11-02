@@ -132,7 +132,8 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
                     referencedDoc = httpService.retrieveDocumentFromSolrServer(referencedPid,
                             solrQueryUri);
                 } catch (XPathExpressionException | IOException | EncoderException e) {
-                    log.error("");
+                    log.error("Unable to retrieve solr document: " + referencedPid
+                            + ".  Exception attempting to communicate with solr server.", e);
                 }
 
                 if (referencedDoc == null) {
@@ -162,7 +163,6 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
         } else {
             log.warn("Annotations were not found when parsing: " + annotationId);
         }
-
         // return the collection that we have augmented
         return docs;
     }
@@ -367,39 +367,6 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
      */
     public SolrDoc mergeWithIndexedDocument(SolrDoc indexDocument) throws IOException,
             EncoderException, XPathExpressionException {
-        /*
-                log.debug("LOOKING UP EXISTING doc: " + indexDocument.getIdentifier() + " from: "
-                        + solrQueryUri);
-
-                SolrDoc existingSolrDoc = httpService.retrieveDocumentFromSolrServer(
-                        indexDocument.getIdentifier(), solrQueryUri);
-                if (existingSolrDoc != null) {
-                    for (SolrElementField field : indexDocument.getFieldList()) {
-                        log.debug("CHECKING new field: " + field.getName() + "=" + field.getValue());
-
-                        // check if we should be merging this field in the index
-                        //                if (!fieldsToMerge.contains(field.getName())) {
-                        //                    log.debug("SKIPPING field (not in fieldsToMerge): " + field.getName());
-                        //                    continue;
-                        //                }
-
-                        if (!existingSolrDoc.hasFieldWithValue(field.getName(), field.getValue())) {
-                            existingSolrDoc.addField(field);
-                            log.debug("ADDING new field/value to existing index doc "
-                                    + existingSolrDoc.getIdentifier() + ": " + field.getName() + "="
-                                    + field.getValue());
-
-                        } else {
-                            log.debug("field name/value already exists in index: " + field.getName() + "="
-                                    + field.getValue());
-                        }
-                    }
-                    // return the augmented one that exists already
-                    return existingSolrDoc;
-                } else {
-                    log.warn("COULD NOT LOCATE EXISTING DOC FOR: " + indexDocument.getIdentifier());
-                }
-                */
-        return indexDocument;
+        return processorUtility.mergeWithIndexedDocument(indexDocument, fieldsToMerge);
     }
 }

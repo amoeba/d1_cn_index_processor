@@ -28,6 +28,25 @@
                 <ref bean="prov.hasSources" />
                 <ref bean="prov.hasDerivations" />
 			</list>
-		</property>	
+		</property>
+		<property name="fieldsToMerge">
+     		<list>
+     			<value>prov_wasDerivedFrom</value>
+     			<value>prov_wasInformedBy</value>
+     			<value>prov_used</value>     			
+     			<value>prov_generated</value>
+     			<value>prov_generatedByProgram</value>
+     			<value>prov_generatedByExecution</value>
+     			<value>prov_generatedByUser</value>
+     			<value>prov_usedByProgram</value>
+     			<value>prov_usedByExecution</value>
+     			<value>prov_usedByUser</value>
+     			<value>prov_wasExecutedByExecution</value>
+     			<value>prov_wasExecutedByUser</value>
+     			<value>prov_hasSources</value>
+     			<value>prov_hasDerivations</value>
+     			<value>prov_instanceOfClass</value>
+     		</list>
+     	</property>	
 	</bean>
 </beans>

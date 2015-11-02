@@ -33,6 +33,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.ISolrDataField;
+import org.dataone.cn.indexer.parser.SubprocessorUtility;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
@@ -62,13 +63,19 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
      * If xpath returns true execute the processDocument Method
      */
     private List<String> matchDocuments = null;
+
     private List<ISolrDataField> fieldList = new ArrayList<ISolrDataField>();
+
+    private List<String> fieldsToMerge = new ArrayList<String>();
 
     @Autowired
     private HTTPService httpService = null;
 
     @Autowired
     private String solrQueryUri = null;
+
+    @Autowired
+    private SubprocessorUtility processorUtility;
 
     /**
      * Returns true if subprocessor should be run against object
@@ -308,33 +315,14 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
     @Override
     public SolrDoc mergeWithIndexedDocument(SolrDoc indexDocument) throws IOException,
             EncoderException, XPathExpressionException {
-        /*
-        log.trace("Looking up existing doc: " + indexDocument.getIdentifier() + " from: "
-                + solrQueryUri);
+        return processorUtility.mergeWithIndexedDocument(indexDocument, fieldsToMerge);
+    }
 
-        SolrDoc existingSolrDoc = httpService.retrieveDocumentFromSolrServer(
-                indexDocument.getIdentifier(), solrQueryUri);
-        if (existingSolrDoc != null) {
-            for (SolrElementField field : indexDocument.getFieldList()) {
-                log.debug("Checking new field: " + field.getName() + "=" + field.getValue());
-                if (!existingSolrDoc.hasFieldWithValue(field.getName(), field.getValue())) {
+    public List<String> getFieldsToMerge() {
+        return fieldsToMerge;
+    }
 
-                    existingSolrDoc.addField(field);
-                    log.debug("Adding new field/value to existing index doc "
-                            + existingSolrDoc.getIdentifier() + ": " + field.getName() + "="
-                            + field.getValue());
-                } else {
-                    log.debug("field name/value already exists in index: " + field.getName() + "="
-                            + field.getValue());
-                }
-            }
-            // return the augmented one that exists already
-            return existingSolrDoc;
-        } else {
-            log.warn("Could not locate existing document for: " + indexDocument.getIdentifier());
-
-        }
-        */
-        return indexDocument;
+    public void setFieldsToMerge(List<String> fieldsToMerge) {
+        this.fieldsToMerge = fieldsToMerge;
     }
 }
