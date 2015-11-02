@@ -28,8 +28,8 @@
 				<!--  <value>http://purl.org/spar/datacite/</value> -->
 				<value>http://purl.org/dc/terms/</value>
 				<value>http://www.w3.org/2006/time</value>
-				<value>https://purl.org/dataone/ontologies/observation/d1-ECSO.owl</value>
-				<value>https://purl.org/dataone/ontologies/provenance/ProvONE/v1/owl/provone.owl</value>
+				<value>http://purl.dataone.org/ontologies/observation/d1-ECSO.owl</value>
+				<value>http://purl.dataone.org/ontologies/provenance/ProvONE/v1/owl/provone.owl</value>
 				<value>http://purl.obolibrary.org/obo/envo.owl</value>
 				<!--  <value>http://purl.obolibrary.org/obo/chebi.owl</value>	-->			
 			</list>
