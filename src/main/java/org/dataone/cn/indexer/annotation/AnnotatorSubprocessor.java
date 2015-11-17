@@ -131,7 +131,8 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
                 try {
                     referencedDoc = httpService.retrieveDocumentFromSolrServer(referencedPid,
                             solrQueryUri);
-                } catch (XPathExpressionException | IOException | EncoderException e) {
+                } catch (Exception e) {
+                	//} catch (XPathExpressionException | IOException | EncoderException e) {
                     log.error("Unable to retrieve solr document: " + referencedPid
                             + ".  Exception attempting to communicate with solr server.", e);
                 }
@@ -367,6 +368,13 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
      */
     public SolrDoc mergeWithIndexedDocument(SolrDoc indexDocument) throws IOException,
             EncoderException, XPathExpressionException {
-        return processorUtility.mergeWithIndexedDocument(indexDocument, fieldsToMerge);
+    	
+        SolrDoc mergedDoc = indexDocument;
+        try {
+        	mergedDoc = processorUtility.mergeWithIndexedDocument(indexDocument, fieldsToMerge);
+        } catch (Exception e) {
+        	log.error("Unable to merge solr document: " + indexDocument.getIdentifier(), e);
+        }
+		return mergedDoc;
     }
 }
