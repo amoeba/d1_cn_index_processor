@@ -43,5 +43,10 @@
   <originMemberNode>test_documents</originMemberNode>
   <authoritativeMemberNode>test_documents</authoritativeMemberNode>
   <seriesId>peggym.130</seriesId>
+	<mediaType name="text/rdf">
+		<property name="extension">rdf</property>
+		<property name="something">cool</property>
+	</mediaType>
+  <fileName>fileName1.txt</fileName>
 </ns1:systemMetadata>
 

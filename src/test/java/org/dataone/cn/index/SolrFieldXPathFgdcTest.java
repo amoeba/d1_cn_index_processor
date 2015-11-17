@@ -163,6 +163,9 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         // system metadata
         csiroExpected.put("id", csiro_pid);
         csiroExpected.put("seriesId", "");
+        csiroExpected.put("fileName", "");
+        csiroExpected.put("mediaType", "");
+        csiroExpected.put("mediaTypeProperty", "");
         csiroExpected.put("formatId", "FGDC-STD-001.1-1999");
         csiroExpected.put("formatType", "METADATA");
         csiroExpected.put("size", "9008");
@@ -283,6 +286,9 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         // system metadata
         fgdcNasaExpected.put("id", nasa_pid);
         fgdcNasaExpected.put("seriesId", "");
+        fgdcNasaExpected.put("fileName", "");
+        fgdcNasaExpected.put("mediaType", "");
+        fgdcNasaExpected.put("mediaTypeProperty", "");
         fgdcNasaExpected.put("formatId", "FGDC-STD-001.1-1999");
         fgdcNasaExpected.put("formatType", "METADATA");
         fgdcNasaExpected.put("size", "14880");
@@ -380,6 +386,9 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         // system metadata
         esriExpected.put("id", esri_pid);
         esriExpected.put("seriesId", "");
+        esriExpected.put("fileName", "");
+        esriExpected.put("mediaType", "");
+        esriExpected.put("mediaTypeProperty", "");
         esriExpected.put("formatId", "http://www.esri.com/metadata/esriprof80.dtd");
         esriExpected.put("formatType", "METADATA");
         esriExpected.put("size", "12575");
@@ -474,6 +483,9 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         // system metadata
         ornlMercuryExpected.put("id", ornl_mercury_pid);
         ornlMercuryExpected.put("seriesId", "");
+        ornlMercuryExpected.put("fileName", "");
+        ornlMercuryExpected.put("mediaType", "");
+        ornlMercuryExpected.put("mediaTypeProperty", "");
         ornlMercuryExpected.put("formatId", "http://purl.org/ornl/schema/mercury/terms/v1.0");
         ornlMercuryExpected.put("formatType", "METADATA");
         ornlMercuryExpected.put("size", "7424");
