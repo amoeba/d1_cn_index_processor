@@ -39,11 +39,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
 
     @Autowired
-    private Resource peggym1304Sys;
-    
-    @Autowired
     private Resource peggym1304SysObsoletedBy;
-    
+
     @Autowired
     private Resource peggym1304Sci;
 
@@ -133,6 +130,9 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
         // system metadata
         eml210Expected.put("id", "peggym.130.4");
         eml210Expected.put("seriesId", "peggym.130");
+        eml210Expected.put("fileName", "fileName1.txt");
+        eml210Expected.put("mediaType", "text/rdf");
+        eml210Expected.put("mediaTypeProperty", "extension rdf#something cool");
         eml210Expected.put("formatId", "eml://ecoinformatics.org/eml-2.1.0");
         eml210Expected.put("formatType", "METADATA");
         eml210Expected.put("size", "36281");
@@ -235,8 +235,8 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
      */
     @Test
     public void testEml210ScienceMetadataFields() throws Exception {
-        testXPathParsing(eml210Subprocessor, peggym1304SysObsoletedBy, peggym1304Sci, eml210Expected,
-                "peggym.130.4");
+        testXPathParsing(eml210Subprocessor, peggym1304SysObsoletedBy, peggym1304Sci,
+                eml210Expected, "peggym.130.4");
     }
 
     /**

@@ -113,6 +113,9 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         // system metadata
         nodc1Expected.put("id", pid1);
         nodc1Expected.put("seriesId", "");
+        nodc1Expected.put("fileName", "");
+        nodc1Expected.put("mediaType", "");
+        nodc1Expected.put("mediaTypeProperty", "");
         nodc1Expected.put("formatId", isotc211FormatId);
         nodc1Expected.put("formatType", "");
         nodc1Expected.put("formatType", "METADATA");
@@ -187,6 +190,9 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         // system metadata
         nodc2Expected.put("id", pid2);
         nodc2Expected.put("seriesId", "");
+        nodc2Expected.put("fileName", "");
+        nodc2Expected.put("mediaType", "");
+        nodc2Expected.put("mediaTypeProperty", "");
         nodc2Expected.put("formatId", isotc211FormatId);
         nodc2Expected.put("formatType", "");
         nodc2Expected.put("formatType", "METADATA");
@@ -256,6 +262,9 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         // system metadata
         iarc1Expected.put("id", pid3);
         iarc1Expected.put("seriesId", "");
+        iarc1Expected.put("fileName", "");
+        iarc1Expected.put("mediaType", "");
+        iarc1Expected.put("mediaTypeProperty", "");
         iarc1Expected.put("formatId", isotc211FormatId);
         iarc1Expected.put("formatType", "");
         iarc1Expected.put("formatType", "METADATA");
@@ -329,6 +338,9 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         // system metadata
         iarc2Expected.put("id", pid4);
         iarc2Expected.put("seriesId", "");
+        iarc2Expected.put("fileName", "");
+        iarc2Expected.put("mediaType", "");
+        iarc2Expected.put("mediaTypeProperty", "");
         iarc2Expected.put("formatId", isotc211FormatId);
         iarc2Expected.put("formatType", "");
         iarc2Expected.put("formatType", "METADATA");

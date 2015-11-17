@@ -127,7 +127,10 @@ This schema is copied into the dataone-cn-index buildout for deployment on cn no
    -->   
    
         <field name="id"              	type="string"   indexed="true" stored="true" multiValued="false"/>
-        <field name="seriesId"			type="string"	indexed="true" stored="true" multiValued="false" />
+        <field name="seriesId"				type="string"	indexed="true" stored="true" multiValued="false" />
+        <field name="fileName"			type="string"	indexed="true"	stored="true"	multiValued="false" />
+        <field name="mediaType"			type="string"	indexed="true"	stored="true"	multiValued="false" />
+        <field name="mediaTypeProperty" type="string"   indexed="true"	stored="true"	multiValued="true" />
         <field name="formatId"    		type="string"   indexed="true" stored="true" multiValued="false"/>
 		<field name="formatType"		type="string"	indexed="true"	stored="true"	multiValued="false"/>
         <field name="size"            	type="tlong"     indexed="true" stored="true" multiValued="false"/>
@@ -305,6 +308,17 @@ This schema is copied into the dataone-cn-index buildout for deployment on cn no
        EXAMPLE:  name="*_i" will match any field ending in _i (like myid_i, z_i)
        RESTRICTION: the glob-like pattern in the name attribute must have
        a "*" only at the start or the end.  -->
+
+<!--  allow multivalued dynamic fields as well  -->
+	<dynamicField name="*_im" type="tint" indexed="true" stored="true" multiValued="true"/>
+	<dynamicField name="*_sm" type="string" indexed="true" stored="true" multiValued="true"/>
+	<dynamicField name="*_lm" type="tlong" indexed="true" stored="true" multiValued="true"/>
+	<dynamicField name="*_tm" type="text_general" indexed="true" stored="true" multiValued="true"/>
+	<dynamicField name="*_bm" type="boolean" indexed="true" stored="true" multiValued="true"/>
+	<dynamicField name="*_fm" type="tfloat" indexed="true" stored="true" multiValued="true"/>
+	<dynamicField name="*_dm" type="tdouble" indexed="true" stored="true" multiValued="true"/>
+	<dynamicField name="*_dtm" type="tdate" indexed="true" stored="true" multiValued="true"/>
+
    
    <dynamicField name="*_i"  type="int"    indexed="true"  stored="true"/>
    <dynamicField name="*_is" type="int"    indexed="true"  stored="true"  multiValued="true"/>
@@ -854,3 +868,4 @@ This schema is copied into the dataone-cn-index buildout for deployment on cn no
     <fieldType name="currency" class="solr.CurrencyField" precisionStep="8" defaultCurrency="USD" currencyConfig="currency.xml" />
 
 </schema>
+

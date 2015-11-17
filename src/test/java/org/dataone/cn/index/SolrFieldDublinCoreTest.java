@@ -85,6 +85,9 @@ public class SolrFieldDublinCoreTest extends BaseSolrFieldXPathTest {
         // system metadata
         dcxExpected.put("id", "ipumsi_6-3_br_2000_dc.xml");
         dcxExpected.put("seriesId", "");
+        dcxExpected.put("fileName", "");
+        dcxExpected.put("mediaType", "");
+        dcxExpected.put("mediaTypeProperty", "");
         dcxExpected.put("formatId", "http://ns.dataone.org/metadata/schema/onedcx/v1.0");
         dcxExpected.put("formatType", "METADATA");
         dcxExpected.put("size", "14949");

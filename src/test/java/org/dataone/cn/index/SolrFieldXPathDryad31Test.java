@@ -81,6 +81,9 @@ public class SolrFieldXPathDryad31Test extends BaseSolrFieldXPathTest {
         // system metadata
         dryadDataPackage1Expected.put("id", dryadDataPackage1Pid);
         dryadDataPackage1Expected.put("seriesId", "");
+        dryadDataPackage1Expected.put("fileName", "");
+        dryadDataPackage1Expected.put("mediaType", "");
+        dryadDataPackage1Expected.put("mediaTypeProperty", "");
         dryadDataPackage1Expected.put("formatId", "http://datadryad.org/profile/v3.1");
         dryadDataPackage1Expected.put("formatType", "METADATA");
         dryadDataPackage1Expected.put("size", "3686");
@@ -138,6 +141,9 @@ public class SolrFieldXPathDryad31Test extends BaseSolrFieldXPathTest {
         // system metadata
         dryadDataFile1Expected.put("id", dryadDataFile1Pid);
         dryadDataFile1Expected.put("seriesId", "");
+        dryadDataFile1Expected.put("fileName", "");
+        dryadDataFile1Expected.put("mediaType", "");
+        dryadDataFile1Expected.put("mediaTypeProperty", "");
         dryadDataFile1Expected.put("formatId", "http://datadryad.org/profile/v3.1");
         dryadDataFile1Expected.put("formatType", "METADATA");
         dryadDataFile1Expected.put("size", "2042");
