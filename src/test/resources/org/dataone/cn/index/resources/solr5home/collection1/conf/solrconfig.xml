@@ -458,7 +458,7 @@
 		prov_generatedByExecution, prov_generatedByUser, prov_usedByProgram, 
         prov_usedByExecution, prov_usedByUser, prov_wasExecutedByExecution, prov_wasExecutedByUser, prov_hasSources, 
         prov_hasDerivations, prov_instanceOfClass, sem_annotation, sem_annotated_by, sem_annotates,sem_comment, 
-        seriesId
+        seriesId, fileName, mediaType, mediaTypeProperty
        </str>
 	 </lst>
     </requestHandler>
