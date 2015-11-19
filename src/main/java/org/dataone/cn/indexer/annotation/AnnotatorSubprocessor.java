@@ -174,7 +174,7 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
      * @param the stream of the [JSON] annotation
      * @return
      */
-    private SolrDoc parseAnnotation(InputStream is) {
+    protected SolrDoc parseAnnotation(InputStream is) {
 
         try {
 
@@ -369,12 +369,7 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
     public SolrDoc mergeWithIndexedDocument(SolrDoc indexDocument) throws IOException,
             EncoderException, XPathExpressionException {
     	
-        SolrDoc mergedDoc = indexDocument;
-        try {
-        	mergedDoc = processorUtility.mergeWithIndexedDocument(indexDocument, fieldsToMerge);
-        } catch (Exception e) {
-        	log.error("Unable to merge solr document: " + indexDocument.getIdentifier(), e);
-        }
-		return mergedDoc;
+        return processorUtility.mergeWithIndexedDocument(indexDocument, fieldsToMerge);
+        
     }
 }
