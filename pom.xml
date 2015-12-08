@@ -15,7 +15,7 @@
 	  	<d1_cn_common_version>2.0.1</d1_cn_common_version>
 	  	<d1_libclient_version>2.0.0</d1_libclient_version>
 	  	<d1_cn_index_common_version>2.0.0</d1_cn_index_common_version>
-	  	<d1_cn_index_generator_version>2.0.0</d1_cn_index_generator_version>
+	  	<d1_cn_index_generator_version>2.0.1</d1_cn_index_generator_version>
  	</properties>
 
  <repositories>
