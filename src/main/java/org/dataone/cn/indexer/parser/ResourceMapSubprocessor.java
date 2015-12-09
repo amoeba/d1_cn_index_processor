@@ -145,7 +145,7 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
         Identifier identifier = new Identifier();
         identifier.setValue(resourceMapIdentifier);
 
-        boolean containsSeriesId = true;
+        boolean containsSeriesId = false;
         for (String relatedDoc : relatedDocs) {
             Identifier relatedPid = new Identifier();
             relatedPid.setValue(relatedDoc);
