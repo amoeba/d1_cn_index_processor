@@ -218,4 +218,56 @@
 		<property name="combineNodes" value="true"/>
 	</bean>
 	
+	<bean id="isotc.isService" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="isService" />
+		<constructor-arg name="xpath" value="boolean(//srv:SV_ServiceIdentification)"/>
+	</bean>
+	
+	<bean id="isotc.serviceCoupling" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="serviceCoupling" />
+		<constructor-arg name="xpath" 
+			value="//srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue" />
+			<!-- boolean(//srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue = "tight") -->
+	</bean>
+	
+	<bean id="isotc.serviceTitle" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="serviceTitle" />
+		<constructor-arg name="xpath" 
+			value="(//srv:SV_ServiceIdentification/gmd:citation/gmd:CI_Citation/gmd:title/gco:CharacterString/text())[1]" />
+	</bean>
+	
+	<bean id="isotc.serviceDescription" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="serviceDescription" />
+		<constructor-arg name="xpath" 
+			value="(//srv:SV_ServiceIdentification/gmd:abstract/gco:CharacterString/text())[1]" />
+	</bean>	
+	
+	<bean id="isotc.serviceType" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="serviceType" />
+		<constructor-arg name="xpath" 
+			value="//srv:SV_ServiceIdentification/srv:serviceType/gco:LocalName/text()"/>
+		<property name="multivalue" value="true" />
+	</bean>
+	
+	<bean id="isotc.serviceEndpoint" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="serviceEndpoint" />
+		<constructor-arg name="xpath" 
+			value="//srv:SV_ServiceIdentification/srv:containsOperations/srv:SV_OperationMetadata/srv:connectPoint/gmd:CI_OnlineResource/gmd:linkage/gmd:URL/text()"/>
+		<property name="multivalue" value="true" />
+	</bean>	
+
+	<bean id="isotc.serviceInput" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="serviceInput" />
+		<constructor-arg name="xpath" 
+			value="//srv:SV_ServiceIdentification/srv:operatesOn/text()"/>
+		<property name="multivalue" value="true" />
+	</bean>	
+
+	<bean id="isotc.serviceOutput" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="serviceOutput" />
+		<constructor-arg name="xpath" 
+			value="//srv:SV_ServiceIdentification/gmd:resourceFormat/text()"/>
+		<property name="multivalue" value="true" />
+	</bean>	
+	
 </beans>
