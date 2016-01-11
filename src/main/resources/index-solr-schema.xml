@@ -289,7 +289,18 @@ This schema is copied into the dataone-cn-index buildout for deployment on cn no
         <field name="sem_annotated_by"        type="string" indexed="true" stored="true" multiValued="true" />
         <field name="sem_annotates"        type="string" indexed="true" stored="true" multiValued="true" />
         <field name="sem_comment"        type="string" indexed="true" stored="true" multiValued="true" />
-
+	
+	
+		<!-- member node service fields -->
+		<field name="isService"			type="boolean"  indexed="true"  stored="true" multivalued="false" default="false" />
+		<field name="serviceCoupling"	type="string"	indexed="true"	stored="true"	multivalued="false" default="false" />
+		<field name="serviceTitle"		type="text_general" 	indexed="true"	stored="true"	multivalued="false" />
+		<field name="serviceDescription" type="text_general"		indexed="true"  stored="true" multivalued="false" />
+		<field name="serviceType"		type="string"	indexed="true"  stored="true" multivalued="true" />
+		<field name="serviceEndpoint"	type="string"	indexed="true"  stored="true" multivalued="true" />
+		<field name="serviceInput"		type="string"	indexed="true"  stored="true" multivalued="true" />
+		<field name="serviceOutput"		type="string"	indexed="true"  stored="true" multivalued="true" />
+		
    <!--
      Some fields such as popularity and manu_exact could be modified to
      leverage doc values:
