@@ -259,14 +259,14 @@
 	<bean id="isotc.serviceInput" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="serviceInput" />
 		<constructor-arg name="xpath" 
-			value="//srv:SV_ServiceIdentification/srv:operatesOn/text()"/>
+			value="//srv:SV_ServiceIdentification/srv:operatesOn/@xlink:href"/>
 		<property name="multivalue" value="true" />
 	</bean>	
 
 	<bean id="isotc.serviceOutput" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="serviceOutput" />
 		<constructor-arg name="xpath" 
-			value="//srv:SV_ServiceIdentification/gmd:resourceFormat/text()"/>
+			value="//srv:SV_ServiceIdentification/gmd:resourceFormat/@xlink:href"/>
 		<property name="multivalue" value="true" />
 	</bean>	
 	
