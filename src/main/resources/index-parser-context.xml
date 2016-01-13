@@ -177,6 +177,16 @@
 		 		<constructor-arg name="prefix" value="gml" />
 		 	   	<constructor-arg name="namespace" value="http://www.opengis.net/gml/3.2" />
 			</bean> 
+
+			<bean class="org.dataone.cn.indexer.XMLNamespace">
+		 		<constructor-arg name="prefix" value="srv" />
+		 	   	<constructor-arg name="namespace" value="http://www.isotc211.org/2005/srv" />
+			</bean> 
+			
+			<bean class="org.dataone.cn.indexer.XMLNamespace">
+		 		<constructor-arg name="prefix" value="xlink" />
+		 	   	<constructor-arg name="namespace" value="http://www.w3.org/1999/xlink" />
+			</bean> 
 		</list>
 	 	</constructor-arg>
 	</bean>
