@@ -262,22 +262,22 @@ xmlns:context="http://www.springframework.org/schema/context"
     
    	<bean id="isotc211_nodc_1_SysMeta" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String" 
-        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/gov.noaa.nodc:9900233.System.Metadata"/>
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/gov.noaa.nodc-9900233.System.Metadata"/>
     </bean>
     
     <bean id="isotc211_nodc_1_SciMeta" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String" 
-        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/gov.noaa.nodc:9900233"/>
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/gov.noaa.nodc-9900233"/>
     </bean>
 
    	<bean id="isotc211_nodc_2_SysMeta" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String" 
-        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/gov.noaa.nodc:GHRSST-NEODAAS-L2P-AVHRR17_L.System.Metadata"/>
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/gov.noaa.nodc-GHRSST-NEODAAS-L2P-AVHRR17_L.System.Metadata"/>
     </bean>
     
     <bean id="isotc211_nodc_2_SciMeta" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String" 
-        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/gov.noaa.nodc:GHRSST-NEODAAS-L2P-AVHRR17_L"/>
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/gov.noaa.nodc-GHRSST-NEODAAS-L2P-AVHRR17_L"/>
     </bean>
 
    	<bean id="isotc211_iarc_1_SysMeta" class="org.springframework.core.io.ClassPathResource" >
@@ -300,4 +300,23 @@ xmlns:context="http://www.springframework.org/schema/context"
         value="org/dataone/cn/index/resources/d1_testdocs/isotc211/iso19139_bcc7e1be-2683-433c-b351-bc061f35ceb8_0"/>
     </bean>
     
+    <bean id="isotc211_tightlyCoupledService_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_tightlyCoupledService_SysMeta.xml"/>
+    </bean>
+    
+    <bean id="isotc211_tightlyCoupledService_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_tightlyCoupledService_SciMeta.xml"/>
+    </bean>
+    
+    <bean id="isotc211_looselyCoupledService_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_looselyCoupledService_SysMeta.xml"/>
+    </bean>
+    
+    <bean id="isotc211_looselyCoupledService_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_looselyCoupledService_SciMeta.xml"/>
+    </bean>
 </beans>
