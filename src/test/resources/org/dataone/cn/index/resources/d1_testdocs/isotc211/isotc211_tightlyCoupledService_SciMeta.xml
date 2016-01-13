@@ -531,7 +531,7 @@ completeness, or usefulness, of this information.</gco:CharacterString>
           </srv:connectPoint>
         </srv:SV_OperationMetadata>
       </srv:containsOperations>
-      <srv:operatesOn xlink:href="#DataIdentification"/>
+      <srv:operatesOn xlink:href="DataIdentification"/>
     </srv:SV_ServiceIdentification>
   </gmd:identificationInfo>
   <gmd:identificationInfo>
@@ -665,7 +665,7 @@ completeness, or usefulness, of this information.</gco:CharacterString>
           </srv:connectPoint>
         </srv:SV_OperationMetadata>
       </srv:containsOperations>
-      <srv:operatesOn xlink:href="#DataIdentification"/>
+      <srv:operatesOn xlink:href="DataIdentification"/>
     </srv:SV_ServiceIdentification>
   </gmd:identificationInfo>
   <gmd:contentInfo>
