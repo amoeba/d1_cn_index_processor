@@ -52,6 +52,23 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     private String pid4 = "iso19139_bcc7e1be-2683-433c-b351-bc061f35ceb8_0";
 
     @Autowired
+    private Resource isotc211_tightlyCoupledService_SysMeta;
+
+    @Autowired
+    private Resource isotc211_tightlyCoupledService_SciMeta;
+
+    private String pid5 = "IOOS_etopo100_201611124924884";
+
+    @Autowired
+    private Resource isotc211_looselyCoupledService_SysMeta;
+
+    @Autowired
+    private Resource isotc211_looselyCoupledService_SciMeta;
+
+    private String pid6 = "iso19119_looselyCoupled_20161293114572";
+
+    
+    @Autowired
     private ScienceMetadataDocumentSubprocessor isotc211Subprocessor;
 
     private HashMap<String, String> nodc1Expected = new HashMap<String, String>();
@@ -60,6 +77,9 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     private HashMap<String, String> iarc1Expected = new HashMap<String, String>();
     private HashMap<String, String> iarc2Expected = new HashMap<String, String>();
 
+    private HashMap<String, String> tightlyCoupledServiceExpected = new HashMap<String, String>();
+    private HashMap<String, String> looselyCoupledServiceExpected = new HashMap<String, String>();
+    
     private SolrDateConverter dateConverter = new SolrDateConverter();
 
     @Before
@@ -68,6 +88,8 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         setupNodc2Expected();
         setupIarc1Expected();
         setupIarc2Expected();
+        setupTightlyCoupledServiceExpected();
+        setupLooselyCoupledServiceExpected();
     }
 
     private void setupNodc1Expected() throws Exception {
@@ -142,6 +164,15 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         nodc1Expected.put("isPublic", "true");
         nodc1Expected.put("dataUrl",
                 "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid1, "UTF-8"));
+        // service info
+        nodc1Expected.put("isService", "false");
+        nodc1Expected.put("serviceCoupling", "");
+        nodc1Expected.put("serviceTitle", "");
+        nodc1Expected.put("serviceDescription", "");
+        nodc1Expected.put("serviceType", "");
+        nodc1Expected.put("serviceEndpoint", "");
+        nodc1Expected.put("serviceInput", "");
+        nodc1Expected.put("serviceOutput", "");
     }
 
     private void setupNodc2Expected() throws Exception {
@@ -219,6 +250,15 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         nodc2Expected.put("isPublic", "true");
         nodc2Expected.put("dataUrl",
                 "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid2, "UTF-8"));
+        // service info
+        nodc2Expected.put("isService", "false");
+        nodc2Expected.put("serviceCoupling", "");
+        nodc2Expected.put("serviceTitle", "");
+        nodc2Expected.put("serviceDescription", "");
+        nodc2Expected.put("serviceType", "");
+        nodc2Expected.put("serviceEndpoint", "");
+        nodc2Expected.put("serviceInput", "");
+        nodc2Expected.put("serviceOutput", "");
     }
 
     private void setupIarc1Expected() throws Exception {
@@ -293,6 +333,15 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         iarc1Expected.put("isPublic", "true");
         iarc1Expected.put("dataUrl",
                 "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid3, "UTF-8"));
+        // service info
+        iarc1Expected.put("isService", "false");
+        iarc1Expected.put("serviceCoupling", "");
+        iarc1Expected.put("serviceTitle", "");
+        iarc1Expected.put("serviceDescription", "");
+        iarc1Expected.put("serviceType", "");
+        iarc1Expected.put("serviceEndpoint", "");
+        iarc1Expected.put("serviceInput", "");
+        iarc1Expected.put("serviceOutput", "");
     }
 
     private void setupIarc2Expected() throws Exception {
@@ -369,7 +418,176 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         iarc2Expected.put("isPublic", "true");
         iarc2Expected.put("dataUrl",
                 "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid4, "UTF-8"));
-
+        // service info
+        iarc2Expected.put("isService", "false");
+        iarc2Expected.put("serviceCoupling", "");
+        iarc2Expected.put("serviceTitle", "");
+        iarc2Expected.put("serviceDescription", "");
+        iarc2Expected.put("serviceType", "");
+        iarc2Expected.put("serviceEndpoint", "");
+        iarc2Expected.put("serviceInput", "");
+        iarc2Expected.put("serviceOutput", "");
+    }
+    
+    private void setupTightlyCoupledServiceExpected() throws Exception { 
+        // system metadata
+        tightlyCoupledServiceExpected.put("id", pid5);
+        tightlyCoupledServiceExpected.put("seriesId", "");
+        tightlyCoupledServiceExpected.put("fileName", "");
+        tightlyCoupledServiceExpected.put("mediaType", "");
+        tightlyCoupledServiceExpected.put("mediaTypeProperty", "");
+        tightlyCoupledServiceExpected.put("formatId", isotc211FormatId);
+        tightlyCoupledServiceExpected.put("formatType", "METADATA");
+        tightlyCoupledServiceExpected.put("size", "43216");
+        tightlyCoupledServiceExpected.put("checksum", "f693b0d79ae3cbf65a4777123c17a1af");
+        tightlyCoupledServiceExpected.put("checksumAlgorithm", "MD5");
+        tightlyCoupledServiceExpected.put("submitter", "CN=urn:node:cnSandboxUCSB1,DC=dataone,DC=org");
+        tightlyCoupledServiceExpected.put("rightsHolder", "cnSandboxUCSB1");
+        tightlyCoupledServiceExpected.put("replicationAllowed", "");
+        tightlyCoupledServiceExpected.put("numberReplicas", "");
+        tightlyCoupledServiceExpected.put("preferredReplicationMN", "");
+        tightlyCoupledServiceExpected.put("blockedReplicationMN", "");
+        tightlyCoupledServiceExpected.put("obsoletes", "");
+        tightlyCoupledServiceExpected.put("obsoletedBy", "");
+        tightlyCoupledServiceExpected.put("dateUploaded", dateConverter.convert("2016-01-11T20:49:00.385Z"));
+        tightlyCoupledServiceExpected.put("dateModified", dateConverter.convert("2016-01-11T20:49:00.385Z"));
+        tightlyCoupledServiceExpected.put("datasource", "urn:node:mnDemo6");
+        tightlyCoupledServiceExpected.put("authoritativeMN", "urn:node:mnDemo6");
+        tightlyCoupledServiceExpected.put("replicaMN", "");
+        tightlyCoupledServiceExpected.put("replicaVerifiedDate", "");
+        tightlyCoupledServiceExpected.put("readPermission", "public");
+        tightlyCoupledServiceExpected.put("writePermission", "");
+        tightlyCoupledServiceExpected.put("changePermission", "CN=urn:node:cnSandboxUCSB1,DC=dataone,DC=org");
+        tightlyCoupledServiceExpected.put("isPublic", "true");
+        tightlyCoupledServiceExpected.put("dataUrl",
+                "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid5, "UTF-8"));    
+        // science metadata
+        tightlyCoupledServiceExpected.put("author", "Steven Baum");
+        tightlyCoupledServiceExpected.put("authorSurName", "Steven Baum");
+        tightlyCoupledServiceExpected.put("authorSurNameSort", "Steven Baum");
+        tightlyCoupledServiceExpected.put("origin", "Steven Baum" 
+                + "#" + "Texas AM University"
+                + "#" + "NOAA NGDC"
+                + "#" + "GLOBE, SRTM30, Baltic Sea Bathymetry, Caspian Sea Bathymetry, Great Lakes Bathymetry, Gulf of California Bathymetry, IBCAO, JODC Bathymetry, Mediterranean Sea Bathymetry, U.S. Coastal Relief Model (CRM), Antarctica RAMP Topography, Antarctic Digital Database, GSHHS");
+        tightlyCoupledServiceExpected.put("investigator", "Steven Baum" 
+                + "#" + "NOAA NGDC");
+        tightlyCoupledServiceExpected.put("abstract",
+                "ETOPO1 is a 1 arc-minute global relief model of Earth's surface that integrates land topography and ocean bathymetry. It was built from numerous global and regional data sets. This is the 'Ice Surface' version, with the top of the Antarctic and Greenland ice sheets. The horizontal datum is WGS-84, the vertical datum is Mean Sea Level. Keywords: Bathymetry, Digital Elevation. This is the grid/node-registered version: the dataset's latitude and longitude values mark the centers of the cells.");
+        tightlyCoupledServiceExpected.put("title",
+                "Topography, ETOPO1, 0.0166667 degrees, Global (longitude -180 to 180), (Ice Sheet Surface)");
+        tightlyCoupledServiceExpected.put("pubDate", dateConverter.convert("20151214-01-01T00:00:00Z"));    // may need to remove convert() call?
+        tightlyCoupledServiceExpected.put("beginDate", "");
+        tightlyCoupledServiceExpected.put("endDate", "");
+        tightlyCoupledServiceExpected.put("keywords", 
+                "Oceans > Bathymetry/Seafloor Topography > Bathymetry"
+                + "#" + "NOAA NGDC ETOPO"
+                + "#" + "latitude"
+                + "#" + "longitude"
+                + "#" + "altitude");
+        tightlyCoupledServiceExpected.put("contactOrganization", "Texas AM University");
+        tightlyCoupledServiceExpected.put("southBoundCoord", "-90.0");
+        tightlyCoupledServiceExpected.put("northBoundCoord", "90.0");
+        tightlyCoupledServiceExpected.put("westBoundCoord", "-180.0");
+        tightlyCoupledServiceExpected.put("eastBoundCoord", "180.0");
+        tightlyCoupledServiceExpected.put("geohash_1", "s");
+        tightlyCoupledServiceExpected.put("geohash_2", "s0");
+        tightlyCoupledServiceExpected.put("geohash_3", "s00");
+        tightlyCoupledServiceExpected.put("geohash_4", "s000");
+        tightlyCoupledServiceExpected.put("geohash_5", "s0000");
+        tightlyCoupledServiceExpected.put("geohash_6", "s00000");
+        tightlyCoupledServiceExpected.put("geohash_7", "s000000");
+        tightlyCoupledServiceExpected.put("geohash_8", "s0000000");
+        tightlyCoupledServiceExpected.put("geohash_9", "s00000000");
+        tightlyCoupledServiceExpected.put("fileID", "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid5, "UTF-8"));
+        tightlyCoupledServiceExpected.put("text", "");
+        // service info
+        tightlyCoupledServiceExpected.put("isService", "true");
+        tightlyCoupledServiceExpected.put("serviceCoupling", "tight");
+        tightlyCoupledServiceExpected.put("serviceTitle", "Topography, ETOPO1, 0.0166667 degrees, Global (longitude -180 to 180), (Ice Sheet Surface)");
+        tightlyCoupledServiceExpected.put("serviceDescription", "ETOPO1 is a 1 arc-minute global relief model of Earth's surface that integrates land topography and ocean bathymetry. It was built from numerous global and regional data sets. This is the 'Ice Surface' version, with the top of the Antarctic and Greenland ice sheets. The horizontal datum is WGS-84, the vertical datum is Mean Sea Level. Keywords: Bathymetry, Digital Elevation. This is the grid/node-registered version: the dataset's latitude and longitude values mark the centers of the cells.");
+        tightlyCoupledServiceExpected.put("serviceType", "ERDDAP OPeNDAP" 
+                + "#" + "Open Geospatial Consortium Web Map Service (WMS)");
+        tightlyCoupledServiceExpected.put("serviceEndpoint", 
+                "http://gcoos1.tamu.edu:8080/erddap/griddap/etopo180"
+                + "#" + "http://gcoos1.tamu.edu:8080/erddap/wms/etopo180/request?service=WMS&version=1.3.0&request=GetCapabilities");
+        tightlyCoupledServiceExpected.put("serviceInput", 
+                "#DataIdentification"
+                + "#" + "#DataIdentification");
+        tightlyCoupledServiceExpected.put("serviceOutput", "");
+    }
+    
+    private void setupLooselyCoupledServiceExpected() throws Exception {
+        // system metadata
+        looselyCoupledServiceExpected.put("id", pid6);
+        looselyCoupledServiceExpected.put("seriesId", "");
+        looselyCoupledServiceExpected.put("fileName", "");
+        looselyCoupledServiceExpected.put("mediaType", "");
+        looselyCoupledServiceExpected.put("mediaTypeProperty", "");
+        looselyCoupledServiceExpected.put("formatId", isotc211FormatId);
+        looselyCoupledServiceExpected.put("formatType", "METADATA");
+        looselyCoupledServiceExpected.put("size", "5172");
+        looselyCoupledServiceExpected.put("checksum", "5ec9ee7e9e4c34c6ab360a19328917ef");
+        looselyCoupledServiceExpected.put("checksumAlgorithm", "MD5");
+        looselyCoupledServiceExpected.put("submitter", "CN=urn:node:cnSandboxUCSB1,DC=dataone,DC=org");
+        looselyCoupledServiceExpected.put("rightsHolder", "cnSandboxUCSB1");
+        looselyCoupledServiceExpected.put("replicationAllowed", "");
+        looselyCoupledServiceExpected.put("numberReplicas", "");
+        looselyCoupledServiceExpected.put("preferredReplicationMN", "");
+        looselyCoupledServiceExpected.put("blockedReplicationMN", "");
+        looselyCoupledServiceExpected.put("obsoletes", "");
+        looselyCoupledServiceExpected.put("obsoletedBy", "");
+        looselyCoupledServiceExpected.put("dateUploaded", dateConverter.convert("2016-01-12T17:30:48.415Z"));
+        looselyCoupledServiceExpected.put("dateModified", dateConverter.convert("2016-01-12T17:30:48.415Z"));
+        looselyCoupledServiceExpected.put("datasource", "urn:node:mnDemo6");
+        looselyCoupledServiceExpected.put("authoritativeMN", "urn:node:mnDemo6");
+        looselyCoupledServiceExpected.put("replicaMN", "");
+        looselyCoupledServiceExpected.put("replicaVerifiedDate", "");
+        looselyCoupledServiceExpected.put("readPermission", "public");
+        looselyCoupledServiceExpected.put("writePermission", "");
+        looselyCoupledServiceExpected.put("changePermission", "CN=urn:node:cnSandboxUCSB1,DC=dataone,DC=org");
+        looselyCoupledServiceExpected.put("isPublic", "true");
+        looselyCoupledServiceExpected.put("dataUrl",
+                "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid6, "UTF-8"));
+    
+        // science metadata
+        looselyCoupledServiceExpected.put("author", "Bob");
+        looselyCoupledServiceExpected.put("authorSurName", "Bob");
+        looselyCoupledServiceExpected.put("authorSurNameSort", "Bob");
+        looselyCoupledServiceExpected.put("origin", "Bob" 
+                + "#" + "UNM");
+        looselyCoupledServiceExpected.put("investigator", "Bob");
+        looselyCoupledServiceExpected.put("abstract", "");
+        looselyCoupledServiceExpected.put("title", "");
+        looselyCoupledServiceExpected.put("pubDate", dateConverter.convert("20151214-01-01T00:00:00Z"));
+        looselyCoupledServiceExpected.put("beginDate", "");
+        looselyCoupledServiceExpected.put("endDate", "");
+        looselyCoupledServiceExpected.put("keywords", "");
+        looselyCoupledServiceExpected.put("contactOrganization", "UNM");
+        looselyCoupledServiceExpected.put("southBoundCoord", "");
+        looselyCoupledServiceExpected.put("northBoundCoord", "");
+        looselyCoupledServiceExpected.put("westBoundCoord", "");
+        looselyCoupledServiceExpected.put("eastBoundCoord", "");
+        looselyCoupledServiceExpected.put("geohash_1", "");
+        looselyCoupledServiceExpected.put("geohash_2", "");
+        looselyCoupledServiceExpected.put("geohash_3", "");
+        looselyCoupledServiceExpected.put("geohash_4", "");
+        looselyCoupledServiceExpected.put("geohash_5", "");
+        looselyCoupledServiceExpected.put("geohash_6", "");
+        looselyCoupledServiceExpected.put("geohash_7", "");
+        looselyCoupledServiceExpected.put("geohash_8", "");
+        looselyCoupledServiceExpected.put("geohash_9", "");
+        looselyCoupledServiceExpected.put("fileID", "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid6, "UTF-8"));
+        looselyCoupledServiceExpected.put("text", "iso19119_looselyCoupled    eng    UTF8    dataset    service      Bob    UNM    pointOfContact      20151214Z    ISO 19115-2 Geographic Information - Metadata Part 2 Extensions for Imagery and Gridded Data    ISO 19115-2:2009(E)        Test Render Service      2007-12-29T12:00:00           Abstract: A rendering service in ISO19139/119,\t\t\t\t\tyields an application/svg xml of given data.     OGC:WMS         RenderSVG         http://localhost:8080/geoserver/wms?SERVICE=WMS&    Renders an application/svg xml of given\t\t\t\t\t\t\t\t\tdata. iso19119_looselyCoupled_20161293114572");
+        // service info
+        looselyCoupledServiceExpected.put("isService", "true");
+        looselyCoupledServiceExpected.put("serviceCoupling", "loose");
+        looselyCoupledServiceExpected.put("serviceTitle", "Test Render Service");
+        looselyCoupledServiceExpected.put("serviceDescription", "Abstract: A rendering service in ISO19139/119,\t\t\t\t\tyields an application/svg xml of given data.");
+        looselyCoupledServiceExpected.put("serviceType", "OGC:WMS"); 
+        looselyCoupledServiceExpected.put("serviceEndpoint", "http://localhost:8080/geoserver/wms?SERVICE=WMS&");
+        looselyCoupledServiceExpected.put("serviceInput", "https://cn-dev-ucsb-1.test.dataone.org/cn/v2/formats/CF-1.3"
+                + "#" + "https://cn-dev-ucsb-1.test.dataone.org/cn/v2/formats/CF-1.4");
+        looselyCoupledServiceExpected.put("serviceOutput", "https://cn-dev-ucsb-1.test.dataone.org/cn/v2/formats/image%2Fsvg%20xml");
     }
 
     @Test
@@ -394,5 +612,17 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     public void testIsotc211Iarc2FieldParsing() throws Exception {
         testXPathParsing(isotc211Subprocessor, isotc211_iarc_2_SysMeta, isotc211_iarc_2_SciMeta,
                 iarc2Expected, pid4);
+    }
+    
+    @Test
+    public void testIsotc211TightlyCoupledIso19119Doc() throws Exception {
+        testXPathParsing(isotc211Subprocessor, isotc211_tightlyCoupledService_SysMeta, isotc211_tightlyCoupledService_SciMeta,
+                tightlyCoupledServiceExpected, pid5);
+    }
+
+    @Test
+    public void testIsotc211LooselyCoupledIso19119Doc() throws Exception {
+        testXPathParsing(isotc211Subprocessor, isotc211_looselyCoupledService_SysMeta, isotc211_looselyCoupledService_SciMeta,
+                looselyCoupledServiceExpected, pid6);
     }
 }
