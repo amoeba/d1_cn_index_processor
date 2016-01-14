@@ -12,6 +12,7 @@ import junit.framework.TestCase;
 
 import org.dataone.cn.indexer.convert.MemberNodeServiceRegistrationType;
 import org.dataone.cn.indexer.parser.utility.ServiceTypesParser;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -32,6 +33,7 @@ public class ServiceTypesParserTest extends TestCase {
             + "</serviceType>" + "\n"
             + "</serviceTypes>";    
     
+    @Test
     public void testServiceTypes() {
         
         DocumentBuilder db = null;
