@@ -3,6 +3,7 @@ package org.dataone.cn.index;
 import java.net.URLEncoder;
 import java.util.HashMap;
 
+import org.dataone.cn.indexer.convert.MemberNodeServiceRegistrationTypeConverter;
 import org.dataone.cn.indexer.convert.SolrDateConverter;
 import org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor;
 import org.junit.Before;
@@ -81,7 +82,9 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     private HashMap<String, String> looselyCoupledServiceExpected = new HashMap<String, String>();
     
     private SolrDateConverter dateConverter = new SolrDateConverter();
-
+    @Autowired
+    private MemberNodeServiceRegistrationTypeConverter serviceTypeConverter;
+    
     @Before
     public void setUp() throws Exception {
         setupNodc1Expected();
@@ -505,8 +508,8 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         tightlyCoupledServiceExpected.put("serviceCoupling", "tight");
         tightlyCoupledServiceExpected.put("serviceTitle", "Topography, ETOPO1, 0.0166667 degrees, Global (longitude -180 to 180), (Ice Sheet Surface)");
         tightlyCoupledServiceExpected.put("serviceDescription", "ETOPO1 is a 1 arc-minute global relief model of Earth's surface that integrates land topography and ocean bathymetry. It was built from numerous global and regional data sets. This is the 'Ice Surface' version, with the top of the Antarctic and Greenland ice sheets. The horizontal datum is WGS-84, the vertical datum is Mean Sea Level. Keywords: Bathymetry, Digital Elevation. This is the grid/node-registered version: the dataset's latitude and longitude values mark the centers of the cells.");
-        tightlyCoupledServiceExpected.put("serviceType", "ERDDAP OPeNDAP" 
-                + "#" + "Open Geospatial Consortium Web Map Service (WMS)");
+        tightlyCoupledServiceExpected.put("serviceType", serviceTypeConverter.convert("ERDDAP OPeNDAP") 
+                + "#" + serviceTypeConverter.convert("Open Geospatial Consortium Web Map Service (WMS)"));
         tightlyCoupledServiceExpected.put("serviceEndpoint", 
                 "http://gcoos1.tamu.edu:8080/erddap/griddap/etopo180"
                 + "#" + "http://gcoos1.tamu.edu:8080/erddap/wms/etopo180/request?service=WMS&version=1.3.0&request=GetCapabilities");
