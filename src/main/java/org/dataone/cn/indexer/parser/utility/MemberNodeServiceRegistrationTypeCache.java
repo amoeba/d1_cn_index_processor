@@ -11,26 +11,28 @@ import org.w3c.dom.Document;
 
 public class MemberNodeServiceRegistrationTypeCache {
 
-    private static final int REFRESH_INTERVAL_MINUTES = Settings.getConfiguration().getInt("dataone.mn.registration.serviceType.cacheRefreshMinutes", 1);
+    private static final int REFRESH_INTERVAL_MINUTES = Settings.getConfiguration().getInt(
+            "dataone.mn.registration.serviceType.cacheRefreshMinutes", 1);
+    private static long refreshIntervalMillis = REFRESH_INTERVAL_MINUTES * 60 * 1000;
+
     private static long lastRefreshTime = 0;
     private static Collection<MemberNodeServiceRegistrationType> serviceTypes = new ArrayList<MemberNodeServiceRegistrationType>();
-    
+
     @Autowired
-    MemberNodeServiceRegistrationTypeDocumentService mnServiceRegistrationTypeDocumentService;
-    
-    
+    private MemberNodeServiceRegistrationTypeDocumentService mnServiceRegistrationTypeDocumentService;
+
     public Collection<MemberNodeServiceRegistrationType> getServiceTypes() {
-        
-        long refreshIntervalMillis = REFRESH_INTERVAL_MINUTES * 60 * 1000;
+
         long expectedRefreshTime = lastRefreshTime + refreshIntervalMillis;
         long currentTime = System.currentTimeMillis();
-        
+
         if (currentTime > expectedRefreshTime) {
-            Document doc = mnServiceRegistrationTypeDocumentService.getMemberNodeServiceRegistrationTypeDocument();
+            Document doc = mnServiceRegistrationTypeDocumentService
+                    .getMemberNodeServiceRegistrationTypeDocument();
             serviceTypes = MemberNodeServiceRegistrationTypesParser.parseServiceTypes(doc);
             lastRefreshTime = currentTime;
         }
-        
+
         return serviceTypes;
     }
 

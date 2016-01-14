@@ -13,7 +13,7 @@ import org.w3c.dom.Document;
 public class MemberNodeServiceRegistrationTypeDocumentServiceTest {
 
     @Autowired
-    MemberNodeServiceRegistrationTypeDocumentService serviceTypeDocService;
+    private MemberNodeServiceRegistrationTypeDocumentService serviceTypeDocService;
 
     public MemberNodeServiceRegistrationTypeDocumentServiceTest() {
     }

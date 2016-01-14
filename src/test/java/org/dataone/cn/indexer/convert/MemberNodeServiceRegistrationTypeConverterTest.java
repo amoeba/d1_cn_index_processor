@@ -14,36 +14,36 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class MemberNodeServiceRegistrationTypeConverterTest {
 
     @Autowired
-    MemberNodeServiceRegistrationTypeConverter serviceTypesConverter;
-    
+    private MemberNodeServiceRegistrationTypeConverter serviceTypesConverter;
+
     @Test
     public void testConvertWMS() {
-        assertTrue("\"WMS\" should be converted to service type WMS.", 
+        assertTrue("\"WMS\" should be converted to service type WMS.",
                 "WMS".equals(serviceTypesConverter.convert("WMS")));
-        assertTrue("\"Wms\" should be converted to service type WMS.", 
+        assertTrue("\"Wms\" should be converted to service type WMS.",
                 "WMS".equals(serviceTypesConverter.convert("Wms")));
-        assertTrue("\"wms\" should be converted to service type WMS.", 
+        assertTrue("\"wms\" should be converted to service type WMS.",
                 "WMS".equals(serviceTypesConverter.convert("wms")));
-        
-        assertFalse("\"W-M-S\" should not be converted to service type WMS.", 
+
+        assertFalse("\"W-M-S\" should not be converted to service type WMS.",
                 "WMS".equals(serviceTypesConverter.convert("W-M-S")));
-        assertFalse("\"OPeNDAP\" should not be converted to service type WMS.", 
+        assertFalse("\"OPeNDAP\" should not be converted to service type WMS.",
                 "WMS".equals(serviceTypesConverter.convert("OPeNDAP")));
     }
-    
+
     @Test
     public void testConvertOPeNDAP() {
-        assertTrue("\"OPeNDAP\" should be converted to service type OPeNDAP.", 
+        assertTrue("\"OPeNDAP\" should be converted to service type OPeNDAP.",
                 "OPeNDAP".equals(serviceTypesConverter.convert("OPeNDAP")));
-        assertTrue("\"OPENDAP\" should be converted to service type OPeNDAP.", 
+        assertTrue("\"OPENDAP\" should be converted to service type OPeNDAP.",
                 "OPeNDAP".equals(serviceTypesConverter.convert("OPENDAP")));
-        assertTrue("\"opendap\" should be converted to service type OPeNDAP.", 
+        assertTrue("\"opendap\" should be converted to service type OPeNDAP.",
                 "OPeNDAP".equals(serviceTypesConverter.convert("opendap")));
-        
-        assertFalse("\"WMS\" should not be converted to service type OPeNDAP.", 
+
+        assertFalse("\"WMS\" should not be converted to service type OPeNDAP.",
                 "OPeNDAP".equals(serviceTypesConverter.convert("WMS")));
-        assertFalse("\"ERRDAP\" should not be converted to service type OPeNDAP.", 
+        assertFalse("\"ERRDAP\" should not be converted to service type OPeNDAP.",
                 "OPeNDAP".equals(serviceTypesConverter.convert("ERRDAP")));
     }
-    
+
 }
