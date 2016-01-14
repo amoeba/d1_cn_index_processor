@@ -215,4 +215,7 @@
 		<property name="solrSchemaPath" value="${solr.schema.path}" />
 		<property name="solrIndexUri" value="${solr.index.uri}" />
 	</bean>
+	
+	<bean id="mnServiceRegistrationTypeDocumentService" class="org.dataone.cn.indexer.convert.MemberNodeServiceRegistrationTypeDocumentService">
+	</bean>
 </beans>

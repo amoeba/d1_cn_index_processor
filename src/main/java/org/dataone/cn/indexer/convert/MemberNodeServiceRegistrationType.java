@@ -7,6 +7,9 @@ public class MemberNodeServiceRegistrationType {
     private String name;
     private Collection<String> matchingPatterns;
 
+    public MemberNodeServiceRegistrationType() {
+    }
+
     public String getName() {
         return name;
     }
