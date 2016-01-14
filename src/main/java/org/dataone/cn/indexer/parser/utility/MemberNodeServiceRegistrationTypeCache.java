@@ -12,7 +12,7 @@ import org.w3c.dom.Document;
 public class MemberNodeServiceRegistrationTypeCache {
 
     private static final int REFRESH_INTERVAL_MINUTES = Settings.getConfiguration().getInt(
-            "dataone.mn.registration.serviceType.cacheRefreshMinutes", 1);
+            "dataone.mn.registration.serviceType.cacheRefreshMinutes", 120);
     private static long refreshIntervalMillis = REFRESH_INTERVAL_MINUTES * 60 * 1000;
 
     private static long lastRefreshTime = 0;
