@@ -22,7 +22,7 @@ import org.w3c.dom.NodeList;
  * 
  * @author Andrei
  */
-public class ServiceTypesParser {
+public class MemberNodeServiceRegistrationTypesParser {
 
     private static XPath xPath =  null;
     static {

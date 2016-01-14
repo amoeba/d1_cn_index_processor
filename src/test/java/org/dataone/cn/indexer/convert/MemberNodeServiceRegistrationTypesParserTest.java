@@ -4,9 +4,7 @@ import java.util.Collection;
 
 import junit.framework.TestCase;
 
-import org.dataone.cn.indexer.convert.MemberNodeServiceRegistrationType;
-import org.dataone.cn.indexer.convert.MemberNodeServiceRegistrationTypeDocumentService;
-import org.dataone.cn.indexer.parser.utility.ServiceTypesParser;
+import org.dataone.cn.indexer.parser.utility.MemberNodeServiceRegistrationTypesParser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,7 @@ import org.w3c.dom.Document;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "../../index/test-context.xml" })
-public class ServiceTypesParserTest extends TestCase {
+public class MemberNodeServiceRegistrationTypesParserTest extends TestCase {
 
     @Autowired
     MemberNodeServiceRegistrationTypeDocumentService serviceTypeDocService;
@@ -27,7 +25,7 @@ public class ServiceTypesParserTest extends TestCase {
         Document doc = serviceTypeDocService.getMemberNodeServiceRegistrationTypeDocument();
         assertTrue("Fetched services Document shouldn't be null.", doc != null);
         
-        Collection<MemberNodeServiceRegistrationType> serviceTypes = ServiceTypesParser.parseServiceTypes(doc);
+        Collection<MemberNodeServiceRegistrationType> serviceTypes = MemberNodeServiceRegistrationTypesParser.parseServiceTypes(doc);
         
         assertTrue("Service types document should contain 2 service types.", serviceTypes.size() == 2);
         MemberNodeServiceRegistrationType serviceTypesArr[] = new MemberNodeServiceRegistrationType[2];
