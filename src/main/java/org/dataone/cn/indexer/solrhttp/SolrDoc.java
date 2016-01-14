@@ -123,7 +123,7 @@ public class SolrDoc {
             if (validFields != null) {
             	// ensure valid field, or a dynamic field matching the pattern
             	// NOTE: there are many kinds of dynamic fields, only handling one for now.
-            	if (!validFields.contains(fieldName) || !fieldName.endsWith(DYNAMIC_FIELD_SUFFIX)) {
+            	if (!validFields.contains(fieldName) && !fieldName.endsWith(DYNAMIC_FIELD_SUFFIX)) {
             		continue;
             	}
             }
