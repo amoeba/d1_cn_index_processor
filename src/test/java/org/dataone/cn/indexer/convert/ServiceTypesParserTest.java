@@ -39,12 +39,14 @@ public class ServiceTypesParserTest extends TestCase {
         assertTrue("Service types document should contain an OPeNDAP service", opendapType.getName().equals("OPeNDAP"));
         assertTrue("Service types document should contain a WMS service", wmsType.getName().equals("WMS"));
         
+        String OPENDAP_PATTERN_1 = "([Oo][Pp][Ee][Nn][Dd][Aa][Pp])";
         Collection<String> opendapPatterns = opendapType.getMatchingPatterns();
-        assertTrue("OPeNDAP service type should contain match pattern: .*OP[Ee]NDAP.*", opendapPatterns.contains(".*OP[Ee]NDAP.*"));
+        assertTrue("OPeNDAP service type should contain match pattern: " + OPENDAP_PATTERN_1,
+                opendapPatterns.contains(OPENDAP_PATTERN_1));
         
+        String WMS_PATTERN_1 = "([Ww][Mm][Ss])";
         Collection<String> wmsPatterns = wmsType.getMatchingPatterns();
-        assertTrue("WMS service type should contain match pattern: .*WMS.*", wmsPatterns.contains(".*WMS.*"));
-        assertTrue("WMS service type should contain match pattern: .*wms.*", wmsPatterns.contains(".*wms.*"));
-        
+        assertTrue("WMS service type should contain match pattern: " + WMS_PATTERN_1, 
+                wmsPatterns.contains(WMS_PATTERN_1));
     }
 }
