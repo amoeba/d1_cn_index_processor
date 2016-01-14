@@ -1,57 +1,31 @@
-package org.dataone.cn.indexer;
+package org.dataone.cn.indexer.convert;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.Collection;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import junit.framework.TestCase;
 
 import org.dataone.cn.indexer.convert.MemberNodeServiceRegistrationType;
+import org.dataone.cn.indexer.convert.MemberNodeServiceRegistrationTypeDocumentService;
 import org.dataone.cn.indexer.parser.utility.ServiceTypesParser;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "../../index/test-context.xml" })
 public class ServiceTypesParserTest extends TestCase {
 
-    // TODO move to resources?
-    private static final String TEST_SERVICES_STR = 
-            "<serviceTypes>" + "\n"
-            + "<serviceType>" + "\n"
-            + "    <name>OPeNDAP</name>" + "\n"
-            + "    <matches>.*OP[Ee]NDAP.*</matches>" + "\n"
-            + "</serviceType>" + "\n"
-            + "<serviceType>" + "\n"
-            + "    <name>WMS</name>" + "\n"
-            + "    <matches>.*WMS.*</matches>" + "\n"
-            + "    <matches>.*wms.*</matches>" + "\n"
-            + "</serviceType>" + "\n"
-            + "</serviceTypes>";    
+    @Autowired
+    MemberNodeServiceRegistrationTypeDocumentService serviceTypeDocService;
     
     @Test
     public void testServiceTypes() {
-        
-        DocumentBuilder db = null;
-        try {
-            db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            throw new AssertionError("Unable to create DocumentBuilder.", e);
-        }
-        
-        InputSource is = new InputSource();
-        is.setCharacterStream(new StringReader(TEST_SERVICES_STR));
 
-        Document doc = null;
-        try {
-             doc = db.parse(is);
-        } catch (SAXException | IOException e) {
-            throw new AssertionError("Unable to create service types Document.", e);
-        }
+        Document doc = serviceTypeDocService.getMemberNodeServiceRegistrationTypeDocument();
+        assertTrue("Fetched services Document shouldn't be null.", doc != null);
         
         Collection<MemberNodeServiceRegistrationType> serviceTypes = ServiceTypesParser.parseServiceTypes(doc);
         
