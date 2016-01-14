@@ -138,7 +138,9 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
                 }
 
                 if (referencedDoc == null) {
+                	log.warn("DID NOT LOCATE REFERENCED DOC: " + referencedPid);
                     referencedDoc = new SolrDoc();
+                    referencedDoc.addField(new SolrElementField(SolrElementField.FIELD_ID, referencedPid));
                 }
                 docs.put(referencedPid, referencedDoc);
             }
