@@ -247,6 +247,7 @@
 		<constructor-arg name="xpath" 
 			value="//srv:SV_ServiceIdentification/srv:serviceType/gco:LocalName/text()"/>
 		<property name="multivalue" value="true" />
+		<property name="converter" ref="serviceTypesConverter" />
 	</bean>
 	
 	<bean id="isotc.serviceEndpoint" class="org.dataone.cn.indexer.parser.SolrField">
