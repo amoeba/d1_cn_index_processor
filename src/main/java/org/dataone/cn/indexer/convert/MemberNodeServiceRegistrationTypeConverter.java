@@ -1,9 +1,7 @@
-package MemberNodeServiceRegistrationType;
+package org.dataone.cn.indexer.convert;
 
 import java.util.Collection;
 
-import org.dataone.cn.indexer.convert.IConverter;
-import org.dataone.cn.indexer.convert.MemberNodeServiceRegistrationType;
 import org.dataone.cn.indexer.parser.utility.MemberNodeServiceRegistrationTypeCache;
 import org.springframework.beans.factory.annotation.Autowired;
 
