@@ -218,4 +218,7 @@
 	
 	<bean id="mnServiceRegistrationTypeDocumentService" class="org.dataone.cn.indexer.convert.MemberNodeServiceRegistrationTypeDocumentService">
 	</bean>
+	
+	<bean id="mnServiceRegistrationTypeCacheService" class="org.dataone.cn.indexer.parser.utility.MemberNodeServiceRegistrationTypeCache">
+	</bean>
 </beans>
