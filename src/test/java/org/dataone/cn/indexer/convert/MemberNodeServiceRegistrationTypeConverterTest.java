@@ -40,6 +40,9 @@ public class MemberNodeServiceRegistrationTypeConverterTest {
         assertTrue("\"opendap\" should be converted to service type OPeNDAP.",
                 "OPeNDAP".equals(serviceTypesConverter.convert("opendap")));
 
+        assertTrue("\"ERDDAP OPeNDAP\" should be converted to service type OPeNDAP.",
+                "OPeNDAP".equals(serviceTypesConverter.convert("ERDDAP OPeNDAP")));
+
         assertFalse("\"WMS\" should not be converted to service type OPeNDAP.",
                 "OPeNDAP".equals(serviceTypesConverter.convert("WMS")));
         assertFalse("\"ERRDAP\" should not be converted to service type OPeNDAP.",
