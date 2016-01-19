@@ -105,7 +105,6 @@ public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
             try {
                 List<SolrElementField> docFieldList = metaDocument.getFieldList();
                 List<SolrElementField> extractedFieldList = solrField.getFields(doc, identifier);
-                // metaDocument.getFieldList().addAll(extractedFieldList);
                 
                 for (SolrElementField extractedField : extractedFieldList) {
                     SolrElementField fieldAlreadyAdded = null;
