@@ -71,7 +71,7 @@
 	<bean id="dc.beginDate" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="beginDate" />
 		<constructor-arg name="xpath"
-			value="//dcterms:temporal[1]/text()" />
+			value="//dcterms:temporal[not(@xsi:type='dcterms:Period')]/text()" />
 		<property name="multivalue" value="false" />
 		<property name="converter" ref="dateConverter" />
 	</bean>
@@ -79,9 +79,14 @@
 	<bean id="dc.endDate" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="endDate" />
 		<constructor-arg name="xpath"
-			value="//dcterms:temporal[1]/text()" />
+			value="//dcterms:temporal[not(@xsi:type='dcterms:Period')]/text()" />
 		<property name="multivalue" value="false" />
 		<property name="converter" ref="dateConverter" />
+	</bean>
+	
+	<bean id="dc.datePeriod" class="org.dataone.cn.indexer.parser.TemporalPeriodSolrField">
+		<constructor-arg name="xpath"
+			value="//dcterms:temporal[@xsi:type='dcterms:Period']/text()" />
 	</bean>
 	
  	<bean id="dc.site" class="org.dataone.cn.indexer.parser.SolrField">

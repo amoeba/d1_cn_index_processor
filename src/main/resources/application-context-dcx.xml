@@ -24,6 +24,7 @@
 		    	<ref bean="dc.keywords" />
 		    	<ref bean="dc.beginDate" />
 		    	<ref bean="dc.endDate" />
+		    	<ref bean="dc.datePeriod" />
 		    	<ref bean="dc.site" />
 		    	<ref bean="dc.boxSpatialBoundCoordinates" />
 		    	<ref bean="dc.boxSpatialGeohash" />

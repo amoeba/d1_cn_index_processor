@@ -62,8 +62,21 @@ public class SolrFieldDublinCoreTest extends BaseSolrFieldXPathTest {
                         "Census#Technical Variables -- HOUSEHOLD#Group Quarters Variables -- HOUSEHOLD#Geography Variables -- HOUSEHOLD#Economic Variables -- HOUSEHOLD#Utilities Variables -- HOUSEHOLD#Appliances, Mechanicals, Other Amenities Variables -- HOUSEHOLD#Dwelling Characteristics Variables -- HOUSEHOLD#Constructed Household Variables -- HOUSEHOLD#Imputation Flags Variables -- HOUSEHOLD#Technical Variables -- PERSON#Constructed Family Interrelationship Variables -- PERSON#Demographic Variables -- PERSON#Fertility and Mortality Variables -- PERSON#Nativity and Birthplace Variables -- PERSON#Ethnicity and Language Variables -- PERSON#Education Variables -- PERSON#Work Variables -- PERSON#Income Variables -- PERSON#Migration Variables -- PERSON#Disability Variables -- PERSON#Other Variables -- PERSON#Imputation Flags Variables -- PERSON#Work: Occupation Variables -- PERSON#Work: Industry Variables -- PERSON");
         dcxExpected.put("title", "IPUMS-International: Brazil 2000 Census");
 
-        dcxExpected.put("northBoundCoord", "5.273055##-34.792631##-33.740641##-74.004097");
-        dcxExpected.put("geohash_1", "6#6v#6v3#6v3r#6v3r4#6v3r40#6v3r40u#6v3r40u6#6v3r40u64");
+        dcxExpected.put("northBoundCoord", "5.273055");
+        dcxExpected.put("eastBoundCoord", "-34.792631");
+        dcxExpected.put("southBoundCoord", "-33.740641");
+        dcxExpected.put("westBoundCoord", "-74.004097");
+        
+        dcxExpected.put("geohash_1", "6");
+        dcxExpected.put("geohash_2", "6v");
+        dcxExpected.put("geohash_3", "6v3");
+        dcxExpected.put("geohash_4", "6v3r");
+        dcxExpected.put("geohash_5", "6v3r4");
+        dcxExpected.put("geohash_6", "6v3r40");
+        dcxExpected.put("geohash_7", "6v3r40u");
+        dcxExpected.put("geohash_8", "6v3r40u6");
+        dcxExpected.put("geohash_9", "6v3r40u64");
+        
         dcxExpected.put("site", "Brazil");
 
         dcxExpected.put("beginDate", dateConverter.convert("2000"));
