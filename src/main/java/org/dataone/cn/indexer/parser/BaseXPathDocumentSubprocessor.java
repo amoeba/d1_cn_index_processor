@@ -36,7 +36,6 @@ import org.apache.commons.codec.EncoderException;
 import org.dataone.cn.indexer.XMLNamespaceConfig;
 import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
-import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.w3c.dom.Document;
 
 /**
@@ -103,25 +102,7 @@ public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
         Document doc = XmlDocumentUtility.generateXmlDocument(is);
         for (ISolrField solrField : fieldList) {
             try {
-                List<SolrElementField> docFieldList = metaDocument.getFieldList();
-                List<SolrElementField> extractedFieldList = solrField.getFields(doc, identifier);
-                
-                for (SolrElementField extractedField : extractedFieldList) {
-                    SolrElementField fieldAlreadyAdded = null;
-                    for (SolrElementField docField : docFieldList) {
-                        if (extractedField.getName().equals(docField.getName())) {
-                            fieldAlreadyAdded = docField;
-                            break;
-                        }
-                    }
-                    
-                    // if it doesn't exist add, else overwrite existing
-                    if (fieldAlreadyAdded == null)
-                        docFieldList.add(extractedField); 
-                    else
-                        fieldAlreadyAdded.setValue(extractedField.getValue());
-                }
-                
+                metaDocument.getFieldList().addAll(solrField.getFields(doc, identifier));
             } catch (Exception e) {
                 e.printStackTrace();
             }
