@@ -23,21 +23,10 @@ package org.dataone.cn.indexer.parser;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.dataone.cn.indexer.convert.IConverter;
-import org.dataone.cn.indexer.convert.SolrDateConverter;
+import org.dataone.cn.indexer.parser.utility.TemporalPeriodParsingUtility;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 import org.w3c.dom.Document;
 
 /**
@@ -51,40 +40,18 @@ import org.w3c.dom.Document;
  * </dcterms:temporal>
  * }
  * </pre>
- * Currently supports at least a W3C-DTF scheme, meaning the patterns specified here: 
- * <a href="https://www.w3.org/TR/NOTE-datetime">https://www.w3.org/TR/NOTE-datetime</a>
- * </br>
- * Actually supports a somewhat larger superset of those; see {@link ISODateTimeFormat#dateTimeParser}
  * 
+ * Uses {@link TemporalPeriodParsingUtility}
  * @author Andrei
  */
 public class TemporalPeriodSolrField extends SolrField implements ISolrField {
 
     private static Logger log = Logger.getLogger(TemporalPeriodSolrField.class);
     
-    private static final String BEGIN_FIELD_NAME = "beginDate";
-    private static final String END_FIELD_NAME = "endDate";
-    private static final String W3C_DTF_SCHEME = "W3C-DTF";
-    private static final Pattern START_PATTERN = Pattern.compile(".*start=(.*?);.*");
-    private static final Pattern END_PATTERN = Pattern.compile(".*end=(.*?);.*");
-    private static final Pattern SCHEME_PATTERN = Pattern.compile(".*scheme=(.*?);.*");
-
-    private static final DateTimeFormatter[] FORMATTERS = {
-        ISODateTimeFormat.dateTimeParser()
-        // ^ actually supports a superset of W3C-DTF formats
-        // to limit it to the stricter formats, replace the above with:
-        //        DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSZZ"),
-        //        DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZ"),
-        //        DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSZZ"),
-        //        DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SZZ"),
-        //        DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZZ"),
-        //        DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mmZZ"),
-        //        DateTimeFormat.forPattern("yyyy-MM-dd"),
-        //        DateTimeFormat.forPattern("yyyy-MM"),
-        //        DateTimeFormat.forPattern("yyyy")
-    };
+    public static final String BEGIN_FIELD_NAME = "beginDate";
+    public static final String END_FIELD_NAME = "endDate";
     
-    private IConverter dateConverter = new SolrDateConverter();
+    private static TemporalPeriodParsingUtility temporalParsingUtil = new TemporalPeriodParsingUtility();
     
     
     public TemporalPeriodSolrField() {
@@ -97,51 +64,20 @@ public class TemporalPeriodSolrField extends SolrField implements ISolrField {
     @Override
     public List<SolrElementField> getFields(Document doc, String identifier) throws Exception {
         
-        String textValue = null;
-        try {
-            textValue = (String) xPathExpression.evaluate(doc, XPathConstants.STRING);
-            if (textValue != null)
-                textValue = textValue.trim();
-        } catch (XPathExpressionException e) {
-            throw new AssertionError("Unable to get temoral element string value.", e);
-        }
+        String textValue = temporalParsingUtil.extractTextValue(doc, this.xPathExpression);
         
-        Matcher startMatcher = START_PATTERN.matcher(textValue);
-        Matcher endMatcher = END_PATTERN.matcher(textValue);
-        Matcher schemeMatcher = SCHEME_PATTERN.matcher(textValue);
+        String scheme = temporalParsingUtil.getScheme(textValue);
+        if (scheme != null && !scheme.equalsIgnoreCase(TemporalPeriodParsingUtility.W3C_DTF_SCHEME))
+            log.warn("Scheme \"" + scheme + "\" may not be supported. "
+                    + "Currently supporting: " + TemporalPeriodParsingUtility.W3C_DTF_SCHEME);
         
-        String startString = null;
-        String endString = null;
-        String schemeString = null;
+        String startDate = temporalParsingUtil.getFormattedStartDate(textValue, scheme);
+        String endDate = temporalParsingUtil.getFormattedEndDate(textValue, scheme);
         
-        if (startMatcher.find())
-            startString = startMatcher.group(1);
-        if (endMatcher.find())
-            endString = endMatcher.group(1);
-        if (schemeMatcher.find())
-            schemeString = schemeMatcher.group(1);
-        
-        if (schemeString != null && !schemeString.equalsIgnoreCase(W3C_DTF_SCHEME))
-            log.warn("Scheme \"" + schemeString + "\" may not be supported. "
-                    + "Currently supporting: " + W3C_DTF_SCHEME);
-        if (startString == null && endString == null)
+        if (startDate == null && endDate == null)
             throw new AssertionError("Couldn't extract 'start' or 'end' date. "
                     + "Temporal pattern of type period needs to contain at least one of these. "
                     + "Value was: " + textValue);
-        
-        // convert from W3C-DTF (or ISO8601 subset)
-        // to valid xsd:datetime needed for SolrDateConverter
-        
-        DateTime startDate = parseDateTime(startString);
-        DateTime endDate = parseDateTime(endString);
-        
-        String schemeWarning = StringUtils.isEmpty(schemeString) ? "" : schemeString + " may not be supported. ";
-        if (startString != null && startDate == null)
-            throw new AssertionError("Start date string could not be parsed. "
-                    + schemeWarning + "Start date string was: " + startString);
-        if (endString != null && endDate == null)
-            throw new AssertionError("End date string could not be parsed. "
-                    + schemeWarning + "End date string was: " + endString);
         
         // if period only specifies the start OR end, we set that to both
         if (startDate != null && endDate == null)
@@ -149,38 +85,18 @@ public class TemporalPeriodSolrField extends SolrField implements ISolrField {
         if (endDate != null && startDate == null)
             startDate = endDate;
         
-        DateTimeFormatter iso8601Formatter = ISODateTimeFormat.dateTime();
-        String startDateIso8601 = iso8601Formatter.print(startDate.toDateTime(DateTimeZone.UTC));
-        String endDateIso8601 = iso8601Formatter.print(endDate.toDateTime(DateTimeZone.UTC));
-        String beginFieldValue = dateConverter.convert(startDateIso8601);
-        String endFieldValue = dateConverter.convert(endDateIso8601);
-        
         List<SolrElementField> fields = new ArrayList<SolrElementField>();
-        
+
         SolrElementField beginField = new SolrElementField();
         beginField.setName(BEGIN_FIELD_NAME);
-        beginField.setValue(beginFieldValue);
+        beginField.setValue(startDate);
         fields.add(beginField);
         
         SolrElementField endField = new SolrElementField();
         endField.setName(END_FIELD_NAME);
-        endField.setValue(endFieldValue);
+        endField.setValue(endDate);
         fields.add(endField);
-        
+
         return fields;
     }
-
-    private DateTime parseDateTime(String dateString) {
-        DateTime dateTime = null;
-        for (DateTimeFormatter formatter : FORMATTERS) {
-            try {
-                dateTime = formatter.parseDateTime(dateString);
-                break;
-            } catch (Exception e) {
-                continue;
-            }
-        }
-        return dateTime;
-    }
-
 }
