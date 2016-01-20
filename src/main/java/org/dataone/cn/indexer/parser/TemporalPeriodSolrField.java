@@ -63,6 +63,7 @@ public class TemporalPeriodSolrField extends SolrField implements ISolrField {
     
     @Override
     public List<SolrElementField> getFields(Document doc, String identifier) throws Exception {
+        List<SolrElementField> fields = new ArrayList<SolrElementField>();
         
         String textValue = temporalParsingUtil.extractTextValue(doc, this.xPathExpression);
         
@@ -74,10 +75,12 @@ public class TemporalPeriodSolrField extends SolrField implements ISolrField {
         String startDate = temporalParsingUtil.getFormattedStartDate(textValue, scheme);
         String endDate = temporalParsingUtil.getFormattedEndDate(textValue, scheme);
         
-        if (startDate == null && endDate == null)
-            throw new AssertionError("Couldn't extract 'start' or 'end' date. "
+        if (startDate == null && endDate == null) {
+            log.error("Couldn't extract 'start' or 'end' date. "
                     + "Temporal pattern of type period needs to contain at least one of these. "
                     + "Value was: " + textValue);
+            return fields;
+        }
         
         // if period only specifies the start OR end, we set that to both
         if (startDate != null && endDate == null)
@@ -85,8 +88,6 @@ public class TemporalPeriodSolrField extends SolrField implements ISolrField {
         if (endDate != null && startDate == null)
             startDate = endDate;
         
-        List<SolrElementField> fields = new ArrayList<SolrElementField>();
-
         SolrElementField beginField = new SolrElementField();
         beginField.setName(BEGIN_FIELD_NAME);
         beginField.setValue(startDate);
