@@ -69,7 +69,6 @@ public class TemporalPeriodParsingUtility {
     public static final String SCHEME_FIELD = "scheme";
     public static final String W3C_DTF_SCHEME = "W3C-DTF";
     
-    private IConverter dateConverter = new SolrDateConverter();
     private static final Map<String,DateTimeFormatter> FORMATTERS = new HashMap<String, DateTimeFormatter>();
     
     static {
@@ -182,9 +181,8 @@ public class TemporalPeriodParsingUtility {
         
         DateTimeFormatter iso8601Formatter = ISODateTimeFormat.dateTime();
         String dateIso8601 = iso8601Formatter.print(date.toDateTime(DateTimeZone.UTC));
-        String fieldValue = dateConverter.convert(dateIso8601);
         
-        return fieldValue;
+        return dateIso8601;
     }
 
     private DateTime parseDateTime(String scheme, String dateString) {
