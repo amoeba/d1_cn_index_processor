@@ -172,7 +172,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         nodc1Expected.put("serviceCoupling", "");
         nodc1Expected.put("serviceTitle", "");
         nodc1Expected.put("serviceDescription", "");
-        nodc1Expected.put("serviceType", "");
+        nodc1Expected.put("serviceType", serviceTypeConverter.convert(""));
         nodc1Expected.put("serviceEndpoint", "");
         nodc1Expected.put("serviceInput", "");
         nodc1Expected.put("serviceOutput", "");
@@ -258,7 +258,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         nodc2Expected.put("serviceCoupling", "");
         nodc2Expected.put("serviceTitle", "");
         nodc2Expected.put("serviceDescription", "");
-        nodc2Expected.put("serviceType", "");
+        nodc2Expected.put("serviceType", serviceTypeConverter.convert(""));
         nodc2Expected.put("serviceEndpoint", "");
         nodc2Expected.put("serviceInput", "");
         nodc2Expected.put("serviceOutput", "");
@@ -341,7 +341,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         iarc1Expected.put("serviceCoupling", "");
         iarc1Expected.put("serviceTitle", "");
         iarc1Expected.put("serviceDescription", "");
-        iarc1Expected.put("serviceType", "");
+        iarc1Expected.put("serviceType", serviceTypeConverter.convert(""));
         iarc1Expected.put("serviceEndpoint", "");
         iarc1Expected.put("serviceInput", "");
         iarc1Expected.put("serviceOutput", "");
@@ -426,7 +426,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         iarc2Expected.put("serviceCoupling", "");
         iarc2Expected.put("serviceTitle", "");
         iarc2Expected.put("serviceDescription", "");
-        iarc2Expected.put("serviceType", "");
+        iarc2Expected.put("serviceType", serviceTypeConverter.convert(""));
         iarc2Expected.put("serviceEndpoint", "");
         iarc2Expected.put("serviceInput", "");
         iarc2Expected.put("serviceOutput", "");
@@ -586,7 +586,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         looselyCoupledServiceExpected.put("serviceCoupling", "loose");
         looselyCoupledServiceExpected.put("serviceTitle", "Test Render Service");
         looselyCoupledServiceExpected.put("serviceDescription", "Abstract: A rendering service in ISO19139/119,\t\t\t\t\tyields an application/svg xml of given data.");
-        looselyCoupledServiceExpected.put("serviceType", "OGC:WMS"); 
+        looselyCoupledServiceExpected.put("serviceType", serviceTypeConverter.convert("OGC:WMS")); 
         looselyCoupledServiceExpected.put("serviceEndpoint", "http://localhost:8080/geoserver/wms?SERVICE=WMS&");
         looselyCoupledServiceExpected.put("serviceInput", "https://cn-dev-ucsb-1.test.dataone.org/cn/v2/formats/CF-1.3"
                 + "#" + "https://cn-dev-ucsb-1.test.dataone.org/cn/v2/formats/CF-1.4");
