@@ -246,7 +246,7 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
         expectedFields
                 .put(USED_BY_EXECUTION_FIELD, "urn:uuid:6EC8CAB7-2063-4440-BA23-364313C145FC");
         expectedFields
-                .put(INSTANCE_OF_CLASS_FIELD, "http://purl.org/provone/2015/15/ontology#Data");
+                .put(INSTANCE_OF_CLASS_FIELD, "http://purl.dataone.org/provone/2015/01/15/ontology#Data");
         expectedFields.put(USED_BY_USER_FIELD, "urn:uuid:D89221AD-E251-4CCB-B515-09D869DB1A61");
         compareFields(expectedFields, provAlaWaiNS02MatlabProcessing2RDF.getInputStream(),
                 provRdfXmlSubprocessor, "ala-wai-ns02-matlab-processing.2.rdf",
@@ -264,7 +264,7 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
         expectedFields
                 .put(GENERATED_BY_USER_FIELD, "urn:uuid:D89221AD-E251-4CCB-B515-09D869DB1A61");
         expectedFields
-                .put(INSTANCE_OF_CLASS_FIELD, "http://purl.org/provone/2015/15/ontology#Data");
+                .put(INSTANCE_OF_CLASS_FIELD, "http://purl.dataone.org/provone/2015/01/15/ontology#Data");
         compareFields(expectedFields, provAlaWaiNS02MatlabProcessing2RDF.getInputStream(),
                 provRdfXmlSubprocessor, "ala-wai-ns02-matlab-processing.2.rdf",
                 "ala-wai-canal-ns02-image-data-AW02XX_001CTDXXXXR00_20150203_10day.1.jpg");
