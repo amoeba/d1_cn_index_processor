@@ -37,6 +37,7 @@
 		    	<ref bean="isotc.geohash6" />
 		    	<ref bean="isotc.geohash7" />
 		    	<ref bean="isotc.geohash8" />
+		    	
 		    	<ref bean="isotc.isService"/>
 		    	<ref bean="isotc.serviceCoupling" />
 		    	<ref bean="isotc.serviceTitle" />
@@ -45,6 +46,12 @@
 		    	<ref bean="isotc.serviceEndpoint" />
 		    	<ref bean="isotc.serviceInput" />
 		    	<ref bean="isotc.serviceOutput" />
+		    	
+		    	<ref bean="isotc.distribServiceType" />
+		    	<ref bean="isotc.distribServiceEndpoint" />
+		    	<ref bean="isotc.distribServiceInput" />
+		    	<ref bean="isotc.distribServiceOutput" />
+		    	
 		    	<ref bean="isotc.fileID" />
 		    	<ref bean="isotc.fullText" />
 		   	</list>

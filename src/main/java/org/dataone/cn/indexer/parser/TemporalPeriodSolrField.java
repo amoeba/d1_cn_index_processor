@@ -69,14 +69,14 @@ public class TemporalPeriodSolrField extends SolrField implements ISolrField {
         
         String scheme = temporalParsingUtil.getScheme(textValue);
         if (scheme != null && !scheme.equalsIgnoreCase(TemporalPeriodParsingUtility.W3C_DTF_SCHEME))
-            log.warn("Scheme \"" + scheme + "\" may not be supported. "
+            log.warn("Scheme \"" + scheme + "\" may not be supported for pid " + identifier + ". "
                     + "Currently supporting: " + TemporalPeriodParsingUtility.W3C_DTF_SCHEME);
         
         String startDate = temporalParsingUtil.getFormattedStartDate(textValue, scheme);
         String endDate = temporalParsingUtil.getFormattedEndDate(textValue, scheme);
         
         if (startDate == null && endDate == null) {
-            log.error("Couldn't extract 'start' or 'end' date. "
+            log.error("Couldn't extract 'start' or 'end' date for pid " + identifier + ". "
                     + "Temporal pattern of type period needs to contain at least one of these. "
                     + "Value was: " + textValue);
             return fields;
