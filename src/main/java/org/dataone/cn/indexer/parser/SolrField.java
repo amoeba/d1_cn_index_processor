@@ -73,6 +73,7 @@ public class SolrField implements ISolrField {
     // values in the app
     protected boolean escapeXML = false;
     protected boolean combineNodes = false;
+    private String combineDelimiter = " ";
     protected boolean dedupe = false;
     protected List<String> disallowedValues = null;
     protected String valueSeparator = null;
@@ -176,7 +177,7 @@ public class SolrField implements ISolrField {
                     StringBuilder sb = new StringBuilder();
                     for (int i = 0; i < nodeSet.getLength(); i++) {
                         if (i > 0) {
-                            sb.append(" ");
+                            sb.append(combineDelimiter);
                         }
                         Node nText = nodeSet.item(i);
                         String nodeValue = nText.getNodeValue();

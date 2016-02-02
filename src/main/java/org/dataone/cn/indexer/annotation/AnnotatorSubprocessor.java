@@ -131,13 +131,16 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
                 try {
                     referencedDoc = httpService.retrieveDocumentFromSolrServer(referencedPid,
                             solrQueryUri);
-                } catch (XPathExpressionException | IOException | EncoderException e) {
+                } catch (Exception e) {
+                	//} catch (XPathExpressionException | IOException | EncoderException e) {
                     log.error("Unable to retrieve solr document: " + referencedPid
                             + ".  Exception attempting to communicate with solr server.", e);
                 }
 
                 if (referencedDoc == null) {
+                	log.warn("DID NOT LOCATE REFERENCED DOC: " + referencedPid);
                     referencedDoc = new SolrDoc();
+                    referencedDoc.addField(new SolrElementField(SolrElementField.FIELD_ID, referencedPid));
                 }
                 docs.put(referencedPid, referencedDoc);
             }
@@ -173,7 +176,7 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
      * @param the stream of the [JSON] annotation
      * @return
      */
-    private SolrDoc parseAnnotation(InputStream is) {
+    protected SolrDoc parseAnnotation(InputStream is) {
 
         try {
 
@@ -367,6 +370,8 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
      */
     public SolrDoc mergeWithIndexedDocument(SolrDoc indexDocument) throws IOException,
             EncoderException, XPathExpressionException {
+    	
         return processorUtility.mergeWithIndexedDocument(indexDocument, fieldsToMerge);
+        
     }
 }

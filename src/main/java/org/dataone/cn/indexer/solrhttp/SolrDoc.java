@@ -42,6 +42,7 @@ import org.w3c.dom.Text;
 public class SolrDoc {
     public static final char[] ELEMENT_DOC_OPEN = "<doc>".toCharArray();
     public static final char[] ELEMENT_DOC_CLOSE = "</doc>".toCharArray();
+	private static final String DYNAMIC_FIELD_SUFFIX = "_sm";
     private List<SolrElementField> fieldList = new ArrayList<SolrElementField>();
 
     // private Boolean resourceMap = null;
@@ -119,8 +120,12 @@ public class SolrDoc {
             Element elementField = (Element) n;
             String tagName = elementField.getTagName();
             String fieldName = elementField.getAttribute("name");
-            if (validFields != null && false == validFields.contains(fieldName)) {
-                continue;
+            if (validFields != null) {
+            	// ensure valid field, or a dynamic field matching the pattern
+            	// NOTE: there are many kinds of dynamic fields, only handling one for now.
+            	if (!validFields.contains(fieldName) && !fieldName.endsWith(DYNAMIC_FIELD_SUFFIX)) {
+            		continue;
+            	}
             }
             if (tagName.equals("arr")) {
                 NodeList arrayValues = elementField.getChildNodes();

@@ -218,28 +218,30 @@
 		<property name="combineNodes" value="true"/>
 	</bean>
 	
+	<!-- service fields -->
+	
+	<!-- checks for existence of either srv service description or distribution "service" info -->
 	<bean id="isotc.isService" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="isService" />
-		<constructor-arg name="xpath" value="boolean(//srv:SV_ServiceIdentification)"/>
+		<constructor-arg name="xpath" value="boolean(//srv:SV_ServiceIdentification or //gmd:distributionInfo/gmd:MD_Distribution)"/>
 	</bean>
 	
-	<bean id="isotc.serviceCoupling" class="org.dataone.cn.indexer.parser.SolrField">
-		<constructor-arg name="name" value="serviceCoupling" />
-		<constructor-arg name="xpath" 
-			value="//srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue" />
-			<!-- boolean(//srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue = "tight") -->
-	</bean>
-	
+	<!-- combines the srv service title with the distribution "service" info's titles -->
 	<bean id="isotc.serviceTitle" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="serviceTitle" />
 		<constructor-arg name="xpath" 
-			value="(//srv:SV_ServiceIdentification/gmd:citation/gmd:CI_Citation/gmd:title/gco:CharacterString/text())[1]" />
+			value="(//srv:SV_ServiceIdentification/gmd:citation/gmd:CI_Citation/gmd:title/gco:CharacterString | //gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorTransferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:name/gco:CharacterString)/text()" />
+		<property name="combineNodes" value="true"/>
+		<property name="combineDelimiter" value=":" />
 	</bean>
 	
+	<!-- combines the srv service description with the distribution "service" info's descriptions -->
 	<bean id="isotc.serviceDescription" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="serviceDescription" />
 		<constructor-arg name="xpath" 
-			value="(//srv:SV_ServiceIdentification/gmd:abstract/gco:CharacterString/text())[1]" />
+			value="(//srv:SV_ServiceIdentification/gmd:abstract/gco:CharacterString | //gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorTransferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:description/gco:CharacterString)/text()" />
+		<property name="combineNodes" value="true"/>
+		<property name="combineDelimiter" value=":" />
 	</bean>	
 	
 	<bean id="isotc.serviceType" class="org.dataone.cn.indexer.parser.SolrField">
@@ -268,6 +270,51 @@
 		<constructor-arg name="name" value="serviceOutput" />
 		<constructor-arg name="xpath" 
 			value="//srv:SV_ServiceIdentification/gmd:resourceFormat/@xlink:href"/>
+		<property name="multivalue" value="true" />
+	</bean>	
+	
+	<!-- loose coupling if srv:SV_CouplingType is loose -->
+	<!-- tight coupling if srv:SV_CouplingType is tight -->
+	<!-- tight coupling if distribution service info exists and srv:SV_CouplingType doesn't / is unspecified -->
+	<!-- empty if neither exists -->
+	<bean id="isotc.serviceCoupling" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="serviceCoupling" />
+		<constructor-arg name="xpath" 
+			value="concat(	substring('loose',	1 div boolean(	//srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue = 'loose')),
+							substring('tight',	1 div boolean(	//srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue = 'tight')),
+							substring('tight',	1 div boolean(	//gmd:distributionInfo/gmd:MD_Distribution and not(//srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue))),
+							substring('',		1 div boolean(	not(   //srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue) 
+																and not(   //gmd:distributionInfo/gmd:MD_Distribution))))"/>
+	</bean>
+	
+	<!-- below fields are multivalue, so will just be added to existing service fields extracted above -->
+	
+	<bean id="isotc.distribServiceType" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="serviceType" />
+		<constructor-arg name="xpath" 
+			value="//gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorTransferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:protocol/gco:CharacterString/text()"/>
+		<property name="multivalue" value="true" />
+		<property name="converter" ref="serviceTypesConverter" />
+	</bean>
+	
+	<bean id="isotc.distribServiceEndpoint" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="serviceEndpoint" />
+		<constructor-arg name="xpath" 
+			value="//gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorTransferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL/text()"/>
+		<property name="multivalue" value="true" />
+	</bean>	
+
+	<bean id="isotc.distribServiceInput" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="serviceInput" />
+		<constructor-arg name="xpath" 
+			value="//gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorTransferOptions/@xlink:href"/>
+		<property name="multivalue" value="true" />
+	</bean>
+
+	<bean id="isotc.distribServiceOutput" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="serviceOutput" />
+		<constructor-arg name="xpath" 
+			value="//gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorFormat/gmd:MD_Format/gmd:version/gco:CharacterString/text()"/>
 		<property name="multivalue" value="true" />
 	</bean>	
 	

@@ -12,7 +12,7 @@
  	
     <bean id="testDoc" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String" 
-        value="org/dataone/cn/indexer/resourcemap/resources/usnpnORE.rdf"/>
+        value="org/dataone/cn/indexer/resourcemap/resources/mpcOre1"/>
     </bean>
     
     <bean id="incompleteResourceMap" class="org.springframework.core.io.ClassPathResource" >

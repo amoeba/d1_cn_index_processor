@@ -46,7 +46,8 @@ xmlns:context="http://www.springframework.org/schema/context"
     
     <import resource="classpath:application-context-prov-base.xml" />
     <import resource="classpath:application-context-provone100.xml" />
-
+	<import resource="classpath:application-context-provone20150115.xml" />
+	
     <import resource="classpath:application-context-oa.xml" />
     <import resource="classpath:application-context-annotator.xml" />
     
@@ -318,5 +319,15 @@ xmlns:context="http://www.springframework.org/schema/context"
     <bean id="isotc211_looselyCoupledService_SciMeta" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String" 
         value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_looselyCoupledService_SciMeta.xml"/>
+    </bean>
+    
+    <bean id="isotc211_distributionInfo_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_distributionInfo_SciMeta.xml"/>
+    </bean>
+    
+    <bean id="isotc211_distributionInfo_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_distributionInfo_SysMeta.xml"/>
     </bean>
 </beans>

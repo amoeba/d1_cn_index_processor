@@ -70,7 +70,7 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
         SystemMetadata smd = TypeMarshaller.unmarshalTypeFromStream(SystemMetadata.class,
                 sysMetaFile.getInputStream());
         // path to actual science metadata document
-        String path = StringUtils.remove(sysMetaFile.getFile().getPath(), "/SystemMetadata");
+        String path = StringUtils.remove(sysMetaFile.getFile().getPath(), File.separator + "SystemMetadata");
         indexService.insertIntoIndex(smd.getIdentifier().getValue(), sysMetaFile.getInputStream(),
                 path);
     }

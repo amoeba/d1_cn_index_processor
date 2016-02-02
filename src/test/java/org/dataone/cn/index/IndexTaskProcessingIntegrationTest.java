@@ -24,6 +24,7 @@ package org.dataone.cn.index;
 
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.IOException;
 
 import junit.framework.Assert;
@@ -166,7 +167,7 @@ public class IndexTaskProcessingIntegrationTest {
         String path = null;
         try {
             path = StringUtils
-                    .remove(systemMetadataResource.getFile().getPath(), "/SystemMetadata");
+                    .remove(systemMetadataResource.getFile().getPath(), File.separator + "SystemMetadata");
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }
