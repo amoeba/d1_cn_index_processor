@@ -270,6 +270,22 @@ public class SolrField implements ISolrField {
     }
 
     /**
+     * If set results are concatenated (see {@link #isCombineNodes()}),
+     * this returns the delimiter used between items in the set.
+     */
+    public String getCombineDelimiter() {
+        return combineDelimiter;
+    }
+
+    /**
+     * Set the String delimiter to be used between items in the set,
+     * when results are concatenated (see {@link #isCombineNodes()}).
+     */
+    public void setCombineDelimiter(String combineDelimiter) {
+        this.combineDelimiter = combineDelimiter;
+    }
+    
+    /**
      * Controls whether duplicate values be removed from final field value.
      * 
      * @param dedupe
