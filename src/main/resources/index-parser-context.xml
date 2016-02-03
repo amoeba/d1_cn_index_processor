@@ -26,8 +26,8 @@
 				<ref bean="dryad31Subprocessor" />
 				<ref bean="qualifiedDublicCoreSubprocessor" />
 				<ref bean="dublinCoreExtendedSubprocessor" />
-                <ref bean="datacite3Subprocessor" />
- 			  	<ref bean="provRdfXmlSubprocessor" /> 
+                <ref bean="datacite3Subprocessor" /> 
+ 			  	<ref bean="prov20150115RdfXmlSubprocessor" />
 			 	<ref bean="annotatorSubprocessor" />
 				<ref bean="isotc211Subprocessor" />
   				<ref bean="reprocessResourceMapSubprocessor" /> 
