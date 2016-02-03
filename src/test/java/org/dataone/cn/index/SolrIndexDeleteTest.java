@@ -22,7 +22,6 @@
 
 package org.dataone.cn.index;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -756,7 +755,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         String path = null;
         try {
             path = StringUtils
-                    .remove(systemMetadataResource.getFile().getPath(), File.separator + "SystemMetadata");
+                    .remove(systemMetadataResource.getFile().getPath(), "/SystemMetadata");
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }

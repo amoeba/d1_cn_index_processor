@@ -27,7 +27,7 @@
 				<ref bean="qualifiedDublicCoreSubprocessor" />
 				<ref bean="dublinCoreExtendedSubprocessor" />
                 <ref bean="datacite3Subprocessor" />
- 			  	<ref bean="prov20150115RdfXmlSubprocessor" /> 
+ 			  	<ref bean="provRdfXmlSubprocessor" /> 
 			 	<ref bean="annotatorSubprocessor" />
 				<ref bean="isotc211Subprocessor" />
   				<ref bean="reprocessResourceMapSubprocessor" /> 
@@ -50,7 +50,6 @@
 		<constructor-arg value="public" />
 	</bean>
 	<bean id="formatIdToFormatTypeConverter" class="org.dataone.cn.indexer.convert.FormatIdToFormatTypeConverter" />
-	<bean id="serviceTypesConverter" class="org.dataone.cn.indexer.convert.MemberNodeServiceRegistrationTypeConverter" />
 	
 	<bean id="geohashConverter_1" class="org.dataone.cn.indexer.convert.GeohashConverter">
 		<property name="length" value="1"/>
@@ -178,16 +177,6 @@
 		 		<constructor-arg name="prefix" value="gml" />
 		 	   	<constructor-arg name="namespace" value="http://www.opengis.net/gml/3.2" />
 			</bean> 
-
-			<bean class="org.dataone.cn.indexer.XMLNamespace">
-		 		<constructor-arg name="prefix" value="srv" />
-		 	   	<constructor-arg name="namespace" value="http://www.isotc211.org/2005/srv" />
-			</bean> 
-			
-			<bean class="org.dataone.cn.indexer.XMLNamespace">
-		 		<constructor-arg name="prefix" value="xlink" />
-		 	   	<constructor-arg name="namespace" value="http://www.w3.org/1999/xlink" />
-			</bean> 
 		</list>
 	 	</constructor-arg>
 	</bean>
@@ -216,9 +205,4 @@
 		<property name="solrSchemaPath" value="${solr.schema.path}" />
 		<property name="solrIndexUri" value="${solr.index.uri}" />
 	</bean>
-	
-	<bean id="mnServiceRegistrationTypeDocumentService" class="org.dataone.cn.indexer.convert.MemberNodeServiceRegistrationTypeDocumentService"/>
-	
-	<bean id="mnServiceRegistrationTypeCacheService" class="org.dataone.cn.indexer.parser.utility.MemberNodeServiceRegistrationTypeCache"/>
-
 </beans>

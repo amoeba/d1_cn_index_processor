@@ -73,7 +73,6 @@ public class SolrField implements ISolrField {
     // values in the app
     protected boolean escapeXML = false;
     protected boolean combineNodes = false;
-    private String combineDelimiter = " ";
     protected boolean dedupe = false;
     protected List<String> disallowedValues = null;
     protected String valueSeparator = null;
@@ -177,7 +176,7 @@ public class SolrField implements ISolrField {
                     StringBuilder sb = new StringBuilder();
                     for (int i = 0; i < nodeSet.getLength(); i++) {
                         if (i > 0) {
-                            sb.append(combineDelimiter);
+                            sb.append(" ");
                         }
                         Node nText = nodeSet.item(i);
                         String nodeValue = nText.getNodeValue();
@@ -269,22 +268,6 @@ public class SolrField implements ISolrField {
         this.combineNodes = combineNodes;
     }
 
-    /**
-     * If set results are concatenated (see {@link #isCombineNodes()}),
-     * this returns the delimiter used between items in the set.
-     */
-    public String getCombineDelimiter() {
-        return combineDelimiter;
-    }
-
-    /**
-     * Set the String delimiter to be used between items in the set,
-     * when results are concatenated (see {@link #isCombineNodes()}).
-     */
-    public void setCombineDelimiter(String combineDelimiter) {
-        this.combineDelimiter = combineDelimiter;
-    }
-    
     /**
      * Controls whether duplicate values be removed from final field value.
      * 

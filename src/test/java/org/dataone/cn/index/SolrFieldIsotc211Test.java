@@ -3,7 +3,6 @@ package org.dataone.cn.index;
 import java.net.URLEncoder;
 import java.util.HashMap;
 
-import org.dataone.cn.indexer.convert.MemberNodeServiceRegistrationTypeConverter;
 import org.dataone.cn.indexer.convert.SolrDateConverter;
 import org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor;
 import org.junit.Before;
@@ -53,31 +52,6 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     private String pid4 = "iso19139_bcc7e1be-2683-433c-b351-bc061f35ceb8_0";
 
     @Autowired
-    private Resource isotc211_tightlyCoupledService_SysMeta;
-
-    @Autowired
-    private Resource isotc211_tightlyCoupledService_SciMeta;
-
-    private String pid5 = "IOOS_etopo100_201611124924884";
-
-    @Autowired
-    private Resource isotc211_looselyCoupledService_SysMeta;
-
-    @Autowired
-    private Resource isotc211_looselyCoupledService_SciMeta;
-
-    private String pid6 = "iso19119_looselyCoupled_20161293114572";
-
-    @Autowired
-    private Resource isotc211_distributionInfo_SysMeta;
-
-    @Autowired
-    private Resource isotc211_distributionInfo_SciMeta;
-
-    private String pid7 = "isotc211_distributionInfo_20161293114572";
-    
-    
-    @Autowired
     private ScienceMetadataDocumentSubprocessor isotc211Subprocessor;
 
     private HashMap<String, String> nodc1Expected = new HashMap<String, String>();
@@ -86,24 +60,14 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     private HashMap<String, String> iarc1Expected = new HashMap<String, String>();
     private HashMap<String, String> iarc2Expected = new HashMap<String, String>();
 
-    private HashMap<String, String> tightlyCoupledServiceExpected = new HashMap<String, String>();
-    private HashMap<String, String> looselyCoupledServiceExpected = new HashMap<String, String>();
-    
-    private HashMap<String, String> distributionInfoExpected = new HashMap<String, String>();
-    
     private SolrDateConverter dateConverter = new SolrDateConverter();
-    @Autowired
-    private MemberNodeServiceRegistrationTypeConverter serviceTypeConverter;
-    
+
     @Before
     public void setUp() throws Exception {
         setupNodc1Expected();
         setupNodc2Expected();
         setupIarc1Expected();
         setupIarc2Expected();
-        setupTightlyCoupledServiceExpected();
-        setupLooselyCoupledServiceExpected();
-        setupDistributionInfoExpected();
     }
 
     private void setupNodc1Expected() throws Exception {
@@ -178,15 +142,6 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         nodc1Expected.put("isPublic", "true");
         nodc1Expected.put("dataUrl",
                 "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid1, "UTF-8"));
-        // service info
-        nodc1Expected.put("isService", "false");
-        nodc1Expected.put("serviceCoupling", "");
-        nodc1Expected.put("serviceTitle", "");
-        nodc1Expected.put("serviceDescription", "");
-        nodc1Expected.put("serviceType", serviceTypeConverter.convert(""));
-        nodc1Expected.put("serviceEndpoint", "");
-        nodc1Expected.put("serviceInput", "");
-        nodc1Expected.put("serviceOutput", "");
     }
 
     private void setupNodc2Expected() throws Exception {
@@ -264,34 +219,6 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         nodc2Expected.put("isPublic", "true");
         nodc2Expected.put("dataUrl",
                 "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid2, "UTF-8"));
-        // service info
-        nodc2Expected.put("isService", "true");
-        nodc2Expected.put("serviceCoupling", "tight");
-        nodc2Expected.put("serviceTitle", "Granule Search" 
-                + ":" + "Details" 
-                + ":" + "THREDDS" 
-                + ":" + "OPeNDAP" 
-                + ":" + "Download" 
-                + ":" + "FTP");
-        nodc2Expected.put("serviceDescription", "Granule Search:Navigate directly to the URL for a descriptive web page with download links." 
-                + ":" + "These data are available through a variety of services via a THREDDS (Thematic Real-time Environmental Distributed Data Services) Data Server (TDS). The base URL of NODC's TDS is http://data.nodc.noaa.gov/thredds. Depending on the dataset, the TDS can provide WMS, WCS, DAP, HTTP, and other data access and metadata services as well. For more information on the TDS, see http://www.unidata.ucar.edu/software/thredds/current/tds/." 
-                + ":" + "These data are available through the Data Access Protocol (DAP) via an OPeNDAP Hyrax server. The base URL of NODC's Hyrax server is http://data.nodc.noaa.gov/opendap/. For a listing of OPeNDAP clients which may be used to access OPeNDAP-enabled data sets, please see the OPeNDAP website at http://opendap.org/." 
-                + ":" + "Navigate directly to the URL for data access and direct download." 
-                + ":" + "These data are available through the File Transfer Protocol (FTP). The base URL of NODC's FTP server is ftp://ftp.nodc.noaa.gov/ and you may use any FTP client to download these data.");
-        nodc2Expected.put("serviceType", serviceTypeConverter.convert("HTTP")
-                + "#" + serviceTypeConverter.convert("HTTP")
-                + "#" + serviceTypeConverter.convert("THREDDS")
-                + "#" + serviceTypeConverter.convert("DAP")
-                + "#" + serviceTypeConverter.convert("HTTP")
-                + "#" + serviceTypeConverter.convert("FTP"));
-        nodc2Expected.put("serviceEndpoint", "http://www.nodc.noaa.gov/geoportal/rest/find/document?searchText=fileIdentifier%3AGHRSST-NEODAAS-L2P-AVHRR17_L*%20OR%20fileIdentifier%3ANEODAAS-L2P-AVHRR17_L*&start=1&max=100&f=SearchPage" 
-                + "#" + "http://data.nodc.noaa.gov/cgi-bin/iso?id=gov.noaa.nodc:GHRSST-NEODAAS-L2P-AVHRR17_L" 
-                + "#" + "http://data.nodc.noaa.gov/thredds/catalog/ghrsst/L2P/AVHRR17_L/NEODAAS/" 
-                + "#" + "http://data.nodc.noaa.gov/opendap/ghrsst/L2P/AVHRR17_L/NEODAAS/" 
-                + "#" + "http://data.nodc.noaa.gov/ghrsst/L2P/AVHRR17_L/NEODAAS/" 
-                + "#" + "ftp://ftp.nodc.noaa.gov/pub/data.nodc/ghrsst/L2P/AVHRR17_L/NEODAAS/");
-        nodc2Expected.put("serviceInput", "");
-        nodc2Expected.put("serviceOutput", "netCDF-3");
     }
 
     private void setupIarc1Expected() throws Exception {
@@ -366,15 +293,6 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         iarc1Expected.put("isPublic", "true");
         iarc1Expected.put("dataUrl",
                 "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid3, "UTF-8"));
-        // service info
-        iarc1Expected.put("isService", "true");
-        iarc1Expected.put("serviceCoupling", "tight");
-        iarc1Expected.put("serviceTitle", "");
-        iarc1Expected.put("serviceDescription", "");
-        iarc1Expected.put("serviceType", serviceTypeConverter.convert(""));
-        iarc1Expected.put("serviceEndpoint", "");
-        iarc1Expected.put("serviceInput", "");
-        iarc1Expected.put("serviceOutput", "");
     }
 
     private void setupIarc2Expected() throws Exception {
@@ -451,290 +369,10 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         iarc2Expected.put("isPublic", "true");
         iarc2Expected.put("dataUrl",
                 "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid4, "UTF-8"));
-        // service info
-        iarc2Expected.put("isService", "true");
-        iarc2Expected.put("serviceCoupling", "tight");
-        iarc2Expected.put("serviceTitle", "");
-        iarc2Expected.put("serviceDescription", "");
-        iarc2Expected.put("serviceType", serviceTypeConverter.convert(""));
-        iarc2Expected.put("serviceEndpoint", "");
-        iarc2Expected.put("serviceInput", "");
-        iarc2Expected.put("serviceOutput", "");
-    }
-    
-    private void setupTightlyCoupledServiceExpected() throws Exception { 
-        // system metadata
-        tightlyCoupledServiceExpected.put("id", pid5);
-        tightlyCoupledServiceExpected.put("seriesId", "");
-        tightlyCoupledServiceExpected.put("fileName", "");
-        tightlyCoupledServiceExpected.put("mediaType", "");
-        tightlyCoupledServiceExpected.put("mediaTypeProperty", "");
-        tightlyCoupledServiceExpected.put("formatId", isotc211FormatId);
-        tightlyCoupledServiceExpected.put("formatType", "METADATA");
-        tightlyCoupledServiceExpected.put("size", "43216");
-        tightlyCoupledServiceExpected.put("checksum", "f693b0d79ae3cbf65a4777123c17a1af");
-        tightlyCoupledServiceExpected.put("checksumAlgorithm", "MD5");
-        tightlyCoupledServiceExpected.put("submitter", "CN=urn:node:cnSandboxUCSB1,DC=dataone,DC=org");
-        tightlyCoupledServiceExpected.put("rightsHolder", "cnSandboxUCSB1");
-        tightlyCoupledServiceExpected.put("replicationAllowed", "");
-        tightlyCoupledServiceExpected.put("numberReplicas", "");
-        tightlyCoupledServiceExpected.put("preferredReplicationMN", "");
-        tightlyCoupledServiceExpected.put("blockedReplicationMN", "");
-        tightlyCoupledServiceExpected.put("obsoletes", "");
-        tightlyCoupledServiceExpected.put("obsoletedBy", "");
-        tightlyCoupledServiceExpected.put("dateUploaded", dateConverter.convert("2016-01-11T20:49:00.385Z"));
-        tightlyCoupledServiceExpected.put("dateModified", dateConverter.convert("2016-01-11T20:49:00.385Z"));
-        tightlyCoupledServiceExpected.put("datasource", "urn:node:mnDemo6");
-        tightlyCoupledServiceExpected.put("authoritativeMN", "urn:node:mnDemo6");
-        tightlyCoupledServiceExpected.put("replicaMN", "");
-        tightlyCoupledServiceExpected.put("replicaVerifiedDate", "");
-        tightlyCoupledServiceExpected.put("readPermission", "public");
-        tightlyCoupledServiceExpected.put("writePermission", "");
-        tightlyCoupledServiceExpected.put("changePermission", "CN=urn:node:cnSandboxUCSB1,DC=dataone,DC=org");
-        tightlyCoupledServiceExpected.put("isPublic", "true");
-        tightlyCoupledServiceExpected.put("dataUrl",
-                "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid5, "UTF-8"));    
-        // science metadata
-        tightlyCoupledServiceExpected.put("author", "Steven Baum");
-        tightlyCoupledServiceExpected.put("authorSurName", "Steven Baum");
-        tightlyCoupledServiceExpected.put("authorSurNameSort", "Steven Baum");
-        tightlyCoupledServiceExpected.put("origin", "Steven Baum" 
-                + "#" + "Texas AM University"
-                + "#" + "NOAA NGDC"
-                + "#" + "GLOBE, SRTM30, Baltic Sea Bathymetry, Caspian Sea Bathymetry, Great Lakes Bathymetry, Gulf of California Bathymetry, IBCAO, JODC Bathymetry, Mediterranean Sea Bathymetry, U.S. Coastal Relief Model (CRM), Antarctica RAMP Topography, Antarctic Digital Database, GSHHS");
-        tightlyCoupledServiceExpected.put("investigator", "Steven Baum" 
-                + "#" + "NOAA NGDC");
-        tightlyCoupledServiceExpected.put("abstract",
-                "ETOPO1 is a 1 arc-minute global relief model of Earth's surface that integrates land topography and ocean bathymetry. It was built from numerous global and regional data sets. This is the 'Ice Surface' version, with the top of the Antarctic and Greenland ice sheets. The horizontal datum is WGS-84, the vertical datum is Mean Sea Level. Keywords: Bathymetry, Digital Elevation. This is the grid/node-registered version: the dataset's latitude and longitude values mark the centers of the cells.");
-        tightlyCoupledServiceExpected.put("title",
-                "Topography, ETOPO1, 0.0166667 degrees, Global (longitude -180 to 180), (Ice Sheet Surface)");
-        tightlyCoupledServiceExpected.put("pubDate", dateConverter.convert("20151214-01-01T00:00:00Z"));    // may need to remove convert() call?
-        tightlyCoupledServiceExpected.put("beginDate", "");
-        tightlyCoupledServiceExpected.put("endDate", "");
-        tightlyCoupledServiceExpected.put("keywords", 
-                "Oceans > Bathymetry/Seafloor Topography > Bathymetry"
-                + "#" + "NOAA NGDC ETOPO"
-                + "#" + "latitude"
-                + "#" + "longitude"
-                + "#" + "altitude");
-        tightlyCoupledServiceExpected.put("contactOrganization", "Texas AM University");
-        tightlyCoupledServiceExpected.put("southBoundCoord", "-90.0");
-        tightlyCoupledServiceExpected.put("northBoundCoord", "90.0");
-        tightlyCoupledServiceExpected.put("westBoundCoord", "-180.0");
-        tightlyCoupledServiceExpected.put("eastBoundCoord", "180.0");
-        tightlyCoupledServiceExpected.put("geohash_1", "s");
-        tightlyCoupledServiceExpected.put("geohash_2", "s0");
-        tightlyCoupledServiceExpected.put("geohash_3", "s00");
-        tightlyCoupledServiceExpected.put("geohash_4", "s000");
-        tightlyCoupledServiceExpected.put("geohash_5", "s0000");
-        tightlyCoupledServiceExpected.put("geohash_6", "s00000");
-        tightlyCoupledServiceExpected.put("geohash_7", "s000000");
-        tightlyCoupledServiceExpected.put("geohash_8", "s0000000");
-        tightlyCoupledServiceExpected.put("geohash_9", "s00000000");
-        tightlyCoupledServiceExpected.put("fileID", "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid5, "UTF-8"));
-        tightlyCoupledServiceExpected.put("text", "etopo180    eng    UTF8    dataset    service      Steven Baum    Texas AM University        979-458-3274        David G. Eller Bldg., Room 618A    College Station    TX    77843-3146    USA    baum@stommel.tamu.edu        pointOfContact      20151214Z    ISO 19115-2 Geographic Information - Metadata Part 2 Extensions for Imagery and Gridded Data    ISO 19115-2:2009(E)      2      column    21601    0.016666666666666666        row    10801    0.016666666666666666      area           Topography, ETOPO1, 0.0166667 degrees, Global (longitude -180 to 180), (Ice Sheet Surface)      20151214Z    creation          gcoos1.tamu.edu:8080       etopo180        NOAA NGDC    NOAA NGDC        Barry.Eakins@noaa.gov        http://www.ngdc.noaa.gov/mgg/global/global.html    http    web browser    Background Information     information        originator         GLOBE, SRTM30, Baltic Sea Bathymetry, Caspian Sea Bathymetry, Great Lakes Bathymetry, Gulf of California Bathymetry, IBCAO, JODC Bathymetry, Mediterranean Sea Bathymetry, U.S. Coastal Relief Model (CRM), Antarctica RAMP Topography, Antarctic Digital Database, GSHHS     contributor        ETOPO1 is a 1 arc-minute global relief model of Earth's surface that integrates land topography and ocean bathymetry. It was built from numerous global and regional data sets. This is the 'Ice Surface' version, with the top of the Antarctic and Greenland ice sheets. The horizontal datum is WGS-84, the vertical datum is Mean Sea Level. Keywords: Bathymetry, Digital Elevation. This is the grid/node-registered version: the dataset's latitude and longitude values mark the centers of the cells.    NOAA NGDC      NOAA NGDC    NOAA NGDC        Barry.Eakins@noaa.gov        http://www.ngdc.noaa.gov/mgg/global/global.html    http    web browser    Background Information     information        pointOfContact        Oceans > Bathymetry/Seafloor Topography > Bathymetry    theme      GCMD Science Keywords           NOAA NGDC ETOPO    project         latitude    longitude    altitude    theme      CF-12           The data may be used and redistributed for free but is not intendedfor legal use, since it may contain inaccuracies. Neither the dataContributor, ERD, NOAA, nor the United States Government, nor anyof their employees or contractors, makes any warranty, express orimplied, including warranties of merchantability and fitness for aparticular purpose, or assumes any legal liability for the accuracy,completeness, or usefulness, of this information.          NOAA NGDC ETOPO       largerWorkCitation    project            Unidata Common Data Model       Grid      largerWorkCitation    project      eng    geoscientificInformation        1    -180.0    180.0    -90.0    90.0              Topography, ETOPO1, 0.0166667 degrees, Global (longitude -180 to 180), (Ice Sheet Surface)      20151214Z    creation        NOAA NGDC    NOAA NGDC        Barry.Eakins@noaa.gov        http://www.ngdc.noaa.gov/mgg/global/global.html    http    web browser    Background Information     information        originator         GLOBE, SRTM30, Baltic Sea Bathymetry, Caspian Sea Bathymetry, Great Lakes Bathymetry, Gulf of California Bathymetry, IBCAO, JODC Bathymetry, Mediterranean Sea Bathymetry, U.S. Coastal Relief Model (CRM), Antarctica RAMP Topography, Antarctic Digital Database, GSHHS     contributor        ETOPO1 is a 1 arc-minute global relief model of Earth's surface that integrates land topography and ocean bathymetry. It was built from numerous global and regional data sets. This is the 'Ice Surface' version, with the top of the Antarctic and Greenland ice sheets. The horizontal datum is WGS-84, the vertical datum is Mean Sea Level. Keywords: Bathymetry, Digital Elevation. This is the grid/node-registered version: the dataset's latitude and longitude values mark the centers of the cells.    ERDDAP OPeNDAP        1    -180.0    180.0    -90.0    90.0        tight      OPeNDAPDatasetQueryAndAccess       http://gcoos1.tamu.edu:8080/erddap/griddap/etopo180    OPeNDAP    ERDDAP's griddap OPeNDAP service. Add different extensions (e.g., .html, .das, .dds) for different purposes.    download               Topography, ETOPO1, 0.0166667 degrees, Global (longitude -180 to 180), (Ice Sheet Surface)      20151214Z    creation        NOAA NGDC    NOAA NGDC        Barry.Eakins@noaa.gov        http://www.ngdc.noaa.gov/mgg/global/global.html    http    web browser    Background Information     information        originator         GLOBE, SRTM30, Baltic Sea Bathymetry, Caspian Sea Bathymetry, Great Lakes Bathymetry, Gulf of California Bathymetry, IBCAO, JODC Bathymetry, Mediterranean Sea Bathymetry, U.S. Coastal Relief Model (CRM), Antarctica RAMP Topography, Antarctic Digital Database, GSHHS     contributor        ETOPO1 is a 1 arc-minute global relief model of Earth's surface that integrates land topography and ocean bathymetry. It was built from numerous global and regional data sets. This is the 'Ice Surface' version, with the top of the Antarctic and Greenland ice sheets. The horizontal datum is WGS-84, the vertical datum is Mean Sea Level. Keywords: Bathymetry, Digital Elevation. This is the grid/node-registered version: the dataset's latitude and longitude values mark the centers of the cells.    Open Geospatial Consortium Web Map Service (WMS)        1    -180.0    180.0    -90.0    90.0        tight      GetCapabilities       http://gcoos1.tamu.edu:8080/erddap/wms/etopo180/request?service=WMS&version=1.3.0&request=GetCapabilities    OGC-WMS    Open Geospatial Consortium Web Map Service (WMS)    download              physicalMeasurement        altitude      short        Altitude               Steven Baum    Texas AM University        979-458-3274        David G. Eller Bldg., Room 618A    College Station    TX    77843-3146    USA    baum@stommel.tamu.edu        distributor        OPeNDAP    DAP/2.0          http://gcoos1.tamu.edu:8080/erddap/griddap/etopo180.html    OPeNDAP    ERDDAP's version of the OPeNDAP .html web page for this dataset. Specify a subset of the dataset and download the data via OPeNDAP or in many different file types.    download            http://gcoos1.tamu.edu:8080/erddap/griddap/etopo180.graph    Viewer Information    ERDDAP's Make-A-Graph .html web page for this dataset. Create an image with a map or graph of a subset of the data.    mapDigital                dataset        2011-03-14 Downloaded http://www.ngdc.noaa.gov/mgg/global/relief/ETOPO1/data/ice_surface/grid_registered/binary/etopo1_ice_g_i2.zip           This record was created from dataset metadata by ERDDAP Version 1.46 IOOS_etopo100_201611124924884");
-        // service info
-        tightlyCoupledServiceExpected.put("isService", "true");
-        tightlyCoupledServiceExpected.put("serviceCoupling", "tight");
-        tightlyCoupledServiceExpected.put("serviceTitle", "Topography, ETOPO1, 0.0166667 degrees, Global (longitude -180 to 180), (Ice Sheet Surface):Topography, ETOPO1, 0.0166667 degrees, Global (longitude -180 to 180), (Ice Sheet Surface):OPeNDAP:Viewer Information");
-        tightlyCoupledServiceExpected.put("serviceDescription", "ETOPO1 is a 1 arc-minute global relief model of Earth's surface that integrates land topography and ocean bathymetry. It was built from numerous global and regional data sets. This is the 'Ice Surface' version, with the top of the Antarctic and Greenland ice sheets. The horizontal datum is WGS-84, the vertical datum is Mean Sea Level. Keywords: Bathymetry, Digital Elevation. This is the grid/node-registered version: the dataset's latitude and longitude values mark the centers of the cells.:ETOPO1 is a 1 arc-minute global relief model of Earth's surface that integrates land topography and ocean bathymetry. It was built from numerous global and regional data sets. This is the 'Ice Surface' version, with the top of the Antarctic and Greenland ice sheets. The horizontal datum is WGS-84, the vertical datum is Mean Sea Level. Keywords: Bathymetry, Digital Elevation. This is the grid/node-registered version: the dataset's latitude and longitude values mark the centers of the cells.:ERDDAP's version of the OPeNDAP .html web page for this dataset. Specify a subset of the dataset and download the data via OPeNDAP or in many different file types.:ERDDAP's Make-A-Graph .html web page for this dataset. Create an image with a map or graph of a subset of the data.");
-        tightlyCoupledServiceExpected.put("serviceType", serviceTypeConverter.convert("ERDDAP OPeNDAP") 
-                + "#" + serviceTypeConverter.convert("Open Geospatial Consortium Web Map Service (WMS)"));
-        tightlyCoupledServiceExpected.put("serviceEndpoint", 
-                "http://gcoos1.tamu.edu:8080/erddap/griddap/etopo180"
-                + "#" + "http://gcoos1.tamu.edu:8080/erddap/wms/etopo180/request?service=WMS&version=1.3.0&request=GetCapabilities"
-                + "#" + "http://gcoos1.tamu.edu:8080/erddap/griddap/etopo180.html"
-                + "#" + "http://gcoos1.tamu.edu:8080/erddap/griddap/etopo180.graph"
-                );
-        tightlyCoupledServiceExpected.put("serviceInput", 
-                "DataIdentification"
-                + "#" + "DataIdentification");
-        tightlyCoupledServiceExpected.put("serviceOutput", "DAP/2.0");
-    }
-    
-    private void setupLooselyCoupledServiceExpected() throws Exception {
-        // system metadata
-        looselyCoupledServiceExpected.put("id", pid6);
-        looselyCoupledServiceExpected.put("seriesId", "");
-        looselyCoupledServiceExpected.put("fileName", "");
-        looselyCoupledServiceExpected.put("mediaType", "");
-        looselyCoupledServiceExpected.put("mediaTypeProperty", "");
-        looselyCoupledServiceExpected.put("formatId", isotc211FormatId);
-        looselyCoupledServiceExpected.put("formatType", "METADATA");
-        looselyCoupledServiceExpected.put("size", "5172");
-        looselyCoupledServiceExpected.put("checksum", "5ec9ee7e9e4c34c6ab360a19328917ef");
-        looselyCoupledServiceExpected.put("checksumAlgorithm", "MD5");
-        looselyCoupledServiceExpected.put("submitter", "CN=urn:node:cnSandboxUCSB1,DC=dataone,DC=org");
-        looselyCoupledServiceExpected.put("rightsHolder", "cnSandboxUCSB1");
-        looselyCoupledServiceExpected.put("replicationAllowed", "");
-        looselyCoupledServiceExpected.put("numberReplicas", "");
-        looselyCoupledServiceExpected.put("preferredReplicationMN", "");
-        looselyCoupledServiceExpected.put("blockedReplicationMN", "");
-        looselyCoupledServiceExpected.put("obsoletes", "");
-        looselyCoupledServiceExpected.put("obsoletedBy", "");
-        looselyCoupledServiceExpected.put("dateUploaded", dateConverter.convert("2016-01-12T17:30:48.415Z"));
-        looselyCoupledServiceExpected.put("dateModified", dateConverter.convert("2016-01-12T17:30:48.415Z"));
-        looselyCoupledServiceExpected.put("datasource", "urn:node:mnDemo6");
-        looselyCoupledServiceExpected.put("authoritativeMN", "urn:node:mnDemo6");
-        looselyCoupledServiceExpected.put("replicaMN", "");
-        looselyCoupledServiceExpected.put("replicaVerifiedDate", "");
-        looselyCoupledServiceExpected.put("readPermission", "public");
-        looselyCoupledServiceExpected.put("writePermission", "");
-        looselyCoupledServiceExpected.put("changePermission", "CN=urn:node:cnSandboxUCSB1,DC=dataone,DC=org");
-        looselyCoupledServiceExpected.put("isPublic", "true");
-        looselyCoupledServiceExpected.put("dataUrl",
-                "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid6, "UTF-8"));
-    
-        // science metadata
-        looselyCoupledServiceExpected.put("author", "Bob");
-        looselyCoupledServiceExpected.put("authorSurName", "Bob");
-        looselyCoupledServiceExpected.put("authorSurNameSort", "Bob");
-        looselyCoupledServiceExpected.put("origin", "Bob" 
-                + "#" + "UNM");
-        looselyCoupledServiceExpected.put("investigator", "Bob");
-        looselyCoupledServiceExpected.put("abstract", "");
-        looselyCoupledServiceExpected.put("title", "");
-        looselyCoupledServiceExpected.put("pubDate", dateConverter.convert("20151214-01-01T00:00:00Z"));
-        looselyCoupledServiceExpected.put("beginDate", "");
-        looselyCoupledServiceExpected.put("endDate", "");
-        looselyCoupledServiceExpected.put("keywords", "");
-        looselyCoupledServiceExpected.put("contactOrganization", "UNM");
-        looselyCoupledServiceExpected.put("southBoundCoord", "");
-        looselyCoupledServiceExpected.put("northBoundCoord", "");
-        looselyCoupledServiceExpected.put("westBoundCoord", "");
-        looselyCoupledServiceExpected.put("eastBoundCoord", "");
-        looselyCoupledServiceExpected.put("geohash_1", "");
-        looselyCoupledServiceExpected.put("geohash_2", "");
-        looselyCoupledServiceExpected.put("geohash_3", "");
-        looselyCoupledServiceExpected.put("geohash_4", "");
-        looselyCoupledServiceExpected.put("geohash_5", "");
-        looselyCoupledServiceExpected.put("geohash_6", "");
-        looselyCoupledServiceExpected.put("geohash_7", "");
-        looselyCoupledServiceExpected.put("geohash_8", "");
-        looselyCoupledServiceExpected.put("geohash_9", "");
-        looselyCoupledServiceExpected.put("fileID", "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid6, "UTF-8"));
-        looselyCoupledServiceExpected.put("text", "iso19119_looselyCoupled    eng    UTF8    dataset    service      Bob    UNM    pointOfContact      20151214Z    ISO 19115-2 Geographic Information - Metadata Part 2 Extensions for Imagery and Gridded Data    ISO 19115-2:2009(E)        Test Render Service      2007-12-29T12:00:00           Abstract: A rendering service in ISO19139/119,\t\t\t\t\tyields an application/svg xml of given data.     OGC:WMS         RenderSVG         http://localhost:8080/geoserver/wms?SERVICE=WMS&    Renders an application/svg xml of given\t\t\t\t\t\t\t\t\tdata. iso19119_looselyCoupled_20161293114572");
-        // service info
-        looselyCoupledServiceExpected.put("isService", "true");
-        looselyCoupledServiceExpected.put("serviceCoupling", "loose");
-        looselyCoupledServiceExpected.put("serviceTitle", "Test Render Service");
-        looselyCoupledServiceExpected.put("serviceDescription", "Abstract: A rendering service in ISO19139/119,\t\t\t\t\tyields an application/svg xml of given data.");
-        looselyCoupledServiceExpected.put("serviceType", serviceTypeConverter.convert("OGC:WMS")); 
-        looselyCoupledServiceExpected.put("serviceEndpoint", "http://localhost:8080/geoserver/wms?SERVICE=WMS&");
-        looselyCoupledServiceExpected.put("serviceInput", "https://cn-dev-ucsb-1.test.dataone.org/cn/v2/formats/CF-1.3"
-                + "#" + "https://cn-dev-ucsb-1.test.dataone.org/cn/v2/formats/CF-1.4");
-        looselyCoupledServiceExpected.put("serviceOutput", "https://cn-dev-ucsb-1.test.dataone.org/cn/v2/formats/image%2Fsvg%20xml");
+
     }
 
-    private void setupDistributionInfoExpected() throws Exception {
-        // system metadata
-        distributionInfoExpected.put("id", pid7);
-        distributionInfoExpected.put("seriesId", "");
-        distributionInfoExpected.put("fileName", "");
-        distributionInfoExpected.put("mediaType", "");
-        distributionInfoExpected.put("mediaTypeProperty", "");
-        distributionInfoExpected.put("formatId", isotc211FormatId);
-        distributionInfoExpected.put("formatType", "METADATA");
-        distributionInfoExpected.put("size", "5172");
-        distributionInfoExpected.put("checksum", "5ec9ee7e9e4c34c6ab360a19328917ef");
-        distributionInfoExpected.put("checksumAlgorithm", "MD5");
-        distributionInfoExpected.put("submitter", "CN=urn:node:cnSandboxUCSB1,DC=dataone,DC=org");
-        distributionInfoExpected.put("rightsHolder", "cnSandboxUCSB1");
-        distributionInfoExpected.put("replicationAllowed", "");
-        distributionInfoExpected.put("numberReplicas", "");
-        distributionInfoExpected.put("preferredReplicationMN", "");
-        distributionInfoExpected.put("blockedReplicationMN", "");
-        distributionInfoExpected.put("obsoletes", "");
-        distributionInfoExpected.put("obsoletedBy", "");
-        distributionInfoExpected.put("dateUploaded", dateConverter.convert("2016-01-12T17:30:48.415Z"));
-        distributionInfoExpected.put("dateModified", dateConverter.convert("2016-01-12T17:30:48.415Z"));
-        distributionInfoExpected.put("datasource", "urn:node:mnDemo6");
-        distributionInfoExpected.put("authoritativeMN", "urn:node:mnDemo6");
-        distributionInfoExpected.put("replicaMN", "");
-        distributionInfoExpected.put("replicaVerifiedDate", "");
-        distributionInfoExpected.put("readPermission", "public");
-        distributionInfoExpected.put("writePermission", "");
-        distributionInfoExpected.put("changePermission", "CN=urn:node:cnSandboxUCSB1,DC=dataone,DC=org");
-        distributionInfoExpected.put("isPublic", "true");
-        distributionInfoExpected.put("dataUrl",
-                "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid7, "UTF-8"));
-    
-        // science metadata
-        distributionInfoExpected.put("author", "Robert Potash");
-        distributionInfoExpected.put("authorSurName", "Robert Potash");
-        distributionInfoExpected.put("authorSurNameSort", "Robert Potash");
-        distributionInfoExpected.put("origin",
-                "DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce"
-                + "#" + "Robert Potash"
-                + "#" + "OSDPD > NOAA Office of Satellite Data Processing and Distribution"
-                + "#" + "DOC/NOAA/NESDIS/NODC > National Oceanographic Data Center, NESDIS, NOAA, U.S. Department of Commerce"
-                + "#" + "Edward M. Armstrong"
-                + "#" + "NOAA/NESDIS USA, 5200 Auth Rd, Camp Springs, MD, 20746"
-                + "#" + "NOAA/NESDIS"
-                + "#" + "Group for High Resolution Sea Surface Temperature"
-                + "#" + "NASA/JPL/PODAAC > Physical Oceanography Distributed Active Archive Center, Jet Propulsion Laboratory, NASA"
-                );
-        distributionInfoExpected.put("investigator", "Robert Potash"
-                + "#" + "Edward M. Armstrong" 
-                + "#" + "NOAA/NESDIS USA, 5200 Auth Rd, Camp Springs, MD, 20746");
-        distributionInfoExpected.put("abstract", "The Geostationary Operational Environmental Satellites (GOES) operated by the United States National Oceanographic and Atmospheric Administration (NOAA) support weather forecasting, severe storm tracking, meteorology and oceanography research. Generally there are several GOES satellites in geosynchronous orbit at any one time viewing different earth locations including the GOES-13 launched 24 May 2006. The radiometer aboard the satellite, The GOES N-P Imager, is a five channel (one visible, four infrared) imaging radiometer designed to sense radiant and solar reflected energy from sampled areas of the earth. The multi-element spectral channels simultaneously sweep east-west and west-east along a north-to-south path by means of a two-axis mirror scan system retuning telemetry in 10-bit precision. For this Group for High Resolution Sea Surface Temperature (GHRSST) dataset, skin sea surface temperature (SST) measurements are calculated from the far IR channels of GOES-13 at full resolution on a half hourly basis. In native satellite projection, vertically adjacent pixels are averaged and read out at every pixel. L2P datasets including Single Sensor Error Statistics (SSES) are then derived following the GHRSST Data Processing Specification (GDS) version 2.0. The full disk image is subsetted into granules representing distinct northern and southern regions.");
-        distributionInfoExpected.put("title", "GHRSST Level 2P Western Atlantic Regional Skin Sea Surface Temperature from the Geostationary Operational Environmental Satellites (GOES) Imager on the GOES-13 satellite (GDS versions 1 and 2)");
-        distributionInfoExpected.put("pubDate", dateConverter.convert("2016-01-24T12:44:41.000Z"));
-        distributionInfoExpected.put("beginDate", "2010-06-21T06:00:00.000Z");
-        distributionInfoExpected.put("endDate", "");
-        distributionInfoExpected.put("keywords", "DOC/NOAA/NESDIS/NODC > National Oceanographic Data Center, NESDIS, NOAA, U.S. Department of Commerce"
-                + "#" + "DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce");
-        distributionInfoExpected.put("contactOrganization", "DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce");
-        distributionInfoExpected.put("southBoundCoord", "50");
-        distributionInfoExpected.put("northBoundCoord", "65");
-        distributionInfoExpected.put("westBoundCoord", "-135");
-        distributionInfoExpected.put("eastBoundCoord", "-30");
-        distributionInfoExpected.put("geohash_1", "f");
-        distributionInfoExpected.put("geohash_2", "f4");
-        distributionInfoExpected.put("geohash_3", "f4j");
-        distributionInfoExpected.put("geohash_4", "f4jr");
-        distributionInfoExpected.put("geohash_5", "f4jr4");
-        distributionInfoExpected.put("geohash_6", "f4jr4e");
-        distributionInfoExpected.put("geohash_7", "f4jr4et");
-        distributionInfoExpected.put("geohash_8", "f4jr4et3");
-        distributionInfoExpected.put("geohash_9", "f4jr4et3f");
-        distributionInfoExpected.put("fileID", "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid7, "UTF-8"));
-        distributionInfoExpected.put("text","gov.noaa.nodc:GHRSST-GOES13-OSPO-L2P    eng    utf8    series      DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce    Data Officer        301-713-3272    301-713-3302        Federal Building 151 Patton Avenue    Asheville    NC    28801-5001    USA    NODC.DataOfficer@noaa.gov        http://www.ncei.noaa.gov/    HTTP    Standard Internet browser    NOAA National Centers for Environmental Information website    Main NCEI website providing links to access data and data services.    information        custodian        Robert Potash    OSDPD > NOAA Office of Satellite Data Processing and Distribution    Technical Contact        301-763-8384    none        bob.potash@noaa.gov      Phone/FAX/E-mail      pointOfContact      2016-01-24T05:44:41    ISO 19115-2 Geographic Information - Metadata - Part 2: Extensions for Imagery and Gridded Data    ISO 19115-2:2009(E)      2      column     0.036        row     0.036      area    true          GHRSST Level 2P Western Atlantic Regional Skin Sea Surface Temperature from the Geostationary Operational Environmental Satellites (GOES) Imager on the GOES-13 satellite (GDS versions 1 and 2)    GHRSST Sea Surface Temperature 30W-135W and 65N-50S, at 0.036 degree resolution from GOES-13 Imager      2011-09-07    publication      1.0      2012-01-04    revision      1.0        NCEI Collection Identifier       gov.noaa.nodc:GHRSST-GOES13-OSPO-L2P        DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce        301-713-3277    301-713-3302        Federal Building 151 Patton Avenue    Asheville    NC    28801-5001    USA    NODC.DataOfficer@noaa.gov        http://www.ncei.noaa.gov/    HTTP    Standard Internet browser    NOAA National Centers for Environmental Information website    Main NCEI website providing links to access data and data services.    information        publisher        DOC/NOAA/NESDIS/NODC > National Oceanographic Data Center, NESDIS, NOAA, U.S. Department of Commerce        301-713-3277    301-713-3302        1315 East-West Highway, SSMC3, 4th floor    Silver Spring    MD    20910-3282    USA    NODC.DataOfficer@noaa.gov        http://www.nodc.noaa.gov/    HTTP    Standard Internet browser    NOAA National Oceanographic Data Center website    Main NODC website providing links to access data and data services.    information        publisher        Edward M. Armstrong    US NASA; Jet Propulsion Laboratory        (818) 393-6710        MS 300/320 4800 Oak Grove Drive    Pasadena    CA    91109    USA    edward.m.armstrong@jpl.nasa.gov        resourceProvider        US NASA; Jet Propulsion Laboratory; Physical Oceanography Distributed Active Archive Center (JPL PO.DAAC)        626-744-5508        4800 Oak Grove Drive    Pasadena    CA    91109    USA    podaac@podaac.jpl.nasa.gov        http://podaac.jpl.nasa.gov/index.html    HTTP    Standard Internet browser    NASA Jet Propulsion Laboratory PO DAAC website    Institution web page    information        resourceProvider        US DOC; NOAA; NESDIS; Office of Satellite and Product Operations (OSPO)        E/SP NSOF, 4231 SUITLAND ROAD    SUITLAND    MD    20746    USA        http://www.ospo.noaa.gov/Organization/About/contact.html    HTTP    Standard Internet browser    Office of Satellite and Product Operations website    Institution web page    information        originator        US DOC; NOAA; NESDIS; Office of Satellite and Product Operations (OSDPD)        301-457-5120        E/SP    Suitland    MD    20746-4304    USA        originator      tableDigital      The Geostationary Operational Environmental Satellites (GOES) operated by the United States National Oceanographic and Atmospheric Administration (NOAA) support weather forecasting, severe storm tracking, meteorology and oceanography research. Generally there are several GOES satellites in geosynchronous orbit at any one time viewing different earth locations including the GOES-13 launched 24 May 2006. The radiometer aboard the satellite, The GOES N-P Imager, is a five channel (one visible, four infrared) imaging radiometer designed to sense radiant and solar reflected energy from sampled areas of the earth. The multi-element spectral channels simultaneously sweep east-west and west-east along a north-to-south path by means of a two-axis mirror scan system retuning telemetry in 10-bit precision. For this Group for High Resolution Sea Surface Temperature (GHRSST) dataset, skin sea surface temperature (SST) measurements are calculated from the far IR channels of GOES-13 at full resolution on a half hourly basis. In native satellite projection, vertically adjacent pixels are averaged and read out at every pixel. L2P datasets including Single Sensor Error Statistics (SSES) are then derived following the GHRSST Data Processing Specification (GDS) version 2.0. The full disk image is subsetted into granules representing distinct northern and southern regions.    BASIC RESEARCH    These data are produced by NOAA/NESDIS funded by NESDIS Office of System Development    onGoing      DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce        301-713-3277    301-713-3302        Federal Building 151 Patton Avenue    Asheville    NC    28801-5001    USA    NODC.Services@noaa.gov        http://www.ncei.noaa.gov/    HTTP    Standard Internet browser    NOAA National Centers for Environmental Information website    Main NCEI website providing links to access data and data services.    information      8:30-6:00 PM, EST      pointOfContact        Robert Potash    OSDPD > NOAA Office of Satellite Data Processing and Distribution        301-763-8384    none        bob.potash@noaa.gov         pointOfContact        asNeeded        http://data.nodc.noaa.gov/cgi-bin/gfx?id=gov.noaa.nodc:GHRSST-GOES13-OSPO-L2P    Preview graphic    PNG        DOC/NOAA/NESDIS/NODC > National Oceanographic Data Center, NESDIS, NOAA, U.S. Department of Commerce    DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce    dataCenter        Please note: NOAA and NCEI make no warranty, expressed or implied, regarding these data, nor does the fact of distribution constitute such a warranty. NOAA and NCEI cannot assume liability for any damages caused by any errors or omissions in these data.    accessLevel: Public        otherRestrictions    Cite as: US DOC; NOAA; NESDIS; Office of Satellite and Product Operations (OSPO) (2010). GHRSST Level 2P Western Atlantic Regional Skin Sea Surface Temperature from the Geostationary Operational Environmental Satellites (GOES) Imager on the GOES-13 satellite (GDS versions 1 and 2). National Oceanographic Data Center, NOAA. Dataset. [access date]        otherRestrictions    None          GHRSST Level 2P Western Atlantic Regional Skin Sea Surface Temperature from the Geostationary Operational Environmental Satellites (GOES) Imager on the GOES-13 satellite (GDS version 2)    GHRSST Sea Surface Temperature 30W-135W and 65N-50S, at 0.036 degree resolution from GOES-13 Imager      20141116    creation      1.0      NOAA/NESDIS USA, 5200 Auth Rd, Camp Springs, MD, 20746         originator        NOAA/NESDIS        Camp Springs, MD (USA)        publisher        collection    userGuide          IDL read software Read software       Group for High Resolution Sea Surface Temperature        ftp://podaac.jpl.nasa.gov/OceanTemperature/ghrsst/sw/IDL/    FTP    Any FTP client    IDL read software    Read software        custodian        crossReference    collection          GDS2 User Manual Documentation on the GDS version 2 format specification       Group for High Resolution Sea Surface Temperature        ftp://podaac.jpl.nasa.gov/OceanTemperature/ghrsst/docs/GDS20r5.pdf    FTP    Any FTP client    GDS2 User Manual    Documentation on the GDS version 2 format specification        custodian        crossReference    collection          Web Service (PO.DAAC Labs) (Search Granule)       Group for High Resolution Sea Surface Temperature        http://podaac.jpl.nasa.gov/ws/search/granule/?datasetId=PODAAC-GHG13-2PO02    HTTP    Standard Internet browser    Web Service (PO.DAAC Labs)    (Search Granule)        custodian        crossReference    collection          Home Page of the GHRSST Project       Group for High Resolution Sea Surface Temperature        http://www.ghrsst.org    HTTP    Standard Internet browser    Home Page of the GHRSST Project    Home Page of the GHRSST Project        custodian        crossReference    collection          Portal to the GHRSST Global Data Assembly Center and data access       Group for High Resolution Sea Surface Temperature        http://ghrsst.jpl.nasa.gov    HTTP    Standard Internet browser    Portal to the GHRSST Global Data Assembly Center and data access    Portal to the GHRSST Global Data Assembly Center and data access        custodian        crossReference    collection      grid    eng    utf8    environment    oceans    climatologyMeteorologyAtmosphere    biota    climatologyMeteorologyAtmosphere        -135    -30    50    65         2010-06-21          This collection includes data from the following product(s): GHRSST Level 2P Western Atlantic Regional Skin Sea Surface Temperature from the Geostationary Operational Environmental Satellites (GOES) Imager on the GOES-13 satellite (GDS version 2) (GHRSST-GOES13-OSPO-L2P-v1.0); GHRSST Level 2P Western Atlantic Regional Skin Sea Surface Temperature from the Geostationary Operational Environmental Satellites (GOES) Imager on the GOES-13 satellite (GHRSST-OSDPD-L2P-GOES13).           referenceInformation        lat      float              lon      float              time      int                  DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce        301-713-3277    301-713-3302        Federal Building 151 Patton Avenue    Asheville    NC    28801-5001    USA    NODC.Services@noaa.gov      8:30-6:00 PM, EST      pointOfContact        Digital data may be downloaded from NCEI at no charge in most cases. For custom orders of digital data or to obtain a copy of analog materials, please contact NCEI Information Services Division for information about current fees.    Data may be searched and downloaded using online services provided by NCEI using the online resource URLs in this record. Contact NCEI Information Services Division for custom orders. When requesting data from NCEI, the desired data set may be referred to by the unique package identification number listed in this metadata record.        netCDF    netCDF-4    Files are internally compressed          http://www.nodc.noaa.gov/geoportal/rest/find/document?searchText=fileIdentifier%3AGHRSST-GOES13-OSPO-L2P*%20OR%20fileIdentifier%3AGOES13-OSPO-L2P*%20OR%20fileIdentifier%3AGHRSST-OSDPD-L2P-GOES13*%20OR%20fileIdentifier%3AOSDPD-L2P-GOES13*&start=1&max=100&f=SearchPage    HTTP    Standard Internet browser    Granule Search    Granule Search    search            http://data.nodc.noaa.gov/cgi-bin/iso?id=gov.noaa.nodc:GHRSST-GOES13-OSPO-L2P    HTTP    Standard Internet browser    Details    Navigate directly to the URL for a descriptive web page with download links.    information            http://data.nodc.noaa.gov/thredds/catalog/ghrsst/L2P/GOES13/OSPO/    THREDDS    Standard Internet browsers can browse THREDDS Data Servers and specialized THREDDS software can enable more sophisticated data access and visualizations.    THREDDS    These data are available through a variety of services via a THREDDS (Thematic Real-time Environmental Distributed Data Services) Data Server (TDS). Depending on the dataset, the TDS can provide WMS, WCS, DAP, HTTP, and other data access and metadata services as well. For more information on the TDS, see http://www.unidata.ucar.edu/software/thredds/current/tds/.    download            http://data.nodc.noaa.gov/opendap/ghrsst/L2P/GOES13/OSPO/    DAP    Standard Internet browsers can browse OPeNDAP servers and specialized OPeNDAP software can enable more sophisticated data access and visualizations.    OPeNDAP    These data are available through the Data Access Protocol (DAP) via an OPeNDAP Hyrax server. For a listing of OPeNDAP clients which may be used to access OPeNDAP-enabled data sets, please see the OPeNDAP website at http://opendap.org/.    download            http://data.nodc.noaa.gov/ghrsst/L2P/GOES13/OSPO/    HTTP    Standard Internet browser    Download    Navigate directly to the URL for data access and direct download.    download            ftp://ftp.nodc.noaa.gov/pub/data.nodc/ghrsst/L2P/GOES13/OSPO/    FTP    Any FTP client    FTP    These data are available through the File Transfer Protocol (FTP). You may use any FTP client to download these data.    download                repository      NOAA National Centers for Environmental Information            NOAA created the National Centers for Environmental Information (NCEI) by merging NOAA's National Climatic Data Center (NCDC), National Geophysical Data Center (NGDC), and National Oceanographic Data Center (NODC), including the National Coastal Data Development Center (NCDDC), per the Consolidated and Further Continuing Appropriations Act, 2015, Public Law 113-235. NCEI launched publicly on April 22, 2015.    2015-04-22T00:00:00            asNeeded    Combined metadata from JPL and NCEI      DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce    custodian              GOES-13 Imager > Geostationary Operational Environmental Satellite 13-Imager      sensor    he GOES Imager is a multi-channel instrument designed to sense radiant and solar-reflected energy from sampled areas of the Earth. The multi-element spectral channels simultaneously sweep east-west a          GOES-13 > Geostationary Operational Environmental Satellite 13           NOAA/NESDIS USA, 5200 Auth Rd, Camp Springs, MD, 20746         sponsor        NASA/JPL/PODAAC > Physical Oceanography Distributed Active Archive Center, Jet Propulsion Laboratory, NASA        http://podaac.jpl.nasa.gov    information        sponsor isotc211_distributionInfo_20161293114572");
-        // service info
-        distributionInfoExpected.put("isService", "true");
-        distributionInfoExpected.put("serviceCoupling", "tight");
-        distributionInfoExpected.put("serviceTitle", "Granule Search"
-                + ":" + "Details"
-                + ":" + "THREDDS"
-                + ":" + "OPeNDAP"
-                + ":" + "Download"
-                + ":" + "FTP"
-                );
-        distributionInfoExpected.put("serviceDescription", "Granule Search"
-                + ":" + "Navigate directly to the URL for a descriptive web page with download links."
-                + ":" + "These data are available through a variety of services via a THREDDS (Thematic Real-time Environmental Distributed Data Services) Data Server (TDS). Depending on the dataset, the TDS can provide WMS, WCS, DAP, HTTP, and other data access and metadata services as well. For more information on the TDS, see http://www.unidata.ucar.edu/software/thredds/current/tds/."
-                + ":" + "These data are available through the Data Access Protocol (DAP) via an OPeNDAP Hyrax server. For a listing of OPeNDAP clients which may be used to access OPeNDAP-enabled data sets, please see the OPeNDAP website at http://opendap.org/."
-                + ":" + "Navigate directly to the URL for data access and direct download."
-                + ":" + "These data are available through the File Transfer Protocol (FTP). You may use any FTP client to download these data."
-                );
-        distributionInfoExpected.put("serviceType", serviceTypeConverter.convert("HTTP")
-                + "#" + serviceTypeConverter.convert("HTTP")
-                + "#" + serviceTypeConverter.convert("THREDDS")
-                + "#" + serviceTypeConverter.convert("DAP")
-                + "#" + serviceTypeConverter.convert("HTTP")
-                + "#" + serviceTypeConverter.convert("FTP")
-                );
-        distributionInfoExpected.put("serviceEndpoint", "http://www.nodc.noaa.gov/geoportal/rest/find/document?searchText=fileIdentifier%3AGHRSST-GOES13-OSPO-L2P*%20OR%20fileIdentifier%3AGOES13-OSPO-L2P*%20OR%20fileIdentifier%3AGHRSST-OSDPD-L2P-GOES13*%20OR%20fileIdentifier%3AOSDPD-L2P-GOES13*&start=1&max=100&f=SearchPage"
-                + "#" + "http://data.nodc.noaa.gov/cgi-bin/iso?id=gov.noaa.nodc:GHRSST-GOES13-OSPO-L2P"
-                + "#" + "http://data.nodc.noaa.gov/thredds/catalog/ghrsst/L2P/GOES13/OSPO/"
-                + "#" + "http://data.nodc.noaa.gov/opendap/ghrsst/L2P/GOES13/OSPO/"
-                + "#" + "http://data.nodc.noaa.gov/ghrsst/L2P/GOES13/OSPO/"
-                + "#" + "ftp://ftp.nodc.noaa.gov/pub/data.nodc/ghrsst/L2P/GOES13/OSPO/"
-                );
-        distributionInfoExpected.put("serviceInput", "");  // implicitly part of endpoint URL
-        distributionInfoExpected.put("serviceOutput", "netCDF-4");
-    }
-    
+    @Test
     public void testIsotc211Nodc1FieldParsing() throws Exception {
         testXPathParsing(isotc211Subprocessor, isotc211_nodc_1_SysMeta, isotc211_nodc_1_SciMeta,
                 nodc1Expected, pid1);
@@ -756,23 +394,5 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     public void testIsotc211Iarc2FieldParsing() throws Exception {
         testXPathParsing(isotc211Subprocessor, isotc211_iarc_2_SysMeta, isotc211_iarc_2_SciMeta,
                 iarc2Expected, pid4);
-    }
-    
-    @Test
-    public void testIsotc211TightlyCoupledIso19119Doc() throws Exception {
-        testXPathParsing(isotc211Subprocessor, isotc211_tightlyCoupledService_SysMeta, isotc211_tightlyCoupledService_SciMeta,
-                tightlyCoupledServiceExpected, pid5);
-    }
-
-    @Test
-    public void testIsotc211LooselyCoupledIso19119Doc() throws Exception {
-        testXPathParsing(isotc211Subprocessor, isotc211_looselyCoupledService_SysMeta, isotc211_looselyCoupledService_SciMeta,
-                looselyCoupledServiceExpected, pid6);
-    }
-
-    @Test
-    public void testIsotc211DistributionInfoParsing() throws Exception {
-        testXPathParsing(isotc211Subprocessor, isotc211_distributionInfo_SysMeta, isotc211_distributionInfo_SciMeta,
-                distributionInfoExpected, pid7);
     }
 }

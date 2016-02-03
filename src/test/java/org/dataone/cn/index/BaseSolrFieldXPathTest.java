@@ -24,13 +24,9 @@ package org.dataone.cn.index;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringUtils;
 import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.cn.indexer.parser.BaseXPathDocumentSubprocessor;
@@ -59,88 +55,93 @@ public abstract class BaseSolrFieldXPathTest {
     protected void testXPathParsing(ScienceMetadataDocumentSubprocessor docProcessor,
             Resource sysMetadata, Resource sciMetadata, HashMap<String, String> expectedValues,
             String pid) throws Exception {
-        Set<String> checkedFields = new HashSet<String>();
+        Integer fieldCount = Integer.valueOf(0);
 
         if (sysMetadata != null) {
             Document systemMetadataDoc = XmlDocumentUtility.generateXmlDocument(sysMetadata
                     .getInputStream());
-            checkedFields.addAll(compareFields(expectedValues, systemMetadataDoc, systemMetadata200Subprocessor.getFieldList(), pid));
-        }
-        Document scienceMetadataDoc = XmlDocumentUtility.generateXmlDocument(sciMetadata
-                .getInputStream());
-        checkedFields.addAll(compareFields(expectedValues, scienceMetadataDoc, docProcessor.getFieldList(), pid));
-        
-        // if field count is off, some field did not get compared that should have
-        Set<String> expectedFieldSet = expectedValues.keySet();
-        if (!CollectionUtils.isEqualCollection(expectedFieldSet, checkedFields)) {
-            StringBuilder sb = new StringBuilder();
-            for (Object expectedField : CollectionUtils.subtract(expectedFieldSet, checkedFields))
-                sb.append(expectedField + ", ");
-            throw new AssertionError("Expected fields with no matching field in document: " + sb);
-        }
-    }
-
-    protected Set<String> compareFields(HashMap<String, String> expected, Document metadataDoc,
-            List<ISolrField> fieldsToCompare, String identifier) throws Exception {
-
-        HashMap<String,List<String>> actualValuesByFieldName = new HashMap<String, List<String>>();
-        Set<String> emptyFields = new HashSet<String>();
-        
-        // populate actualValuesByFieldName
-        for (ISolrField solrField : fieldsToCompare) {
-            
-            List<SolrElementField> fields = solrField.getFields(metadataDoc, identifier);
-            
-            // emptyFields added to actualValuesByFieldName at end, only if not added by another solrField
-            if (fields.isEmpty())
-                emptyFields.add(solrField.getName());
-            
-            for (SolrElementField f : fields) {
-                if (actualValuesByFieldName.get(f.getName()) == null) {
-                    ArrayList<String> values = new ArrayList<String>();
-                    values.add(f.getValue());
-                    actualValuesByFieldName.put(f.getName(), values);
-                } else {
-                    actualValuesByFieldName.get(f.getName()).add(f.getValue());
+            for (ISolrField field : systemMetadata200Subprocessor.getFieldList()) {
+                boolean compared = compareFields(expectedValues, systemMetadataDoc, field, pid);
+                if (compared) {
+                    fieldCount++;
                 }
             }
         }
-        
-        List<String> emptyValList = new ArrayList<String>();
-        emptyValList.add("");
-        for (String fieldName : emptyFields)
-            if (actualValuesByFieldName.get(fieldName) == null)
-                actualValuesByFieldName.put(fieldName, emptyValList );
-        
-        // compare actual against expected
-        for (Entry<String,List<String>> fieldEntry : actualValuesByFieldName.entrySet()) {
-            String thisFieldName = fieldEntry.getKey();
-            
-            List<String> expectedValues = new ArrayList<String>();
-            List<String> actualValues = fieldEntry.getValue();
-            if (actualValues.size() == 1)
-                actualValues.set(0, actualValues.get(0).replace("\n", "")); // to match pre-refactor behavior =/
-            
-            String expectedForField = expected.get(thisFieldName);
-            if (expectedForField == null) {
-                System.out.println("No expected value for field: " + thisFieldName);
-                throw new AssertionError("No expected value for field " + thisFieldName);
+        Document scienceMetadataDoc = XmlDocumentUtility.generateXmlDocument(sciMetadata
+                .getInputStream());
+        for (ISolrField field : docProcessor.getFieldList()) {
+            boolean compared = compareFields(expectedValues, scienceMetadataDoc, field, pid);
+            if (compared) {
+                fieldCount++;
             }
-            
-            if (expectedForField.equals(""))
-                expectedValues.add(expectedForField);
-            else
-                CollectionUtils.addAll(expectedValues, StringUtils.split(expectedForField, "##"));
-            
-            System.out.println("Compared fields for: " + thisFieldName);
-            System.out.println("Expected values: " + expectedValues);
-            System.out.println("Actual values:   " + actualValues);
-            System.out.println("");
-            
-            Assert.assertTrue("Comparing values for field " + thisFieldName,
-                    CollectionUtils.isEqualCollection(expectedValues, actualValues));
         }
-     
-        return actualValuesByFieldName.keySet();
+
+        // if field count is off, some field did not get compared that should
+        // have.
+        Assert.assertEquals(expectedValues.keySet().size(), fieldCount.intValue());
+    }
+
+    protected boolean compareFields(HashMap<String, String> expected, Document metadataDoc,
+            ISolrField fieldToCompare, String identifier) throws Exception {
+
+        boolean fieldsCompared = false;
+        List<SolrElementField> fields = fieldToCompare.getFields(metadataDoc, identifier);
+        if (fields.isEmpty() == false) {
+            if (fields.size() > 1) {
+                ArrayList<String> actualValues = new ArrayList<String>();
+                ArrayList<String> expectedValues = new ArrayList<String>();
+                String docFieldName = fields.get(0).getName();
+                for (SolrElementField docField : fields) {
+                    actualValues.add(docField.getValue());
+                }
+                if (expected.containsKey(docFieldName)) {
+                    CollectionUtils.addAll(expectedValues,
+                            StringUtils.split(expected.get(docFieldName), "##"));
+                    fieldsCompared = true;
+                    System.out.println("Compared fields for: " + docFieldName);
+                    System.out.println("Expected values: " + expectedValues);
+                    System.out.println("Actual values:   " + actualValues);
+                    System.out.println("");
+                    Assert.assertTrue("Comparing values for field " + docFieldName,
+                            CollectionUtils.isEqualCollection(expectedValues, actualValues));
+                } else {
+                    System.out.println("Expected does not contain field for: " + docFieldName);
+                    Assert.fail("Expected does not contain value for field: " + docFieldName);
+                }
+            } else {
+                SolrElementField docField = fields.get(0);
+                if (expected.containsKey(docField.getName())) {
+                    String expectedValue = expected.get(docField.getName());
+                    expectedValue = expectedValue.replace("\n", "");
+                    fieldsCompared = true;
+                    System.out.println("Comparing value for field " + docField.getName());
+                    if (expectedValue == null) {
+                        Assert.assertTrue(docField.getValue() == null
+                                || "".equals(docField.getValue()));
+                    } else {
+                        String docValue = docField.getValue();
+                        docValue = docValue.replace("\n", "");
+                        System.out.println("Doc Value:      " + docValue);
+                        System.out.println("Expected Value: " + expectedValue);
+                        System.out.println(" ");
+                        Assert.assertEquals("Comparing field: " + docField.getName(),
+                                expectedValue, docValue);
+                    }
+                } else {
+                    System.out
+                            .println("Expected does not contain field for: " + docField.getName());
+                    Assert.fail("Expected does not contain value for field: " + docField.getName());
+                }
+            }
+        } else {
+            String expectedValue = expected.get(fieldToCompare.getName());
+            System.out.println("Comparing value for missing field: " + fieldToCompare.getName());
+            System.out.println("Expected Value: " + expectedValue);
+            System.out.println(" ");
+            Assert.assertEquals("Comparing field " + fieldToCompare.getName(), expectedValue, "");
+            fieldsCompared = true;
+
+        }
+        return fieldsCompared;
     }
 }
