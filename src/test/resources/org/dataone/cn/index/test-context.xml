@@ -45,7 +45,7 @@ xmlns:context="http://www.springframework.org/schema/context"
     
     
     <import resource="classpath:application-context-prov-base.xml" />
-    <import resource="classpath:application-context-provone100.xml" />
+    <import resource="classpath:application-context-provone20150115.xml" />
 
     <import resource="classpath:application-context-oa.xml" />
     <import resource="classpath:application-context-annotator.xml" />
