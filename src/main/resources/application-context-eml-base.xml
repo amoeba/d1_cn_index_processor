@@ -503,4 +503,38 @@
 	      	</list>
 	  	</property>
 	</bean>
+	
+	<!-- service fields -->
+	
+	<bean id="eml.isService" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="isService" />
+		<constructor-arg name="xpath" value="boolean(//software/implementation/distribution/online/url)"/>
+	</bean>
+	
+	<bean id="eml.serviceTitle" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="serviceTitle" />
+		<constructor-arg name="xpath" 
+			value="//software/title//text()[normalize-space()]" />
+		<property name="combineNodes" value="true"/>
+		<property name="combineDelimiter" value=":" />
+	</bean>
+	
+	<bean id="eml.serviceDescription" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="serviceDescription" />
+		<constructor-arg name="xpath" 
+			value="//software/abstract//text()[normalize-space()]" />
+		<property name="combineNodes" value="true"/>
+		<property name="combineDelimiter" value=":" />
+	</bean>	
+
+	<bean id="eml.serviceEndpoint" class="org.dataone.cn.indexer.parser.SolrField">
+		<constructor-arg name="name" value="serviceEndpoint" />
+		<constructor-arg name="xpath" 
+			value="//software/implementation/distribution/online/url/text()"/>
+		<property name="multivalue" value="true" />
+	</bean>	
+	
+	<!-- following service fields are not supported -->
+	<!-- 		serviceType, serviceInput, serviceOutput, serviceCoupling -->
+
 </beans>

@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ns1:systemMetadata xmlns:ns1="http://ns.dataone.org/service/types/v2.0">
+    <serialVersion>1</serialVersion>
+  <identifier>serviceEmlPid</identifier>
+  <formatId>eml://ecoinformatics.org/eml-2.1.0</formatId>
+  <size>36281</size>
+  <checksum algorithm="SHA-1">24426711d5385a9ffa583a13d07af2502884932f</checksum>
+  <submitter>dataone_integration_test_user</submitter>
+  <rightsHolder>dataone_integration_test_user</rightsHolder>
+  <accessPolicy>
+  	<allow>
+		<subject>public</subject>
+		<permission>read</permission>
+	</allow>
+  	<allow>
+		<subject>public</subject>
+		<permission>read</permission>
+	</allow>
+    <allow>
+      <subject>dataone_public_user</subject>
+      <permission>read</permission>
+    </allow>
+    <allow>
+      <subject>dataone_integration_test_user</subject>
+      <permission>write</permission>
+    </allow>
+    <allow>
+      <subject>dataone_test_user</subject>
+      <permission>read</permission>
+    </allow>
+  </accessPolicy>
+  <replicationPolicy replicationAllowed="true"/>
+  <obsoletes></obsoletes>
+  <obsoletedBy></obsoletedBy>
+  <dateUploaded>2011-08-31T15:59:50.071163</dateUploaded>
+  <dateSysMetadataModified>2011-08-31T15:59:50.072921</dateSysMetadataModified>
+  <originMemberNode>test_documents</originMemberNode>
+  <authoritativeMemberNode>test_documents</authoritativeMemberNode>
+  <seriesId></seriesId>
+  <fileName></fileName>
+</ns1:systemMetadata>
+

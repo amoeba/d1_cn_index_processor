@@ -88,6 +88,10 @@ public abstract class BaseSolrFieldXPathTest {
         
         // populate actualValuesByFieldName
         for (ISolrField solrField : fieldsToCompare) {
+            // if (!expected.containsKey(solrField.getName())) {
+            //     System.out.println("WARNING: no expected value for solr field: " + solrField.getName());
+            //     continue;
+            // }
             
             List<SolrElementField> fields = solrField.getFields(metadataDoc, identifier);
             
@@ -124,7 +128,8 @@ public abstract class BaseSolrFieldXPathTest {
             String expectedForField = expected.get(thisFieldName);
             if (expectedForField == null) {
                 System.out.println("No expected value for field: " + thisFieldName);
-                throw new AssertionError("No expected value for field " + thisFieldName);
+				throw new AssertionError("No expected value for field " + thisFieldName);
+                // continue;
             }
             
             if (expectedForField.equals(""))

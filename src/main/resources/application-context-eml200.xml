@@ -56,7 +56,11 @@
     <ref bean="eml.geohash6" />
     <ref bean="eml.geohash7" />
     <ref bean="eml.geohash8" />
-    <ref bean="eml.geohash9" />    
+    <ref bean="eml.geohash9" />
+    <ref bean="eml.isService" />
+    <ref bean="eml.serviceTitle" />
+    <ref bean="eml.serviceDescription" />
+    <ref bean="eml.serviceEndpoint" />    
    </list>
   </property>
  </bean>

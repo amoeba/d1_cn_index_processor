@@ -210,6 +210,16 @@ xmlns:context="http://www.springframework.org/schema/context"
         value="org/dataone/cn/index/resources/d1_testdocs/eml210/df35c.9.14"/>
     </bean>
     
+    <bean id="serviceDescriptionEmlSysMeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/serviceDescriptionEMLsysmeta.xml"/>
+    </bean>
+    
+    <bean id="serviceDescriptionEmlSciMeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/serviceDescriptionEML.xml"/>
+    </bean>
+    
 	<bean id="tao129301" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String" 
         value="org/dataone/cn/index/resources/d1_testdocs/eml210/tao.12930.1"/>
