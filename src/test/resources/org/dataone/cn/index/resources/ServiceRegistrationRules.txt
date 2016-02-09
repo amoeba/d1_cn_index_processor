@@ -1,0 +1,58 @@
+This file contains a copy of the parsing rules used for Service Registration.
+It should coincide with the XPath expressions in the application-context-*-base.xml files.
+
+
+--------------------------------
+	ISO 19119
+--------------------------------
+(See application-context-isotc211-base.xml)
+Note: 
+	In ISO 19119, services may be tightly or loosely-coupled to data they operate on and
+	sit under the srv:SV_ServiceIdentification element. Or they may be tightly-coupled to 
+	data and sit under the gmd:distributionInfo element.
+	There may either be one expression concatenating or checking both these locations,
+	or there may be 2 separate expressions for the different scenarios that affect the same 
+	field (2 expressions are only used for multivalue SolrFields - both results are 
+	added so both srv:SV_ServiceIdentification and gmd:distributionInfo subelements 
+	can be indexed).
+
+field:						xpath:
+
+IsService					boolean(//srv:SV_ServiceIdentification or //gmd:distributionInfo/gmd:MD_Distribution)
+ServiceTitle				(//srv:SV_ServiceIdentification/gmd:citation/gmd:CI_Citation/gmd:title/gco:CharacterString | //gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorTransferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:name/gco:CharacterString)/text()
+ServiceDescription			(//srv:SV_ServiceIdentification/gmd:abstract/gco:CharacterString/text())[1]  
+ServiceType					//srv:SV_ServiceIdentification/srv:serviceType/gco:LocalName/text()
+							//gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorTransferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:protocol/gco:CharacterString/text()
+SerivceInput				//srv:SV_ServiceIdentification/srv:operatesOn/@xlink:href
+							//gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorTransferOptions/@xlink:href
+ServiceOutput				//srv:SV_ServiceIdentification/gmd:resourceFormat/@xlink:href
+							//gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorFormat/gmd:MD_Format/gmd:version/gco:CharacterString/text()
+ServiceEndpoint				//srv:SV_ServiceIdentification/srv:containsOperations/srv:SV_OperationMetadata/srv:connectPoint/gmd:CI_OnlineResource/gmd:linkage/gmd:URL/text()
+							//gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorTransferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL/text()
+ServiceCoupling				concat(	substring('loose',	1 div boolean(	//srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue = 'loose')),
+									substring('tight',	1 div boolean(	//srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue = 'tight')),
+									substring('tight',	1 div boolean(	//gmd:distributionInfo/gmd:MD_Distribution and not(//srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue))),
+									substring('',		1 div boolean(	not(   //srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue) 
+																		and not(   //gmd:distributionInfo/gmd:MD_Distribution))))
+  
+--------------------------------
+	EML
+--------------------------------
+(See application-context-eml-base.xml)
+
+IsService					boolean(//software/implementation/distribution/online/url)
+ServiceTitle				//software/title//text()[normalize-space()]
+ServiceDescription			//software/abstract//text()[normalize-space()]
+ServiceEndpoint				//software/implementation/distribution/online/url/text()
+
+Note: 
+	The following fields don't correspond to any elements in EML and are not currently indexed:	
+		ServiceType					
+		SerivceInput				
+		ServiceOutput				
+		ServiceCoupling				
+		  			
+
+
+
+
