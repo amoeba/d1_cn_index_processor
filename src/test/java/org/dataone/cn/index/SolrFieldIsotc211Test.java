@@ -75,7 +75,15 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     private Resource isotc211_distributionInfo_SciMeta;
 
     private String pid7 = "isotc211_distributionInfo_20161293114572";
-    
+
+    @Autowired
+    private Resource iso19139_geoserver_SysMeta;
+
+    @Autowired
+    private Resource iso19139_geoserver_SciMeta;
+
+    private String pid8 = "iso19139_geoserver__20161293114572";
+
     
     @Autowired
     private ScienceMetadataDocumentSubprocessor isotc211Subprocessor;
@@ -90,6 +98,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     private HashMap<String, String> looselyCoupledServiceExpected = new HashMap<String, String>();
     
     private HashMap<String, String> distributionInfoExpected = new HashMap<String, String>();
+    private HashMap<String, String> geoserverExpected = new HashMap<String, String>();
     
     private SolrDateConverter dateConverter = new SolrDateConverter();
     @Autowired
@@ -104,6 +113,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         setupTightlyCoupledServiceExpected();
         setupLooselyCoupledServiceExpected();
         setupDistributionInfoExpected();
+        setupGeoserverExpected();
     }
 
     private void setupNodc1Expected() throws Exception {
@@ -372,7 +382,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         iarc1Expected.put("serviceTitle", "");
         iarc1Expected.put("serviceDescription", "");
         iarc1Expected.put("serviceType", serviceTypeConverter.convert(""));
-        iarc1Expected.put("serviceEndpoint", "");
+        iarc1Expected.put("serviceEndpoint", "http://climate.iarc.uaf.edu:8080/geonetwork/srv/en/resources.get?id=611&fname=best_bs_currents3-rev_final.pdf&access=private");
         iarc1Expected.put("serviceInput", "");
         iarc1Expected.put("serviceOutput", "");
     }
@@ -457,7 +467,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         iarc2Expected.put("serviceTitle", "");
         iarc2Expected.put("serviceDescription", "");
         iarc2Expected.put("serviceType", serviceTypeConverter.convert(""));
-        iarc2Expected.put("serviceEndpoint", "");
+        iarc2Expected.put("serviceEndpoint", "http://climate.iarc.uaf.edu:8080/geonetwork/srv/en/resources.get?id=169&fname=&access=private");
         iarc2Expected.put("serviceInput", "");
         iarc2Expected.put("serviceOutput", "");
     }
@@ -735,6 +745,95 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         distributionInfoExpected.put("serviceOutput", "netCDF-4");
     }
     
+    private void setupGeoserverExpected() throws Exception {
+        // system metadata
+        geoserverExpected.put("id", pid8);
+        geoserverExpected.put("seriesId", "");
+        geoserverExpected.put("fileName", "");
+        geoserverExpected.put("mediaType", "");
+        geoserverExpected.put("mediaTypeProperty", "");
+        geoserverExpected.put("formatId", isotc211FormatId);
+        geoserverExpected.put("formatType", "METADATA");
+        geoserverExpected.put("size", "5172");
+        geoserverExpected.put("checksum", "5ec9ee7e9e4c34c6ab360a19328917ef");
+        geoserverExpected.put("checksumAlgorithm", "MD5");
+        geoserverExpected.put("submitter", "CN=urn:node:cnSandboxUCSB1,DC=dataone,DC=org");
+        geoserverExpected.put("rightsHolder", "cnSandboxUCSB1");
+        geoserverExpected.put("replicationAllowed", "");
+        geoserverExpected.put("numberReplicas", "");
+        geoserverExpected.put("preferredReplicationMN", "");
+        geoserverExpected.put("blockedReplicationMN", "");
+        geoserverExpected.put("obsoletes", "");
+        geoserverExpected.put("obsoletedBy", "");
+        geoserverExpected.put("dateUploaded", dateConverter.convert("2016-01-12T17:30:48.415Z"));
+        geoserverExpected.put("dateModified", dateConverter.convert("2016-01-12T17:30:48.415Z"));
+        geoserverExpected.put("datasource", "urn:node:mnDemo6");
+        geoserverExpected.put("authoritativeMN", "urn:node:mnDemo6");
+        geoserverExpected.put("replicaMN", "");
+        geoserverExpected.put("replicaVerifiedDate", "");
+        geoserverExpected.put("readPermission", "public");
+        geoserverExpected.put("writePermission", "");
+        geoserverExpected.put("changePermission", "CN=urn:node:cnSandboxUCSB1,DC=dataone,DC=org");
+        geoserverExpected.put("isPublic", "true");
+        geoserverExpected.put("dataUrl",
+                "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid8, "UTF-8"));
+    
+        // science metadata
+        geoserverExpected.put("author", "Bob Smith");
+        geoserverExpected.put("authorSurName", "Bob Smith");
+        geoserverExpected.put("authorSurNameSort", "Bob Smith");
+        geoserverExpected.put("origin", "Bob Smith");
+        geoserverExpected.put("investigator", "Bob Smith");
+        geoserverExpected.put("abstract", "");
+        geoserverExpected.put("title", "");
+        geoserverExpected.put("pubDate", dateConverter.convert("2016-02-10T20:44:24.000Z"));
+        geoserverExpected.put("beginDate", "");
+        geoserverExpected.put("endDate", "");
+        geoserverExpected.put("keywords", "");
+        geoserverExpected.put("contactOrganization", "");
+        geoserverExpected.put("southBoundCoord", "");
+        geoserverExpected.put("northBoundCoord", "");
+        geoserverExpected.put("westBoundCoord", "");
+        geoserverExpected.put("eastBoundCoord", "");
+        geoserverExpected.put("geohash_1", "");
+        geoserverExpected.put("geohash_2", "");
+        geoserverExpected.put("geohash_3", "");
+        geoserverExpected.put("geohash_4", "");
+        geoserverExpected.put("geohash_5", "");
+        geoserverExpected.put("geohash_6", "");
+        geoserverExpected.put("geohash_7", "");
+        geoserverExpected.put("geohash_8", "");
+        geoserverExpected.put("geohash_9", "");
+        geoserverExpected.put("fileID", "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid8, "UTF-8"));
+        geoserverExpected.put("text", "01f48b21-4a27-461d-bbd1-11d7b2221b97             2016-02-10T13:44:24    ISO 19115:2003/19139    1.0        Test Service Description - for a WMS service in ISO19139/119       2007-12-29T12:00:00           Abstract: The ISO19139/119 metadata standard is the preferred metadata standard to use for services (WMS, WFS, WCS).         Bob Smith                        http://geonetwork-opensource.org/               WFS    WMS    GEOSERVER    GEONETWORK    OSGeo         OGC:WMS    1.1.1      NONE          -20.039062500000007    0.3515624999999904    -5.441022303717958    31.503629305773032             GetCapabilities            http://localhost:8080/geoserver/wms?SERVICE=WMS1&    WWW:LINK-1.0-http--link    Format : application/vnd.ogc.wms_xml             GetMap         http://localhost:8080/geoserver/wms?SERVICE=WMS2&    WWW:LINK-1.0-http--link    Format : image/png           http://localhost:8080/geoserver/wms?SERVICE=WMS3&    WWW:LINK-1.0-http--link    Format : application/atom+xml           http://localhost:8080/geoserver/wms?SERVICE=WMS4&    WWW:LINK-1.0-http--link    Format : application/openlayers           http://localhost:8080/geoserver/wms?SERVICE=WMS5&    WWW:LINK-1.0-http--link    Format : application/pdf           http://localhost:8080/geoserver/wms?SERVICE=WMS6&    WWW:LINK-1.0-http--link    Format : application/rss+xml           http://localhost:8080/geoserver/wms?SERVICE=WMS7&    WWW:LINK-1.0-http--link    Format :                   application/vnd.google-earth.kml+xml           http://localhost:8080/geoserver/wms?SERVICE=WMS8&    WWW:LINK-1.0-http--link    Format : application/vnd.google-earth.kmz           http://localhost:8080/geoserver/wms?SERVICE=WMS9&    WWW:LINK-1.0-http--link    Format : image/geotiff           http://localhost:8080/geoserver/wms?SERVICE=WMS10&    WWW:LINK-1.0-http--link    Format : image/geotiff8           http://localhost:8080/geoserver/wms?SERVICE=WMS11&    WWW:LINK-1.0-http--link    Format : image/gif           http://localhost:8080/geoserver/wms?SERVICE=WMS12&    WWW:LINK-1.0-http--link    Format : image/jpeg           http://localhost:8080/geoserver/wms?SERVICE=WMS13&    WWW:LINK-1.0-http--link    Format : image/png8           http://localhost:8080/geoserver/wms?SERVICE=WMS14&    WWW:LINK-1.0-http--link    Format : image/svg+xml           http://localhost:8080/geoserver/wms?SERVICE=WMS15&    WWW:LINK-1.0-http--link    Format : image/tiff           http://localhost:8080/geoserver/wms?SERVICE=WMS16&    WWW:LINK-1.0-http--link    Format : image/tiff8                 PNG    1.0          http://localhost:8080/geoserver/type?distrib=info    OGC:WMS-1.1.1-http-get-map    gn:gboundaries    Country boundaries iso19139_geoserver__20161293114572");
+        // service info
+        geoserverExpected.put("isService", "true");
+        geoserverExpected.put("serviceCoupling", "tight");
+        geoserverExpected.put("serviceTitle", "Test Service Description - for a WMS service in ISO19139/119");
+        geoserverExpected.put("serviceDescription", "Abstract: The ISO19139/119 metadata standard is the preferred metadata standard to use for services (WMS, WFS, WCS).");
+        geoserverExpected.put("serviceType", "WMS");
+        geoserverExpected.put("serviceEndpoint", 
+                "http://localhost:8080/geoserver/wms?SERVICE=WMS1&" 
+                + "#" + "http://localhost:8080/geoserver/wms?SERVICE=WMS2&" 
+                + "#" + "http://localhost:8080/geoserver/wms?SERVICE=WMS3&" 
+                + "#" + "http://localhost:8080/geoserver/wms?SERVICE=WMS4&" 
+                + "#" + "http://localhost:8080/geoserver/wms?SERVICE=WMS5&" 
+                + "#" + "http://localhost:8080/geoserver/wms?SERVICE=WMS6&" 
+                + "#" + "http://localhost:8080/geoserver/wms?SERVICE=WMS7&" 
+                + "#" + "http://localhost:8080/geoserver/wms?SERVICE=WMS8&" 
+                + "#" + "http://localhost:8080/geoserver/wms?SERVICE=WMS9&" 
+                + "#" + "http://localhost:8080/geoserver/wms?SERVICE=WMS10&" 
+                + "#" + "http://localhost:8080/geoserver/wms?SERVICE=WMS11&" 
+                + "#" + "http://localhost:8080/geoserver/wms?SERVICE=WMS12&" 
+                + "#" + "http://localhost:8080/geoserver/wms?SERVICE=WMS13&" 
+                + "#" + "http://localhost:8080/geoserver/wms?SERVICE=WMS14&" 
+                + "#" + "http://localhost:8080/geoserver/wms?SERVICE=WMS15&"
+                + "#" + "http://localhost:8080/geoserver/wms?SERVICE=WMS16&" 
+                + "#" + "http://localhost:8080/geoserver/type?distrib=info");
+        geoserverExpected.put("serviceInput", "");  // implicitly part of endpoint URL
+        geoserverExpected.put("serviceOutput", "");
+    }
+    
     public void testIsotc211Nodc1FieldParsing() throws Exception {
         testXPathParsing(isotc211Subprocessor, isotc211_nodc_1_SysMeta, isotc211_nodc_1_SciMeta,
                 nodc1Expected, pid1);
@@ -774,5 +873,11 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     public void testIsotc211DistributionInfoParsing() throws Exception {
         testXPathParsing(isotc211Subprocessor, isotc211_distributionInfo_SysMeta, isotc211_distributionInfo_SciMeta,
                 distributionInfoExpected, pid7);
+    }
+    
+    @Test
+    public void testIsotc211GeoserverServiceParsing() throws Exception {
+        testXPathParsing(isotc211Subprocessor, iso19139_geoserver_SysMeta, iso19139_geoserver_SciMeta,
+                geoserverExpected, pid8);
     }
 }
