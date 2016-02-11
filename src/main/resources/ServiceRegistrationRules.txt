@@ -5,16 +5,17 @@ It should coincide with the XPath expressions in the application-context-*-base.
 --------------------------------
 	ISO 19119
 --------------------------------
-(See application-context-isotc211-base.xml)
 Note: 
 	In ISO 19119, services may be tightly or loosely-coupled to data they operate on and
-	sit under the srv:SV_ServiceIdentification element. Or they may be tightly-coupled to 
-	data and sit under the gmd:distributionInfo element.
-	There may either be one expression concatenating or checking both these locations,
+	sit under the srv:SV_ServiceIdentification element. Or they may be limited to 
+	tightly-coupled distribution info and sit under the gmd:distributionInfo element.
+	There may either be one expression checking and/or concatenating both these locations,
 	or there may be 2 separate expressions for the different scenarios that affect the same 
 	field (2 expressions are only used for multivalue SolrFields - both results are 
 	added so both srv:SV_ServiceIdentification and gmd:distributionInfo subelements 
 	can be indexed).
+
+(See application-context-isotc211-base.xml)
 
 field:						xpath:
 
