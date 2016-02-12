@@ -84,6 +84,21 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
 
     private String pid8 = "iso19139_geoserver__20161293114572";
 
+    @Autowired
+    private Resource isotc211_looselyCoupledServiceSrvAndDistrib_SysMeta;
+
+    @Autowired
+    private Resource isotc211_looselyCoupledServiceSrvAndDistrib_SciMeta;
+
+    private String pid9 = "isotc211_looselyCoupledServiceSrvAndDistrib";
+    
+    @Autowired
+    private Resource isotc211_tightlyCoupledServiceSrvOnly_SysMeta;
+
+    @Autowired
+    private Resource isotc211_tightlyCoupledServiceSrvOnly_SciMeta;
+
+    private String pid10 = "isotc211_tightlyCoupledServiceSrvOnly";
     
     @Autowired
     private ScienceMetadataDocumentSubprocessor isotc211Subprocessor;
@@ -100,6 +115,9 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     private HashMap<String, String> distributionInfoExpected = new HashMap<String, String>();
     private HashMap<String, String> geoserverExpected = new HashMap<String, String>();
     
+    private HashMap<String, String> looselyCoupledServiceSrvAndDistribExpected = new HashMap<String, String>();
+    private HashMap<String, String> tightlyCoupledServiceSrvOnlyExpected = new HashMap<String, String>();
+    
     private SolrDateConverter dateConverter = new SolrDateConverter();
     @Autowired
     private MemberNodeServiceRegistrationTypeConverter serviceTypeConverter;
@@ -114,6 +132,8 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         setupLooselyCoupledServiceExpected();
         setupDistributionInfoExpected();
         setupGeoserverExpected();
+        setupLooselyCoupledServiceSrvOnlyExpected();
+        setupTightlyCoupledServiceSrvOnlyExpected();
     }
 
     private void setupNodc1Expected() throws Exception {
@@ -834,6 +854,159 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         geoserverExpected.put("serviceOutput", "");
     }
     
+    private void setupLooselyCoupledServiceSrvOnlyExpected() throws Exception {
+        // system metadata
+        looselyCoupledServiceSrvAndDistribExpected.put("id", pid9);
+        looselyCoupledServiceSrvAndDistribExpected.put("seriesId", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("fileName", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("mediaType", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("mediaTypeProperty", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("formatId", isotc211FormatId);
+        looselyCoupledServiceSrvAndDistribExpected.put("formatType", "METADATA");
+        looselyCoupledServiceSrvAndDistribExpected.put("size", "5172");
+        looselyCoupledServiceSrvAndDistribExpected.put("checksum", "5ec9ee7e9e4c34c6ab360a19328917ef");
+        looselyCoupledServiceSrvAndDistribExpected.put("checksumAlgorithm", "MD5");
+        looselyCoupledServiceSrvAndDistribExpected.put("submitter", "CN=urn:node:cnSandboxUCSB1,DC=dataone,DC=org");
+        looselyCoupledServiceSrvAndDistribExpected.put("rightsHolder", "cnSandboxUCSB1");
+        looselyCoupledServiceSrvAndDistribExpected.put("replicationAllowed", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("numberReplicas", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("preferredReplicationMN", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("blockedReplicationMN", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("obsoletes", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("obsoletedBy", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("dateUploaded", dateConverter.convert("2016-01-12T17:30:48.415Z"));
+        looselyCoupledServiceSrvAndDistribExpected.put("dateModified", dateConverter.convert("2016-01-12T17:30:48.415Z"));
+        looselyCoupledServiceSrvAndDistribExpected.put("datasource", "urn:node:mnDemo6");
+        looselyCoupledServiceSrvAndDistribExpected.put("authoritativeMN", "urn:node:mnDemo6");
+        looselyCoupledServiceSrvAndDistribExpected.put("replicaMN", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("replicaVerifiedDate", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("readPermission", "public");
+        looselyCoupledServiceSrvAndDistribExpected.put("writePermission", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("changePermission", "CN=urn:node:cnSandboxUCSB1,DC=dataone,DC=org");
+        looselyCoupledServiceSrvAndDistribExpected.put("isPublic", "true");
+        looselyCoupledServiceSrvAndDistribExpected.put("dataUrl",
+                "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid9, "UTF-8"));
+    
+        // science metadata
+        looselyCoupledServiceSrvAndDistribExpected.put("author", "Bob");
+        looselyCoupledServiceSrvAndDistribExpected.put("authorSurName", "Bob");
+        looselyCoupledServiceSrvAndDistribExpected.put("authorSurNameSort", "Bob");
+        looselyCoupledServiceSrvAndDistribExpected.put("origin", "Bob" 
+                + "#" + "UNM"
+                + "#" + "Steven Baum"
+                + "#" + "Texas AM University");
+        looselyCoupledServiceSrvAndDistribExpected.put("investigator", "Bob" + "#" + "Steven Baum");
+        looselyCoupledServiceSrvAndDistribExpected.put("abstract", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("title", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("pubDate", dateConverter.convert("20151214-01-01T00:00:00Z"));
+        looselyCoupledServiceSrvAndDistribExpected.put("beginDate", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("endDate", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("keywords", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("contactOrganization", "UNM");
+        looselyCoupledServiceSrvAndDistribExpected.put("southBoundCoord", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("northBoundCoord", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("westBoundCoord", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("eastBoundCoord", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("geohash_1", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("geohash_2", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("geohash_3", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("geohash_4", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("geohash_5", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("geohash_6", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("geohash_7", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("geohash_8", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("geohash_9", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("fileID", "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid9, "UTF-8"));
+        looselyCoupledServiceSrvAndDistribExpected.put("text", "iso19119_looselyCoupled    eng    UTF8    dataset    service      Bob    UNM    pointOfContact      20151214Z    ISO 19115-2 Geographic Information - Metadata Part 2 Extensions for Imagery and Gridded Data    ISO 19115-2:2009(E)        Test Render Service      2007-12-29T12:00:00           Abstract: A rendering service in ISO19139/119,\t\t\t\t\tyields an application/svg xml of given data.     OGC:WMS         RenderSVG         http://localhost:8080/geoserver/wms?SERVICE=WMS&    Renders an application/svg xml of given\t\t\t\t\t\t\t\t\tdata.                  Steven Baum    Texas AM University        979-458-3274        David G. Eller Bldg., Room 618A    College Station    TX    77843-3146    USA    baum@stommel.tamu.edu        distributor        OPeNDAP    DAP/2.0          http://gcoos1.tamu.edu:8080/erddap/griddap/etopo180.html    OPeNDAP    ERDDAP's version of the OPeNDAP .html web page for this dataset. Specify a subset of the dataset and download the data via OPeNDAP or in many different file types.    download            http://gcoos1.tamu.edu:8080/erddap/griddap/etopo180.graph    Viewer Information    ERDDAP's Make-A-Graph .html web page for this dataset. Create an image with a map or graph of a subset of the data.    mapDigital isotc211_looselyCoupledServiceSrvAndDistrib");
+        // service info
+        looselyCoupledServiceSrvAndDistribExpected.put("isService", "true");
+        looselyCoupledServiceSrvAndDistribExpected.put("serviceCoupling", "loose");
+        looselyCoupledServiceSrvAndDistribExpected.put("serviceTitle", "Test Render Service:OPeNDAP:Viewer Information");
+        looselyCoupledServiceSrvAndDistribExpected.put("serviceDescription", "Abstract: A rendering service in ISO19139/119,\t\t\t\t\tyields an application/svg xml of given data.:ERDDAP's version of the OPeNDAP .html web page for this dataset. Specify a subset of the dataset and download the data via OPeNDAP or in many different file types.:ERDDAP's Make-A-Graph .html web page for this dataset. Create an image with a map or graph of a subset of the data.");
+        looselyCoupledServiceSrvAndDistribExpected.put("serviceType", serviceTypeConverter.convert("OGC:WMS")); 
+        looselyCoupledServiceSrvAndDistribExpected.put("serviceEndpoint", 
+                "http://localhost:8080/geoserver/wms?SERVICE=WMS&"
+                + "#" + "http://gcoos1.tamu.edu:8080/erddap/griddap/etopo180.html" 
+                + "#" + "http://gcoos1.tamu.edu:8080/erddap/griddap/etopo180.graph");
+        looselyCoupledServiceSrvAndDistribExpected.put("serviceInput", "https://cn-dev-ucsb-1.test.dataone.org/cn/v2/formats/CF-1.3"
+                + "#" + "https://cn-dev-ucsb-1.test.dataone.org/cn/v2/formats/CF-1.4");
+        looselyCoupledServiceSrvAndDistribExpected.put("serviceOutput", "https://cn-dev-ucsb-1.test.dataone.org/cn/v2/formats/image%2Fsvg%20xml" + "#" + "DAP/2.0");
+    }
+    
+    private void setupTightlyCoupledServiceSrvOnlyExpected() throws Exception {
+        // system metadata
+        tightlyCoupledServiceSrvOnlyExpected.put("id", pid10);
+        tightlyCoupledServiceSrvOnlyExpected.put("seriesId", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("fileName", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("mediaType", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("mediaTypeProperty", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("formatId", isotc211FormatId);
+        tightlyCoupledServiceSrvOnlyExpected.put("formatType", "METADATA");
+        tightlyCoupledServiceSrvOnlyExpected.put("size", "5172");
+        tightlyCoupledServiceSrvOnlyExpected.put("checksum", "5ec9ee7e9e4c34c6ab360a19328917ef");
+        tightlyCoupledServiceSrvOnlyExpected.put("checksumAlgorithm", "MD5");
+        tightlyCoupledServiceSrvOnlyExpected.put("submitter", "CN=urn:node:cnSandboxUCSB1,DC=dataone,DC=org");
+        tightlyCoupledServiceSrvOnlyExpected.put("rightsHolder", "cnSandboxUCSB1");
+        tightlyCoupledServiceSrvOnlyExpected.put("replicationAllowed", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("numberReplicas", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("preferredReplicationMN", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("blockedReplicationMN", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("obsoletes", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("obsoletedBy", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("dateUploaded", dateConverter.convert("2016-01-12T17:30:48.415Z"));
+        tightlyCoupledServiceSrvOnlyExpected.put("dateModified", dateConverter.convert("2016-01-12T17:30:48.415Z"));
+        tightlyCoupledServiceSrvOnlyExpected.put("datasource", "urn:node:mnDemo6");
+        tightlyCoupledServiceSrvOnlyExpected.put("authoritativeMN", "urn:node:mnDemo6");
+        tightlyCoupledServiceSrvOnlyExpected.put("replicaMN", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("replicaVerifiedDate", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("readPermission", "public");
+        tightlyCoupledServiceSrvOnlyExpected.put("writePermission", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("changePermission", "CN=urn:node:cnSandboxUCSB1,DC=dataone,DC=org");
+        tightlyCoupledServiceSrvOnlyExpected.put("isPublic", "true");
+        tightlyCoupledServiceSrvOnlyExpected.put("dataUrl",
+                "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid10, "UTF-8"));
+    
+        // science metadata
+        tightlyCoupledServiceSrvOnlyExpected.put("author", "Bob");
+        tightlyCoupledServiceSrvOnlyExpected.put("authorSurName", "Bob");
+        tightlyCoupledServiceSrvOnlyExpected.put("authorSurNameSort", "Bob");
+        tightlyCoupledServiceSrvOnlyExpected.put("origin", "Bob" 
+                + "#" + "UNM");
+        tightlyCoupledServiceSrvOnlyExpected.put("investigator", "Bob");
+        tightlyCoupledServiceSrvOnlyExpected.put("abstract", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("title", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("pubDate", dateConverter.convert("20151214-01-01T00:00:00Z"));
+        tightlyCoupledServiceSrvOnlyExpected.put("beginDate", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("endDate", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("keywords", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("contactOrganization", "UNM");
+        tightlyCoupledServiceSrvOnlyExpected.put("southBoundCoord", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("northBoundCoord", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("westBoundCoord", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("eastBoundCoord", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("geohash_1", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("geohash_2", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("geohash_3", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("geohash_4", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("geohash_5", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("geohash_6", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("geohash_7", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("geohash_8", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("geohash_9", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("fileID", "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid10, "UTF-8"));
+        tightlyCoupledServiceSrvOnlyExpected.put("text", "iso19119_looselyCoupled    eng    UTF8    dataset    service      Bob    UNM    pointOfContact      20151214Z    ISO 19115-2 Geographic Information - Metadata Part 2 Extensions for Imagery and Gridded Data    ISO 19115-2:2009(E)        Test Render Service      2007-12-29T12:00:00           Abstract: A rendering service in ISO19139/119,\t\t\t\t\tyields an application/svg xml of given data.     OGC:WMS         RenderSVG         http://localhost:8080/geoserver/wms?SERVICE=WMS&    Renders an application/svg xml of given\t\t\t\t\t\t\t\t\tdata. isotc211_tightlyCoupledServiceSrvOnly");
+        // service info
+        tightlyCoupledServiceSrvOnlyExpected.put("isService", "true");
+        tightlyCoupledServiceSrvOnlyExpected.put("serviceCoupling", "tight");
+        tightlyCoupledServiceSrvOnlyExpected.put("serviceTitle", "Test Render Service");
+        tightlyCoupledServiceSrvOnlyExpected.put("serviceDescription", "Abstract: A rendering service in ISO19139/119,\t\t\t\t\tyields an application/svg xml of given data.");
+        tightlyCoupledServiceSrvOnlyExpected.put("serviceType", serviceTypeConverter.convert("OGC:WMS")); 
+        tightlyCoupledServiceSrvOnlyExpected.put("serviceEndpoint", "http://localhost:8080/geoserver/wms?SERVICE=WMS&");
+        tightlyCoupledServiceSrvOnlyExpected.put("serviceInput", "https://cn-dev-ucsb-1.test.dataone.org/cn/v2/formats/CF-1.3"
+                + "#" + "https://cn-dev-ucsb-1.test.dataone.org/cn/v2/formats/CF-1.4");
+        tightlyCoupledServiceSrvOnlyExpected.put("serviceOutput", "https://cn-dev-ucsb-1.test.dataone.org/cn/v2/formats/image%2Fsvg%20xml");
+    }
+    
     public void testIsotc211Nodc1FieldParsing() throws Exception {
         testXPathParsing(isotc211Subprocessor, isotc211_nodc_1_SysMeta, isotc211_nodc_1_SciMeta,
                 nodc1Expected, pid1);
@@ -879,5 +1052,17 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     public void testIsotc211GeoserverServiceParsing() throws Exception {
         testXPathParsing(isotc211Subprocessor, iso19139_geoserver_SysMeta, iso19139_geoserver_SciMeta,
                 geoserverExpected, pid8);
+    }
+    
+    @Test
+    public void testIsotc211LooselyCoupledServiceSrvAndDistrib() throws Exception {
+        testXPathParsing(isotc211Subprocessor, isotc211_looselyCoupledServiceSrvAndDistrib_SysMeta, isotc211_looselyCoupledServiceSrvAndDistrib_SciMeta,
+                looselyCoupledServiceSrvAndDistribExpected, pid9);
+    }
+    
+    @Test
+    public void testTightlyCoupledServiceSrvOnly() throws Exception {
+        testXPathParsing(isotc211Subprocessor, isotc211_tightlyCoupledServiceSrvOnly_SysMeta, isotc211_tightlyCoupledServiceSrvOnly_SciMeta,
+                tightlyCoupledServiceSrvOnlyExpected, pid10);
     }
 }
