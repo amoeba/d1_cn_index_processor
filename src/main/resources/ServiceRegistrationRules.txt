@@ -19,7 +19,8 @@ Note:	For a more general overview of indexing implementation & design, see:
 		https://repository.dataone.org/documents/Projects/cicore/reference/source/search_index_config.txt
 Also see: 
 		https://repository.dataone.org/documents/Projects/cicore/architecture/MemberNodeServices/build/html/MNServices.html
-
+		https://repository.dataone.org/documents/Projects/cicore/architecture/MemberNodeServices/MemberNodeServices.pdf
+		
 The below rules should coincide with the XPath expressions in the corresponding 
 application-context-*-base.xml files.
 
