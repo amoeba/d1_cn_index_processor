@@ -1,11 +1,33 @@
+------------------------------------------------------------------------------------------
+Service Registration Rules
+------------------------------------------------------------------------------------------
 This file contains a copy of the parsing rules used for Service Registration.
-It should coincide with the XPath expressions in the application-context-*-base.xml files.
+These dictate what data will be extracted from a science metadata document, to be indexed,
+if said document represents a (member node) service description.
+
+The fields we attempt to index are:
+	IsService				whether the document holds a service description
+	ServiceTitle			the service's title
+	ServiceDescription		the description of the service
+	ServiceType				the type of service being described (ex: WMS, )
+	SerivceInput			may refer to either an identifier for valid data for the service, or may be an input format
+	ServiceOutput			the output format for the service
+	ServiceEndpoint			a URL that indicates where to access the service
+	ServiceCoupling			whether the service is 'tightly' coupled to a set of data, or is a general ('loosely' coupled) service  
+
+Note:	For a more general overview of indexing implementation & design, see:
+		https://repository.dataone.org/documents/Projects/cicore/reference/source/search_index_config.txt
+Also see: 
+		https://repository.dataone.org/documents/Projects/cicore/architecture/MemberNodeServices/build/html/MNServices.html
+
+The below rules should coincide with the XPath expressions in the corresponding 
+application-context-*-base.xml files.
 
 
 --------------------------------
 	ISO 19119
 --------------------------------
-(See application-context-isotc211-base.xml for implementation)
+(See application-context-isotc211-base.xml)
 
 	In ISO 19119, services may be tightly or loosely-coupled to data they operate on and
 	sit under the srv:SV_ServiceIdentification element. Or they may be limited to 
@@ -22,29 +44,57 @@ It should coincide with the XPath expressions in the application-context-*-base.
 	are indexed).
 
 
-field:						xpath:
+field:						xpath & comments:
 
 	IsService					boolean(//srv:SV_ServiceIdentification or //gmd:distributionInfo/gmd:MD_Distribution)
+								
+										This checks for existence of either srv service description OR distribution "service" info.
+								
 	ServiceTitle				(//srv:SV_ServiceIdentification/gmd:citation/gmd:CI_Citation/gmd:title/gco:CharacterString | //gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorTransferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:name/gco:CharacterString)/text()
-	ServiceDescription			(//srv:SV_ServiceIdentification/gmd:abstract/gco:CharacterString/text())[1]  
+	
+										This combines the srv service title with the distribution "service" info's titles.
+									
+	ServiceDescription			(//srv:SV_ServiceIdentification/gmd:abstract/gco:CharacterString | //gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorTransferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:description/gco:CharacterString)/text()  
+	
+										This combines the srv service description with the distribution "service" info's descriptions.
+	
 	ServiceType					//srv:SV_ServiceIdentification/srv:serviceType/gco:LocalName/text()
 								//gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorTransferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:protocol/gco:CharacterString/text()
+	
+										Both are evaluated / indexed, checking the srv and distributionInfo locations for a service type.
+										
 	SerivceInput				//srv:SV_ServiceIdentification/srv:operatesOn/@xlink:href
 								//gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorTransferOptions/@xlink:href
+	
+										Both are evaluated / indexed, checking the srv and distributionInfo locations for service input.
+									
 	ServiceOutput				//srv:SV_ServiceIdentification/gmd:resourceFormat/@xlink:href
 								//gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorFormat/gmd:MD_Format/gmd:version/gco:CharacterString/text()
+	
+										Both are evaluated / indexed, checking the srv and distributionInfo locations for service output.
+									
 	ServiceEndpoint				//srv:SV_ServiceIdentification/srv:containsOperations/srv:SV_OperationMetadata/srv:connectPoint/gmd:CI_OnlineResource/gmd:linkage/gmd:URL/text()
 								//gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorTransferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL/text() | //gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL/text()
+	
+										Both are evaluated / indexed, checking the srv and distributionInfo locations for service endpoints.
+									
 	ServiceCoupling				concat(	substring('loose',	1 div boolean(	//srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue = 'loose')),
 										substring('tight',	1 div boolean(	//srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue = 'tight')),
 										substring('tight',	1 div boolean(	//gmd:distributionInfo/gmd:MD_Distribution and not(//srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue))),
 										substring('',		1 div boolean(	not(   //srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue) 
 																			and not(   //gmd:distributionInfo/gmd:MD_Distribution))))
   
+  										The srv location can explicitly set this and if set will override distributionInfo.
+  										The above will set:
+	  										'loose' coupling if srv:SV_CouplingType is loose
+											'tight' coupling if srv:SV_CouplingType is tight
+											'tight' coupling if distribution service info exists and srv:SV_CouplingType doesn't / is unspecified
+											empty if neither exists
+										
 --------------------------------
 	EML
 --------------------------------
-(See application-context-eml-base.xml for implementation)
+(See application-context-eml-base.xml)
 
 	The EML spec is rather limited in what info it can hold about services.
 	EML holds no elements that correspond to these fields: 	
@@ -53,13 +103,23 @@ field:						xpath:
 	Supported fields are below.
 	
 	
-field:						xpath:
+field:						xpath & comments:
 
 	IsService					boolean(//software/implementation/distribution/online/url)
+	
+										Checks for the presence of a distribution url.
+										
 	ServiceTitle				//software/title//text()[normalize-space()]
+	
+										Fetches the software title.
+										
 	ServiceDescription			//software/abstract//text()[normalize-space()]
+	
+										Fetches the software abstract.
+										
 	ServiceEndpoint				//software/implementation/distribution/online/url/text()
 
+										Fetches the distribution url.
 			
 		  			
 
