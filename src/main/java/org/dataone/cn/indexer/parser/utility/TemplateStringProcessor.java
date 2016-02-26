@@ -23,6 +23,7 @@
 package org.dataone.cn.indexer.parser.utility;
 
 import java.util.Map;
+import java.util.regex.Matcher;
 
 /**
  * Used by RootElement to define how leaf element data values are to be combined
@@ -38,7 +39,7 @@ public class TemplateStringProcessor {
         for (String key : valueMap.keySet()) {
             String value = valueMap.get(key);
             if (result.contains(key)) {
-                result = result.replaceAll("\\[" + key + "\\]", value);
+                result = result.replaceAll("\\[" + key + "\\]", Matcher.quoteReplacement(value));
             }
         }
         if (result != null) {
