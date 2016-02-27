@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -169,10 +170,22 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
         String name = indexDocId;
 
         //Check if the identifier is a valid URI and if not, make it one by prepending "http://"
-        URI nameURI = new URI(indexDocId);
-        String scheme = nameURI.getScheme();
+        URI nameURI;
+        String scheme = null;
+        try {
+            nameURI = new URI(indexDocId);
+            scheme = nameURI.getScheme();
+            
+        } catch (URISyntaxException use) {
+            // The identifier can't be parsed due to offending characters. It's not a URL
+            name = "http://" + indexDocId.toLowerCase();
+            
+        }
+        
+        // The had no scheme prefix. It's not a URL
         if ((scheme == null) || (scheme.isEmpty())) {
             name = "http://" + indexDocId.toLowerCase();
+            
         }
 
         boolean loaded = dataset.containsNamedModel(name);
