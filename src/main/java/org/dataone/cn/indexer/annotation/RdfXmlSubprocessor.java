@@ -178,16 +178,16 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
             
         } catch (URISyntaxException use) {
             // The identifier can't be parsed due to offending characters. It's not a URL
-            name = "http://" + indexDocId.toLowerCase();
             
+            name = "https://cn.dataone.org/cn/v1/resolve/"+indexDocId;
         }
         
         // The had no scheme prefix. It's not a URL
         if ((scheme == null) || (scheme.isEmpty())) {
-            name = "http://" + indexDocId.toLowerCase();
+            name = "https://cn.dataone.org/cn/v1/resolve/"+indexDocId;
             
         }
-
+        
         boolean loaded = dataset.containsNamedModel(name);
         if (!loaded) {
             OntModel ontModel = ModelFactory.createOntologyModel();
