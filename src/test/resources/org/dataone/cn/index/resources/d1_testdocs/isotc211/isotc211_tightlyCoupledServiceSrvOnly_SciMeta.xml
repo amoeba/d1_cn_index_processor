@@ -32,16 +32,14 @@
 	</gmd:hierarchyLevel>
 	<gmd:contact>
 		<gmd:CI_ResponsibleParty>
-			<gmd:individualName>
-				<gco:CharacterString>Bob</gco:CharacterString>
-			</gmd:individualName>
+			<gmd:individualName gco:nilReason = "missing"/>
 			<gmd:organisationName>
 				<gco:CharacterString>UNM</gco:CharacterString>
 			</gmd:organisationName>
 			<gmd:role>
 				<gmd:CI_RoleCode
 					codeList="http://www.ngdc.noaa.gov/metadata/published/xsd/schema/resources/Codelist/gmxCodelists.xml#gmd:CI_RoleCode"
-					codeListValue="pointOfContact">pointOfContact</gmd:CI_RoleCode>
+					codeListValue="author">author</gmd:CI_RoleCode>
 			</gmd:role>
 		</gmd:CI_ResponsibleParty>
 	</gmd:contact>
@@ -118,8 +116,8 @@
 				</srv:SV_OperationMetadata>
 			</srv:containsOperations>
 			
-			<srv:operatesOn xlink:href="https://cn-dev-ucsb-1.test.dataone.org/cn/v2/formats/CF-1.3"/>
-			<srv:operatesOn xlink:href="https://cn-dev-ucsb-1.test.dataone.org/cn/v2/formats/CF-1.4"/>
+			<srv:operatesOn xlink:href="https://cn-dev-ucsb-1.test.dataone.org/cn/v2/resolve/somePidHere"/>
+			<srv:operatesOn xlink:href="https://cn-dev-ucsb-1.test.dataone.org/cn/v2/resolve/anotherPid"/>
 			
 		</srv:SV_ServiceIdentification>
 	</gmd:identificationInfo>
