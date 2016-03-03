@@ -22,6 +22,14 @@
 
 package org.dataone.cn.indexer.resourcemap;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -29,12 +37,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.dataone.cn.indexer.parser.IDocumentProvider;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -80,7 +82,13 @@ public class ResourceMapDataSource implements IDocumentProvider {
     }
 
     private Document parseDocument(InputStream inputStream) throws ParserConfigurationException, IOException, SAXException {
-        return getDocumentBuilder().parse(inputStream);
+        Document doc = null;
+        try {
+            doc = getDocumentBuilder().parse(inputStream);
+        } finally {
+            IOUtils.closeQuietly(inputStream);
+        }
+        return doc;
     }
 
 

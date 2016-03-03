@@ -129,7 +129,12 @@ public class RemoteAnnotatorSubprocessor implements IDocumentSubprocessor {
             HttpResponse response = client.execute(method);
             InputStream is = response.getEntity().getContent();
 
-            String results = IOUtils.toString(is, "UTF-8");
+            String results = null; 
+            try {
+                results = IOUtils.toString(is, "UTF-8");
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
             log.debug("RESULTS: " + results);
             JSONObject jo = (JSONObject) JSONValue.parse(results);
 

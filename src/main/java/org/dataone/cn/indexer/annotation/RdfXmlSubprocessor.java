@@ -30,6 +30,7 @@ import java.util.Set;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.codec.EncoderException;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
@@ -154,7 +155,12 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
             } catch (IOException e) {
                 log.trace("Couldn't serialize documents: " + e.getMessage());
             }
-            documents.append(baos.toString());
+            
+            try {
+                documents.append(baos.toString());
+            } finally {
+                IOUtils.closeQuietly(baos);
+            }
         }
         documents.append("</docs>");
         log.trace(documents.toString());

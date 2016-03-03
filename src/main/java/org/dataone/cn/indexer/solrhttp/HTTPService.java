@@ -134,6 +134,8 @@ public class HTTPService {
         } catch (Exception ex) {
             writeError(ex, data, inputStreamResponse, uri);
             throw new IOException(ex);
+        } finally {
+            IOUtils.closeQuietly(inputStreamResponse);
         }
     }
 

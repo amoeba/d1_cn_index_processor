@@ -179,8 +179,12 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
     protected SolrDoc parseAnnotation(InputStream is) {
 
         try {
-
-            String results = IOUtils.toString(is, "UTF-8");
+            String results = null;
+            try {
+                results = IOUtils.toString(is, "UTF-8");
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
             log.debug("RESULTS: " + results);
             JSONObject annotation = (JSONObject) JSONValue.parse(results);
 
