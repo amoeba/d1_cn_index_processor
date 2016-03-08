@@ -33,9 +33,11 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.codec.EncoderException;
+import org.dataone.cn.index.util.PerformanceLogger;
 import org.dataone.cn.indexer.XMLNamespaceConfig;
 import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 
 /**
@@ -59,6 +61,9 @@ import org.w3c.dom.Document;
  */
 public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
 
+    @Autowired
+    PerformanceLogger perfLog = null;
+    
     private static XPathFactory xpathFactory = null;
     private static XPath xpath = null;
 
@@ -99,14 +104,23 @@ public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
             metaDocument = new SolrDoc();
             docs.put(identifier, metaDocument);
         }
+        
+        long fetchXmlStart = System.currentTimeMillis();
         Document doc = XmlDocumentUtility.generateXmlDocument(is);
+        perfLog.logTime("BaseXPathDocumentSubprocessor.processDocument() XmlDocumentUtility.generateXmlDocument()", System.currentTimeMillis() - fetchXmlStart);
+        
+        long addAllFieldsStart = System.currentTimeMillis();
         for (ISolrField solrField : fieldList) {
+            long getFieldsStart = System.currentTimeMillis();
             try {
                 metaDocument.getFieldList().addAll(solrField.getFields(doc, identifier));
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            perfLog.logTime("BaseXPathDocumentSubprocessor.processDocument() processing " + solrField.getClass().getName() + ".getFields()", System.currentTimeMillis() - getFieldsStart);
         }
+        perfLog.logTime("BaseXPathDocumentSubprocessor.processDocument() processing ALL fields", System.currentTimeMillis() - addAllFieldsStart);
+        
         return docs;
     }
 

@@ -25,11 +25,13 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.dataone.cn.index.util.PerformanceLogger;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.ISolrDataField;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.configuration.Settings;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.Dataset;
@@ -52,6 +54,9 @@ import com.hp.hpl.jena.tdb.TDBFactory;
  */
 public class RemoteAnnotatorSubprocessor implements IDocumentSubprocessor {
 
+    @Autowired
+    PerformanceLogger perfLog = null;
+    
     private static Log log = LogFactory.getLog(RemoteAnnotatorSubprocessor.class);
 
     private List<ISolrDataField> fieldList = new ArrayList<ISolrDataField>();
@@ -83,7 +88,9 @@ public class RemoteAnnotatorSubprocessor implements IDocumentSubprocessor {
             SolrDoc solrDoc = entry.getValue();
 
             // check for annotations, and add them if found
+            long lookUpAnnotationsStart = System.currentTimeMillis();
             SolrDoc annotations = lookUpAnnotations(pid);
+            perfLog.logTime("RemoteAnnotatorSubprocessor.lookUpAnnotations()", System.currentTimeMillis() - lookUpAnnotationsStart);
             if (annotations != null) {
                 Iterator<SolrElementField> annotationIter = annotations.getFieldList().iterator();
                 // each field can have multiple values

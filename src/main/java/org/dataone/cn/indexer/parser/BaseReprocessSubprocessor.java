@@ -37,6 +37,7 @@ import org.apache.commons.logging.LogFactory;
 import org.dataone.client.v2.formats.ObjectFormatCache;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.generator.IndexTaskGenerator;
+import org.dataone.cn.index.util.PerformanceLogger;
 import org.dataone.cn.indexer.parser.utility.SeriesIdResolver;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
@@ -59,6 +60,9 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
     @Autowired
     private IndexTaskGenerator indexTaskGenerator;
 
+    @Autowired
+    PerformanceLogger perfLog = null;
+    
     private List<String> matchDocuments = null;
 
     private List<String> relationFields;
@@ -74,8 +78,10 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
 
         Identifier id = new Identifier();
         id.setValue(identifier);
+        long getSysMetaStart = System.currentTimeMillis();
         SystemMetadata sysMeta = HazelcastClientFactory.getSystemMetadataMap().get(id);
-
+        perfLog.logTime("BaseReprocessSubprocessor.processDocument() HazelcastClientFactory.getSystemMetadataMap().get(id)", System.currentTimeMillis() - getSysMetaStart);
+        
         if (sysMeta == null) {
             return docs;
         }
@@ -89,10 +95,12 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
             log.debug("seriesId===" + seriesId.getValue());
 
             // find the other objects in the series
+            long getIdsInSeriesStart = System.currentTimeMillis();
             List<SolrDoc> previousDocs = httpService.getDocumentsByField(solrQueryUri,
                     Collections.singletonList(seriesId.getValue()),
                     SolrElementField.FIELD_SERIES_ID, true);
-
+            perfLog.logTime("BaseReprocessSubprocessor.processDocument() HttpService.getDocumentsByField(idsInSeries)", System.currentTimeMillis() - getIdsInSeriesStart);
+            
             log.debug("previousDocs===" + previousDocs);
 
             if (previousDocs != null && !previousDocs.isEmpty()) {
@@ -144,6 +152,7 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
                     }
                 }
             }
+            perfLog.logTime("BaseReprocessSubprocessor.processDocument() reprocessing all docs earlier in sid chain", System.currentTimeMillis() - getIdsInSeriesStart);
         }
         return docs;
     }

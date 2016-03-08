@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.processor.IndexTaskDeleteProcessor;
 import org.dataone.cn.index.task.IndexTask;
+import org.dataone.cn.index.util.PerformanceLogger;
 import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.cn.indexer.parser.utility.SeriesIdResolver;
 import org.dataone.cn.indexer.resourcemap.ResourceMap;
@@ -81,6 +82,9 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
     @Autowired
     private SubprocessorUtility processorUtility;
 
+    @Autowired
+    PerformanceLogger perfLog = null;
+    
     private List<String> matchDocuments = null;
     private List<String> fieldsToMerge = new ArrayList<String>();
 
@@ -111,8 +115,13 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
         SolrDoc resourceMapDoc = docs.get(identifier);
         List<SolrDoc> processedDocs = new ArrayList<SolrDoc>();
         try {
+            long fetchXmlStart = System.currentTimeMillis();
             Document doc = XmlDocumentUtility.generateXmlDocument(is);
+            perfLog.logTime("ResourceMapSubprocessor.processDocument() XmlDocumentUtility.generateXmlDocument()", System.currentTimeMillis() - fetchXmlStart);
+            
+            long procResMapStart = System.currentTimeMillis();
             processedDocs = processResourceMap(resourceMapDoc, doc);
+            perfLog.logTime("ResourceMapSubprocessor.processResourceMap()", System.currentTimeMillis() - procResMapStart);
         } catch (OREParserException oreException) {
             logger.error("Unable to parse resource map: " + identifier
                     + ".  Unrecoverable parse exception:  task will not be re-tried.");
@@ -127,18 +136,41 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
         return processedDocsMap;
     }
 
+    /**
+     * 
+     */
     private List<SolrDoc> processResourceMap(SolrDoc indexDocument, Document resourceMapDocument)
             throws OREParserException, XPathExpressionException, IOException, EncoderException {
 
+        long Start = System.currentTimeMillis();
+        perfLog.logTime("", System.currentTimeMillis() - Start);
+        
+        long buildResMapStart = System.currentTimeMillis();
         ResourceMap resourceMap = ResourceMapFactory.buildResourceMap(resourceMapDocument);
-        List<String> documentIds = resourceMap.getAllDocumentIDs();
+        perfLog.logTime("ResourceMapFactory.buildResourceMap() create ResourceMap from Document", System.currentTimeMillis() - buildResMapStart);
+        
+        long getReferencedStart = System.currentTimeMillis();
+        List<String> documentIds = resourceMap.getAllDocumentIDs();     // all pids referenced in ResourceMap
+        perfLog.logTime("ResourceMap.getAllDocumentIDs() referenced in ResourceMap", System.currentTimeMillis() - getReferencedStart);
+        
+        long clearSidChainStart = System.currentTimeMillis();
         this.clearSidChain(indexDocument.getIdentifier(), documentIds);
+        perfLog.logTime("ResourceMapSubprocessor.clearSidChain() removing obsoletes chain from Solr index", System.currentTimeMillis() - clearSidChainStart);
+        
+        long getSolrDocsStart = System.currentTimeMillis();
         List<SolrDoc> updateDocuments = httpService.getDocumentsById(solrQueryUri, documentIds);
+        perfLog.logTime("HttpService.getDocumentsById() get existing referenced ids' Solr docs", System.currentTimeMillis() - getSolrDocsStart);
+        
         List<SolrDoc> mergedDocuments = resourceMap.mergeIndexedDocuments(updateDocuments);
         mergedDocuments.add(indexDocument);
         return mergedDocuments;
     }
 
+    /**
+     * Removes the documents for resourceMapIdentifier and its obsoletes chain 
+     * (meaning anything BEFORE it) from the search index
+     * (if any ids referenced in resource doc are a sid).
+     */
     private void clearSidChain(String resourceMapIdentifier, List<String> relatedDocs) {
 
         // check that we are, indeed, dealing with a SID-identified ORE
