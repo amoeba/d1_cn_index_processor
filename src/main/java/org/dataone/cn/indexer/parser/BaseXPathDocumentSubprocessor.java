@@ -115,7 +115,7 @@ public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            perfLog.info(String.format("%-50s, %20d", "BaseXPathDocumentSubprocessor.processDocument() processing " + solrField.getClass().getName() + ".getFields()", System.currentTimeMillis() - getFieldsStart));
+            perfLog.info(String.format("%-50s, %20d", "BaseXPathDocumentSubprocessor.processDocument() processing " + solrField.getClass().getSimpleName() + ".getFields()", System.currentTimeMillis() - getFieldsStart));
         }
         perfLog.info(String.format("%-50s, %20d", "BaseXPathDocumentSubprocessor.processDocument() processing ALL fields", (System.currentTimeMillis() - addAllFieldsStart)));
         
