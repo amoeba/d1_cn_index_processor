@@ -19,7 +19,6 @@ import net.minidev.json.JSONValue;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.dataone.cn.index.util.PerformanceLogger;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.ISolrDataField;
 import org.dataone.cn.indexer.parser.SubprocessorUtility;
@@ -63,8 +62,7 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
     @Autowired
     private String solrQueryUri = null;
 
-    @Autowired
-    PerformanceLogger perfLog = null;
+    private Logger perfLog = Logger.getLogger("performanceStats");
     
     private List<String> matchDocuments = null;
 
@@ -127,7 +125,7 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
         // check for annotations, and add them if found
         long parseAnnotationStart = System.currentTimeMillis();
         SolrDoc annotations = parseAnnotation(is);
-        perfLog.logTime("", System.currentTimeMillis() - parseAnnotationStart);
+        perfLog.info(String.format("%-50s, %20d", "AnnotatorSubprocessor.processDocument() parseAnnotation() ", System.currentTimeMillis() - parseAnnotationStart));
         
         if (annotations != null) {
             String referencedPid = annotations.getIdentifier();

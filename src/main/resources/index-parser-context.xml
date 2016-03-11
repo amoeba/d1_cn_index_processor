@@ -210,8 +210,6 @@
     	p:connectTimeout="5000" >
     	<constructor-arg ref="httpClient" />
     </bean>
-
-	<bean id="perfLog" class="org.dataone.cn.index.util.PerformanceLogger"/>
 		
 	<bean id="httpService" class="org.dataone.cn.indexer.solrhttp.HTTPService">
 		<constructor-arg ref="httpClientFactory" />

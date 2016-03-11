@@ -38,7 +38,6 @@ import org.apache.commons.codec.EncoderException;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.log4j.Logger;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
-import org.dataone.cn.index.util.PerformanceLogger;
 import org.dataone.cn.indexer.parser.IDocumentDeleteSubprocessor;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
@@ -83,8 +82,7 @@ public class SolrIndexService {
     @Autowired
     private String solrQueryUri = null;
 
-    @Autowired
-    PerformanceLogger perfLog = null;
+    private Logger perfLog = Logger.getLogger("performanceStats");
     
     public SolrIndexService() {
     }
@@ -148,7 +146,7 @@ public class SolrIndexService {
         try {
             long sysmetaProcStart = System.currentTimeMillis();
             docs = systemMetadataProcessor.processDocument(id, docs, systemMetaDataStream);
-            perfLog.logTime(systemMetadataProcessor.getClass().getSimpleName() + ".processDocument() processing sysmeta", System.currentTimeMillis() - sysmetaProcStart);
+            perfLog.info(String.format("%-50s, %20d", systemMetadataProcessor.getClass().getSimpleName() + ".processDocument() processing sysmeta", System.currentTimeMillis() - sysmetaProcStart));
         } catch (Exception e) {
             log.error("Error parsing system metadata for id: " + id + e.getMessage());
             e.printStackTrace();
@@ -167,7 +165,7 @@ public class SolrIndexService {
                     } else {
                         long scimetaProcStart = System.currentTimeMillis();
                         docs = subprocessor.processDocument(id, docs, objectStream);
-                        perfLog.logTime("SolrIndexService.processObject() " + subprocessor.getClass().getSimpleName() + ".processDocument() total subprocessor processing time for format: " + formatId + "", System.currentTimeMillis() - scimetaProcStart);
+                        perfLog.info(String.format("%-50s, %20d", "SolrIndexService.processObject() " + subprocessor.getClass().getSimpleName() + ".processDocument() total subprocessor processing time for format: " + formatId + "", System.currentTimeMillis() - scimetaProcStart));
                     }
                 } catch (Exception e) {
                     log.error(e.getMessage());
@@ -183,7 +181,7 @@ public class SolrIndexService {
             }
             mergedDocs.put(mergeDoc.getIdentifier(), mergeDoc);
         }
-        perfLog.logTime("SolrIndexService.processObject() merging docs", System.currentTimeMillis() - mergeProcStart);
+        perfLog.info(String.format("%-50s, %20d", "SolrIndexService.processObject() merging docs", System.currentTimeMillis() - mergeProcStart));
         
         SolrElementAdd addCommand = getAddCommand(new ArrayList<SolrDoc>(mergedDocs.values()));
         if (log.isTraceEnabled()) {
@@ -192,7 +190,7 @@ public class SolrIndexService {
             log.trace(baos.toString());
         }
 
-        perfLog.logTime("SolrIndexService.processObject() total processing time for id " + id, System.currentTimeMillis() - processObjStart);
+        perfLog.info(String.format("%-50s, %20d", "SolrIndexService.processObject() total processing time for id " + id, System.currentTimeMillis() - processObjStart));
         return addCommand;
     }
 
@@ -222,7 +220,7 @@ public class SolrIndexService {
         // send it
         long solrAddStart = System.currentTimeMillis();
         sendCommand(addCommand);
-        perfLog.logTime("SolrIndexService.sendCommand(SolrElementAdd) adding docs into Solr index", System.currentTimeMillis() - solrAddStart);
+        perfLog.info(String.format("%-50s, %20d", "SolrIndexService.sendCommand(SolrElementAdd) adding docs into Solr index", System.currentTimeMillis() - solrAddStart));
     }
 
     private void sendCommand(SolrElementAdd addCommand) throws IOException {

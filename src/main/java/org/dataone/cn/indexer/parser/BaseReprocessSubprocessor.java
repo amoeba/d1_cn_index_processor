@@ -34,10 +34,10 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.dataone.client.v2.formats.ObjectFormatCache;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.generator.IndexTaskGenerator;
-import org.dataone.cn.index.util.PerformanceLogger;
 import org.dataone.cn.indexer.parser.utility.SeriesIdResolver;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
@@ -60,8 +60,7 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
     @Autowired
     private IndexTaskGenerator indexTaskGenerator;
 
-    @Autowired
-    PerformanceLogger perfLog = null;
+    private Logger perfLog = Logger.getLogger("performanceStats");
     
     private List<String> matchDocuments = null;
 
@@ -80,7 +79,7 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
         id.setValue(identifier);
         long getSysMetaStart = System.currentTimeMillis();
         SystemMetadata sysMeta = HazelcastClientFactory.getSystemMetadataMap().get(id);
-        perfLog.logTime("BaseReprocessSubprocessor.processDocument() HazelcastClientFactory.getSystemMetadataMap().get(id)", System.currentTimeMillis() - getSysMetaStart);
+        perfLog.info(String.format("%-50s, %20d", "BaseReprocessSubprocessor.processDocument() HazelcastClientFactory.getSystemMetadataMap().get(id)", (System.currentTimeMillis() - getSysMetaStart)));
         
         if (sysMeta == null) {
             return docs;
@@ -99,7 +98,7 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
             List<SolrDoc> previousDocs = httpService.getDocumentsByField(solrQueryUri,
                     Collections.singletonList(seriesId.getValue()),
                     SolrElementField.FIELD_SERIES_ID, true);
-            perfLog.logTime("BaseReprocessSubprocessor.processDocument() HttpService.getDocumentsByField(idsInSeries)", System.currentTimeMillis() - getIdsInSeriesStart);
+            perfLog.info(String.format("%-50s, %20d", "BaseReprocessSubprocessor.processDocument() HttpService.getDocumentsByField(idsInSeries)", (System.currentTimeMillis() - getIdsInSeriesStart)));
             
             log.debug("previousDocs===" + previousDocs);
 
@@ -152,7 +151,7 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
                     }
                 }
             }
-            perfLog.logTime("BaseReprocessSubprocessor.processDocument() reprocessing all docs earlier in sid chain", System.currentTimeMillis() - getIdsInSeriesStart);
+            perfLog.info(String.format("%-50s, %20d", "BaseReprocessSubprocessor.processDocument() reprocessing all docs earlier in sid chain", System.currentTimeMillis() - getIdsInSeriesStart));
         }
         return docs;
     }
