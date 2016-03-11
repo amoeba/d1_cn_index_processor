@@ -47,7 +47,14 @@ public class SolrFieldDublinCoreTest extends BaseSolrFieldXPathTest {
     @Autowired
     private ScienceMetadataDocumentSubprocessor dublinCoreExtendedSubprocessor;
 
+    @Autowired
+    private Resource dcterms_spatial_no_namespace_SysMeta;
+
+    @Autowired
+    private Resource dcterms_spatial_no_namespace_SciMeta;
+    
     private HashMap<String, String> dcxExpected = new HashMap<String, String>();
+    private HashMap<String, String> dc_spatial_Expected = new HashMap<String, String>();
 
     private SolrDateConverter dateConverter = new SolrDateConverter();
 
@@ -127,11 +134,91 @@ public class SolrFieldDublinCoreTest extends BaseSolrFieldXPathTest {
         dcxExpected.put("isPublic", "true");
         dcxExpected.put("dataUrl", "https://" + hostname
                 + "/cn/v2/resolve/ipumsi_6-3_br_2000_dc.xml");
+        
+        // ========================================================================
+        
+        // science metadata
+        dc_spatial_Expected
+                .put("abstract",
+                        "Variability in historic faunal assemblages is believed to be related to niche      construction effects associated with the establishment and cultivation of Old World      domesticated flora and fauna in the New World. Fort Shirley, a French and Indian War period      fortification in Central Pennsylvania occupied during the mid 1750's, is an important case      study in this picture as it was occupied during the introduction of domestic livestock to      Central Pennsylvania. Published zooarchaeological analyses of historic fortifications      elsewhere in the New World highlight significant contributions of locally abundant wild fauna      to military diets. Statistical comparison of faunal assemblages from military installations      dating to the French and Indian War (1754-1763), including Fort Shirley, the American      Revolutionary War (1775-1783), and the War of 1812 (1812-1815) will test the hypothesis that      diet breadth narrowed through time and was accompanied by increasing reliance on Old World      domesticates.");
+        dc_spatial_Expected
+                .put("keywords",
+                        "Zooarchaeology#Historic Archaeology#Diet Variability");
+        dc_spatial_Expected.put("title", "Investigating Diet Variability at Early Fortifications in the American Colonies      (Contributed Poster)");
+
+        dc_spatial_Expected.put("northBoundCoord", "47.38374632398567");
+        dc_spatial_Expected.put("eastBoundCoord", "-66.76461662552896");
+        dc_spatial_Expected.put("southBoundCoord", "39.30029918615029");
+        dc_spatial_Expected.put("westBoundCoord", "-80.8154296875");
+        
+        dc_spatial_Expected.put("geohash_1", "d");
+        dc_spatial_Expected.put("geohash_2", "dr");
+        dc_spatial_Expected.put("geohash_3", "dre");
+        dc_spatial_Expected.put("geohash_4", "drew");
+        dc_spatial_Expected.put("geohash_5", "drew8");
+        dc_spatial_Expected.put("geohash_6", "drew8f");
+        dc_spatial_Expected.put("geohash_7", "drew8f5");
+        dc_spatial_Expected.put("geohash_8", "drew8f5t");
+        dc_spatial_Expected.put("geohash_9", "drew8f5tx");
+        
+        dc_spatial_Expected.put("site", "North America - Northeast");
+
+        dc_spatial_Expected.put("beginDate", "");
+        dc_spatial_Expected.put("endDate", "");
+        dc_spatial_Expected.put("pubDate", "");
+        dc_spatial_Expected.put("author", "McClure, Sarah (Penn State University)");
+        dc_spatial_Expected.put("authorSurName", "McClure, Sarah (Penn State University)");
+        dc_spatial_Expected.put("authorSurNameSort", "McClure, Sarah (Penn State University)");
+        dc_spatial_Expected.put("investigator", "McClure, Sarah (Penn State University)#Burns, Jonathan (Penn State University)#Welker, Martin (Penn State University)");
+        dc_spatial_Expected.put("contactOrganization", "McClure, Sarah (Penn State University)#Burns, Jonathan (Penn State University)#Welker, Martin (Penn State University)");
+        dc_spatial_Expected.put("origin", "McClure, Sarah (Penn State University)#Burns, Jonathan (Penn State University)#Welker, Martin (Penn State University)");
+
+        dc_spatial_Expected.put("fileID", "https://" + hostname + "/cn/v2/resolve/dcterms_spatial_no_namespace");
+        dc_spatial_Expected.put("text", "Investigating Diet Variability at Early Fortifications in the American Colonies      (Contributed Poster)  McClure, Sarah (Penn State University)  Burns, Jonathan (Penn State University)  Welker, Martin (Penn State University)  Zooarchaeology  Historic Archaeology  Diet Variability  Document  http://alpha.tdar.org/document/48602/investigating-diet-variability-at-early-fortifications-in-the-american-colonies-contributed-poster  Text  Society of American Archaeology  Society of American Archaeology, San Francisco, California  conference    Variability in historic faunal assemblages is believed to be related to niche      construction effects associated with the establishment and cultivation of Old World      domesticated flora and fauna in the New World. Fort Shirley, a French and Indian War period      fortification in Central Pennsylvania occupied during the mid 1750's, is an important case      study in this picture as it was occupied during the introduction of domestic livestock to      Central Pennsylvania. Published zooarchaeological analyses of historic fortifications      elsewhere in the New World highlight significant contributions of locally abundant wild fauna      to military diets. Statistical comparison of faunal assemblages from military installations      dating to the French and Indian War (1754-1763), including Fort Shirley, the American      Revolutionary War (1775-1783), and the War of 1812 (1812-1815) will test the hypothesis that      diet breadth narrowed through time and was accompanied by increasing reliance on Old World      domesticates.  2015-04-02T21:21:52-07:00  Investigating Diet Variability at Early Fortifications in the American      Colonies (Contributed Poster). Sarah McClure, Jonathan Burns, Martin Welker. Presented at      Society of American Archaeology, San Francisco, California. 2015 ( tDAR id: 48602) ;      doi:10.6067/XCV848602  North America - Northeast  northlimit=47.38374632398567; southlimit=39.30029918615029;      westlimit=-80.8154296875; eastlimit=-66.76461662552896;  2015 dcterms_spatial_no_namespace");
+        
+        // system metadata
+        dc_spatial_Expected.put("id", "dcterms_spatial_no_namespace");
+        dc_spatial_Expected.put("seriesId", "");
+        dc_spatial_Expected.put("fileName", "");
+        dc_spatial_Expected.put("mediaType", "");
+        dc_spatial_Expected.put("mediaTypeProperty", "");
+        dc_spatial_Expected.put("formatId", "http://ns.dataone.org/metadata/schema/onedcx/v1.0");
+        dc_spatial_Expected.put("formatType", "METADATA");
+        dc_spatial_Expected.put("size", "14949");
+        dc_spatial_Expected.put("checksum", "e5975f877816caea2f2be2e2f6b7ddc6");
+        dc_spatial_Expected.put("checksumAlgorithm", "MD5");
+        dc_spatial_Expected.put("submitter", "CN=urn:node:mnTestMPC,DC=dataone,DC=org");
+        dc_spatial_Expected.put("rightsHolder",
+                "CN=Judy Kallestad A13391,O=University of Minnesota,C=US,DC=cilogon,DC=org");
+        dc_spatial_Expected.put("replicationAllowed", "");
+        dc_spatial_Expected.put("numberReplicas", "");
+        dc_spatial_Expected.put("preferredReplicationMN", "");
+        dc_spatial_Expected.put("blockedReplicationMN", "");
+        dc_spatial_Expected.put("obsoletes", "");
+        dc_spatial_Expected.put("obsoletedBy", "");
+        dc_spatial_Expected.put("dateUploaded", dateConverter.convert("2014-08-28T20:55:19.003582"));
+        dc_spatial_Expected.put("dateModified", dateConverter.convert("2014-08-28T20:55:19.034555Z"));
+        dc_spatial_Expected.put("datasource", "urn:node:mnTestMPC");
+        dc_spatial_Expected.put("authoritativeMN", "urn:node:mnTestMPC");
+        dc_spatial_Expected.put("replicaMN", "");
+        dc_spatial_Expected.put("replicaVerifiedDate", "");
+        dc_spatial_Expected.put("readPermission", "public");
+        dc_spatial_Expected.put("writePermission", "");
+        dc_spatial_Expected.put("changePermission", "");
+        dc_spatial_Expected.put("isPublic", "true");
+        dc_spatial_Expected.put("dataUrl", "https://" + hostname
+                + "/cn/v2/resolve/dcterms_spatial_no_namespace");
     }
 
     @Test
     public void testDublinCoreExtendedFieldParsing() throws Exception {
         testXPathParsing(dublinCoreExtendedSubprocessor, dcx_ipumsi_SysMeta, dcx_ipumsi_SciMeta,
                 dcxExpected, "ipumsi_6-3_br_2000_dc.xml");
+    }
+    
+    @Test
+    public void testDublinCoreSpatialFieldParsing() throws Exception {
+        testXPathParsing(dublinCoreExtendedSubprocessor, dcterms_spatial_no_namespace_SysMeta, dcterms_spatial_no_namespace_SciMeta,
+                dc_spatial_Expected, "dcterms_spatial_no_namespace");
     }
 }
