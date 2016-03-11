@@ -105,7 +105,7 @@ public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
         
         long fetchXmlStart = System.currentTimeMillis();
         Document doc = XmlDocumentUtility.generateXmlDocument(is);
-        perfLog.info(String.format("%-50s, %20d", "BaseXPathDocumentSubprocessor.processDocument() XmlDocumentUtility.generateXmlDocument()", (System.currentTimeMillis() - fetchXmlStart)));
+        perfLog.info(String.format("%-60s, %20d", "BaseXPathDocumentSubprocessor.processDocument() XmlDocumentUtility.generateXmlDocument()", (System.currentTimeMillis() - fetchXmlStart)));
         
         long addAllFieldsStart = System.currentTimeMillis();
         for (ISolrField solrField : fieldList) {
@@ -115,9 +115,10 @@ public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            perfLog.info(String.format("%-50s, %20d", "BaseXPathDocumentSubprocessor.processDocument() processing " + solrField.getClass().getSimpleName() + ".getFields()", System.currentTimeMillis() - getFieldsStart));
+            String fieldName = solrField.getName();
+            perfLog.info(String.format("%-60s, %20d", "BaseXPathDocumentSubprocessor.processDocument() processing " + solrField.getClass().getSimpleName() + "\"" + fieldName +"\".getFields()", System.currentTimeMillis() - getFieldsStart));
         }
-        perfLog.info(String.format("%-50s, %20d", "BaseXPathDocumentSubprocessor.processDocument() processing ALL fields", (System.currentTimeMillis() - addAllFieldsStart)));
+        perfLog.info(String.format("%-60s, %20d", "BaseXPathDocumentSubprocessor.processDocument() processing ALL fields", (System.currentTimeMillis() - addAllFieldsStart)));
         
         return docs;
     }
