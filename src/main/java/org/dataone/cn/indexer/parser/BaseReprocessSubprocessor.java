@@ -79,7 +79,7 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
         id.setValue(identifier);
         long getSysMetaStart = System.currentTimeMillis();
         SystemMetadata sysMeta = HazelcastClientFactory.getSystemMetadataMap().get(id);
-        perfLog.info(String.format("%-60s, %20d", "BaseReprocessSubprocessor.processDocument() HazelcastClientFactory.getSystemMetadataMap().get(id)", (System.currentTimeMillis() - getSysMetaStart)));
+        perfLog.info(String.format("%-120s, %20d", "BaseReprocessSubprocessor.processDocument() HazelcastClientFactory.getSystemMetadataMap().get(id)", (System.currentTimeMillis() - getSysMetaStart)));
         
         if (sysMeta == null) {
             return docs;
@@ -98,7 +98,7 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
             List<SolrDoc> previousDocs = httpService.getDocumentsByField(solrQueryUri,
                     Collections.singletonList(seriesId.getValue()),
                     SolrElementField.FIELD_SERIES_ID, true);
-            perfLog.info(String.format("%-60s, %20d", "BaseReprocessSubprocessor.processDocument() HttpService.getDocumentsByField(idsInSeries)", (System.currentTimeMillis() - getIdsInSeriesStart)));
+            perfLog.info(String.format("%-120s, %20d", "BaseReprocessSubprocessor.processDocument() HttpService.getDocumentsByField(idsInSeries)", (System.currentTimeMillis() - getIdsInSeriesStart)));
             
             log.debug("previousDocs===" + previousDocs);
 
@@ -151,7 +151,7 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
                     }
                 }
             }
-            perfLog.info(String.format("%-60s, %20d", "BaseReprocessSubprocessor.processDocument() reprocessing all docs earlier in sid chain", System.currentTimeMillis() - getIdsInSeriesStart));
+            perfLog.info(String.format("%-120s, %20d", "BaseReprocessSubprocessor.processDocument() reprocessing all docs earlier in sid chain", System.currentTimeMillis() - getIdsInSeriesStart));
         }
         return docs;
     }

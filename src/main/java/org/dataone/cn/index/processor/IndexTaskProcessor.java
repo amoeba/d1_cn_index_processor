@@ -321,7 +321,7 @@ public class IndexTaskProcessor {
     private List<IndexTask> getIndexTaskQueue() {
         long getIndexTasksStart = System.currentTimeMillis();
         List<IndexTask> indexTasks = repo.findByStatusOrderByPriorityAscTaskModifiedDateAsc(IndexTask.STATUS_NEW);
-        perfLog.info(String.format("%-60s, %20d", "IndexTaskProcessor.getIndexTaskQueue() fetching NEW IndexTasks from repo", System.currentTimeMillis() - getIndexTasksStart));
+        perfLog.info(String.format("%-120s, %20d", "IndexTaskProcessor.getIndexTaskQueue() fetching NEW IndexTasks from repo", System.currentTimeMillis() - getIndexTasksStart));
         return indexTasks;
     }
 

@@ -125,7 +125,7 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
         // check for annotations, and add them if found
         long parseAnnotationStart = System.currentTimeMillis();
         SolrDoc annotations = parseAnnotation(is);
-        perfLog.info(String.format("%-60s, %20d", "AnnotatorSubprocessor.processDocument() parseAnnotation() ", System.currentTimeMillis() - parseAnnotationStart));
+        perfLog.info(String.format("%-120s, %20d", "AnnotatorSubprocessor.processDocument() parseAnnotation() ", System.currentTimeMillis() - parseAnnotationStart));
         
         if (annotations != null) {
             String referencedPid = annotations.getIdentifier();
