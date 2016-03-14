@@ -10,20 +10,20 @@
 	<bean id="dc.author" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="author" />
 		<constructor-arg name="xpath"
-		  value="(//*[local-name() = 'creator'][1]/text()" />
+		  value="//*[local-name() = 'creator'][1]/text()" />
 	</bean>
 	
 	<bean id="dc.authorSurName" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="authorSurName" />
 		<constructor-arg name="xpath"
-			value="(//*[local-name() = 'creator'][1]/text()" />
+			value="//*[local-name() = 'creator'][1]/text()" />
 		<property name="multivalue" value="false" />
 	</bean>
 
 	<bean id="dc.authorSurNameSort" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="authorSurNameSort" />
 		<constructor-arg name="xpath"
-			value="(//*[local-name() = 'creator'][1]/text()" />
+			value="//*[local-name() = 'creator'][1]/text()" />
 		<property name="multivalue" value="false" />
 	</bean>
 	
