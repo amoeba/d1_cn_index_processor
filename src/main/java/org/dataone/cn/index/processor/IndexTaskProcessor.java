@@ -123,7 +123,7 @@ public class IndexTaskProcessor {
             logger.error("Unable to count NEW or FAILED tasks in task index repository.", e);
         }
         
-        loadLogger.info("new tasks followed by failed tasks respectifely:, " + newTasks + ", " + failedTasks);
+        loadLogger.info("new tasks followed by failed tasks respectively:, " + newTasks + ", " + failedTasks);
     }
 
     private void processTask(IndexTask task) {
