@@ -2,7 +2,7 @@
 <d1:systemMetadata xsi:schemaLocation="http://ns.dataone.org/service/types/v2.0 http://ns.dataone.org/service/types/v2.0" xmlns:d1="http://ns.dataone.org/service/types/v2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<serialVersion>2</serialVersion>
 	<identifier>isotc211_noaa_12345</identifier>
-	<formatId>http://www.isotc211.org/2005/gmd</formatId>
+	<formatId>http://www.isotc211.org/2005/gmd-noaa</formatId>
 	<size>11406</size>
 	<checksum algorithm="SHA-1">ff5d7c92a8c3285f49a8f216f929f14c6b5335a3</checksum>
 	<submitter>NODC</submitter>
