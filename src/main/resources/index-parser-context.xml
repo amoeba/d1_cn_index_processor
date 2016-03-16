@@ -30,6 +30,7 @@
  			  	<ref bean="prov20150115RdfXmlSubprocessor" /> 
 			 	<ref bean="annotatorSubprocessor" />
 				<ref bean="isotc211Subprocessor" />
+				<ref bean="isotc211NoaaSubprocessor" />
   				<ref bean="reprocessResourceMapSubprocessor" /> 
 			</list>
      	</property>
@@ -163,7 +164,7 @@
 	   	   		<constructor-arg name="prefix" value="gmd" />
 	   	   		<constructor-arg name="namespace" value="http://www.isotc211.org/2005/gmd" />
 	   	   </bean>
-
+	   	   
 		    <bean class="org.dataone.cn.indexer.XMLNamespace">
 		 		<constructor-arg name="prefix" value="gco" />
 		 	   	<constructor-arg name="namespace" value="http://www.isotc211.org/2005/gco" />

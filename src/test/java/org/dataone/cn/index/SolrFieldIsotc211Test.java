@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
 
     private static final String isotc211FormatId = "http://www.isotc211.org/2005/gmd";
+    private static final String isotc211NoaaFormatId = "http://www.isotc211.org/2005/gmd";
 
     @Autowired
     private Resource isotc211_nodc_1_SysMeta;
@@ -97,12 +98,23 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
 
     @Autowired
     private Resource isotc211_tightlyCoupledServiceSrvOnly_SciMeta;
-
+    
     private String pid10 = "isotc211_tightlyCoupledServiceSrvOnly";
+    
+    @Autowired
+    private Resource isotc211_noaa_SysMeta;
+
+    @Autowired
+    private Resource isotc211_noaa_SciMeta;
+
+    private String pid11 = "isotc211_noaa_12345";
     
     @Autowired
     private ScienceMetadataDocumentSubprocessor isotc211Subprocessor;
 
+    @Autowired
+    private ScienceMetadataDocumentSubprocessor isotc211NoaaSubprocessor;
+    
     private HashMap<String, String> nodc1Expected = new HashMap<String, String>();
     private HashMap<String, String> nodc2Expected = new HashMap<String, String>();
 
@@ -117,6 +129,8 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     
     private HashMap<String, String> looselyCoupledServiceSrvAndDistribExpected = new HashMap<String, String>();
     private HashMap<String, String> tightlyCoupledServiceSrvOnlyExpected = new HashMap<String, String>();
+    
+    private HashMap<String, String> noaaExpected = new HashMap<String, String>();
     
     private SolrDateConverter dateConverter = new SolrDateConverter();
     @Autowired
@@ -134,6 +148,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         setupGeoserverExpected();
         setupLooselyCoupledServiceSrvOnlyExpected();
         setupTightlyCoupledServiceSrvOnlyExpected();
+        setupNoaaExpected();
     }
 
     private void setupNodc1Expected() throws Exception {
@@ -226,7 +241,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         nodc2Expected.put("authorSurNameSort", "Peter Miller");
         nodc2Expected
                 .put("origin",
-                        "US National Oceanographic Data Center#Peter Miller#NEODAAS > NERC Earth Observation Data Acquisition and Analysis Service#Edward M. Armstrong#NEODAAS#Group for High Resolution Sea Surface Temperature#DOC/NOAA/NESDIS/NODC > National Oceanographic Data Center, NESDIS, NOAA, U.S. Department of Commerce#NASA/JPL/PODAAC > Physical Oceanography Distributed Active Archive Center, Jet Propulsion Laboratory, NASA");
+                        "NEODAAS");
         nodc2Expected.put("investigator", "Peter Miller#Edward M. Armstrong#NEODAAS");
         nodc2Expected
                 .put("abstract",
@@ -329,7 +344,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         iarc1Expected.put("author", "Jake Stroh");
         iarc1Expected.put("authorSurName", "Jake Stroh");
         iarc1Expected.put("authorSurNameSort", "Jake Stroh");
-        iarc1Expected.put("origin", "Jake Stroh#International Arctic Research Center");
+        iarc1Expected.put("origin", "");
         iarc1Expected.put("investigator", "Jake Stroh");
         iarc1Expected
                 .put("abstract",
@@ -412,8 +427,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         iarc2Expected.put("author", "Dr Jessica Cherry");
         iarc2Expected.put("authorSurName", "Dr Jessica Cherry");
         iarc2Expected.put("authorSurNameSort", "Dr Jessica Cherry");
-        iarc2Expected.put("origin",
-                "Dr Jessica Cherry#Water and Environmental Research Center, UAF");
+        iarc2Expected.put("origin", "");
         iarc2Expected.put("investigator", "Dr Jessica Cherry");
         iarc2Expected
                 .put("abstract",
@@ -528,10 +542,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         tightlyCoupledServiceExpected.put("author", "Steven Baum");
         tightlyCoupledServiceExpected.put("authorSurName", "Steven Baum");
         tightlyCoupledServiceExpected.put("authorSurNameSort", "Steven Baum");
-        tightlyCoupledServiceExpected.put("origin", "Steven Baum" 
-                + "#" + "Texas AM University"
-                + "#" + "NOAA NGDC"
-                + "#" + "GLOBE, SRTM30, Baltic Sea Bathymetry, Caspian Sea Bathymetry, Great Lakes Bathymetry, Gulf of California Bathymetry, IBCAO, JODC Bathymetry, Mediterranean Sea Bathymetry, U.S. Coastal Relief Model (CRM), Antarctica RAMP Topography, Antarctic Digital Database, GSHHS");
+        tightlyCoupledServiceExpected.put("origin", "NOAA NGDC");
         tightlyCoupledServiceExpected.put("investigator", "Steven Baum" 
                 + "#" + "NOAA NGDC");
         tightlyCoupledServiceExpected.put("abstract",
@@ -619,8 +630,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         looselyCoupledServiceExpected.put("author", "Bob");
         looselyCoupledServiceExpected.put("authorSurName", "Bob");
         looselyCoupledServiceExpected.put("authorSurNameSort", "Bob");
-        looselyCoupledServiceExpected.put("origin", "Bob" 
-                + "#" + "UNM");
+        looselyCoupledServiceExpected.put("origin", "");
         looselyCoupledServiceExpected.put("investigator", "Bob");
         looselyCoupledServiceExpected.put("abstract", "");
         looselyCoupledServiceExpected.put("title", "");
@@ -693,17 +703,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         distributionInfoExpected.put("author", "Robert Potash");
         distributionInfoExpected.put("authorSurName", "Robert Potash");
         distributionInfoExpected.put("authorSurNameSort", "Robert Potash");
-        distributionInfoExpected.put("origin",
-                "DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce"
-                + "#" + "Robert Potash"
-                + "#" + "OSDPD > NOAA Office of Satellite Data Processing and Distribution"
-                + "#" + "DOC/NOAA/NESDIS/NODC > National Oceanographic Data Center, NESDIS, NOAA, U.S. Department of Commerce"
-                + "#" + "Edward M. Armstrong"
-                + "#" + "NOAA/NESDIS USA, 5200 Auth Rd, Camp Springs, MD, 20746"
-                + "#" + "NOAA/NESDIS"
-                + "#" + "Group for High Resolution Sea Surface Temperature"
-                + "#" + "NASA/JPL/PODAAC > Physical Oceanography Distributed Active Archive Center, Jet Propulsion Laboratory, NASA"
-                );
+        distributionInfoExpected.put("origin", "NOAA/NESDIS USA, 5200 Auth Rd, Camp Springs, MD, 20746");
         distributionInfoExpected.put("investigator", "Robert Potash"
                 + "#" + "Edward M. Armstrong" 
                 + "#" + "NOAA/NESDIS USA, 5200 Auth Rd, Camp Springs, MD, 20746");
@@ -729,7 +729,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         distributionInfoExpected.put("geohash_8", "f4jr4et3");
         distributionInfoExpected.put("geohash_9", "f4jr4et3f");
         distributionInfoExpected.put("fileID", "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid7, "UTF-8"));
-        distributionInfoExpected.put("text","gov.noaa.nodc:GHRSST-GOES13-OSPO-L2P    eng    utf8    series      DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce    Data Officer        301-713-3272    301-713-3302        Federal Building 151 Patton Avenue    Asheville    NC    28801-5001    USA    NODC.DataOfficer@noaa.gov        http://www.ncei.noaa.gov/    HTTP    Standard Internet browser    NOAA National Centers for Environmental Information website    Main NCEI website providing links to access data and data services.    information        custodian        Robert Potash    OSDPD > NOAA Office of Satellite Data Processing and Distribution    Technical Contact        301-763-8384    none        bob.potash@noaa.gov      Phone/FAX/E-mail      pointOfContact      2016-01-24T05:44:41    ISO 19115-2 Geographic Information - Metadata - Part 2: Extensions for Imagery and Gridded Data    ISO 19115-2:2009(E)      2      column     0.036        row     0.036      area    true          GHRSST Level 2P Western Atlantic Regional Skin Sea Surface Temperature from the Geostationary Operational Environmental Satellites (GOES) Imager on the GOES-13 satellite (GDS versions 1 and 2)    GHRSST Sea Surface Temperature 30W-135W and 65N-50S, at 0.036 degree resolution from GOES-13 Imager      2011-09-07    publication      1.0      2012-01-04    revision      1.0        NCEI Collection Identifier       gov.noaa.nodc:GHRSST-GOES13-OSPO-L2P        DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce        301-713-3277    301-713-3302        Federal Building 151 Patton Avenue    Asheville    NC    28801-5001    USA    NODC.DataOfficer@noaa.gov        http://www.ncei.noaa.gov/    HTTP    Standard Internet browser    NOAA National Centers for Environmental Information website    Main NCEI website providing links to access data and data services.    information        publisher        DOC/NOAA/NESDIS/NODC > National Oceanographic Data Center, NESDIS, NOAA, U.S. Department of Commerce        301-713-3277    301-713-3302        1315 East-West Highway, SSMC3, 4th floor    Silver Spring    MD    20910-3282    USA    NODC.DataOfficer@noaa.gov        http://www.nodc.noaa.gov/    HTTP    Standard Internet browser    NOAA National Oceanographic Data Center website    Main NODC website providing links to access data and data services.    information        publisher        Edward M. Armstrong    US NASA; Jet Propulsion Laboratory        (818) 393-6710        MS 300/320 4800 Oak Grove Drive    Pasadena    CA    91109    USA    edward.m.armstrong@jpl.nasa.gov        resourceProvider        US NASA; Jet Propulsion Laboratory; Physical Oceanography Distributed Active Archive Center (JPL PO.DAAC)        626-744-5508        4800 Oak Grove Drive    Pasadena    CA    91109    USA    podaac@podaac.jpl.nasa.gov        http://podaac.jpl.nasa.gov/index.html    HTTP    Standard Internet browser    NASA Jet Propulsion Laboratory PO DAAC website    Institution web page    information        resourceProvider        US DOC; NOAA; NESDIS; Office of Satellite and Product Operations (OSPO)        E/SP NSOF, 4231 SUITLAND ROAD    SUITLAND    MD    20746    USA        http://www.ospo.noaa.gov/Organization/About/contact.html    HTTP    Standard Internet browser    Office of Satellite and Product Operations website    Institution web page    information        originator        US DOC; NOAA; NESDIS; Office of Satellite and Product Operations (OSDPD)        301-457-5120        E/SP    Suitland    MD    20746-4304    USA        originator      tableDigital      The Geostationary Operational Environmental Satellites (GOES) operated by the United States National Oceanographic and Atmospheric Administration (NOAA) support weather forecasting, severe storm tracking, meteorology and oceanography research. Generally there are several GOES satellites in geosynchronous orbit at any one time viewing different earth locations including the GOES-13 launched 24 May 2006. The radiometer aboard the satellite, The GOES N-P Imager, is a five channel (one visible, four infrared) imaging radiometer designed to sense radiant and solar reflected energy from sampled areas of the earth. The multi-element spectral channels simultaneously sweep east-west and west-east along a north-to-south path by means of a two-axis mirror scan system retuning telemetry in 10-bit precision. For this Group for High Resolution Sea Surface Temperature (GHRSST) dataset, skin sea surface temperature (SST) measurements are calculated from the far IR channels of GOES-13 at full resolution on a half hourly basis. In native satellite projection, vertically adjacent pixels are averaged and read out at every pixel. L2P datasets including Single Sensor Error Statistics (SSES) are then derived following the GHRSST Data Processing Specification (GDS) version 2.0. The full disk image is subsetted into granules representing distinct northern and southern regions.    BASIC RESEARCH    These data are produced by NOAA/NESDIS funded by NESDIS Office of System Development    onGoing      DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce        301-713-3277    301-713-3302        Federal Building 151 Patton Avenue    Asheville    NC    28801-5001    USA    NODC.Services@noaa.gov        http://www.ncei.noaa.gov/    HTTP    Standard Internet browser    NOAA National Centers for Environmental Information website    Main NCEI website providing links to access data and data services.    information      8:30-6:00 PM, EST      pointOfContact        Robert Potash    OSDPD > NOAA Office of Satellite Data Processing and Distribution        301-763-8384    none        bob.potash@noaa.gov         pointOfContact        asNeeded        http://data.nodc.noaa.gov/cgi-bin/gfx?id=gov.noaa.nodc:GHRSST-GOES13-OSPO-L2P    Preview graphic    PNG        DOC/NOAA/NESDIS/NODC > National Oceanographic Data Center, NESDIS, NOAA, U.S. Department of Commerce    DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce    dataCenter        Please note: NOAA and NCEI make no warranty, expressed or implied, regarding these data, nor does the fact of distribution constitute such a warranty. NOAA and NCEI cannot assume liability for any damages caused by any errors or omissions in these data.    accessLevel: Public        otherRestrictions    Cite as: US DOC; NOAA; NESDIS; Office of Satellite and Product Operations (OSPO) (2010). GHRSST Level 2P Western Atlantic Regional Skin Sea Surface Temperature from the Geostationary Operational Environmental Satellites (GOES) Imager on the GOES-13 satellite (GDS versions 1 and 2). National Oceanographic Data Center, NOAA. Dataset. [access date]        otherRestrictions    None          GHRSST Level 2P Western Atlantic Regional Skin Sea Surface Temperature from the Geostationary Operational Environmental Satellites (GOES) Imager on the GOES-13 satellite (GDS version 2)    GHRSST Sea Surface Temperature 30W-135W and 65N-50S, at 0.036 degree resolution from GOES-13 Imager      20141116    creation      1.0      NOAA/NESDIS USA, 5200 Auth Rd, Camp Springs, MD, 20746         originator        NOAA/NESDIS        Camp Springs, MD (USA)        publisher        collection    userGuide          IDL read software Read software       Group for High Resolution Sea Surface Temperature        ftp://podaac.jpl.nasa.gov/OceanTemperature/ghrsst/sw/IDL/    FTP    Any FTP client    IDL read software    Read software        custodian        crossReference    collection          GDS2 User Manual Documentation on the GDS version 2 format specification       Group for High Resolution Sea Surface Temperature        ftp://podaac.jpl.nasa.gov/OceanTemperature/ghrsst/docs/GDS20r5.pdf    FTP    Any FTP client    GDS2 User Manual    Documentation on the GDS version 2 format specification        custodian        crossReference    collection          Web Service (PO.DAAC Labs) (Search Granule)       Group for High Resolution Sea Surface Temperature        http://podaac.jpl.nasa.gov/ws/search/granule/?datasetId=PODAAC-GHG13-2PO02    HTTP    Standard Internet browser    Web Service (PO.DAAC Labs)    (Search Granule)        custodian        crossReference    collection          Home Page of the GHRSST Project       Group for High Resolution Sea Surface Temperature        http://www.ghrsst.org    HTTP    Standard Internet browser    Home Page of the GHRSST Project    Home Page of the GHRSST Project        custodian        crossReference    collection          Portal to the GHRSST Global Data Assembly Center and data access       Group for High Resolution Sea Surface Temperature        http://ghrsst.jpl.nasa.gov    HTTP    Standard Internet browser    Portal to the GHRSST Global Data Assembly Center and data access    Portal to the GHRSST Global Data Assembly Center and data access        custodian        crossReference    collection      grid    eng    utf8    environment    oceans    climatologyMeteorologyAtmosphere    biota    climatologyMeteorologyAtmosphere        -135    -30    50    65         2010-06-21          This collection includes data from the following product(s): GHRSST Level 2P Western Atlantic Regional Skin Sea Surface Temperature from the Geostationary Operational Environmental Satellites (GOES) Imager on the GOES-13 satellite (GDS version 2) (GHRSST-GOES13-OSPO-L2P-v1.0); GHRSST Level 2P Western Atlantic Regional Skin Sea Surface Temperature from the Geostationary Operational Environmental Satellites (GOES) Imager on the GOES-13 satellite (GHRSST-OSDPD-L2P-GOES13).           referenceInformation        lat      float              lon      float              time      int                  DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce        301-713-3277    301-713-3302        Federal Building 151 Patton Avenue    Asheville    NC    28801-5001    USA    NODC.Services@noaa.gov      8:30-6:00 PM, EST      pointOfContact        Digital data may be downloaded from NCEI at no charge in most cases. For custom orders of digital data or to obtain a copy of analog materials, please contact NCEI Information Services Division for information about current fees.    Data may be searched and downloaded using online services provided by NCEI using the online resource URLs in this record. Contact NCEI Information Services Division for custom orders. When requesting data from NCEI, the desired data set may be referred to by the unique package identification number listed in this metadata record.        netCDF    netCDF-4    Files are internally compressed          http://www.nodc.noaa.gov/geoportal/rest/find/document?searchText=fileIdentifier%3AGHRSST-GOES13-OSPO-L2P*%20OR%20fileIdentifier%3AGOES13-OSPO-L2P*%20OR%20fileIdentifier%3AGHRSST-OSDPD-L2P-GOES13*%20OR%20fileIdentifier%3AOSDPD-L2P-GOES13*&start=1&max=100&f=SearchPage    HTTP    Standard Internet browser    Granule Search    Granule Search    search            http://data.nodc.noaa.gov/cgi-bin/iso?id=gov.noaa.nodc:GHRSST-GOES13-OSPO-L2P    HTTP    Standard Internet browser    Details    Navigate directly to the URL for a descriptive web page with download links.    information            http://data.nodc.noaa.gov/thredds/catalog/ghrsst/L2P/GOES13/OSPO/    THREDDS    Standard Internet browsers can browse THREDDS Data Servers and specialized THREDDS software can enable more sophisticated data access and visualizations.    THREDDS    These data are available through a variety of services via a THREDDS (Thematic Real-time Environmental Distributed Data Services) Data Server (TDS). Depending on the dataset, the TDS can provide WMS, WCS, DAP, HTTP, and other data access and metadata services as well. For more information on the TDS, see http://www.unidata.ucar.edu/software/thredds/current/tds/.    download            http://data.nodc.noaa.gov/opendap/ghrsst/L2P/GOES13/OSPO/    DAP    Standard Internet browsers can browse OPeNDAP servers and specialized OPeNDAP software can enable more sophisticated data access and visualizations.    OPeNDAP    These data are available through the Data Access Protocol (DAP) via an OPeNDAP Hyrax server. For a listing of OPeNDAP clients which may be used to access OPeNDAP-enabled data sets, please see the OPeNDAP website at http://opendap.org/.    download            http://data.nodc.noaa.gov/ghrsst/L2P/GOES13/OSPO/    HTTP    Standard Internet browser    Download    Navigate directly to the URL for data access and direct download.    download            ftp://ftp.nodc.noaa.gov/pub/data.nodc/ghrsst/L2P/GOES13/OSPO/    FTP    Any FTP client    FTP    These data are available through the File Transfer Protocol (FTP). You may use any FTP client to download these data.    download                repository      NOAA National Centers for Environmental Information            NOAA created the National Centers for Environmental Information (NCEI) by merging NOAA's National Climatic Data Center (NCDC), National Geophysical Data Center (NGDC), and National Oceanographic Data Center (NODC), including the National Coastal Data Development Center (NCDDC), per the Consolidated and Further Continuing Appropriations Act, 2015, Public Law 113-235. NCEI launched publicly on April 22, 2015.    2015-04-22T00:00:00            asNeeded    Combined metadata from JPL and NCEI      DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce    custodian              GOES-13 Imager > Geostationary Operational Environmental Satellite 13-Imager      sensor    he GOES Imager is a multi-channel instrument designed to sense radiant and solar-reflected energy from sampled areas of the Earth. The multi-element spectral channels simultaneously sweep east-west a          GOES-13 > Geostationary Operational Environmental Satellite 13           NOAA/NESDIS USA, 5200 Auth Rd, Camp Springs, MD, 20746         sponsor        NASA/JPL/PODAAC > Physical Oceanography Distributed Active Archive Center, Jet Propulsion Laboratory, NASA        http://podaac.jpl.nasa.gov    information        sponsor isotc211_distributionInfo_20161293114572");
+        distributionInfoExpected.put("text","gov.noaa.nodc:GHRSST-GOES13-OSPO-L2P    eng    utf8    series      DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce    Data Officer        301-713-3272    301-713-3302        Federal Building 151 Patton Avenue    Asheville    NC    28801-5001    USA    NODC.DataOfficer@noaa.gov        http://www.ncei.noaa.gov/    HTTP    Standard Internet browser    NOAA National Centers for Environmental Information website    Main NCEI website providing links to access data and data services.    information        custodian        Robert Potash    OSDPD > NOAA Office of Satellite Data Processing and Distribution    Technical Contact        301-763-8384    none        bob.potash@noaa.gov      Phone/FAX/E-mail      pointOfContact      2016-01-24T05:44:41    ISO 19115-2 Geographic Information - Metadata - Part 2: Extensions for Imagery and Gridded Data    ISO 19115-2:2009(E)      2      column     0.036        row     0.036      area    true          GHRSST Level 2P Western Atlantic Regional Skin Sea Surface Temperature from the Geostationary Operational Environmental Satellites (GOES) Imager on the GOES-13 satellite (GDS versions 1 and 2)    GHRSST Sea Surface Temperature 30W-135W and 65N-50S, at 0.036 degree resolution from GOES-13 Imager      2011-09-07    publication      1.0        NCEI Collection Identifier       gov.noaa.nodc:GHRSST-GOES13-OSPO-L2P        DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce        301-713-3277    301-713-3302        Federal Building 151 Patton Avenue    Asheville    NC    28801-5001    USA    NODC.DataOfficer@noaa.gov        http://www.ncei.noaa.gov/    HTTP    Standard Internet browser    NOAA National Centers for Environmental Information website    Main NCEI website providing links to access data and data services.    information        publisher        DOC/NOAA/NESDIS/NODC > National Oceanographic Data Center, NESDIS, NOAA, U.S. Department of Commerce        301-713-3277    301-713-3302        1315 East-West Highway, SSMC3, 4th floor    Silver Spring    MD    20910-3282    USA    NODC.DataOfficer@noaa.gov        http://www.nodc.noaa.gov/    HTTP    Standard Internet browser    NOAA National Oceanographic Data Center website    Main NODC website providing links to access data and data services.    information        publisher        Edward M. Armstrong    US NASA; Jet Propulsion Laboratory        (818) 393-6710        MS 300/320 4800 Oak Grove Drive    Pasadena    CA    91109    USA    edward.m.armstrong@jpl.nasa.gov        resourceProvider        US NASA; Jet Propulsion Laboratory; Physical Oceanography Distributed Active Archive Center (JPL PO.DAAC)        626-744-5508        4800 Oak Grove Drive    Pasadena    CA    91109    USA    podaac@podaac.jpl.nasa.gov        http://podaac.jpl.nasa.gov/index.html    HTTP    Standard Internet browser    NASA Jet Propulsion Laboratory PO DAAC website    Institution web page    information        resourceProvider        US DOC; NOAA; NESDIS; Office of Satellite and Product Operations (OSPO)        E/SP NSOF, 4231 SUITLAND ROAD    SUITLAND    MD    20746    USA        http://www.ospo.noaa.gov/Organization/About/contact.html    HTTP    Standard Internet browser    Office of Satellite and Product Operations website    Institution web page    information        originator        US DOC; NOAA; NESDIS; Office of Satellite and Product Operations (OSDPD)        301-457-5120        E/SP    Suitland    MD    20746-4304    USA        originator      tableDigital      The Geostationary Operational Environmental Satellites (GOES) operated by the United States National Oceanographic and Atmospheric Administration (NOAA) support weather forecasting, severe storm tracking, meteorology and oceanography research. Generally there are several GOES satellites in geosynchronous orbit at any one time viewing different earth locations including the GOES-13 launched 24 May 2006. The radiometer aboard the satellite, The GOES N-P Imager, is a five channel (one visible, four infrared) imaging radiometer designed to sense radiant and solar reflected energy from sampled areas of the earth. The multi-element spectral channels simultaneously sweep east-west and west-east along a north-to-south path by means of a two-axis mirror scan system retuning telemetry in 10-bit precision. For this Group for High Resolution Sea Surface Temperature (GHRSST) dataset, skin sea surface temperature (SST) measurements are calculated from the far IR channels of GOES-13 at full resolution on a half hourly basis. In native satellite projection, vertically adjacent pixels are averaged and read out at every pixel. L2P datasets including Single Sensor Error Statistics (SSES) are then derived following the GHRSST Data Processing Specification (GDS) version 2.0. The full disk image is subsetted into granules representing distinct northern and southern regions.    BASIC RESEARCH    These data are produced by NOAA/NESDIS funded by NESDIS Office of System Development    onGoing      DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce        301-713-3277    301-713-3302        Federal Building 151 Patton Avenue    Asheville    NC    28801-5001    USA    NODC.Services@noaa.gov        http://www.ncei.noaa.gov/    HTTP    Standard Internet browser    NOAA National Centers for Environmental Information website    Main NCEI website providing links to access data and data services.    information      8:30-6:00 PM, EST      pointOfContact        Robert Potash    OSDPD > NOAA Office of Satellite Data Processing and Distribution        301-763-8384    none        bob.potash@noaa.gov         pointOfContact        asNeeded        http://data.nodc.noaa.gov/cgi-bin/gfx?id=gov.noaa.nodc:GHRSST-GOES13-OSPO-L2P    Preview graphic    PNG        DOC/NOAA/NESDIS/NODC > National Oceanographic Data Center, NESDIS, NOAA, U.S. Department of Commerce    DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce    dataCenter        Please note: NOAA and NCEI make no warranty, expressed or implied, regarding these data, nor does the fact of distribution constitute such a warranty. NOAA and NCEI cannot assume liability for any damages caused by any errors or omissions in these data.    accessLevel: Public        otherRestrictions    Cite as: US DOC; NOAA; NESDIS; Office of Satellite and Product Operations (OSPO) (2010). GHRSST Level 2P Western Atlantic Regional Skin Sea Surface Temperature from the Geostationary Operational Environmental Satellites (GOES) Imager on the GOES-13 satellite (GDS versions 1 and 2). National Oceanographic Data Center, NOAA. Dataset. [access date]        otherRestrictions    None          GHRSST Level 2P Western Atlantic Regional Skin Sea Surface Temperature from the Geostationary Operational Environmental Satellites (GOES) Imager on the GOES-13 satellite (GDS version 2)    GHRSST Sea Surface Temperature 30W-135W and 65N-50S, at 0.036 degree resolution from GOES-13 Imager      20141116    creation      1.0      NOAA/NESDIS USA, 5200 Auth Rd, Camp Springs, MD, 20746         originator        NOAA/NESDIS        Camp Springs, MD (USA)        publisher        collection    userGuide          IDL read software Read software       Group for High Resolution Sea Surface Temperature        ftp://podaac.jpl.nasa.gov/OceanTemperature/ghrsst/sw/IDL/    FTP    Any FTP client    IDL read software    Read software        custodian        crossReference    collection          GDS2 User Manual Documentation on the GDS version 2 format specification       Group for High Resolution Sea Surface Temperature        ftp://podaac.jpl.nasa.gov/OceanTemperature/ghrsst/docs/GDS20r5.pdf    FTP    Any FTP client    GDS2 User Manual    Documentation on the GDS version 2 format specification        custodian        crossReference    collection          Web Service (PO.DAAC Labs) (Search Granule)       Group for High Resolution Sea Surface Temperature        http://podaac.jpl.nasa.gov/ws/search/granule/?datasetId=PODAAC-GHG13-2PO02    HTTP    Standard Internet browser    Web Service (PO.DAAC Labs)    (Search Granule)        custodian        crossReference    collection          Home Page of the GHRSST Project       Group for High Resolution Sea Surface Temperature        http://www.ghrsst.org    HTTP    Standard Internet browser    Home Page of the GHRSST Project    Home Page of the GHRSST Project        custodian        crossReference    collection          Portal to the GHRSST Global Data Assembly Center and data access       Group for High Resolution Sea Surface Temperature        http://ghrsst.jpl.nasa.gov    HTTP    Standard Internet browser    Portal to the GHRSST Global Data Assembly Center and data access    Portal to the GHRSST Global Data Assembly Center and data access        custodian        crossReference    collection      grid    eng    utf8    environment    oceans    climatologyMeteorologyAtmosphere    biota    climatologyMeteorologyAtmosphere        -135    -30    50    65         2010-06-21          This collection includes data from the following product(s): GHRSST Level 2P Western Atlantic Regional Skin Sea Surface Temperature from the Geostationary Operational Environmental Satellites (GOES) Imager on the GOES-13 satellite (GDS version 2) (GHRSST-GOES13-OSPO-L2P-v1.0); GHRSST Level 2P Western Atlantic Regional Skin Sea Surface Temperature from the Geostationary Operational Environmental Satellites (GOES) Imager on the GOES-13 satellite (GHRSST-OSDPD-L2P-GOES13).           referenceInformation        lat      float              lon      float              time      int                  DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce        301-713-3277    301-713-3302        Federal Building 151 Patton Avenue    Asheville    NC    28801-5001    USA    NODC.Services@noaa.gov      8:30-6:00 PM, EST      pointOfContact        Digital data may be downloaded from NCEI at no charge in most cases. For custom orders of digital data or to obtain a copy of analog materials, please contact NCEI Information Services Division for information about current fees.    Data may be searched and downloaded using online services provided by NCEI using the online resource URLs in this record. Contact NCEI Information Services Division for custom orders. When requesting data from NCEI, the desired data set may be referred to by the unique package identification number listed in this metadata record.        netCDF    netCDF-4    Files are internally compressed          http://www.nodc.noaa.gov/geoportal/rest/find/document?searchText=fileIdentifier%3AGHRSST-GOES13-OSPO-L2P*%20OR%20fileIdentifier%3AGOES13-OSPO-L2P*%20OR%20fileIdentifier%3AGHRSST-OSDPD-L2P-GOES13*%20OR%20fileIdentifier%3AOSDPD-L2P-GOES13*&start=1&max=100&f=SearchPage    HTTP    Standard Internet browser    Granule Search    Granule Search    search            http://data.nodc.noaa.gov/cgi-bin/iso?id=gov.noaa.nodc:GHRSST-GOES13-OSPO-L2P    HTTP    Standard Internet browser    Details    Navigate directly to the URL for a descriptive web page with download links.    information            http://data.nodc.noaa.gov/thredds/catalog/ghrsst/L2P/GOES13/OSPO/    THREDDS    Standard Internet browsers can browse THREDDS Data Servers and specialized THREDDS software can enable more sophisticated data access and visualizations.    THREDDS    These data are available through a variety of services via a THREDDS (Thematic Real-time Environmental Distributed Data Services) Data Server (TDS). Depending on the dataset, the TDS can provide WMS, WCS, DAP, HTTP, and other data access and metadata services as well. For more information on the TDS, see http://www.unidata.ucar.edu/software/thredds/current/tds/.    download            http://data.nodc.noaa.gov/opendap/ghrsst/L2P/GOES13/OSPO/    DAP    Standard Internet browsers can browse OPeNDAP servers and specialized OPeNDAP software can enable more sophisticated data access and visualizations.    OPeNDAP    These data are available through the Data Access Protocol (DAP) via an OPeNDAP Hyrax server. For a listing of OPeNDAP clients which may be used to access OPeNDAP-enabled data sets, please see the OPeNDAP website at http://opendap.org/.    download            http://data.nodc.noaa.gov/ghrsst/L2P/GOES13/OSPO/    HTTP    Standard Internet browser    Download    Navigate directly to the URL for data access and direct download.    download            ftp://ftp.nodc.noaa.gov/pub/data.nodc/ghrsst/L2P/GOES13/OSPO/    FTP    Any FTP client    FTP    These data are available through the File Transfer Protocol (FTP). You may use any FTP client to download these data.    download                repository      NOAA National Centers for Environmental Information            NOAA created the National Centers for Environmental Information (NCEI) by merging NOAA's National Climatic Data Center (NCDC), National Geophysical Data Center (NGDC), and National Oceanographic Data Center (NODC), including the National Coastal Data Development Center (NCDDC), per the Consolidated and Further Continuing Appropriations Act, 2015, Public Law 113-235. NCEI launched publicly on April 22, 2015.    2015-04-22T00:00:00            asNeeded    Combined metadata from JPL and NCEI      DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce    custodian              GOES-13 Imager > Geostationary Operational Environmental Satellite 13-Imager      sensor    he GOES Imager is a multi-channel instrument designed to sense radiant and solar-reflected energy from sampled areas of the Earth. The multi-element spectral channels simultaneously sweep east-west a          GOES-13 > Geostationary Operational Environmental Satellite 13           NOAA/NESDIS USA, 5200 Auth Rd, Camp Springs, MD, 20746         sponsor        NASA/JPL/PODAAC > Physical Oceanography Distributed Active Archive Center, Jet Propulsion Laboratory, NASA        http://podaac.jpl.nasa.gov    information        sponsor isotc211_distributionInfo_20161293114572");
         // service info
         distributionInfoExpected.put("isService", "true");
         distributionInfoExpected.put("serviceCoupling", "tight");
@@ -802,7 +802,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         geoserverExpected.put("author", "Bob Smith");
         geoserverExpected.put("authorSurName", "Bob Smith");
         geoserverExpected.put("authorSurNameSort", "Bob Smith");
-        geoserverExpected.put("origin", "Bob Smith");
+        geoserverExpected.put("origin", "");
         geoserverExpected.put("investigator", "Bob Smith");
         geoserverExpected.put("abstract", "");
         geoserverExpected.put("title", "");
@@ -891,10 +891,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         looselyCoupledServiceSrvAndDistribExpected.put("author", "Bob");
         looselyCoupledServiceSrvAndDistribExpected.put("authorSurName", "Bob");
         looselyCoupledServiceSrvAndDistribExpected.put("authorSurNameSort", "Bob");
-        looselyCoupledServiceSrvAndDistribExpected.put("origin", "Bob" 
-                + "#" + "UNM"
-                + "#" + "Steven Baum"
-                + "#" + "Texas AM University");
+        looselyCoupledServiceSrvAndDistribExpected.put("origin", "Bob");
         looselyCoupledServiceSrvAndDistribExpected.put("investigator", "Bob" + "#" + "Steven Baum");
         looselyCoupledServiceSrvAndDistribExpected.put("abstract", "");
         looselyCoupledServiceSrvAndDistribExpected.put("title", "");
@@ -917,7 +914,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         looselyCoupledServiceSrvAndDistribExpected.put("geohash_8", "");
         looselyCoupledServiceSrvAndDistribExpected.put("geohash_9", "");
         looselyCoupledServiceSrvAndDistribExpected.put("fileID", "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid9, "UTF-8"));
-        looselyCoupledServiceSrvAndDistribExpected.put("text", "iso19119_looselyCoupled    eng    UTF8    dataset    service      Bob    UNM    pointOfContact      20151214Z    ISO 19115-2 Geographic Information - Metadata Part 2 Extensions for Imagery and Gridded Data    ISO 19115-2:2009(E)        Test Render Service      2007-12-29T12:00:00           Abstract: A rendering service in ISO19139/119,\t\t\t\t\tyields an application/svg xml of given data.     OGC:WMS         RenderSVG         http://localhost:8080/geoserver/wms?SERVICE=WMS&    Renders an application/svg xml of given\t\t\t\t\t\t\t\t\tdata.                  Steven Baum    Texas AM University        979-458-3274        David G. Eller Bldg., Room 618A    College Station    TX    77843-3146    USA    baum@stommel.tamu.edu        distributor        OPeNDAP    DAP/2.0          http://gcoos1.tamu.edu:8080/erddap/griddap/etopo180.html    OPeNDAP    ERDDAP's version of the OPeNDAP .html web page for this dataset. Specify a subset of the dataset and download the data via OPeNDAP or in many different file types.    download            http://gcoos1.tamu.edu:8080/erddap/griddap/etopo180.graph    Viewer Information    ERDDAP's Make-A-Graph .html web page for this dataset. Create an image with a map or graph of a subset of the data.    mapDigital isotc211_looselyCoupledServiceSrvAndDistrib");
+        looselyCoupledServiceSrvAndDistribExpected.put("text", "iso19119_looselyCoupled    eng    UTF8    dataset    service      Bob    UNM    owner      20151214Z    ISO 19115-2 Geographic Information - Metadata Part 2 Extensions for Imagery and Gridded Data    ISO 19115-2:2009(E)        Test Render Service      2007-12-29T12:00:00           Abstract: A rendering service in ISO19139/119,\t\t\t\t\tyields an application/svg xml of given data.     OGC:WMS         RenderSVG         http://localhost:8080/geoserver/wms?SERVICE=WMS&    Renders an application/svg xml of given\t\t\t\t\t\t\t\t\tdata.                  Steven Baum    Texas AM University        979-458-3274        David G. Eller Bldg., Room 618A    College Station    TX    77843-3146    USA    baum@stommel.tamu.edu        distributor        OPeNDAP    DAP/2.0          http://gcoos1.tamu.edu:8080/erddap/griddap/etopo180.html    OPeNDAP    ERDDAP's version of the OPeNDAP .html web page for this dataset. Specify a subset of the dataset and download the data via OPeNDAP or in many different file types.    download            http://gcoos1.tamu.edu:8080/erddap/griddap/etopo180.graph    Viewer Information    ERDDAP's Make-A-Graph .html web page for this dataset. Create an image with a map or graph of a subset of the data.    mapDigital isotc211_looselyCoupledServiceSrvAndDistrib");
         // service info
         looselyCoupledServiceSrvAndDistribExpected.put("isService", "true");
         looselyCoupledServiceSrvAndDistribExpected.put("serviceCoupling", "loose");
@@ -967,12 +964,11 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
                 "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid10, "UTF-8"));
     
         // science metadata
-        tightlyCoupledServiceSrvOnlyExpected.put("author", "Bob");
-        tightlyCoupledServiceSrvOnlyExpected.put("authorSurName", "Bob");
-        tightlyCoupledServiceSrvOnlyExpected.put("authorSurNameSort", "Bob");
-        tightlyCoupledServiceSrvOnlyExpected.put("origin", "Bob" 
-                + "#" + "UNM");
-        tightlyCoupledServiceSrvOnlyExpected.put("investigator", "Bob");
+        tightlyCoupledServiceSrvOnlyExpected.put("author", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("authorSurName", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("authorSurNameSort", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("origin", "UNM");
+        tightlyCoupledServiceSrvOnlyExpected.put("investigator", "");
         tightlyCoupledServiceSrvOnlyExpected.put("abstract", "");
         tightlyCoupledServiceSrvOnlyExpected.put("title", "");
         tightlyCoupledServiceSrvOnlyExpected.put("pubDate", dateConverter.convert("20151214-01-01T00:00:00Z"));
@@ -994,7 +990,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         tightlyCoupledServiceSrvOnlyExpected.put("geohash_8", "");
         tightlyCoupledServiceSrvOnlyExpected.put("geohash_9", "");
         tightlyCoupledServiceSrvOnlyExpected.put("fileID", "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid10, "UTF-8"));
-        tightlyCoupledServiceSrvOnlyExpected.put("text", "iso19119_looselyCoupled    eng    UTF8    dataset    service      Bob    UNM    pointOfContact      20151214Z    ISO 19115-2 Geographic Information - Metadata Part 2 Extensions for Imagery and Gridded Data    ISO 19115-2:2009(E)        Test Render Service      2007-12-29T12:00:00           Abstract: A rendering service in ISO19139/119,\t\t\t\t\tyields an application/svg xml of given data.     OGC:WMS         RenderSVG         http://localhost:8080/geoserver/wms?SERVICE=WMS&    Renders an application/svg xml of given\t\t\t\t\t\t\t\t\tdata. isotc211_tightlyCoupledServiceSrvOnly");
+        tightlyCoupledServiceSrvOnlyExpected.put("text", "iso19119_looselyCoupled    eng    UTF8    dataset    service       UNM    author      20151214Z    ISO 19115-2 Geographic Information - Metadata Part 2 Extensions for Imagery and Gridded Data    ISO 19115-2:2009(E)        Test Render Service      2007-12-29T12:00:00           Abstract: A rendering service in ISO19139/119,\t\t\t\t\tyields an application/svg xml of given data.     OGC:WMS         RenderSVG         http://localhost:8080/geoserver/wms?SERVICE=WMS&    Renders an application/svg xml of given\t\t\t\t\t\t\t\t\tdata. isotc211_tightlyCoupledServiceSrvOnly");
         // service info
         tightlyCoupledServiceSrvOnlyExpected.put("isService", "true");
         tightlyCoupledServiceSrvOnlyExpected.put("serviceCoupling", "tight");
@@ -1002,9 +998,86 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         tightlyCoupledServiceSrvOnlyExpected.put("serviceDescription", "Abstract: A rendering service in ISO19139/119,\t\t\t\t\tyields an application/svg xml of given data.");
         tightlyCoupledServiceSrvOnlyExpected.put("serviceType", serviceTypeConverter.convert("OGC:WMS")); 
         tightlyCoupledServiceSrvOnlyExpected.put("serviceEndpoint", "http://localhost:8080/geoserver/wms?SERVICE=WMS&");
-        tightlyCoupledServiceSrvOnlyExpected.put("serviceInput", "https://cn-dev-ucsb-1.test.dataone.org/cn/v2/formats/CF-1.3"
-                + "#" + "https://cn-dev-ucsb-1.test.dataone.org/cn/v2/formats/CF-1.4");
+        tightlyCoupledServiceSrvOnlyExpected.put("serviceInput", "https://cn-dev-ucsb-1.test.dataone.org/cn/v2/resolve/somePidHere"
+                + "#" + "https://cn-dev-ucsb-1.test.dataone.org/cn/v2/resolve/anotherPid");
         tightlyCoupledServiceSrvOnlyExpected.put("serviceOutput", "https://cn-dev-ucsb-1.test.dataone.org/cn/v2/formats/image%2Fsvg%20xml");
+    }
+    
+    private void setupNoaaExpected() throws Exception {
+        // science metadata
+        noaaExpected.put("author", "Alexander Sy");
+        noaaExpected.put("authorSurName", "Alexander Sy");
+        noaaExpected.put("authorSurNameSort", "Alexander Sy");
+        noaaExpected.put("origin", "");
+        noaaExpected.put("investigator", "Alexander Sy");
+        noaaExpected.put("abstract", "");
+        noaaExpected.put("title",
+                        "DEPTH - OBSERVATION and Other Data from UNKNOWN PLATFORMS and Other Platforms from 19980101 to 19981212 (NODC Accession 9900233)");
+        noaaExpected.put("pubDate", dateConverter.convert("2014-01-23T14:00:11"));
+        noaaExpected.put("beginDate", dateConverter.convert("1998-01-01"));
+        noaaExpected.put("endDate", dateConverter.convert("1998-12-12"));
+        noaaExpected.put("keywords",
+                        "9900233#DEPTH - OBSERVATION#WATER TEMPERATURE#bathythermograph - XBT#physical#profile#ANTON DOHRN II#CAP FINISTERRE#GAUSS#KOELN EXPRESS#UNKNOWN PLATFORMS#University of Hamburg; Institut Fuer Meereskunde#University of Hamburg; Institut Fuer Meereskunde#UNKNOWN#WORLD OCEAN CIRCULATION EXPERIMENT (WOCE)#oceanography");
+        noaaExpected.put("contactOrganization", "US National Oceanographic Data Center");
+        noaaExpected.put("southBoundCoord", "-9");
+        noaaExpected.put("northBoundCoord", "65.7");
+        noaaExpected.put("westBoundCoord", "-50");
+        noaaExpected.put("eastBoundCoord", "-5.7");
+        noaaExpected.put("geohash_1", "e");
+        noaaExpected.put("geohash_2", "em");
+        noaaExpected.put("geohash_3", "emh");
+        noaaExpected.put("geohash_4", "emh1");
+        noaaExpected.put("geohash_5", "emh1q");
+        noaaExpected.put("geohash_6", "emh1q2");
+        noaaExpected.put("geohash_7", "emh1q2b");
+        noaaExpected.put("geohash_8", "emh1q2bn");
+        noaaExpected.put("geohash_9", "emh1q2bnx");
+        noaaExpected.put("fileID",
+                "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid11, "UTF-8"));
+        noaaExpected.put("text",
+                        "gov.noaa.nodc:9900233    eng    utf8    dataset      US National Oceanographic Data Center    Data Officer        301-713-3272    301-713-3302        1315 East-West Highway, SSMC3, 4th floor    Silver Spring    MD    20910-3282    USA    NODC.DataOfficer@noaa.gov        http://www.nodc.noaa.gov/    HTTP    Standard Internet browser    US National Oceanographic Data Center website    Main NODC website providing links to the NODC Geoportal and access links to data and data services.    information        custodian      2014-01-23T14:00:11    ISO 19115-2 Geographic Information - Metadata - Part 2: Extensions for Imagery and Gridded Data    ISO 19115-2:2009(E)        DEPTH - OBSERVATION and Other Data from UNKNOWN PLATFORMS and Other Platforms from 19980101 to 19981212 (NODC Accession 9900233)      2010-12-19    publication          NODC Accession Number       US National Oceanographic Data Center    resourceProvider        gov.noaa.nodc:9900233        US National Oceanographic Data Center        301-713-3277    301-713-3302        1315 East-West Highway, SSMC3, 4th floor    Silver Spring    MD    20910-3282    USA    NODC.DataOfficer@noaa.gov        http://www.nodc.noaa.gov/    HTTP    Standard Internet browser    US National Oceanographic Data Center website    Main NODC website providing links to the NODC Geoportal and access links to data and data services.    information        publisher        Alexander Sy    Federal Maritime Agency - Hamburg        040-3190-3430        BERNHARD-NOCHT-STRASSE 78    HAMBURG    D-20359    DEU    alexander.sy@bsh.de        http://www.bsh.de    HTTP    Standard Internet browser    Federal Maritime Agency - Hamburg website    Institution web page    information        resourceProvider        University of Hamburg; Institut Fuer Meereskunde        TROPLOWITZSTR, 7    HAMBURG    D-2000, 54    DEU        resourceProvider      tableDigital       BASIC RESEARCH    completed      US National Oceanographic Data Center    NODC User Services        301-713-3277    301-713-3302        1315 East-West Highway, SSMC3, 4th floor    Silver Spring    MD    20910-3282    USA    NODC.Services@noaa.gov        http://www.nodc.noaa.gov/    HTTP    Standard Internet browser    US National Oceanographic Data Center website    Main NODC website providing links to the NODC Geoportal and access links to data and data services.    information      8:30-6:00 PM, EST      pointOfContact        asNeeded        http://data.nodc.noaa.gov/cgi-bin/gfx?id=gov.noaa.nodc:9900233    Preview graphic    PNG        9900233      NODC ACCESSION NUMBER      2000-02-29    publication            DEPTH - OBSERVATION    WATER TEMPERATURE    theme      NODC DATA TYPES THESAURUS           bathythermograph - XBT    instrument      NODC INSTRUMENT TYPES THESAURUS           physical    profile    theme      NODC OBSERVATION TYPES THESAURUS           ANTON DOHRN II    CAP FINISTERRE    GAUSS    KOELN EXPRESS    UNKNOWN PLATFORMS    platform      NODC PLATFORM NAMES THESAURUS           University of Hamburg; Institut Fuer Meereskunde    dataCenter      NODC COLLECTING INSTITUTION NAMES THESAURUS           University of Hamburg; Institut Fuer Meereskunde    dataCenter      NODC SUBMITTING INSTITUTION NAMES THESAURUS           UNKNOWN    WORLD OCEAN CIRCULATION EXPERIMENT (WOCE)    project      NODC PROJECT NAMES THESAURUS           oceanography    theme      WMO_CategoryCode      2012-09-15    publication            Please note: NOAA and NODC make no warranty, expressed or implied, regarding these data, nor does the fact of distribution constitute such a warranty. NOAA and NODC cannot assume liability for any damages caused by any errors or omissions in these data.    accessLevel: Public        otherRestrictions    Cite as: Sy, A. and University of Hamburg; Institut Fuer Meereskunde (2010). DEPTH - OBSERVATION and Other Data from UNKNOWN PLATFORMS and Other Platforms from 19980101 to 19981212 (NODC Accession 9900233). National Oceanographic Data Center, NOAA. Dataset. [access date]        otherRestrictions    None      eng    utf8    oceans    environment        -50    -5.7    -9    65.7         1998-01-01  1998-12-12         Note: Metadata for this accession were extracted from a legacy databasemaintained by the U.S. National Oceanographic Data Center (NODC). Thedesign of the database did not exactly reflect the FGDC ContentStandard for Digital Geospatial Metadata (CSDGM).Principal Investigator (PI) and organization contact informationaccurately represents all available information from the legacy databaseat the time that this description was created. However, properattribution of a PI to a specific institution or the role (submitting orcollecting) taken by an institution may not be correct due to inexactmapping between fields in the legacy database and the CSDGM. Due to thisuncertainty, the contact information was initially recorded in theSupplemental Information element of the CSDGM description.To develop more accurate metadata, the NODC reviews metadata for allaccessions on an ongoing basis.Points of contact for this data set include:Contact info:Agency: UNIVERSITY OF HAMBURG; INSTITUT FUER MEERESKUNDEPI: Sy, Dr. AlexanderAddress:address: TROPLOWITZSTR, 7city: HAMBURGstate: NOT AVAILABLEpostal: D-2000, 54country: GERMANY            US National Oceanographic Data Center    NODC User Services        301-713-3277    301-713-3302        1315 East-West Highway, SSMC3, 4th floor    Silver Spring    MD    20910-3282    USA    NODC.Services@noaa.gov      8:30-6:00 PM, EST      pointOfContact        Digital data may be downloaded from NODC at no charge in most cases. For custom orders of digital data or to obtain a copy of analog materials, please contact NODC User Services for information about current fees.    Data may be searched and downloaded using online services provided by the NODC using the online resource URLs in this record. Contact NODC User Services for custom orders. When requesting data from the NODC, the desired data set may be referred to by the NODC Accession Number listed in this metadata record.        Originator data format           http://accession.nodc.noaa.gov/9900233    HTTP    Standard Internet browser    Details    Navigate directly to the URL for a descriptive web page with download links.    information              asNeeded    Metadata are developed, maintained and distributed by the NODC. Updates are performed as needed to maintain currentness.      DOC/NOAA/NESDIS/NODC > National Oceanographic Data Center, NESDIS, NOAA, U.S. Department of Commerce    custodian isotc211_noaa_12345");
+
+        // system metadata
+        noaaExpected.put("id", pid11);
+        noaaExpected.put("seriesId", "");
+        noaaExpected.put("fileName", "");
+        noaaExpected.put("mediaType", "");
+        noaaExpected.put("mediaTypeProperty", "");
+        noaaExpected.put("formatId", isotc211NoaaFormatId);
+        noaaExpected.put("formatType", "");
+        noaaExpected.put("formatType", "METADATA");
+        noaaExpected.put("size", "11406");
+        noaaExpected.put("checksum", "ff5d7c92a8c3285f49a8f216f929f14c6b5335a3");
+        noaaExpected.put("checksumAlgorithm", "SHA-1");
+        noaaExpected.put("submitter", "NODC");
+        noaaExpected.put("rightsHolder", "NODC");
+        noaaExpected.put("replicationAllowed", "true");
+        noaaExpected.put("numberReplicas", "3");
+        noaaExpected.put("preferredReplicationMN", "");
+        noaaExpected.put("blockedReplicationMN", "");
+        noaaExpected.put("obsoletes", "");
+        noaaExpected.put("obsoletedBy", "");
+        noaaExpected.put("dateUploaded", dateConverter.convert("2015-05-08T01:47:41.356045"));
+        noaaExpected.put("dateModified", dateConverter.convert("2015-05-08T01:47:41.391065Z"));
+        noaaExpected.put("datasource", "urn:node:NODC");
+        noaaExpected.put("authoritativeMN", "urn:node:NODC");
+        noaaExpected.put("replicaMN", "");
+        noaaExpected.put("replicaVerifiedDate", "");
+        noaaExpected.put("readPermission", "public");
+        noaaExpected.put("writePermission", "");
+        noaaExpected.put("changePermission", "");
+        noaaExpected.put("isPublic", "true");
+        noaaExpected.put("dataUrl",
+                "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid11, "UTF-8"));
+        // service info
+        noaaExpected.put("isService", "true");
+        noaaExpected.put("serviceCoupling", "tight");
+        noaaExpected.put("serviceTitle", "Details");
+        noaaExpected.put("serviceDescription", "Navigate directly to the URL for a descriptive web page with download links.");
+        noaaExpected.put("serviceType", serviceTypeConverter.convert("HTTP"));
+        noaaExpected.put("serviceEndpoint", "http://accession.nodc.noaa.gov/9900233");
+        noaaExpected.put("serviceInput", "");
+        noaaExpected.put("serviceOutput", "");
     }
     
     public void testIsotc211Nodc1FieldParsing() throws Exception {
@@ -1064,5 +1137,11 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     public void testTightlyCoupledServiceSrvOnly() throws Exception {
         testXPathParsing(isotc211Subprocessor, isotc211_tightlyCoupledServiceSrvOnly_SysMeta, isotc211_tightlyCoupledServiceSrvOnly_SciMeta,
                 tightlyCoupledServiceSrvOnlyExpected, pid10);
+    }
+    
+    @Test
+    public void testIsotc211NoaaFieldParsing() throws Exception {
+        testXPathParsing(isotc211NoaaSubprocessor, isotc211_noaa_SysMeta, isotc211_noaa_SciMeta,
+                noaaExpected, pid11);
     }
 }
