@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:metadata xmlns="http://purl.org/dc/terms/"
+  xmlns:ns2="http://ns.dataone.org/metadata/schema/onedcx/v1.0"
+  xmlns:ns3="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://ns.dataone.org/metadata/schema/onedcx/v1.0 http://ns.dataone.org/metadata/schema/onedcx/v1.0/onedcx_v1.0.xsd">
+	<ns2:simpleDc>
+		<title>Investigating Diet Variability at Early Fortifications in the American Colonies
+      (Contributed Poster)</title>
+		<creator>McClure, Sarah (Penn State University)</creator>
+		<creator>Burns, Jonathan (Penn State University)</creator>
+		<creator>Welker, Martin (Penn State University)</creator>
+		<subject>Zooarchaeology</subject>
+		<subject>Historic Archaeology</subject>
+		<subject>Diet Variability</subject>
+		<type>Document</type>
+		<identifier>http://alpha.tdar.org/document/48602/investigating-diet-variability-at-early-fortifications-in-the-american-colonies-contributed-poster</identifier>
+		<type>Text</type>
+		<contributor>Society of American Archaeology</contributor>
+		<publisher>Society of American Archaeology, San Francisco, California</publisher>
+		<type>conference</type>
+	</ns2:simpleDc>
+	<ns2:dcTerms>
+		<abstract>Variability in historic faunal assemblages is believed to be related to niche
+      construction effects associated with the establishment and cultivation of Old World
+      domesticated flora and fauna in the New World. Fort Shirley, a French and Indian War period
+      fortification in Central Pennsylvania occupied during the mid 1750's, is an important case
+      study in this picture as it was occupied during the introduction of domestic livestock to
+      Central Pennsylvania. Published zooarchaeological analyses of historic fortifications
+      elsewhere in the New World highlight significant contributions of locally abundant wild fauna
+      to military diets. Statistical comparison of faunal assemblages from military installations
+      dating to the French and Indian War (1754-1763), including Fort Shirley, the American
+      Revolutionary War (1775-1783), and the War of 1812 (1812-1815) will test the hypothesis that
+      diet breadth narrowed through time and was accompanied by increasing reliance on Old World
+      domesticates.</abstract>
+		<created xsi:type="W3CDTF">2015-04-02T21:21:52-07:00</created>
+		<bibliographicCitation>Investigating Diet Variability at Early Fortifications in the American
+      Colonies (Contributed Poster). Sarah McClure, Jonathan Burns, Martin Welker. Presented at
+      Society of American Archaeology, San Francisco, California. 2015 ( tDAR id: 48602) ;
+      doi:10.6067/XCV848602</bibliographicCitation>
+		<spatial>North America - Northeast</spatial>
+		<spatial xsi:type="Box">northlimit=47.38374632398567; southlimit=39.30029918615029;
+      westlimit=-80.8154296875; eastlimit=-66.76461662552896;</spatial>
+		<created>2015</created>
+	</ns2:dcTerms>
+</ns2:metadata>

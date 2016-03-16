@@ -42,7 +42,6 @@ xmlns:context="http://www.springframework.org/schema/context"
     
     <import resource="classpath:application-context-isotc211-base.xml" />
     <import resource="classpath:application-context-isotc211.xml" />
-    <import resource="classpath:application-context-isotc211-noaa.xml" />
     
     <import resource="classpath:application-context-prov-base.xml" />
     <import resource="classpath:application-context-provone20150115.xml" />
@@ -248,6 +247,16 @@ xmlns:context="http://www.springframework.org/schema/context"
     <bean id="dcx_ipumsi_SciMeta" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String" 
         value="org/dataone/cn/index/resources/d1_testdocs/dcx/ipumsi_6-3_br_2000_dcx.xml"/>
+    </bean>
+    
+    <bean id="dcterms_spatial_no_namespace_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/dcx/dcterms_spatial_no_namespace_sysmeta.xml"/>
+    </bean>
+    
+    <bean id="dcterms_spatial_no_namespace_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/dcx/dcterms_spatial_no_namespace.xml"/>
     </bean>
     
    	<bean id="datacite_1_SysMeta" class="org.springframework.core.io.ClassPathResource" >
