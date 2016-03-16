@@ -42,6 +42,7 @@ xmlns:context="http://www.springframework.org/schema/context"
     
     <import resource="classpath:application-context-isotc211-base.xml" />
     <import resource="classpath:application-context-isotc211.xml" />
+    <import resource="classpath:application-context-isotc211-noaa.xml" />
     
     <import resource="classpath:application-context-prov-base.xml" />
     <import resource="classpath:application-context-provone20150115.xml" />
@@ -379,4 +380,13 @@ xmlns:context="http://www.springframework.org/schema/context"
         value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_tightlyCoupledServiceSrvOnly_SciMeta.xml"/>
     </bean>
     
+    <bean id="isotc211_noaa_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_noaa_SysMeta.xml"/>
+    </bean>
+    
+    <bean id="isotc211_noaa_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_noaa_SciMeta.xml"/>
+    </bean>
 </beans>

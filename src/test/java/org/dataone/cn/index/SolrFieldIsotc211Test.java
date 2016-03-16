@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
 
     private static final String isotc211FormatId = "http://www.isotc211.org/2005/gmd";
+    private static final String isotc211NoaaFormatId = "http://www.isotc211.org/2005/gmd";
 
     @Autowired
     private Resource isotc211_nodc_1_SysMeta;
@@ -101,8 +102,19 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     private String pid10 = "isotc211_tightlyCoupledServiceSrvOnly";
     
     @Autowired
+    private Resource isotc211_noaa_SysMeta;
+
+    @Autowired
+    private Resource isotc211_noaa_SciMeta;
+
+    private String pid11 = "isotc211_noaa_12345";
+    
+    @Autowired
     private ScienceMetadataDocumentSubprocessor isotc211Subprocessor;
 
+    @Autowired
+    private ScienceMetadataDocumentSubprocessor isotc211NoaaSubprocessor;
+    
     private HashMap<String, String> nodc1Expected = new HashMap<String, String>();
     private HashMap<String, String> nodc2Expected = new HashMap<String, String>();
 
@@ -117,6 +129,8 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     
     private HashMap<String, String> looselyCoupledServiceSrvAndDistribExpected = new HashMap<String, String>();
     private HashMap<String, String> tightlyCoupledServiceSrvOnlyExpected = new HashMap<String, String>();
+    
+    private HashMap<String, String> noaaExpected = new HashMap<String, String>();
     
     private SolrDateConverter dateConverter = new SolrDateConverter();
     @Autowired
@@ -134,6 +148,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         setupGeoserverExpected();
         setupLooselyCoupledServiceSrvOnlyExpected();
         setupTightlyCoupledServiceSrvOnlyExpected();
+        setupNoaaExpected();
     }
 
     private void setupNodc1Expected() throws Exception {
@@ -988,6 +1003,83 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         tightlyCoupledServiceSrvOnlyExpected.put("serviceOutput", "https://cn-dev-ucsb-1.test.dataone.org/cn/v2/formats/image%2Fsvg%20xml");
     }
     
+    private void setupNoaaExpected() throws Exception {
+        // science metadata
+        noaaExpected.put("author", "Alexander Sy");
+        noaaExpected.put("authorSurName", "Alexander Sy");
+        noaaExpected.put("authorSurNameSort", "Alexander Sy");
+        noaaExpected.put("origin", "");
+        noaaExpected.put("investigator", "Alexander Sy");
+        noaaExpected.put("abstract", "");
+        noaaExpected.put("title",
+                        "DEPTH - OBSERVATION and Other Data from UNKNOWN PLATFORMS and Other Platforms from 19980101 to 19981212 (NODC Accession 9900233)");
+        noaaExpected.put("pubDate", dateConverter.convert("2014-01-23T14:00:11"));
+        noaaExpected.put("beginDate", dateConverter.convert("1998-01-01"));
+        noaaExpected.put("endDate", dateConverter.convert("1998-12-12"));
+        noaaExpected.put("keywords",
+                        "9900233#DEPTH - OBSERVATION#WATER TEMPERATURE#bathythermograph - XBT#physical#profile#ANTON DOHRN II#CAP FINISTERRE#GAUSS#KOELN EXPRESS#UNKNOWN PLATFORMS#University of Hamburg; Institut Fuer Meereskunde#University of Hamburg; Institut Fuer Meereskunde#UNKNOWN#WORLD OCEAN CIRCULATION EXPERIMENT (WOCE)#oceanography");
+        noaaExpected.put("contactOrganization", "US National Oceanographic Data Center");
+        noaaExpected.put("southBoundCoord", "-9");
+        noaaExpected.put("northBoundCoord", "65.7");
+        noaaExpected.put("westBoundCoord", "-50");
+        noaaExpected.put("eastBoundCoord", "-5.7");
+        noaaExpected.put("geohash_1", "e");
+        noaaExpected.put("geohash_2", "em");
+        noaaExpected.put("geohash_3", "emh");
+        noaaExpected.put("geohash_4", "emh1");
+        noaaExpected.put("geohash_5", "emh1q");
+        noaaExpected.put("geohash_6", "emh1q2");
+        noaaExpected.put("geohash_7", "emh1q2b");
+        noaaExpected.put("geohash_8", "emh1q2bn");
+        noaaExpected.put("geohash_9", "emh1q2bnx");
+        noaaExpected.put("fileID",
+                "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid11, "UTF-8"));
+        noaaExpected.put("text",
+                        "gov.noaa.nodc:9900233    eng    utf8    dataset      US National Oceanographic Data Center    Data Officer        301-713-3272    301-713-3302        1315 East-West Highway, SSMC3, 4th floor    Silver Spring    MD    20910-3282    USA    NODC.DataOfficer@noaa.gov        http://www.nodc.noaa.gov/    HTTP    Standard Internet browser    US National Oceanographic Data Center website    Main NODC website providing links to the NODC Geoportal and access links to data and data services.    information        custodian      2014-01-23T14:00:11    ISO 19115-2 Geographic Information - Metadata - Part 2: Extensions for Imagery and Gridded Data    ISO 19115-2:2009(E)        DEPTH - OBSERVATION and Other Data from UNKNOWN PLATFORMS and Other Platforms from 19980101 to 19981212 (NODC Accession 9900233)      2010-12-19    publication          NODC Accession Number       US National Oceanographic Data Center    resourceProvider        gov.noaa.nodc:9900233        US National Oceanographic Data Center        301-713-3277    301-713-3302        1315 East-West Highway, SSMC3, 4th floor    Silver Spring    MD    20910-3282    USA    NODC.DataOfficer@noaa.gov        http://www.nodc.noaa.gov/    HTTP    Standard Internet browser    US National Oceanographic Data Center website    Main NODC website providing links to the NODC Geoportal and access links to data and data services.    information        publisher        Alexander Sy    Federal Maritime Agency - Hamburg        040-3190-3430        BERNHARD-NOCHT-STRASSE 78    HAMBURG    D-20359    DEU    alexander.sy@bsh.de        http://www.bsh.de    HTTP    Standard Internet browser    Federal Maritime Agency - Hamburg website    Institution web page    information        resourceProvider        University of Hamburg; Institut Fuer Meereskunde        TROPLOWITZSTR, 7    HAMBURG    D-2000, 54    DEU        resourceProvider      tableDigital       BASIC RESEARCH    completed      US National Oceanographic Data Center    NODC User Services        301-713-3277    301-713-3302        1315 East-West Highway, SSMC3, 4th floor    Silver Spring    MD    20910-3282    USA    NODC.Services@noaa.gov        http://www.nodc.noaa.gov/    HTTP    Standard Internet browser    US National Oceanographic Data Center website    Main NODC website providing links to the NODC Geoportal and access links to data and data services.    information      8:30-6:00 PM, EST      pointOfContact        asNeeded        http://data.nodc.noaa.gov/cgi-bin/gfx?id=gov.noaa.nodc:9900233    Preview graphic    PNG        9900233      NODC ACCESSION NUMBER      2000-02-29    publication            DEPTH - OBSERVATION    WATER TEMPERATURE    theme      NODC DATA TYPES THESAURUS           bathythermograph - XBT    instrument      NODC INSTRUMENT TYPES THESAURUS           physical    profile    theme      NODC OBSERVATION TYPES THESAURUS           ANTON DOHRN II    CAP FINISTERRE    GAUSS    KOELN EXPRESS    UNKNOWN PLATFORMS    platform      NODC PLATFORM NAMES THESAURUS           University of Hamburg; Institut Fuer Meereskunde    dataCenter      NODC COLLECTING INSTITUTION NAMES THESAURUS           University of Hamburg; Institut Fuer Meereskunde    dataCenter      NODC SUBMITTING INSTITUTION NAMES THESAURUS           UNKNOWN    WORLD OCEAN CIRCULATION EXPERIMENT (WOCE)    project      NODC PROJECT NAMES THESAURUS           oceanography    theme      WMO_CategoryCode      2012-09-15    publication            Please note: NOAA and NODC make no warranty, expressed or implied, regarding these data, nor does the fact of distribution constitute such a warranty. NOAA and NODC cannot assume liability for any damages caused by any errors or omissions in these data.    accessLevel: Public        otherRestrictions    Cite as: Sy, A. and University of Hamburg; Institut Fuer Meereskunde (2010). DEPTH - OBSERVATION and Other Data from UNKNOWN PLATFORMS and Other Platforms from 19980101 to 19981212 (NODC Accession 9900233). National Oceanographic Data Center, NOAA. Dataset. [access date]        otherRestrictions    None      eng    utf8    oceans    environment        -50    -5.7    -9    65.7         1998-01-01  1998-12-12         Note: Metadata for this accession were extracted from a legacy databasemaintained by the U.S. National Oceanographic Data Center (NODC). Thedesign of the database did not exactly reflect the FGDC ContentStandard for Digital Geospatial Metadata (CSDGM).Principal Investigator (PI) and organization contact informationaccurately represents all available information from the legacy databaseat the time that this description was created. However, properattribution of a PI to a specific institution or the role (submitting orcollecting) taken by an institution may not be correct due to inexactmapping between fields in the legacy database and the CSDGM. Due to thisuncertainty, the contact information was initially recorded in theSupplemental Information element of the CSDGM description.To develop more accurate metadata, the NODC reviews metadata for allaccessions on an ongoing basis.Points of contact for this data set include:Contact info:Agency: UNIVERSITY OF HAMBURG; INSTITUT FUER MEERESKUNDEPI: Sy, Dr. AlexanderAddress:address: TROPLOWITZSTR, 7city: HAMBURGstate: NOT AVAILABLEpostal: D-2000, 54country: GERMANY            US National Oceanographic Data Center    NODC User Services        301-713-3277    301-713-3302        1315 East-West Highway, SSMC3, 4th floor    Silver Spring    MD    20910-3282    USA    NODC.Services@noaa.gov      8:30-6:00 PM, EST      pointOfContact        Digital data may be downloaded from NODC at no charge in most cases. For custom orders of digital data or to obtain a copy of analog materials, please contact NODC User Services for information about current fees.    Data may be searched and downloaded using online services provided by the NODC using the online resource URLs in this record. Contact NODC User Services for custom orders. When requesting data from the NODC, the desired data set may be referred to by the NODC Accession Number listed in this metadata record.        Originator data format           http://accession.nodc.noaa.gov/9900233    HTTP    Standard Internet browser    Details    Navigate directly to the URL for a descriptive web page with download links.    information              asNeeded    Metadata are developed, maintained and distributed by the NODC. Updates are performed as needed to maintain currentness.      DOC/NOAA/NESDIS/NODC > National Oceanographic Data Center, NESDIS, NOAA, U.S. Department of Commerce    custodian isotc211_noaa_12345");
+
+        // system metadata
+        noaaExpected.put("id", pid11);
+        noaaExpected.put("seriesId", "");
+        noaaExpected.put("fileName", "");
+        noaaExpected.put("mediaType", "");
+        noaaExpected.put("mediaTypeProperty", "");
+        noaaExpected.put("formatId", isotc211NoaaFormatId);
+        noaaExpected.put("formatType", "");
+        noaaExpected.put("formatType", "METADATA");
+        noaaExpected.put("size", "11406");
+        noaaExpected.put("checksum", "ff5d7c92a8c3285f49a8f216f929f14c6b5335a3");
+        noaaExpected.put("checksumAlgorithm", "SHA-1");
+        noaaExpected.put("submitter", "NODC");
+        noaaExpected.put("rightsHolder", "NODC");
+        noaaExpected.put("replicationAllowed", "true");
+        noaaExpected.put("numberReplicas", "3");
+        noaaExpected.put("preferredReplicationMN", "");
+        noaaExpected.put("blockedReplicationMN", "");
+        noaaExpected.put("obsoletes", "");
+        noaaExpected.put("obsoletedBy", "");
+        noaaExpected.put("dateUploaded", dateConverter.convert("2015-05-08T01:47:41.356045"));
+        noaaExpected.put("dateModified", dateConverter.convert("2015-05-08T01:47:41.391065Z"));
+        noaaExpected.put("datasource", "urn:node:NODC");
+        noaaExpected.put("authoritativeMN", "urn:node:NODC");
+        noaaExpected.put("replicaMN", "");
+        noaaExpected.put("replicaVerifiedDate", "");
+        noaaExpected.put("readPermission", "public");
+        noaaExpected.put("writePermission", "");
+        noaaExpected.put("changePermission", "");
+        noaaExpected.put("isPublic", "true");
+        noaaExpected.put("dataUrl",
+                "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid11, "UTF-8"));
+        // service info
+        noaaExpected.put("isService", "true");
+        noaaExpected.put("serviceCoupling", "tight");
+        noaaExpected.put("serviceTitle", "Details");
+        noaaExpected.put("serviceDescription", "Navigate directly to the URL for a descriptive web page with download links.");
+        noaaExpected.put("serviceType", serviceTypeConverter.convert("HTTP"));
+        noaaExpected.put("serviceEndpoint", "http://accession.nodc.noaa.gov/9900233");
+        noaaExpected.put("serviceInput", "");
+        noaaExpected.put("serviceOutput", "");
+    }
+    
     public void testIsotc211Nodc1FieldParsing() throws Exception {
         testXPathParsing(isotc211Subprocessor, isotc211_nodc_1_SysMeta, isotc211_nodc_1_SciMeta,
                 nodc1Expected, pid1);
@@ -1045,5 +1137,11 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     public void testTightlyCoupledServiceSrvOnly() throws Exception {
         testXPathParsing(isotc211Subprocessor, isotc211_tightlyCoupledServiceSrvOnly_SysMeta, isotc211_tightlyCoupledServiceSrvOnly_SciMeta,
                 tightlyCoupledServiceSrvOnlyExpected, pid10);
+    }
+    
+    @Test
+    public void testIsotc211NoaaFieldParsing() throws Exception {
+        testXPathParsing(isotc211NoaaSubprocessor, isotc211_noaa_SysMeta, isotc211_noaa_SciMeta,
+                noaaExpected, pid11);
     }
 }
