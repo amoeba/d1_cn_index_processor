@@ -81,6 +81,8 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
     @Autowired
     private SubprocessorUtility processorUtility;
 
+    private Logger perfLog = Logger.getLogger("performanceStats");
+    
     private List<String> matchDocuments = null;
     private List<String> fieldsToMerge = new ArrayList<String>();
 
@@ -111,8 +113,13 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
         SolrDoc resourceMapDoc = docs.get(identifier);
         List<SolrDoc> processedDocs = new ArrayList<SolrDoc>();
         try {
+            long fetchXmlStart = System.currentTimeMillis();
             Document doc = XmlDocumentUtility.generateXmlDocument(is);
+            perfLog.info(String.format("%-120s, %20d", "ResourceMapSubprocessor.processDocument() XmlDocumentUtility.generateXmlDocument()", System.currentTimeMillis() - fetchXmlStart));
+            
+            long procResMapStart = System.currentTimeMillis();
             processedDocs = processResourceMap(resourceMapDoc, doc);
+            perfLog.info(String.format("%-120s, %20d", "ResourceMapSubprocessor.processResourceMap()", System.currentTimeMillis() - procResMapStart));
         } catch (OREParserException oreException) {
             logger.error("Unable to parse resource map: " + identifier
                     + ".  Unrecoverable parse exception:  task will not be re-tried.");
@@ -127,18 +134,38 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
         return processedDocsMap;
     }
 
+    /**
+     * 
+     */
     private List<SolrDoc> processResourceMap(SolrDoc indexDocument, Document resourceMapDocument)
             throws OREParserException, XPathExpressionException, IOException, EncoderException {
 
+        long buildResMapStart = System.currentTimeMillis();
         ResourceMap resourceMap = ResourceMapFactory.buildResourceMap(resourceMapDocument);
-        List<String> documentIds = resourceMap.getAllDocumentIDs();
+        perfLog.info(String.format("%-120s, %20d", "ResourceMapFactory.buildResourceMap() create ResourceMap from Document", System.currentTimeMillis() - buildResMapStart));
+        
+        long getReferencedStart = System.currentTimeMillis();
+        List<String> documentIds = resourceMap.getAllDocumentIDs();     // all pids referenced in ResourceMap
+        perfLog.info(String.format("%-120s, %20d", "ResourceMap.getAllDocumentIDs() referenced in ResourceMap", System.currentTimeMillis() - getReferencedStart));
+        
+        long clearSidChainStart = System.currentTimeMillis();
         this.clearSidChain(indexDocument.getIdentifier(), documentIds);
+        perfLog.info(String.format("%-120s, %20d", "ResourceMapSubprocessor.clearSidChain() removing obsoletes chain from Solr index", System.currentTimeMillis() - clearSidChainStart));
+        
+        long getSolrDocsStart = System.currentTimeMillis();
         List<SolrDoc> updateDocuments = httpService.getDocumentsById(solrQueryUri, documentIds);
+        perfLog.info(String.format("%-120s, %20d", "HttpService.getDocumentsById() get existing referenced ids' Solr docs", System.currentTimeMillis() - getSolrDocsStart));
+        
         List<SolrDoc> mergedDocuments = resourceMap.mergeIndexedDocuments(updateDocuments);
         mergedDocuments.add(indexDocument);
         return mergedDocuments;
     }
 
+    /**
+     * Removes the documents for resourceMapIdentifier and its obsoletes chain 
+     * (meaning anything BEFORE it) from the search index
+     * (if any ids referenced in resource doc are a sid).
+     */
     private void clearSidChain(String resourceMapIdentifier, List<String> relatedDocs) {
 
         // check that we are, indeed, dealing with a SID-identified ORE

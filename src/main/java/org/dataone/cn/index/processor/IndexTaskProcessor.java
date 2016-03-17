@@ -60,7 +60,8 @@ public class IndexTaskProcessor {
 
     private static Logger logger = Logger.getLogger(IndexTaskProcessor.class.getName());
     private static final String FORMAT_TYPE_DATA = "DATA";
-
+    private static final String LOAD_LOGGER_NAME = "indexProcessorLoad";
+    
     @Autowired
     private IndexTaskRepository repo;
 
@@ -76,6 +77,8 @@ public class IndexTaskProcessor {
     @Autowired
     private String solrQueryUri;
 
+    private Logger perfLog = Logger.getLogger("performanceStats");
+    
     public IndexTaskProcessor() {
     }
 
@@ -86,6 +89,8 @@ public class IndexTaskProcessor {
      * job.
      */
     public void processIndexTaskQueue() {
+        logProcessorLoad();
+        
         List<IndexTask> queue = getIndexTaskQueue();
         IndexTask task = getNextIndexTask(queue);
         while (task != null) {
@@ -99,6 +104,26 @@ public class IndexTaskProcessor {
             processTask(task);
             task = getNextIndexTask(queue);
         }
+    }
+
+    /**
+     * Logs the number of {@link IndexTask}s that need to be processed
+     * and the number of tasks that have failed.
+     */
+    private void logProcessorLoad() {
+        
+        Logger loadLogger = Logger.getLogger(LOAD_LOGGER_NAME);
+        
+        Long newTasks = null;
+        Long failedTasks = null;
+        try {
+            newTasks = repo.countByStatus(IndexTask.STATUS_NEW);
+            failedTasks = repo.countByStatus(IndexTask.STATUS_FAILED);
+        } catch (Exception e) {
+            logger.error("Unable to count NEW or FAILED tasks in task index repository.", e);
+        }
+        
+        loadLogger.info("new tasks followed by failed tasks respectively:, " + newTasks + ", " + failedTasks);
     }
 
     private void processTask(IndexTask task) {
@@ -294,7 +319,10 @@ public class IndexTaskProcessor {
     }
 
     private List<IndexTask> getIndexTaskQueue() {
-        return repo.findByStatusOrderByPriorityAscTaskModifiedDateAsc(IndexTask.STATUS_NEW);
+        long getIndexTasksStart = System.currentTimeMillis();
+        List<IndexTask> indexTasks = repo.findByStatusOrderByPriorityAscTaskModifiedDateAsc(IndexTask.STATUS_NEW);
+        perfLog.info(String.format("%-120s, %20d", "IndexTaskProcessor.getIndexTaskQueue() fetching NEW IndexTasks from repo", System.currentTimeMillis() - getIndexTasksStart));
+        return indexTasks;
     }
 
     private List<IndexTask> getIndexTaskRetryQueue() {

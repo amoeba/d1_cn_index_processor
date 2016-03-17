@@ -62,6 +62,8 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
     @Autowired
     private String solrQueryUri = null;
 
+    private Logger perfLog = Logger.getLogger("performanceStats");
+    
     private List<String> matchDocuments = null;
 
     private List<String> ontologyList = null;
@@ -121,7 +123,10 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
             InputStream is) throws Exception {
 
         // check for annotations, and add them if found
+        long parseAnnotationStart = System.currentTimeMillis();
         SolrDoc annotations = parseAnnotation(is);
+        perfLog.info(String.format("%-120s, %20d", "AnnotatorSubprocessor.processDocument() parseAnnotation() ", System.currentTimeMillis() - parseAnnotationStart));
+        
         if (annotations != null) {
             String referencedPid = annotations.getIdentifier();
             SolrDoc referencedDoc = docs.get(referencedPid);
@@ -179,8 +184,12 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
     protected SolrDoc parseAnnotation(InputStream is) {
 
         try {
-
-            String results = IOUtils.toString(is, "UTF-8");
+            String results = null;
+            try {
+                results = IOUtils.toString(is, "UTF-8");
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
             log.debug("RESULTS: " + results);
             JSONObject annotation = (JSONObject) JSONValue.parse(results);
 

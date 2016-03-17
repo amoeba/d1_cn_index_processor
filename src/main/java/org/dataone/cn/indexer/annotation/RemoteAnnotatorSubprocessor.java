@@ -25,6 +25,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.log4j.Logger;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.ISolrDataField;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
@@ -52,6 +53,8 @@ import com.hp.hpl.jena.tdb.TDBFactory;
  */
 public class RemoteAnnotatorSubprocessor implements IDocumentSubprocessor {
 
+    private Logger perfLog = Logger.getLogger("performanceStats");
+    
     private static Log log = LogFactory.getLog(RemoteAnnotatorSubprocessor.class);
 
     private List<ISolrDataField> fieldList = new ArrayList<ISolrDataField>();
@@ -83,7 +86,9 @@ public class RemoteAnnotatorSubprocessor implements IDocumentSubprocessor {
             SolrDoc solrDoc = entry.getValue();
 
             // check for annotations, and add them if found
+            long lookUpAnnotationsStart = System.currentTimeMillis();
             SolrDoc annotations = lookUpAnnotations(pid);
+            perfLog.info(String.format("%-120s, %20d", "RemoteAnnotatorSubprocessor.lookUpAnnotations()", (System.currentTimeMillis() - lookUpAnnotationsStart)));
             if (annotations != null) {
                 Iterator<SolrElementField> annotationIter = annotations.getFieldList().iterator();
                 // each field can have multiple values
@@ -129,7 +134,12 @@ public class RemoteAnnotatorSubprocessor implements IDocumentSubprocessor {
             HttpResponse response = client.execute(method);
             InputStream is = response.getEntity().getContent();
 
-            String results = IOUtils.toString(is, "UTF-8");
+            String results = null; 
+            try {
+                results = IOUtils.toString(is, "UTF-8");
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
             log.debug("RESULTS: " + results);
             JSONObject jo = (JSONObject) JSONValue.parse(results);
 
