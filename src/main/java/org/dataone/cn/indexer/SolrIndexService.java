@@ -165,7 +165,7 @@ public class SolrIndexService {
                     } else {
                         long scimetaProcStart = System.currentTimeMillis();
                         docs = subprocessor.processDocument(id, docs, objectStream);
-                        perfLog.info(String.format("%-120s, %20d", "SolrIndexService.processObject() " + subprocessor.getClass().getSimpleName() + ".processDocument() total subprocessor processing time for format: " + formatId + "", System.currentTimeMillis() - scimetaProcStart));
+                        perfLog.info(String.format("%s, %d", "SolrIndexService.processObject() " + subprocessor.getClass().getSimpleName() + ".processDocument() total subprocessor processing time for format: " + formatId + "", System.currentTimeMillis() - scimetaProcStart));
                     }
                 } catch (Exception e) {
                     log.error(e.getMessage());
@@ -181,7 +181,7 @@ public class SolrIndexService {
             }
             mergedDocs.put(mergeDoc.getIdentifier(), mergeDoc);
         }
-        perfLog.info(String.format("%-120s, %20d", "SolrIndexService.processObject() merging docs", System.currentTimeMillis() - mergeProcStart));
+        perfLog.info(String.format("%s, %d", "SolrIndexService.processObject() merging docs", System.currentTimeMillis() - mergeProcStart));
         
         SolrElementAdd addCommand = getAddCommand(new ArrayList<SolrDoc>(mergedDocs.values()));
         if (log.isTraceEnabled()) {
@@ -190,7 +190,7 @@ public class SolrIndexService {
             log.trace(baos.toString());
         }
 
-        perfLog.info(String.format("%-120s, %20d", "SolrIndexService.processObject() total processing time for id " + id, System.currentTimeMillis() - processObjStart));
+        perfLog.info(String.format("%s, %d", "SolrIndexService.processObject() total processing time for id " + id, System.currentTimeMillis() - processObjStart));
         return addCommand;
     }
 
@@ -220,7 +220,7 @@ public class SolrIndexService {
         // send it
         long solrAddStart = System.currentTimeMillis();
         sendCommand(addCommand);
-        perfLog.info(String.format("%-120s, %20d", "SolrIndexService.sendCommand(SolrElementAdd) adding docs into Solr index", System.currentTimeMillis() - solrAddStart));
+        perfLog.info(String.format("%s, %d", "SolrIndexService.sendCommand(SolrElementAdd) adding docs into Solr index", System.currentTimeMillis() - solrAddStart));
     }
 
     private void sendCommand(SolrElementAdd addCommand) throws IOException {
