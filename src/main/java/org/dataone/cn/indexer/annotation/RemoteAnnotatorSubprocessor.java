@@ -88,7 +88,7 @@ public class RemoteAnnotatorSubprocessor implements IDocumentSubprocessor {
             // check for annotations, and add them if found
             long lookUpAnnotationsStart = System.currentTimeMillis();
             SolrDoc annotations = lookUpAnnotations(pid);
-            perfLog.info(String.format("%-120s, %20d", "RemoteAnnotatorSubprocessor.lookUpAnnotations()", (System.currentTimeMillis() - lookUpAnnotationsStart)));
+            perfLog.info(String.format("%s, %d", "RemoteAnnotatorSubprocessor.lookUpAnnotations()", (System.currentTimeMillis() - lookUpAnnotationsStart)));
             if (annotations != null) {
                 Iterator<SolrElementField> annotationIter = annotations.getFieldList().iterator();
                 // each field can have multiple values

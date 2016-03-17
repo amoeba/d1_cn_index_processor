@@ -123,7 +123,7 @@ public class IndexTaskProcessor {
             logger.error("Unable to count NEW or FAILED tasks in task index repository.", e);
         }
         
-        loadLogger.info("new tasks followed by failed tasks respectively:, " + newTasks + ", " + failedTasks);
+        loadLogger.info("new:" + newTasks + ", failed: " + failedTasks );
     }
 
     private void processTask(IndexTask task) {
@@ -321,7 +321,7 @@ public class IndexTaskProcessor {
     private List<IndexTask> getIndexTaskQueue() {
         long getIndexTasksStart = System.currentTimeMillis();
         List<IndexTask> indexTasks = repo.findByStatusOrderByPriorityAscTaskModifiedDateAsc(IndexTask.STATUS_NEW);
-        perfLog.info(String.format("%-120s, %20d", "IndexTaskProcessor.getIndexTaskQueue() fetching NEW IndexTasks from repo", System.currentTimeMillis() - getIndexTasksStart));
+        perfLog.info(String.format("%s, %d", "IndexTaskProcessor.getIndexTaskQueue() fetching NEW IndexTasks from repo", System.currentTimeMillis() - getIndexTasksStart));
         return indexTasks;
     }
 
