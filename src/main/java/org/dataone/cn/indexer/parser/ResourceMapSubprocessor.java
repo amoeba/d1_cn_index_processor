@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.processor.IndexTaskDeleteProcessor;
 import org.dataone.cn.index.task.IndexTask;
+import org.dataone.cn.index.util.PerformanceLogger;
 import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.cn.indexer.parser.utility.SeriesIdResolver;
 import org.dataone.cn.indexer.resourcemap.ResourceMap;
@@ -81,7 +82,7 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
     @Autowired
     private SubprocessorUtility processorUtility;
 
-    private Logger perfLog = Logger.getLogger("performanceStats");
+    private PerformanceLogger perfLog = PerformanceLogger.getInstance();
     
     private List<String> matchDocuments = null;
     private List<String> fieldsToMerge = new ArrayList<String>();
@@ -115,11 +116,11 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
         try {
             long fetchXmlStart = System.currentTimeMillis();
             Document doc = XmlDocumentUtility.generateXmlDocument(is);
-            perfLog.info(String.format("%s, %d", "ResourceMapSubprocessor.processDocument() XmlDocumentUtility.generateXmlDocument()", System.currentTimeMillis() - fetchXmlStart));
+            perfLog.log("ResourceMapSubprocessor.processDocument() XmlDocumentUtility.generateXmlDocument()", System.currentTimeMillis() - fetchXmlStart);
             
             long procResMapStart = System.currentTimeMillis();
             processedDocs = processResourceMap(resourceMapDoc, doc);
-            perfLog.info(String.format("%s, %d", "ResourceMapSubprocessor.processResourceMap()", System.currentTimeMillis() - procResMapStart));
+            perfLog.log("ResourceMapSubprocessor.processResourceMap()", System.currentTimeMillis() - procResMapStart);
         } catch (OREParserException oreException) {
             logger.error("Unable to parse resource map: " + identifier
                     + ".  Unrecoverable parse exception:  task will not be re-tried.");
@@ -142,19 +143,19 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
 
         long buildResMapStart = System.currentTimeMillis();
         ResourceMap resourceMap = ResourceMapFactory.buildResourceMap(resourceMapDocument);
-        perfLog.info(String.format("%s, %d", "ResourceMapFactory.buildResourceMap() create ResourceMap from Document", System.currentTimeMillis() - buildResMapStart));
+        perfLog.log("ResourceMapFactory.buildResourceMap() create ResourceMap from Document", System.currentTimeMillis() - buildResMapStart);
         
         long getReferencedStart = System.currentTimeMillis();
         List<String> documentIds = resourceMap.getAllDocumentIDs();     // all pids referenced in ResourceMap
-        perfLog.info(String.format("%s, %d", "ResourceMap.getAllDocumentIDs() referenced in ResourceMap", System.currentTimeMillis() - getReferencedStart));
+        perfLog.log("ResourceMap.getAllDocumentIDs() referenced in ResourceMap", System.currentTimeMillis() - getReferencedStart);
         
         long clearSidChainStart = System.currentTimeMillis();
         this.clearSidChain(indexDocument.getIdentifier(), documentIds);
-        perfLog.info(String.format("%s, %d", "ResourceMapSubprocessor.clearSidChain() removing obsoletes chain from Solr index", System.currentTimeMillis() - clearSidChainStart));
+        perfLog.log("ResourceMapSubprocessor.clearSidChain() removing obsoletes chain from Solr index", System.currentTimeMillis() - clearSidChainStart);
         
         long getSolrDocsStart = System.currentTimeMillis();
         List<SolrDoc> updateDocuments = httpService.getDocumentsById(solrQueryUri, documentIds);
-        perfLog.info(String.format("%s, %d", "HttpService.getDocumentsById() get existing referenced ids' Solr docs", System.currentTimeMillis() - getSolrDocsStart));
+        perfLog.log("HttpService.getDocumentsById() get existing referenced ids' Solr docs", System.currentTimeMillis() - getSolrDocsStart);
         
         List<SolrDoc> mergedDocuments = resourceMap.mergeIndexedDocuments(updateDocuments);
         mergedDocuments.add(indexDocument);
