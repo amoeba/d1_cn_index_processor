@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,6 +30,7 @@ import java.util.Set;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.codec.EncoderException;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
@@ -153,7 +155,12 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
             } catch (IOException e) {
                 log.trace("Couldn't serialize documents: " + e.getMessage());
             }
-            documents.append(baos.toString());
+            
+            try {
+                documents.append(baos.toString());
+            } finally {
+                IOUtils.closeQuietly(baos);
+            }
         }
         documents.append("</docs>");
         log.trace(documents.toString());
@@ -169,12 +176,24 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
         String name = indexDocId;
 
         //Check if the identifier is a valid URI and if not, make it one by prepending "http://"
-        URI nameURI = new URI(indexDocId);
-        String scheme = nameURI.getScheme();
-        if ((scheme == null) || (scheme.isEmpty())) {
-            name = "http://" + indexDocId.toLowerCase();
+        URI nameURI;
+        String scheme = null;
+        try {
+            nameURI = new URI(indexDocId);
+            scheme = nameURI.getScheme();
+            
+        } catch (URISyntaxException use) {
+            // The identifier can't be parsed due to offending characters. It's not a URL
+            
+            name = "https://cn.dataone.org/cn/v1/resolve/"+indexDocId;
         }
-
+        
+        // The had no scheme prefix. It's not a URL
+        if ((scheme == null) || (scheme.isEmpty())) {
+            name = "https://cn.dataone.org/cn/v1/resolve/"+indexDocId;
+            
+        }
+        
         boolean loaded = dataset.containsNamedModel(name);
         if (!loaded) {
             OntModel ontModel = ModelFactory.createOntologyModel();
