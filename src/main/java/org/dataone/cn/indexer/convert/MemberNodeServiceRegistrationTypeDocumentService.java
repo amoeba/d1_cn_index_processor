@@ -30,6 +30,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.log4j.Logger;
+import org.apache.solr.common.util.IOUtils;
 import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.configuration.Settings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,8 @@ public class MemberNodeServiceRegistrationTypeDocumentService {
             } catch (SAXException e) {
                 log.error("Unable to create w3c Document from input stream", e);
                 e.printStackTrace();
+            } finally {
+                IOUtils.closeQuietly(stream);
             }
         }
         return doc;

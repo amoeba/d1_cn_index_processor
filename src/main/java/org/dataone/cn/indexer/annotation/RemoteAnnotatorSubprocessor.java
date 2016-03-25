@@ -25,7 +25,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.log4j.Logger;
+import org.dataone.cn.index.util.PerformanceLogger;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.ISolrDataField;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
@@ -53,7 +53,7 @@ import com.hp.hpl.jena.tdb.TDBFactory;
  */
 public class RemoteAnnotatorSubprocessor implements IDocumentSubprocessor {
 
-    private Logger perfLog = Logger.getLogger("performanceStats");
+    private PerformanceLogger perfLog = PerformanceLogger.getInstance();
     
     private static Log log = LogFactory.getLog(RemoteAnnotatorSubprocessor.class);
 
@@ -88,7 +88,7 @@ public class RemoteAnnotatorSubprocessor implements IDocumentSubprocessor {
             // check for annotations, and add them if found
             long lookUpAnnotationsStart = System.currentTimeMillis();
             SolrDoc annotations = lookUpAnnotations(pid);
-            perfLog.info(String.format("%s, %d", "RemoteAnnotatorSubprocessor.lookUpAnnotations()", (System.currentTimeMillis() - lookUpAnnotationsStart)));
+            perfLog.log("RemoteAnnotatorSubprocessor.lookUpAnnotations()", System.currentTimeMillis() - lookUpAnnotationsStart);
             if (annotations != null) {
                 Iterator<SolrElementField> annotationIter = annotations.getFieldList().iterator();
                 // each field can have multiple values

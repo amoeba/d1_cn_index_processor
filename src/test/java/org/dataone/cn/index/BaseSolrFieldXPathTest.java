@@ -97,7 +97,8 @@ public abstract class BaseSolrFieldXPathTest {
             
             // emptyFields added to actualValuesByFieldName at end, only if not added by another solrField
             if (fields.isEmpty())
-                emptyFields.add(solrField.getName());
+                if (solrField.getName() != null)
+                    emptyFields.add(solrField.getName());
             
             for (SolrElementField f : fields) {
                 if (actualValuesByFieldName.get(f.getName()) == null) {
@@ -129,7 +130,7 @@ public abstract class BaseSolrFieldXPathTest {
             if (expectedForField == null) {
                 System.out.println("No expected value for field: " + thisFieldName);
 				throw new AssertionError("No expected value for field " + thisFieldName);
-                // continue;
+				// continue;
             }
             
             if (expectedForField.equals(""))

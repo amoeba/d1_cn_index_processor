@@ -33,7 +33,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.codec.EncoderException;
-import org.apache.log4j.Logger;
+import org.dataone.cn.index.util.PerformanceLogger;
 import org.dataone.cn.indexer.XMLNamespaceConfig;
 import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
@@ -60,7 +60,7 @@ import org.w3c.dom.Document;
  */
 public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
 
-    private Logger perfLog = Logger.getLogger("performanceStats");
+    private PerformanceLogger perfLog = PerformanceLogger.getInstance();
     
     private static XPathFactory xpathFactory = null;
     private static XPath xpath = null;
@@ -105,7 +105,7 @@ public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
         
         long fetchXmlStart = System.currentTimeMillis();
         Document doc = XmlDocumentUtility.generateXmlDocument(is);
-        perfLog.info(String.format("%s, %d", "BaseXPathDocumentSubprocessor.processDocument() XmlDocumentUtility.generateXmlDocument()", (System.currentTimeMillis() - fetchXmlStart)));
+        perfLog.log("BaseXPathDocumentSubprocessor.processDocument() XmlDocumentUtility.generateXmlDocument()", System.currentTimeMillis() - fetchXmlStart);
         
         long addAllFieldsStart = System.currentTimeMillis();
         for (ISolrField solrField : fieldList) {
@@ -116,9 +116,9 @@ public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
                 e.printStackTrace();
             }
             String fieldName = solrField.getName();
-            perfLog.info(String.format("%s, %d", "BaseXPathDocumentSubprocessor.processDocument() processing " + solrField.getClass().getSimpleName() + "(\"" + fieldName +"\").getFields()", System.currentTimeMillis() - getFieldsStart));
+            perfLog.log("BaseXPathDocumentSubprocessor.processDocument() processing " + solrField.getClass().getSimpleName() + "(\"" + fieldName +"\").getFields()", System.currentTimeMillis() - getFieldsStart);
         }
-        perfLog.info(String.format("%s, %d", "BaseXPathDocumentSubprocessor.processDocument() processing ALL fields", (System.currentTimeMillis() - addAllFieldsStart)));
+        perfLog.log("BaseXPathDocumentSubprocessor.processDocument() processing ALL fields", System.currentTimeMillis() - addAllFieldsStart);
         
         return docs;
     }

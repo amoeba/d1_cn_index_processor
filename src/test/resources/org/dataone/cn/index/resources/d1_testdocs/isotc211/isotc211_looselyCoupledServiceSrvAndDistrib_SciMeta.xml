@@ -41,7 +41,7 @@
 			<gmd:role>
 				<gmd:CI_RoleCode
 					codeList="http://www.ngdc.noaa.gov/metadata/published/xsd/schema/resources/Codelist/gmxCodelists.xml#gmd:CI_RoleCode"
-					codeListValue="pointOfContact">pointOfContact</gmd:CI_RoleCode>
+					codeListValue="owner">owner</gmd:CI_RoleCode>
 			</gmd:role>
 		</gmd:CI_ResponsibleParty>
 	</gmd:contact>

@@ -30,6 +30,7 @@ import org.dataone.client.v2.formats.ObjectFormatCache;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.index.task.IndexTaskRepository;
+import org.dataone.cn.index.util.PerformanceLogger;
 import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.cn.indexer.resourcemap.ForesiteResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMap;
@@ -77,7 +78,7 @@ public class IndexTaskProcessor {
     @Autowired
     private String solrQueryUri;
 
-    private Logger perfLog = Logger.getLogger("performanceStats");
+    private PerformanceLogger perfLog = PerformanceLogger.getInstance();
     
     public IndexTaskProcessor() {
     }
@@ -321,7 +322,7 @@ public class IndexTaskProcessor {
     private List<IndexTask> getIndexTaskQueue() {
         long getIndexTasksStart = System.currentTimeMillis();
         List<IndexTask> indexTasks = repo.findByStatusOrderByPriorityAscTaskModifiedDateAsc(IndexTask.STATUS_NEW);
-        perfLog.info(String.format("%s, %d", "IndexTaskProcessor.getIndexTaskQueue() fetching NEW IndexTasks from repo", System.currentTimeMillis() - getIndexTasksStart));
+        perfLog.log("IndexTaskProcessor.getIndexTaskQueue() fetching NEW IndexTasks from repo", System.currentTimeMillis() - getIndexTasksStart);
         return indexTasks;
     }
 
