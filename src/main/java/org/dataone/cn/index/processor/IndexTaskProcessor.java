@@ -100,27 +100,30 @@ public class IndexTaskProcessor {
         
         IndexTask nextTask = getNextIndexTask(queue);
         while (nextTask != null) {
-            // process one batch
-            batchProcessList = new ArrayList<IndexTask>(BATCH_UPDATE_SIZE);
-            for (int i = 0; i < BATCH_UPDATE_SIZE && nextTask != null; i++) {
-                batchProcessList.add(nextTask);
-                nextTask = getNextIndexTask(queue);
+            batchProcessList.add(nextTask);
+            nextTask = getNextIndexTask(queue);
+            
+            if (batchProcessList.size() >= BATCH_UPDATE_SIZE) {
+                batchProcessTasks(batchProcessList);
+                batchProcessList = new ArrayList<IndexTask>(BATCH_UPDATE_SIZE);
             }
-            batchProcessTasks(batchProcessList);
         }
-
+        batchProcessTasks(batchProcessList);
+        
         List<IndexTask> retryQueue = getIndexTaskRetryQueue();
         List<IndexTask> batchProcessRetryList = new ArrayList<IndexTask>(BATCH_UPDATE_SIZE);
         
         nextTask = getNextIndexTask(retryQueue);
         while (nextTask != null) {
-            batchProcessRetryList = new ArrayList<IndexTask>(BATCH_UPDATE_SIZE);
-            for (int i = 0; i < BATCH_UPDATE_SIZE && nextTask != null; i++) {
-                batchProcessRetryList.add(nextTask);
-                nextTask = getNextIndexTask(retryQueue);
+            batchProcessRetryList.add(nextTask);
+            nextTask = getNextIndexTask(retryQueue);
+            
+            if (batchProcessRetryList.size() >= BATCH_UPDATE_SIZE) {
+                batchProcessTasks(batchProcessRetryList);
+                batchProcessRetryList = new ArrayList<IndexTask>(BATCH_UPDATE_SIZE);
             }
-            batchProcessTasks(batchProcessRetryList);
         }
+        batchProcessTasks(batchProcessRetryList);
     }
     
     /**
