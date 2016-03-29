@@ -99,23 +99,26 @@ public class IndexTaskProcessor {
         List<IndexTask> batchProcessList = new ArrayList<IndexTask>(BATCH_UPDATE_SIZE);
         
         IndexTask nextTask = getNextIndexTask(queue);
-        for (int i = 0; i < BATCH_UPDATE_SIZE && nextTask != null; i++) {
-            batchProcessList.add(nextTask);
-            nextTask = getNextIndexTask(queue);
+        while (nextTask != null) {
+            // process one batch
+            for (int i = 0; i < BATCH_UPDATE_SIZE && nextTask != null; i++) {
+                batchProcessList.add(nextTask);
+                nextTask = getNextIndexTask(queue);
+            }
+            batchProcessTasks(batchProcessList);
         }
-        
-        batchProcessTasks(batchProcessList);
 
         List<IndexTask> retryQueue = getIndexTaskRetryQueue();
         List<IndexTask> batchProcessRetryList = new ArrayList<IndexTask>(BATCH_UPDATE_SIZE);
         
         nextTask = getNextIndexTask(retryQueue);
-        for (int i = 0; i < BATCH_UPDATE_SIZE && nextTask != null; i++) {
-            batchProcessRetryList.add(nextTask);
-            nextTask = getNextIndexTask(retryQueue);
+        while (nextTask != null) {
+            for (int i = 0; i < BATCH_UPDATE_SIZE && nextTask != null; i++) {
+                batchProcessRetryList.add(nextTask);
+                nextTask = getNextIndexTask(retryQueue);
+            }
+            batchProcessTasks(batchProcessRetryList);
         }
-        
-        batchProcessTasks(batchProcessRetryList);
     }
     
     /**
