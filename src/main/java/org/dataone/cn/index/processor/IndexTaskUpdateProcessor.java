@@ -25,6 +25,7 @@ package org.dataone.cn.index.processor;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
@@ -60,7 +61,19 @@ public class IndexTaskUpdateProcessor implements IndexTaskProcessingStrategy {
                     new ByteArrayInputStream(os.toByteArray()), task.getObjectPath());
             logger.error("Retry with fresh system metadata successful!");
         }
+    }
 
+    @Override
+    public void process(List<IndexTask> tasks) throws Exception {
+        try {
+            solrIndexService.insertIntoIndex(tasks);
+        } catch (SAXParseException spe) {
+            logger.error(spe);
+            StringBuilder failedPids = new StringBuilder(); 
+            for (IndexTask task : tasks)
+                failedPids.append(task.getPid()).append(", ");
+            logger.error("Caught SAX parse exception on: " + failedPids + ". Unable to insert into index.");
+        }
     }
 
 }

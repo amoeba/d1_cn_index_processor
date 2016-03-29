@@ -179,6 +179,22 @@ public class HTTPService {
         }
     }
 
+    public void sendSolrDeletes(List<String> pids) {
+        // generate request to solr server to remove index record for task.pid
+        OutputStream outputStream = new ByteArrayOutputStream();
+        try {
+            IOUtils.write("<?xml version=\"1.1\" encoding=\"utf-8\"?>\n", outputStream,
+                    CHAR_ENCODING);
+            IOUtils.write("<update>", outputStream, CHAR_ENCODING);
+            for (String pid : pids)
+                IOUtils.write("<delete><id>" + pid + "</id></delete>", outputStream, CHAR_ENCODING);    
+            IOUtils.write("</update>", outputStream, CHAR_ENCODING);
+            sendPost(getSolrIndexUri(), outputStream.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
     /**
      * Borrowed from
      * http://www.docjar.com/html/api/org/apache/solr/client/solrj/

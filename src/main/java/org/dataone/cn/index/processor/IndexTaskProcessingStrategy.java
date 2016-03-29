@@ -22,6 +22,8 @@
 
 package org.dataone.cn.index.processor;
 
+import java.util.List;
+
 import org.dataone.cn.index.task.IndexTask;
 
 /**
@@ -35,4 +37,6 @@ import org.dataone.cn.index.task.IndexTask;
 public interface IndexTaskProcessingStrategy {
 
     public void process(IndexTask task) throws Exception;
+
+    public void process(List<IndexTask> tasks) throws Exception;
 }

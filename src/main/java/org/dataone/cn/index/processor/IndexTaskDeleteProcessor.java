@@ -22,6 +22,8 @@
 
 package org.dataone.cn.index.processor;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.indexer.SolrIndexService;
@@ -36,6 +38,11 @@ public class IndexTaskDeleteProcessor implements IndexTaskProcessingStrategy {
 
     public void process(IndexTask task) throws Exception {
         solrIndexService.removeFromIndex(task.getPid());
+    }
+
+    @Override
+    public void process(List<IndexTask> tasks) throws Exception {
+        solrIndexService.removeFromIndex(tasks);
     }
 
 }

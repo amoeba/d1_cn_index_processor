@@ -23,6 +23,7 @@
 package org.dataone.cn.index.processor;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -37,6 +38,7 @@ import org.dataone.cn.indexer.resourcemap.ResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMapFactory;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
+import org.dataone.configuration.Settings;
 import org.dataone.service.exceptions.BaseException;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.ObjectFormatIdentifier;
@@ -62,6 +64,7 @@ public class IndexTaskProcessor {
     private static Logger logger = Logger.getLogger(IndexTaskProcessor.class.getName());
     private static final String FORMAT_TYPE_DATA = "DATA";
     private static final String LOAD_LOGGER_NAME = "indexProcessorLoad";
+    private static int BATCH_UPDATE_SIZE = Settings.getConfiguration().getInt("dataone.indexing.batchUpdateSize", 1000);
     
     @Autowired
     private IndexTaskRepository repo;
@@ -83,6 +86,38 @@ public class IndexTaskProcessor {
     public IndexTaskProcessor() {
     }
 
+    /**
+     * Processes the index task queue written by the IndexTaskGenerator, 
+     * but unlike {@link #processIndexTaskQueue()}, all IndexTasks that 
+     * add solr documents will be grouped into batches and done in one
+     * command to solr.
+     */
+    public void batchProcessIndexTaskQueue() {
+        logProcessorLoad();
+        
+        List<IndexTask> queue = getIndexTaskQueue();
+        List<IndexTask> batchProcessList = new ArrayList<IndexTask>(BATCH_UPDATE_SIZE);
+        
+        IndexTask nextTask = getNextIndexTask(queue);
+        for (int i = 0; i < BATCH_UPDATE_SIZE && nextTask != null; i++) {
+            batchProcessList.add(nextTask);
+            nextTask = getNextIndexTask(queue);
+        }
+        
+        batchProcessTasks(batchProcessList);
+
+        List<IndexTask> retryQueue = getIndexTaskRetryQueue();
+        List<IndexTask> batchProcessRetryList = new ArrayList<IndexTask>(BATCH_UPDATE_SIZE);
+        
+        nextTask = getNextIndexTask(retryQueue);
+        for (int i = 0; i < BATCH_UPDATE_SIZE && nextTask != null; i++) {
+            batchProcessRetryList.add(nextTask);
+            nextTask = getNextIndexTask(retryQueue);
+        }
+        
+        batchProcessTasks(batchProcessRetryList);
+    }
+    
     /**
      * Start a round of IndexTask processing. The IndexTask data store is
      * abstracted as a queue of tasks to process ordered by priority and
@@ -145,6 +180,61 @@ public class IndexTaskProcessor {
         logger.info("Indexing complete for pid: " + task.getPid());
     }
 
+    private void batchProcessTasks(List<IndexTask> taskList) {
+        
+        List<IndexTask> updateTasks = new ArrayList<>();
+        List<IndexTask> deleteTasks = new ArrayList<>();
+        
+        for (IndexTask task : taskList) {
+            if (task.isDeleteTask()) {
+                logger.info("Adding delete task to be processed for pid: " + task.getPid());
+                deleteTasks.add(task);
+            } else {
+                logger.info("Adding update task to be processed for pid: " + task.getPid());
+                updateTasks.add(task);
+            }
+        }    
+        
+        try {
+            deleteProcessor.process(deleteTasks);
+            
+            for (IndexTask task : deleteTasks) {
+                repo.delete(task);
+                logger.info("Indexing complete for pid: " + task.getPid());
+            }
+            
+        } catch (Exception e) {
+            StringBuilder failedPids = new StringBuilder(); 
+            for (IndexTask task : deleteTasks)
+                failedPids.append(task.getPid()).append(", ");
+            logger.error("Unable to process tasks for pids: " + failedPids.toString(), e);
+            handleFailedTasks(deleteTasks);
+        }
+        
+        try {
+            updateProcessor.process(updateTasks);
+            
+            for (IndexTask task : updateTasks) {
+                repo.delete(task);
+                logger.info("Indexing complete for pid: " + task.getPid());
+            }
+            
+        } catch (Exception e) {
+            StringBuilder failedPids = new StringBuilder(); 
+            for (IndexTask task : updateTasks)
+                failedPids.append(task.getPid()).append(", ");
+            logger.error("Unable to process tasks for pids: " + failedPids.toString(), e);
+            handleFailedTasks(deleteTasks);
+        }
+    }
+    
+    private void handleFailedTasks(List<IndexTask> tasks) {
+        for (IndexTask task : tasks) {
+            task.markFailed();
+            saveTask(task);
+        }
+    }
+    
     private void handleFailedTask(IndexTask task) {
         task.markFailed();
         saveTask(task);
@@ -155,6 +245,9 @@ public class IndexTaskProcessor {
         while (task == null && queue.isEmpty() == false) {
             task = queue.remove(0);
 
+            if (task == null)
+                continue;
+            
             task.markInProgress();
             task = saveTask(task);
 
