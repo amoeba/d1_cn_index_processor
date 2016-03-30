@@ -105,7 +105,8 @@ public class IndexTaskProcessor {
             batchProcessList.add(nextTask);
             logger.info("added task: " + nextTask.getPid());
             nextTask = getNextIndexTask(queue);
-            logger.info("next task: " + nextTask.getPid());
+            if (nextTask != null)
+                logger.info("next task: " + nextTask.getPid());
             logger.info("queue size: " + queue.size());
             
             if (batchProcessList.size() >= BATCH_UPDATE_SIZE) {
