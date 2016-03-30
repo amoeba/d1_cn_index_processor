@@ -97,11 +97,16 @@ public class IndexTaskProcessor {
         
         List<IndexTask> queue = getIndexTaskQueue();
         List<IndexTask> batchProcessList = new ArrayList<IndexTask>(BATCH_UPDATE_SIZE);
+
+        logger.info("batchProcessIndexTaskQueue, queue size: " + queue.size() + " tasks");
         
         IndexTask nextTask = getNextIndexTask(queue);
         while (nextTask != null) {
             batchProcessList.add(nextTask);
+            logger.info("added task: " + nextTask.getPid());
             nextTask = getNextIndexTask(queue);
+            logger.info("next task: " + nextTask.getPid());
+            logger.info("queue size: " + queue.size());
             
             if (batchProcessList.size() >= BATCH_UPDATE_SIZE) {
                 batchProcessTasks(batchProcessList);
@@ -112,6 +117,8 @@ public class IndexTaskProcessor {
         
         List<IndexTask> retryQueue = getIndexTaskRetryQueue();
         List<IndexTask> batchProcessRetryList = new ArrayList<IndexTask>(BATCH_UPDATE_SIZE);
+        
+        logger.info("batchProcessIndexTaskQueue, retry queue size: " + queue.size() + " tasks");
         
         nextTask = getNextIndexTask(retryQueue);
         while (nextTask != null) {
@@ -190,6 +197,8 @@ public class IndexTaskProcessor {
 
     private void batchProcessTasks(List<IndexTask> taskList) {
         
+        logger.info("batch processing: " + taskList.size() + " tasks");
+        
         List<IndexTask> updateTasks = new ArrayList<>();
         List<IndexTask> deleteTasks = new ArrayList<>();
         
@@ -202,6 +211,9 @@ public class IndexTaskProcessor {
                 updateTasks.add(task);
             }
         }    
+        
+        logger.info("update tasks: " + updateTasks.size());
+        logger.info("delete tasks: " + deleteTasks.size());
         
         try {
             deleteProcessor.process(deleteTasks);
