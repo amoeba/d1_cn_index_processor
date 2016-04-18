@@ -116,11 +116,11 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
         try {
             long fetchXmlStart = System.currentTimeMillis();
             Document doc = XmlDocumentUtility.generateXmlDocument(is);
-            perfLog.log("ResourceMapSubprocessor.processDocument() XmlDocumentUtility.generateXmlDocument()", System.currentTimeMillis() - fetchXmlStart);
+            perfLog.log("ResourceMapSubprocessor.processDocument() XmlDocumentUtility.generateXmlDocument() for id "+identifier, System.currentTimeMillis() - fetchXmlStart);
             
             long procResMapStart = System.currentTimeMillis();
             processedDocs = processResourceMap(resourceMapDoc, doc);
-            perfLog.log("ResourceMapSubprocessor.processResourceMap()", System.currentTimeMillis() - procResMapStart);
+            perfLog.log("ResourceMapSubprocessor.processResourceMap() for id "+identifier, System.currentTimeMillis() - procResMapStart);
         } catch (OREParserException oreException) {
             logger.error("Unable to parse resource map: " + identifier
                     + ".  Unrecoverable parse exception:  task will not be re-tried.");

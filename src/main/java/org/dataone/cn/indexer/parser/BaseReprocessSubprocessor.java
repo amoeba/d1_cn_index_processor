@@ -79,7 +79,7 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
         id.setValue(identifier);
         long getSysMetaStart = System.currentTimeMillis();
         SystemMetadata sysMeta = HazelcastClientFactory.getSystemMetadataMap().get(id);
-        perfLog.log("BaseReprocessSubprocessor.processDocument() HazelcastClientFactory.getSystemMetadataMap().get(id)", System.currentTimeMillis() - getSysMetaStart);
+        perfLog.log("BaseReprocessSubprocessor.processDocument() HazelcastClientFactory.getSystemMetadataMap().get(id) for id "+identifier, System.currentTimeMillis() - getSysMetaStart);
         
         if (sysMeta == null) {
             return docs;
@@ -98,7 +98,7 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
             List<SolrDoc> previousDocs = httpService.getDocumentsByField(solrQueryUri,
                     Collections.singletonList(seriesId.getValue()),
                     SolrElementField.FIELD_SERIES_ID, true);
-            perfLog.log("BaseReprocessSubprocessor.processDocument() HttpService.getDocumentsByField(idsInSeries)", System.currentTimeMillis() - getIdsInSeriesStart);
+            perfLog.log("BaseReprocessSubprocessor.processDocument() HttpService.getDocumentsByField(idsInSeries) for id "+identifier, System.currentTimeMillis() - getIdsInSeriesStart);
             
             log.debug("previousDocs===" + previousDocs);
 
@@ -151,7 +151,7 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
                     }
                 }
             }
-            perfLog.log("BaseReprocessSubprocessor.processDocument() reprocessing all docs earlier in sid chain", System.currentTimeMillis() - getIdsInSeriesStart);
+            perfLog.log("BaseReprocessSubprocessor.processDocument() reprocessing all docs earlier in sid chain for id "+identifier, System.currentTimeMillis() - getIdsInSeriesStart);
         }
         return docs;
     }

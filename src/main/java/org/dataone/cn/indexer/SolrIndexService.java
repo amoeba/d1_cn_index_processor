@@ -206,7 +206,7 @@ public class SolrIndexService {
         try {
             long sysmetaProcStart = System.currentTimeMillis();
             docs = systemMetadataProcessor.processDocument(id, docs, systemMetaDataStream);
-            perfLog.log(systemMetadataProcessor.getClass().getSimpleName() + ".processDocument() processing sysmeta", System.currentTimeMillis() - sysmetaProcStart);
+            perfLog.log(systemMetadataProcessor.getClass().getSimpleName() + ".processDocument() processing sysmeta for id "+id, System.currentTimeMillis() - sysmetaProcStart);
         } catch (Exception e) {
             log.error("Error parsing system metadata for id: " + id + e.getMessage());
             e.printStackTrace();
@@ -225,7 +225,7 @@ public class SolrIndexService {
                     } else {
                         long scimetaProcStart = System.currentTimeMillis();
                         docs = subprocessor.processDocument(id, docs, objectStream);
-                        perfLog.log("SolrIndexService.processObject() " + subprocessor.getClass().getSimpleName() + ".processDocument() total subprocessor processing time for format: " + formatId, System.currentTimeMillis() - scimetaProcStart);
+                        perfLog.log("SolrIndexService.processObject() " + subprocessor.getClass().getSimpleName() + ".processDocument() total subprocessor processing time for id "+id+" with format: " + formatId, System.currentTimeMillis() - scimetaProcStart);
                     }
                 } catch (Exception e) {
                     log.error(e.getMessage());
@@ -241,7 +241,7 @@ public class SolrIndexService {
             }
             mergedDocs.put(mergeDoc.getIdentifier(), mergeDoc);
         }
-        perfLog.log("SolrIndexService.processObject() merging docs", System.currentTimeMillis() - mergeProcStart);
+        perfLog.log("SolrIndexService.processObject() merging docs for id "+id, System.currentTimeMillis() - mergeProcStart);
         
         SolrElementAdd addCommand = getAddCommand(new ArrayList<SolrDoc>(mergedDocs.values()));
         if (log.isTraceEnabled()) {
@@ -280,7 +280,7 @@ public class SolrIndexService {
         // send it
         long solrAddStart = System.currentTimeMillis();
         sendCommand(addCommand);
-        perfLog.log("SolrIndexService.sendCommand(SolrElementAdd) adding docs into Solr index", System.currentTimeMillis() - solrAddStart);
+        perfLog.log("SolrIndexService.sendCommand(SolrElementAdd) adding docs into Solr index for id "+id, System.currentTimeMillis() - solrAddStart);
     }
 
     public void insertIntoIndex(List<IndexTask> tasks) 
