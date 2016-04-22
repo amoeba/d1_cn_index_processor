@@ -66,6 +66,7 @@ public class IndexTaskProcessor {
     private static final String LOAD_LOGGER_NAME = "indexProcessorLoad";
     private static int BATCH_UPDATE_SIZE = Settings.getConfiguration().getInt("dataone.indexing.batchUpdateSize", 1000);
     
+    
     @Autowired
     private IndexTaskRepository repo;
 
@@ -179,6 +180,7 @@ public class IndexTaskProcessor {
     }
 
     private void processTask(IndexTask task) {
+        long start = System.currentTimeMillis();
         try {
             if (task.isDeleteTask()) {
                 logger.info("Indexing delete task for pid: " + task.getPid());
@@ -194,11 +196,16 @@ public class IndexTaskProcessor {
         }
         repo.delete(task);
         logger.info("Indexing complete for pid: " + task.getPid());
+        perfLog.log("IndexTaskProcessor.processTasks process pid "+task.getPid(), System.currentTimeMillis()-start);
     }
 
     private void batchProcessTasks(List<IndexTask> taskList) {
-        
-        logger.info("batch processing: " + taskList.size() + " tasks");
+        if(taskList == null) {
+            return;
+        }
+        long startBatch = System.currentTimeMillis();
+        int size = taskList.size();
+        logger.info("batch processing: " + size + " tasks");
         
         List<IndexTask> updateTasks = new ArrayList<>();
         List<IndexTask> deleteTasks = new ArrayList<>();
@@ -247,6 +254,7 @@ public class IndexTaskProcessor {
             logger.error("Unable to process tasks for pids: " + failedPids.toString(), e);
             handleFailedTasks(deleteTasks);
         }
+        perfLog.log("IndexTaskProcessor.batchProcessTasks process "+size+" objects in ", System.currentTimeMillis()-startBatch);
     }
     
     private void handleFailedTasks(List<IndexTask> tasks) {
