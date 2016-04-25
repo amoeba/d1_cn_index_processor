@@ -213,24 +213,28 @@ public class SolrIndexService {
         }
 
         String formatId = docs.get(id).getFirstFieldValue(SolrElementField.FIELD_OBJECTFORMAT);
+        int i=1;
         for (IDocumentSubprocessor subprocessor : getSubprocessors()) {
             if (subprocessor.canProcess(formatId)) {
                 try {
                     // note that resource map processing touches all objects
                     // referenced by the resource map.
+                    long startFechingFile = System.currentTimeMillis();
                     FileInputStream objectStream = new FileInputStream(objectPath);
+                    perfLog.log("Loop "+i+". "+"SolrIndexService.processObject() fetch file for id "+id, System.currentTimeMillis() - startFechingFile);
                     if (!objectStream.getFD().valid()) {
                         log.error("Could not load OBJECT file for ID,Path=" + id + ", "
                                 + objectPath);
                     } else {
                         long scimetaProcStart = System.currentTimeMillis();
                         docs = subprocessor.processDocument(id, docs, objectStream);
-                        perfLog.log("SolrIndexService.processObject() " + subprocessor.getClass().getSimpleName() + ".processDocument() total subprocessor processing time for id "+id+" with format: " + formatId, System.currentTimeMillis() - scimetaProcStart);
+                        perfLog.log("Loop "+i+". "+"SolrIndexService.processObject() " + subprocessor.getClass().getSimpleName() + ".processDocument() total subprocessor processing time for id "+id+" with format: " + formatId, System.currentTimeMillis() - scimetaProcStart);
                     }
                 } catch (Exception e) {
                     log.error(e.getMessage());
                 }
             }
+            i++;
         }
 
         long mergeProcStart = System.currentTimeMillis();
