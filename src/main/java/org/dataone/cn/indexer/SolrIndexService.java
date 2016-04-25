@@ -239,13 +239,19 @@ public class SolrIndexService {
 
         long mergeProcStart = System.currentTimeMillis();
         Map<String, SolrDoc> mergedDocs = new HashMap<String, SolrDoc>();
+        int index =1;
         for (SolrDoc mergeDoc : docs.values()) {
+            int innerIndex =1;
             for (IDocumentSubprocessor subprocessor : getSubprocessors()) {
+                long before = System.currentTimeMillis();
                 mergeDoc = subprocessor.mergeWithIndexedDocument(mergeDoc);
+                perfLog.log("Outer loop "+index+", inner loop"+innerIndex+" SolrIndexService.processObject() merging docs for id "+id, System.currentTimeMillis() - before);
+                innerIndex++;
             }
             mergedDocs.put(mergeDoc.getIdentifier(), mergeDoc);
+            index++;
         }
-        perfLog.log("SolrIndexService.processObject() merging docs for id "+id, System.currentTimeMillis() - mergeProcStart);
+        perfLog.log("Total - SolrIndexService.processObject() merging docs for id "+id, System.currentTimeMillis() - mergeProcStart);
         
         SolrElementAdd addCommand = getAddCommand(new ArrayList<SolrDoc>(mergedDocs.values()));
         if (log.isTraceEnabled()) {
