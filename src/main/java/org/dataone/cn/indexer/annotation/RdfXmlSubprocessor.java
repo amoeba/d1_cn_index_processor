@@ -261,7 +261,9 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
         TDBFactory.release(dataset);
 
         // merge the existing index with the new[er] values
+        long getStart = System.currentTimeMillis();
         Map<String, SolrDoc> existingDocuments = getSolrDocs(documentsToIndex.keySet());
+        perfLog.log("RdfXmlSubprocess.process get existing solr docs ", System.currentTimeMillis() - getStart);
         Map<String, SolrDoc> mergedDocuments = mergeDocs(documentsToIndex, existingDocuments);
         mergedDocuments.put(indexDocument.getIdentifier(), indexDocument);
 
