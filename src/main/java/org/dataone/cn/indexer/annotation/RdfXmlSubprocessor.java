@@ -33,6 +33,7 @@ import org.apache.commons.codec.EncoderException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dataone.cn.index.util.PerformanceLogger;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.ISolrDataField;
 import org.dataone.cn.indexer.parser.SubprocessorUtility;
@@ -60,7 +61,7 @@ import com.hp.hpl.jena.tdb.TDBFactory;
 public class RdfXmlSubprocessor implements IDocumentSubprocessor {
 
     private static Log log = LogFactory.getLog(RdfXmlSubprocessor.class);
-
+    private static PerformanceLogger perfLog = PerformanceLogger.getInstance();
     /**
      * If xpath returns true execute the processDocument Method
      */
@@ -167,10 +168,12 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
     }
 
     private List<SolrDoc> process(SolrDoc indexDocument, InputStream is) throws Exception {
-
+        
         // get the triplestore dataset
+        long start = System.currentTimeMillis();
         Dataset dataset = TripleStoreService.getInstance().getDataset();
-
+        perfLog.log("RdfXmlSubprocess.process gets a dataset from tripe store service ", System.currentTimeMillis() - start);
+        
         // read the annotation
         String indexDocId = indexDocument.getIdentifier();
         String name = indexDocId;
@@ -194,17 +197,21 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
             
         }
         
+        long startOntModel = System.currentTimeMillis();
         boolean loaded = dataset.containsNamedModel(name);
         if (!loaded) {
             OntModel ontModel = ModelFactory.createOntologyModel();
             ontModel.read(is, name);
             dataset.addNamedModel(name, ontModel);
         }
+        perfLog.log("RdfXmlSubprocess.process adds ont-model ", System.currentTimeMillis() - startOntModel);
         //dataset.getDefaultModel().add(ontModel);
 
         // process each field query
         Map<String, SolrDoc> documentsToIndex = new HashMap<String, SolrDoc>();
+        long startField = System.currentTimeMillis();
         for (ISolrDataField field : this.fieldList) {
+            long filed = System.currentTimeMillis();
             String q = null;
             if (field instanceof SparqlField) {
                 q = ((SparqlField) field).getQuery();
@@ -247,8 +254,9 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
                     }
                 }
             }
+            perfLog.log("RdfXmlSubprocess.process process the field "+field.getName(), System.currentTimeMillis() - filed);
         }
-
+        perfLog.log("RdfXmlSubprocess.process process the fields total ", System.currentTimeMillis() - startField);
         // clean up the triple store
         TDBFactory.release(dataset);
 
@@ -257,6 +265,7 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
         Map<String, SolrDoc> mergedDocuments = mergeDocs(documentsToIndex, existingDocuments);
         mergedDocuments.put(indexDocument.getIdentifier(), indexDocument);
 
+        perfLog.log("RdfXmlSubprocess.process() total take ", System.currentTimeMillis() - start);
         return new ArrayList<SolrDoc>(mergedDocuments.values());
     }
 
@@ -278,7 +287,7 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
      */
     private Map<String, SolrDoc> mergeDocs(Map<String, SolrDoc> pending,
             Map<String, SolrDoc> existing) throws Exception {
-
+        long start = System.currentTimeMillis();
         Map<String, SolrDoc> merged = new HashMap<String, SolrDoc>();
 
         Iterator<String> pendingIter = pending.keySet().iterator();
@@ -327,7 +336,7 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
             log.trace("MERGED DOCS with existing from the Solr index: ");
             serializeDocuments(merged);
         }
-
+        perfLog.log("RdfXmlSubprocess.merge total ", System.currentTimeMillis() - start);
         return merged;
     }
 
