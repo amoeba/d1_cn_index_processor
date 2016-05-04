@@ -25,6 +25,8 @@ package org.dataone.cn.index.processor;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 import org.dataone.client.v2.formats.ObjectFormatCache;
@@ -65,16 +67,18 @@ public class IndexTaskProcessor {
     private static final String FORMAT_TYPE_DATA = "DATA";
     private static final String LOAD_LOGGER_NAME = "indexProcessorLoad";
     private static int BATCH_UPDATE_SIZE = Settings.getConfiguration().getInt("dataone.indexing.batchUpdateSize", 1000);
+    private static int NUMOFPROCESSOR = Settings.getConfiguration().getInt("dataone.indexing.processThreadPoolSize", 10);
+    private static ExecutorService executor = Executors.newFixedThreadPool(NUMOFPROCESSOR);
     
     
     @Autowired
-    private IndexTaskRepository repo;
+    private static IndexTaskRepository repo;
 
     @Autowired
-    private IndexTaskProcessingStrategy deleteProcessor;
+    private static IndexTaskProcessingStrategy deleteProcessor;
 
     @Autowired
-    private IndexTaskProcessingStrategy updateProcessor;
+    private static IndexTaskProcessingStrategy updateProcessor;
 
     @Autowired
     private HTTPService httpService;
@@ -111,11 +115,11 @@ public class IndexTaskProcessor {
             logger.info("queue size: " + queue.size());
             
             if (batchProcessList.size() >= BATCH_UPDATE_SIZE) {
-                batchProcessTasks(batchProcessList);
+                batchProcessTasksOnThread(batchProcessList);
                 batchProcessList = new ArrayList<IndexTask>(BATCH_UPDATE_SIZE);
             }
         }
-        batchProcessTasks(batchProcessList);
+        batchProcessTasksOnThread(batchProcessList);
         
         List<IndexTask> retryQueue = getIndexTaskRetryQueue();
         List<IndexTask> batchProcessRetryList = new ArrayList<IndexTask>(BATCH_UPDATE_SIZE);
@@ -128,11 +132,11 @@ public class IndexTaskProcessor {
             nextTask = getNextIndexTask(retryQueue);
             
             if (batchProcessRetryList.size() >= BATCH_UPDATE_SIZE) {
-                batchProcessTasks(batchProcessRetryList);
+                batchProcessTasksOnThread(batchProcessRetryList);
                 batchProcessRetryList = new ArrayList<IndexTask>(BATCH_UPDATE_SIZE);
             }
         }
-        batchProcessTasks(batchProcessRetryList);
+        batchProcessTasksOnThread(batchProcessRetryList);
     }
     
     /**
@@ -147,14 +151,14 @@ public class IndexTaskProcessor {
         List<IndexTask> queue = getIndexTaskQueue();
         IndexTask task = getNextIndexTask(queue);
         while (task != null) {
-            processTask(task);
+            processTaskOnThread(task);
             task = getNextIndexTask(queue);
         }
 
         List<IndexTask> retryQueue = getIndexTaskRetryQueue();
         task = getNextIndexTask(retryQueue);
         while (task != null) {
-            processTask(task);
+            processTaskOnThread(task);
             task = getNextIndexTask(queue);
         }
     }
@@ -178,7 +182,21 @@ public class IndexTaskProcessor {
         
         loadLogger.info("new:" + newTasks + ", failed: " + failedTasks );
     }
+    
+    
 
+    /*
+     * Use multiple threads to process the index task
+     */
+    private void processTaskOnThread(final IndexTask task) {
+        Runnable newThreadTask = new Runnable() {
+            public void run() {
+                processTask(task);
+            }
+        };
+        executor.submit(newThreadTask);
+    }
+    
     private void processTask(IndexTask task) {
         long start = System.currentTimeMillis();
         try {
@@ -197,6 +215,18 @@ public class IndexTaskProcessor {
         repo.delete(task);
         logger.info("Indexing complete for pid: " + task.getPid());
         perfLog.log("IndexTaskProcessor.processTasks process pid "+task.getPid(), System.currentTimeMillis()-start);
+    }
+    
+    /*
+     * Use multiple threads to process the index task
+     */
+    private void batchProcessTasksOnThread(final List<IndexTask> taskList) {
+        Runnable newThreadTask = new Runnable() {
+            public void run() {
+                batchProcessTasks(taskList);
+            }
+        };
+        executor.submit(newThreadTask);
     }
 
     private void batchProcessTasks(List<IndexTask> taskList) {
