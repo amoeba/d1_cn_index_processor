@@ -25,14 +25,18 @@ package org.dataone.cn.index.processor;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.log4j.Logger;
 import org.dataone.client.v2.formats.ObjectFormatCache;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.index.task.IndexTaskRepository;
+import org.dataone.cn.index.task.ResourceMapIndexTask;
 import org.dataone.cn.index.util.PerformanceLogger;
 import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.cn.indexer.resourcemap.ForesiteResourceMap;
@@ -68,8 +72,10 @@ public class IndexTaskProcessor {
     private static final String LOAD_LOGGER_NAME = "indexProcessorLoad";
     private static int BATCH_UPDATE_SIZE = Settings.getConfiguration().getInt("dataone.indexing.batchUpdateSize", 1000);
     private static int NUMOFPROCESSOR = Settings.getConfiguration().getInt("dataone.indexing.processThreadPoolSize", 10);
+    private static int MAXATTEMPTS = Settings.getConfiguration().getInt("dataone.indexing.resourceMapWait.maxAttempt", 10);
     private static ExecutorService executor = Executors.newFixedThreadPool(NUMOFPROCESSOR);
-    
+    private static final Lock lock = new ReentrantLock();
+    private static ConcurrentSkipListSet <String> referencedIdsSet = new ConcurrentSkipListSet<String>();
     
     @Autowired
     private static IndexTaskRepository repo;
@@ -200,6 +206,7 @@ public class IndexTaskProcessor {
     private void processTask(IndexTask task) {
         long start = System.currentTimeMillis();
         try {
+            checkReadinessProcessResourceMap(task);
             if (task.isDeleteTask()) {
                 logger.info("Indexing delete task for pid: " + task.getPid());
                 deleteProcessor.process(task);
@@ -211,10 +218,77 @@ public class IndexTaskProcessor {
             logger.error("Unable to process task for pid: " + task.getPid(), e);
             handleFailedTask(task);
             return;
+        } finally {
+            removeIdsFromResourceMapReferencedSet(task);
         }
         repo.delete(task);
         logger.info("Indexing complete for pid: " + task.getPid());
         perfLog.log("IndexTaskProcessor.processTasks process pid "+task.getPid(), System.currentTimeMillis()-start);
+    }
+    
+    /*
+     * When a resource map object is indexed, it will change the solr index of its referenced ids.
+     * It can be a race condition. https://redmine.dataone.org/issues/7771
+     * So we maintain a set contains the referenced is which the resource map objects are current being processed.
+     * Before we start to process a new resource map object on a thread, we need to check the set.
+     */
+    private void checkReadinessProcessResourceMap(IndexTask task) throws Exception{
+        //only handle resourceMap index task
+        if(task != null && task instanceof ResourceMapIndexTask ) {
+            try {
+                lock.lock();
+                ResourceMapIndexTask resourceMapTask = (ResourceMapIndexTask) task;
+                List<String> referencedIds = resourceMapTask.getReferencedIds();
+                if(referencedIds != null) {
+                    for (String id : referencedIds) {
+                        boolean clear = false;
+                        for(int i=0; i<MAXATTEMPTS; i++) {
+                            if(id != null && !id.trim().equals("") && referencedIdsSet.contains(id)) {
+                                //another resource map is process the referenced id as well, please wait .5 second.
+                                logger.info("Another resource map is process the referenced id "+id+" as well. So the thread to process id "
+                                            +resourceMapTask.getPid()+" has to wait 0.5 seconds.");
+                                Thread.sleep(500);
+                            } else if (id != null && !id.trim().equals("")) {
+                                //no resource map is process the referenced id. It is good and we add it to the set.
+                                referencedIdsSet.add(id);
+                                clear = true;
+                                break;
+                            }
+                        }
+                        if(!clear) {
+                            String message = "We waited for another thread to finish indexing a resource map which has the referenced id "+id+
+                                               " for a while. Now we quited and can't index id "+resourceMapTask.getPid();
+                            logger.error(message);
+                            throw new Exception(message);
+                        }
+                        
+                    }
+                }
+                
+            } catch (Exception e) {
+                throw e;
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+    
+    
+    /*
+     * Remove the referenced ids from the set.
+     */
+    private void removeIdsFromResourceMapReferencedSet(IndexTask task) {
+        if(task != null && task instanceof ResourceMapIndexTask ) {
+            ResourceMapIndexTask resourceMapTask = (ResourceMapIndexTask) task;
+            List<String> referencedIds = resourceMapTask.getReferencedIds();
+            if(referencedIds != null) {
+                for (String id : referencedIds) {
+                    if(id != null) {
+                        referencedIdsSet.remove(id);
+                    }
+                }
+            }
+        }
     }
     
     /*
@@ -319,23 +393,58 @@ public class IndexTaskProcessor {
             if (task != null && !isObjectPathReady(task)) {
                 task.markNew();
                 saveTask(task);
-                logger.info("Task for pid: " + task.getPid() + " not processed.");
+                logger.info("Task for pid: " + task.getPid() + " not processed since the object path is not ready.");
                 task = null;
                 continue;
             }
 
-            if (task != null && !isResourceMapReadyToIndex(task, queue)) {
-                task.markNew();
-                saveTask(task);
-                logger.info("Task for pid: " + task.getPid() + " not processed.");
-                task = null;
-                continue;
+            //if (task != null && !isResourceMapReadyToIndex(task, queue)) {
+            if (task != null && representsResourceMap(task)) {
+                boolean ready = true;
+                ResourceMap rm = null;
+                List<String> referencedIds = null;
+                try {
+                    rm = ResourceMapFactory.buildResourceMap(task.getObjectPath());
+                    referencedIds = rm.getAllDocumentIDs();
+                    referencedIds.remove(task.getPid());
+
+                    if (areAllReferencedDocsIndexed(referencedIds) == false) {
+                        logger.info("Not all map resource references indexed for map: " + task.getPid()
+                                + ".  Marking new and continuing...");
+                        ready = false;
+                    }
+                } catch (OREParserException oreException) {
+                    ready = false;
+                    logger.error("Unable to parse ORE doc: " + task.getPid()
+                            + ".  Unrecoverable parse error: task will not be re-tried.");
+                    if (logger.isTraceEnabled()) {
+                        oreException.printStackTrace();
+
+                    }
+                } catch (Exception e) {
+                    ready = false;
+                    logger.error("unable to load resource for pid: " + task.getPid()
+                            + " at object path: " + task.getObjectPath()
+                            + ".  Marking new and continuing...");
+                }
+                if(!ready) {
+                    task.markNew();
+                    saveTask(task);
+                    logger.info("Task for resource map pid: " + task.getPid() + " not processed.");
+                    task = null;
+                    continue;
+                } else {
+                    ResourceMapIndexTask resourceMapIndexTask = (ResourceMapIndexTask) task;
+                    resourceMapIndexTask.setReferencedIds(referencedIds);
+                    task = resourceMapIndexTask;
+                }
+                
             }
         }
         return task;
     }
 
-    private boolean isResourceMapReadyToIndex(IndexTask task, List<IndexTask> queue) {
+    /*private boolean isResourceMapReadyToIndex(IndexTask task, List<IndexTask> queue) {
         boolean ready = true;
 
         if (representsResourceMap(task)) {
@@ -367,7 +476,7 @@ public class IndexTaskProcessor {
         }
 
         return ready;
-    }
+    }*/
 
     private boolean areAllReferencedDocsIndexed(List<String> referencedIds) {
         if (referencedIds == null || referencedIds.size() == 0) {
