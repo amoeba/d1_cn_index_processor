@@ -256,6 +256,7 @@ public class IndexTaskProcessor {
                             }
                         }
                         if(!clear) {
+                            removeIdsFromResourceMapReferencedSet(resourceMapTask);
                             String message = "We waited for another thread to finish indexing a resource map which has the referenced id "+id+
                                                " for a while. Now we quited and can't index id "+resourceMapTask.getPid();
                             logger.error(message);
