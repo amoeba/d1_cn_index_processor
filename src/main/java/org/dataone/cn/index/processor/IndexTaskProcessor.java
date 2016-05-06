@@ -236,8 +236,8 @@ public class IndexTaskProcessor {
     private void checkReadinessProcessResourceMap(IndexTask task) throws Exception{
         //only handle resourceMap index task
         if(task != null && task instanceof ResourceMapIndexTask ) {
+            lock.lock();
             try {
-                lock.lock();
                 ResourceMapIndexTask resourceMapTask = (ResourceMapIndexTask) task;
                 List<String> referencedIds = resourceMapTask.getReferencedIds();
                 if(referencedIds != null) {
@@ -372,8 +372,8 @@ public class IndexTaskProcessor {
     }
     
     private void batchCheckReadinessProcessResourceMap(List<IndexTask> tasks) throws Exception{
+        lock.lock();
         try {
-            lock.lock();
             if(tasks != null) {
                 for (IndexTask task : tasks) {
                     checkReadinessProcessResourceMap(task);
