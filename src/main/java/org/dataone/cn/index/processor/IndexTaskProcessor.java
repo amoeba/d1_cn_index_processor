@@ -195,6 +195,7 @@ public class IndexTaskProcessor {
      * Use multiple threads to process the index task
      */
     private void processTaskOnThread(final IndexTask task) {
+        logger.info("using multiple threads to process index");
         Runnable newThreadTask = new Runnable() {
             public void run() {
                 processTask(task);
@@ -248,7 +249,7 @@ public class IndexTaskProcessor {
                                 logger.info("Another resource map is process the referenced id "+id+" as well. So the thread to process id "
                                             +resourceMapTask.getPid()+" has to wait 0.5 seconds.");
                                 Thread.sleep(500);
-                            } else if (id != null && !id.trim().equals("")) {
+                            } else if (id != null && !id.trim().equals("") && !referencedIdsSet.contains(id)) {
                                 //no resource map is process the referenced id. It is good and we add it to the set.
                                 referencedIdsSet.add(id);
                                 clear = true;
@@ -296,6 +297,7 @@ public class IndexTaskProcessor {
      * Use multiple threads to process the index task
      */
     private void batchProcessTasksOnThread(final List<IndexTask> taskList) {
+        logger.info("using multiple threads to process BATCHED index tasks.");
         Runnable newThreadTask = new Runnable() {
             public void run() {
                 batchProcessTasks(taskList);
@@ -327,39 +329,68 @@ public class IndexTaskProcessor {
         
         logger.info("update tasks: " + updateTasks.size());
         logger.info("delete tasks: " + deleteTasks.size());
-        
         try {
-            deleteProcessor.process(deleteTasks);
-            
-            for (IndexTask task : deleteTasks) {
-                repo.delete(task);
-                logger.info("Indexing complete for pid: " + task.getPid());
+            batchCheckReadinessProcessResourceMap(taskList);
+            try {
+                deleteProcessor.process(deleteTasks);
+                
+                for (IndexTask task : deleteTasks) {
+                    repo.delete(task);
+                    logger.info("Indexing complete for pid: " + task.getPid());
+                }
+                
+            } catch (Exception e) {
+                StringBuilder failedPids = new StringBuilder(); 
+                for (IndexTask task : deleteTasks)
+                    failedPids.append(task.getPid()).append(", ");
+                logger.error("Unable to process tasks for pids: " + failedPids.toString(), e);
+                handleFailedTasks(deleteTasks);
             }
             
-        } catch (Exception e) {
-            StringBuilder failedPids = new StringBuilder(); 
-            for (IndexTask task : deleteTasks)
-                failedPids.append(task.getPid()).append(", ");
-            logger.error("Unable to process tasks for pids: " + failedPids.toString(), e);
-            handleFailedTasks(deleteTasks);
+            try {
+                updateProcessor.process(updateTasks);
+                
+                for (IndexTask task : updateTasks) {
+                    repo.delete(task);
+                    logger.info("Indexing complete for pid: " + task.getPid());
+                }
+                
+            } catch (Exception e) {
+                StringBuilder failedPids = new StringBuilder(); 
+                for (IndexTask task : updateTasks)
+                    failedPids.append(task.getPid()).append(", ");
+                logger.error("Unable to process tasks for pids: " + failedPids.toString(), e);
+                handleFailedTasks(deleteTasks);
+            }
+        } catch(Exception e) {
+            logger.error("Couldn't batch indexing the tasks since "+e.getMessage());
+        } finally {
+            batchRemoveIdsFromResourceMapReferencedSet(taskList);
         }
         
-        try {
-            updateProcessor.process(updateTasks);
-            
-            for (IndexTask task : updateTasks) {
-                repo.delete(task);
-                logger.info("Indexing complete for pid: " + task.getPid());
-            }
-            
-        } catch (Exception e) {
-            StringBuilder failedPids = new StringBuilder(); 
-            for (IndexTask task : updateTasks)
-                failedPids.append(task.getPid()).append(", ");
-            logger.error("Unable to process tasks for pids: " + failedPids.toString(), e);
-            handleFailedTasks(deleteTasks);
-        }
         perfLog.log("IndexTaskProcessor.batchProcessTasks process "+size+" objects in ", System.currentTimeMillis()-startBatch);
+    }
+    
+    private void batchCheckReadinessProcessResourceMap(List<IndexTask> tasks) throws Exception{
+        try {
+            lock.lock();
+            if(tasks != null) {
+                for (IndexTask task : tasks) {
+                    checkReadinessProcessResourceMap(task);
+                }
+            }
+            
+        } finally {
+            lock.unlock();
+        }
+    }
+    
+    private void batchRemoveIdsFromResourceMapReferencedSet(List<IndexTask> tasks) {
+        if(tasks != null) {
+            for (IndexTask task : tasks) {
+                removeIdsFromResourceMapReferencedSet(task);
+            }
+        }
     }
     
     private void handleFailedTasks(List<IndexTask> tasks) {
