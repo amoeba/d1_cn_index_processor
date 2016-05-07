@@ -78,13 +78,13 @@ public class IndexTaskProcessor {
     private static ConcurrentSkipListSet <String> referencedIdsSet = new ConcurrentSkipListSet<String>();
     
     @Autowired
-    private static IndexTaskRepository repo;
+    private IndexTaskRepository repo;
 
     @Autowired
-    private static IndexTaskProcessingStrategy deleteProcessor;
+    private IndexTaskProcessingStrategy deleteProcessor;
 
     @Autowired
-    private static IndexTaskProcessingStrategy updateProcessor;
+    private IndexTaskProcessingStrategy updateProcessor;
 
     @Autowired
     private HTTPService httpService;
