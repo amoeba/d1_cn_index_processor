@@ -466,9 +466,18 @@ public class IndexTaskProcessor {
                     task = null;
                     continue;
                 } else {
-                    ResourceMapIndexTask resourceMapIndexTask = (ResourceMapIndexTask) task;
+                    logger.info("the original index task - "+task.toString());
+                    ResourceMapIndexTask resourceMapIndexTask = new ResourceMapIndexTask();
+                    resourceMapIndexTask.copy(task);
                     resourceMapIndexTask.setReferencedIds(referencedIds);
                     task = resourceMapIndexTask;
+                    if(task instanceof ResourceMapIndexTask) {
+                        logger.info("the new index task is a ResourceMapIndexTask");
+                        logger.info("the new index task - "+task.toString());
+                    } else {
+                        logger.error("Something is wrong to change the IndexTask object to the ResourceMapIndexTask object ");
+                    }
+                    
                 }
                 
             }

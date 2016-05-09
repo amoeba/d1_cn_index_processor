@@ -24,6 +24,8 @@ package org.dataone.cn.index.task;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Transient;
+
 
 /**
  * This class represents an index task for a resource map object. 
@@ -32,13 +34,47 @@ import java.util.List;
  *
  */
 public class ResourceMapIndexTask extends IndexTask {
+    @Transient
     private List<String> referencedIds = new ArrayList<String> ();
 
+    /**
+     * Default constructor
+     */
+    public ResourceMapIndexTask() {
+
+    }
+    
+    @Transient
     public List<String> getReferencedIds() {
         return referencedIds;
     }
 
+    @Transient
     public void setReferencedIds(List<String> referencedIds) {
         this.referencedIds = referencedIds;
+    }
+    
+    /**
+     * Copy the fields of the given task to this object
+     * @param task
+     */
+    @Transient
+    public void copy(IndexTask task) {
+        if(task != null) {
+            this.setId(task.getId());
+            this.setVersion(task.getVersion());
+            this.setPid(task.getPid());
+            this.setFormatId(task.getFormatId());
+            this.setSysMetadata(task.getSysMetadata());
+            this.setObjectPath(task.getObjectPath());
+            this.setDateSysMetaModified(task.getDateSysMetaModified());
+            this.setNextExection(task.getNextExecution());
+            this.setTryCount(task.getTryCount());
+            this.setDeleted(task.isDeleted());
+            this.setPriority(task.getPriority());
+            this.setStatus(task.getStatus());
+            this.setTaskModifiedDate(task.getTaskModifiedDate());
+        }
+        
     }
 }
