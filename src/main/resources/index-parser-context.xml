@@ -201,7 +201,9 @@
 		<constructor-arg value="${solr.index.uri}"/>
 	</bean>
 	
-    <bean id="httpConnectionManager" class="org.apache.http.impl.conn.SingleClientConnManager"/>
+    <!--<bean id="httpConnectionManager" class="org.apache.http.impl.conn.SingleClientConnManager"/> -->
+    <bean id="httpConnectionManager" class="org.apache.http.impl.conn.PoolingClientConnectionManager"  p:defaultMaxPerRoute="12" />
+    
     
     <bean id="httpClient" class="org.apache.http.impl.client.DefaultHttpClient">
     	<constructor-arg ref="httpConnectionManager"/>
