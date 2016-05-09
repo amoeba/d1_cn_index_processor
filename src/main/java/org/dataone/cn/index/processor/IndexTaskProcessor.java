@@ -25,7 +25,7 @@ package org.dataone.cn.index.processor;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
@@ -75,7 +75,9 @@ public class IndexTaskProcessor {
     private static int MAXATTEMPTS = Settings.getConfiguration().getInt("dataone.indexing.resourceMapWait.maxAttempt", 10);
     private static ExecutorService executor = Executors.newFixedThreadPool(NUMOFPROCESSOR);
     private static final Lock lock = new ReentrantLock();
-    private static ConcurrentSkipListSet <String> referencedIdsSet = new ConcurrentSkipListSet<String>();
+    //a concurrent map to main the information about current processing resource map objects and their referenced ids
+    //the key is a referenced id and value is the id of resource map.
+    private static ConcurrentHashMap <String, String> referencedIdsMap = new ConcurrentHashMap<String, String>(); 
     
     @Autowired
     private IndexTaskRepository repo;
@@ -244,14 +246,21 @@ public class IndexTaskProcessor {
                     for (String id : referencedIds) {
                         boolean clear = false;
                         for(int i=0; i<MAXATTEMPTS; i++) {
-                            if(id != null && !id.trim().equals("") && referencedIdsSet.contains(id)) {
-                                //another resource map is process the referenced id as well, please wait .5 second.
-                                logger.info("Another resource map is process the referenced id "+id+" as well. So the thread to process id "
+                            if(id != null && !id.trim().equals("") && referencedIdsMap.containsKey(id)) {
+                                //another resource map is process the referenced id as well.
+                                if(resourceMapTask.getPid().equals(referencedIdsMap.get(id))) {
+                                    // this referenced id was put by the same resource map object. So we don't need wait.
+                                    clear = true;
+                                    break;
+                                } else {
+                                    // this referenced id was put by another resource map object. Wait .5 second.
+                                    logger.info("Another resource map is process the referenced id "+id+" as well. So the thread to process id "
                                             +resourceMapTask.getPid()+" has to wait 0.5 seconds.");
-                                Thread.sleep(500);
-                            } else if (id != null && !id.trim().equals("") && !referencedIdsSet.contains(id)) {
+                                    Thread.sleep(500);
+                                }
+                            } else if (id != null && !id.trim().equals("") && !referencedIdsMap.containsKey(id)) {
                                 //no resource map is process the referenced id. It is good and we add it to the set.
-                                referencedIdsSet.add(id);
+                                referencedIdsMap.put(id, resourceMapTask.getPid());
                                 clear = true;
                                 break;
                             }
@@ -286,7 +295,7 @@ public class IndexTaskProcessor {
             if(referencedIds != null) {
                 for (String id : referencedIds) {
                     if(id != null) {
-                        referencedIdsSet.remove(id);
+                        referencedIdsMap.remove(id);
                     }
                 }
             }
