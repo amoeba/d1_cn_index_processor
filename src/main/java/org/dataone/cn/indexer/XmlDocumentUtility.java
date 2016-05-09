@@ -42,10 +42,10 @@ public class XmlDocumentUtility {
 
     private static final String INPUT_ENCODING = "UTF-8";
 
-    private static DocumentBuilderFactory documentBuilderFactory = null;
-    private static DocumentBuilder builder = null;
+    //private static DocumentBuilderFactory documentBuilderFactory = null;
+    //private static DocumentBuilder builder = null;
 
-    static {
+    /*static {
         documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);
         try {
@@ -53,7 +53,7 @@ public class XmlDocumentUtility {
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     public static Document loadDocument(String filePath) throws ParserConfigurationException,
             IOException, SAXException {
@@ -66,6 +66,9 @@ public class XmlDocumentUtility {
         FileInputStream fis = null;
         InputStreamReader isr = null;
         try {
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            documentBuilderFactory.setNamespaceAware(true);
+            DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
             fis = new FileInputStream(filePath);
             isr = new InputStreamReader(fis, input_encoding);
             InputSource source = new InputSource(isr);
@@ -88,16 +91,21 @@ public class XmlDocumentUtility {
         Document doc = null;
 
         try {
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            documentBuilderFactory.setNamespaceAware(true);
+            DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
             doc = builder.parse(smdStream);
         } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        } catch (ParserConfigurationException e) {
             log.error(e.getMessage(), e);
         }
 
         return doc;
     }
 
-    public static DocumentBuilder getDocumentBuilder() {
+    /*public static DocumentBuilder getDocumentBuilder() {
         return builder;
-    }
+    }*/
 
 }
