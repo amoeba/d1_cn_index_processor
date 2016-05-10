@@ -669,4 +669,12 @@ public class IndexTaskProcessor {
     public void setSolrQueryUri(String uri) {
         this.solrQueryUri = uri;
     }
+    
+    /**
+     * Get the ExecutorService to handle multiple thread
+     * @return
+     */
+    public ExecutorService getExecutorService() {
+        return executor;
+    }
 }
