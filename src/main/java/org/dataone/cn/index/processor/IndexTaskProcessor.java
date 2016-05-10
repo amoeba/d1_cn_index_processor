@@ -25,12 +25,15 @@ package org.dataone.cn.index.processor;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.apache.log4j.Logger;
 import org.dataone.client.v2.formats.ObjectFormatCache;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
@@ -75,6 +78,7 @@ public class IndexTaskProcessor {
     private static int MAXATTEMPTS = Settings.getConfiguration().getInt("dataone.indexing.resourceMapWait.maxAttempt", 10);
     private static ExecutorService executor = Executors.newFixedThreadPool(NUMOFPROCESSOR);
     private static final Lock lock = new ReentrantLock();
+    private static CircularFifoQueue<Future> futureQueue = new CircularFifoQueue<Future>(100);
     //a concurrent map to main the information about current processing resource map objects and their referenced ids
     //the key is a referenced id and value is the id of resource map.
     private static ConcurrentHashMap <String, String> referencedIdsMap = new ConcurrentHashMap<String, String>(); 
@@ -203,7 +207,8 @@ public class IndexTaskProcessor {
                 processTask(task);
             }
         };
-        executor.submit(newThreadTask);
+        Future future = executor.submit(newThreadTask);
+        futureQueue.add(future);
     }
     
     private void processTask(IndexTask task) {
@@ -312,7 +317,8 @@ public class IndexTaskProcessor {
                 batchProcessTasks(taskList);
             }
         };
-        executor.submit(newThreadTask);
+        Future future = executor.submit(newThreadTask);
+        futureQueue.add(future);
     }
 
     private void batchProcessTasks(List<IndexTask> taskList) {
@@ -676,5 +682,13 @@ public class IndexTaskProcessor {
      */
     public ExecutorService getExecutorService() {
         return executor;
+    }
+    
+    /**
+     * Get the last 100 futures of the index task threads scheduled by executor service.
+     * @return
+     */
+    public Queue getFutureQueue() {
+        return futureQueue;
     }
 }
