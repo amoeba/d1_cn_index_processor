@@ -201,7 +201,7 @@ public class IndexTaskProcessor {
      * Use multiple threads to process the index task
      */
     private void processTaskOnThread(final IndexTask task) {
-        logger.info("using multiple threads to process index");
+        logger.info("using multiple threads to process index and the size of the thread pool is "+NUMOFPROCESSOR);
         Runnable newThreadTask = new Runnable() {
             public void run() {
                 processTask(task);
@@ -311,7 +311,7 @@ public class IndexTaskProcessor {
      * Use multiple threads to process the index task
      */
     private void batchProcessTasksOnThread(final List<IndexTask> taskList) {
-        logger.info("using multiple threads to process BATCHED index tasks.");
+        logger.info("using multiple threads to process BATCHED index tasks and the size of the pool is "+NUMOFPROCESSOR);
         Runnable newThreadTask = new Runnable() {
             public void run() {
                 batchProcessTasks(taskList);
