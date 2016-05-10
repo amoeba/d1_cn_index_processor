@@ -688,7 +688,7 @@ public class IndexTaskProcessor {
      * Get the last 100 futures of the index task threads scheduled by executor service.
      * @return
      */
-    public Queue getFutureQueue() {
+    public Queue<Future> getFutureQueue() {
         return futureQueue;
     }
 }
