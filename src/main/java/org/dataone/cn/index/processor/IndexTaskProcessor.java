@@ -74,11 +74,12 @@ public class IndexTaskProcessor {
     private static final String FORMAT_TYPE_DATA = "DATA";
     private static final String LOAD_LOGGER_NAME = "indexProcessorLoad";
     private static int BATCH_UPDATE_SIZE = Settings.getConfiguration().getInt("dataone.indexing.batchUpdateSize", 1000);
-    private static int NUMOFPROCESSOR = Settings.getConfiguration().getInt("dataone.indexing.processThreadPoolSize", 10);
-    private static int MAXATTEMPTS = Settings.getConfiguration().getInt("dataone.indexing.resourceMapWait.maxAttempt", 10);
+    private static int NUMOFPROCESSOR = Settings.getConfiguration().getInt("dataone.indexing.multiThreads.processThreadPoolSize", 10);
+    private static int MAXATTEMPTS = Settings.getConfiguration().getInt("dataone.indexing.multiThreads.resourceMapWait.maxAttempt", 10);
+    private static int FUTUREQUEUESIZE = Settings.getConfiguration().getInt("dataone.indexing.multiThreads.futureQueueSize", 100);
     private static ExecutorService executor = Executors.newFixedThreadPool(NUMOFPROCESSOR);
     private static final Lock lock = new ReentrantLock();
-    private static CircularFifoQueue<Future> futureQueue = new CircularFifoQueue<Future>(100);
+    private static CircularFifoQueue<Future> futureQueue = new CircularFifoQueue<Future>(FUTUREQUEUESIZE);
     //a concurrent map to main the information about current processing resource map objects and their referenced ids
     //the key is a referenced id and value is the id of resource map.
     private static ConcurrentHashMap <String, String> referencedIdsMap = new ConcurrentHashMap<String, String>(); 
@@ -192,7 +193,7 @@ public class IndexTaskProcessor {
             logger.error("Unable to count NEW or FAILED tasks in task index repository.", e);
         }
         
-        loadLogger.info("new:" + newTasks + ", failed: " + failedTasks );
+        loadLogger.info("new tasks:" + newTasks + ", tasks previously failed: " + failedTasks );
     }
     
     
