@@ -231,7 +231,7 @@ public class IndexTaskProcessor {
             removeIdsFromResourceMapReferencedSet(task);
         }
         if(task != null && task instanceof ResourceMapIndexTask) {
-            repo.delete(task.getId());
+            repo.delete(task.getId());//the ReousrceMapIndexTask is not the original object. repo.delete(IndexTask) wouldn't work.
         } else {
             repo.delete(task);
         }
