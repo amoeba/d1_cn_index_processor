@@ -225,16 +225,22 @@ public class IndexTaskProcessor {
             }
         } catch (Exception e) {
             logger.error("Unable to process task for pid: " + task.getPid(), e);
+            if(task != null) {
+                repo.delete(task.getId());
+            }
             handleFailedTask(task);
             return;
         } finally {
             removeIdsFromResourceMapReferencedSet(task);
         }
-        if(task != null && task instanceof ResourceMapIndexTask) {
+        if(task != null) {
+            repo.delete(task.getId());
+        }
+        /*if(task != null && task instanceof ResourceMapIndexTask) {
             repo.delete(task.getId());//the ReousrceMapIndexTask is not the original object. repo.delete(IndexTask) wouldn't work.
         } else {
             repo.delete(task);
-        }
+        }*/
         
         logger.info("Indexing complete for pid: " + task.getPid());
         perfLog.log("IndexTaskProcessor.processTasks process pid "+task.getPid(), System.currentTimeMillis()-start);
@@ -422,8 +428,11 @@ public class IndexTaskProcessor {
     }
     
     private void handleFailedTask(IndexTask task) {
-        task.markFailed();
-        saveTask(task);
+        if(task != null) {
+            task.markFailed();
+            saveTask(task);
+        }
+       
     }
 
     private IndexTask getNextIndexTask(List<IndexTask> queue) {
