@@ -298,7 +298,7 @@
 		<constructor-arg name="xpath" 
 			value="//gmd:distributionInfo/gmd:MD_Distribution/gmd:distributor/gmd:MD_Distributor/gmd:distributorTransferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:protocol/gco:CharacterString/text()"/>
 		<property name="multivalue" value="true" />
-		<property name="converter" ref="serviceTypesConverter" />
+		<!--  <property name="converter" ref="serviceTypesConverter" /> -->
 	</bean>
 	
 	<bean id="isotc.distribServiceEndpoint" class="org.dataone.cn.indexer.parser.SolrField">
