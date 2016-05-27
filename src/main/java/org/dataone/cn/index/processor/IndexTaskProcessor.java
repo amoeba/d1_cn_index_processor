@@ -168,8 +168,38 @@ public class IndexTaskProcessor {
             task = getNextIndexTask(queue);
         }
 
-        List<IndexTask> retryQueue = getIndexTaskRetryQueue();
+        processFailedIndexTaskQueue();
+        /*List<IndexTask> retryQueue = getIndexTaskRetryQueue();
         task = getNextIndexTask(retryQueue);
+        while (task != null) {
+            processTaskOnThread(task);
+            task = getNextIndexTask(retryQueue);
+        }*/
+        
+    }
+    
+    /**
+     * Index the given index queue
+     * @param queue
+     */
+    public void processIndexTaskQueue(List<IndexTask> queue) {
+        IndexTask task = null;
+        if(queue != null) {
+             task = getNextIndexTask(queue);
+            while (task != null) {
+                processTaskOnThread(task);
+                task = getNextIndexTask(queue);
+            }
+        }
+        
+    }
+    
+    /**
+     * Index the index task which currently has the failed status on the index task repository
+     */
+    public void processFailedIndexTaskQueue() {
+        List<IndexTask> retryQueue = getIndexTaskRetryQueue();
+        IndexTask task = getNextIndexTask(retryQueue);
         while (task != null) {
             processTaskOnThread(task);
             task = getNextIndexTask(retryQueue);
