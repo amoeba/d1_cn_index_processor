@@ -190,6 +190,7 @@ public class IndexTaskProcessor {
                 processTaskOnThread(task);
                 task = getNextIndexTask(queue);
             }
+            logger.info("IndexTaskProcessor.processIndexTaskQueue - finish submitting the index task queue with the size"+queue.size());
         }
         
     }
@@ -199,10 +200,13 @@ public class IndexTaskProcessor {
      */
     public void processFailedIndexTaskQueue() {
         List<IndexTask> retryQueue = getIndexTaskRetryQueue();
-        IndexTask task = getNextIndexTask(retryQueue);
-        while (task != null) {
-            processTaskOnThread(task);
-            task = getNextIndexTask(retryQueue);
+        if(retryQueue != null) {
+            IndexTask task = getNextIndexTask(retryQueue);
+            logger.info("IndexTaskProcessor.processFailedIndexTaskQueue with size "+retryQueue.size());
+            while (task != null) {
+                processTaskOnThread(task);
+                task = getNextIndexTask(retryQueue);
+            }
         }
     }
 
