@@ -191,7 +191,7 @@ public class IndexTaskProcessor {
                 processTaskOnThread(task);
                 task = getNextIndexTask(queue);
             }
-            logger.info("IndexTaskProcessor.processIndexTaskQueue - finish submitting the index task queue with the size "+size);
+            logger.info("IndexTaskProcessor.processIndexTaskQueue - finish submitting the index task queue with the size "+size+ " and current queue size is down to "+queue.size());
         }
         
     }
