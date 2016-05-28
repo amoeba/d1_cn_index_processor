@@ -185,12 +185,13 @@ public class IndexTaskProcessor {
     public void processIndexTaskQueue(List<IndexTask> queue) {
         IndexTask task = null;
         if(queue != null) {
-             task = getNextIndexTask(queue);
+            int size = queue.size();
+            task = getNextIndexTask(queue);
             while (task != null) {
                 processTaskOnThread(task);
                 task = getNextIndexTask(queue);
             }
-            logger.info("IndexTaskProcessor.processIndexTaskQueue - finish submitting the index task queue with the size"+queue.size());
+            logger.info("IndexTaskProcessor.processIndexTaskQueue - finish submitting the index task queue with the size "+size);
         }
         
     }
