@@ -732,12 +732,12 @@ public class IndexTaskProcessor {
         boolean exist=false;
         if(id != null ) {
             List<IndexTask> itList = repo.findByPidAndStatus(id, IndexTask.STATUS_NEW);
-            if(itList != null && itList.isEmpty()) {
+            if(itList == null || itList.isEmpty()) {
                 exist = true;
             }
             if(!exist) {
                 itList = repo.findByPidAndStatus(id, IndexTask.STATUS_FAILED);
-                if(itList != null && itList.isEmpty()) {
+                if(itList == null || itList.isEmpty()) {
                     exist = true;
                 }
             }
