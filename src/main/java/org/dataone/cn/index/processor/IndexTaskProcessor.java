@@ -458,14 +458,14 @@ public class IndexTaskProcessor {
     private void handleFailedTasks(List<IndexTask> tasks) {
         for (IndexTask task : tasks) {
             task.markFailed();
-            saveTask(task);
+            saveTaskWithoutDuplication(task);
         }
     }
     
     private void handleFailedTask(IndexTask task) {
         if(task != null) {
             task.markFailed();
-            saveTask(task);
+            saveTaskWithoutDuplication(task);
         }
        
     }
@@ -489,7 +489,7 @@ public class IndexTaskProcessor {
 
             if (task != null && !isObjectPathReady(task)) {
                 task.markNew();
-                saveTask(task);
+                saveTaskWithoutDuplication(task);
                 logger.info("Task for pid: " + task.getPid() + " not processed since the object path is not ready.");
                 task = null;
                 continue;
@@ -530,7 +530,7 @@ public class IndexTaskProcessor {
                 }
                 if(!ready) {
                     task.markNew();
-                    saveTask(task);
+                    saveTaskWithoutDuplication(task);
                     logger.info("Task for resource map pid: " + task.getPid() + " not processed.");
                     task = null;
                     continue;
@@ -710,6 +710,40 @@ public class IndexTaskProcessor {
             task = null;
         }
         return task;
+    }
+    
+    /*
+     * Save the task only there is no a new or failed task already exists for the pid
+     */
+    private void saveTaskWithoutDuplication(IndexTask task) {
+        if(task != null) {
+            if(!newOrFailedIndexTaskExists(task.getPid())) {
+                    saveTask(task);
+            }
+        }
+    }
+    
+    /**
+     * If an index task exists with the new or failed status for the given id
+     * @param id
+     * @return true if the index task with new or failed status exists; otherwise false.
+     */
+    private boolean newOrFailedIndexTaskExists(String id) {
+        boolean exist=false;
+        if(id != null ) {
+            List<IndexTask> itList = repo.findByPidAndStatus(id, IndexTask.STATUS_NEW);
+            if(itList != null && itList.isEmpty()) {
+                exist = true;
+            }
+            if(!exist) {
+                itList = repo.findByPidAndStatus(id, IndexTask.STATUS_FAILED);
+                if(itList != null && itList.isEmpty()) {
+                    exist = true;
+                }
+            }
+        }
+        
+        return exist;
     }
 
     private Document loadDocument(IndexTask task) {
