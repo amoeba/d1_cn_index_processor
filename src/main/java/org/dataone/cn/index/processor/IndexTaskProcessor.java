@@ -705,6 +705,7 @@ public class IndexTaskProcessor {
     private IndexTask saveTask(IndexTask task) {
         try {
             task = repo.save(task);
+            logger.info("IndexTaskProcess.saveTask save the index task "+task.getPid());
         } catch (HibernateOptimisticLockingFailureException e) {
             logger.error("Unable to update index task for pid: " + task.getPid() + ".");
             task = null;
@@ -729,15 +730,18 @@ public class IndexTaskProcessor {
      * @return true if the index task with new or failed status exists; otherwise false.
      */
     private boolean newOrFailedIndexTaskExists(String id) {
+        logger.info("IndexTaskProcess.newOrFailedIndexTaskExists for id "+id);
         boolean exist=false;
         if(id != null ) {
             List<IndexTask> itList = repo.findByPidAndStatus(id, IndexTask.STATUS_NEW);
-            if(itList == null || itList.isEmpty()) {
+            if(itList != null && !itList.isEmpty()) {
+                logger.info("IndexTaskProcess.newOrFailedIndexTaskExists did find a new-status index task for id "+id);
                 exist = true;
             }
             if(!exist) {
                 itList = repo.findByPidAndStatus(id, IndexTask.STATUS_FAILED);
-                if(itList == null || itList.isEmpty()) {
+                if(itList != null && !itList.isEmpty()) {
+                    logger.info("IndexTaskProcess.newOrFailedIndexTaskExists did find a failed-status index task for id "+id);
                     exist = true;
                 }
             }
