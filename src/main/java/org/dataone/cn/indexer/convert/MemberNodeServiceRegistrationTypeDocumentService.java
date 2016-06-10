@@ -24,13 +24,13 @@ package org.dataone.cn.indexer.convert;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.log4j.Logger;
-import org.apache.solr.common.util.IOUtils;
 import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.configuration.Settings;
 import org.springframework.beans.factory.annotation.Autowired;
