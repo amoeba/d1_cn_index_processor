@@ -103,7 +103,7 @@ public class IndexTaskProcessor {
         task = getNextIndexTask(retryQueue);
         while (task != null) {
             processTask(task);
-            task = getNextIndexTask(queue);
+            task = getNextIndexTask(retryQueue);
         }
     }
 
