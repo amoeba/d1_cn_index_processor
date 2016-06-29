@@ -110,7 +110,7 @@ public class IndexTaskProcessor {
      * add solr documents will be grouped into batches and done in one
      * command to solr.
      */
-    public void batchProcessIndexTaskQueue() {
+    /*public void batchProcessIndexTaskQueue() {
         logProcessorLoad();
         
         List<IndexTask> queue = getIndexTaskQueue();
@@ -150,7 +150,7 @@ public class IndexTaskProcessor {
             }
         }
         batchProcessTasksOnThread(batchProcessRetryList);
-    }
+    }*/
     
     /**
      * Start a round of IndexTask processing. The IndexTask data store is
@@ -357,7 +357,7 @@ public class IndexTaskProcessor {
     /*
      * Use multiple threads to process the index task
      */
-    private void batchProcessTasksOnThread(final List<IndexTask> taskList) {
+    /*private void batchProcessTasksOnThread(final List<IndexTask> taskList) {
         logger.info("using multiple threads to process BATCHED index tasks and the size of the pool is "+NUMOFPROCESSOR);
         Runnable newThreadTask = new Runnable() {
             public void run() {
@@ -366,9 +366,9 @@ public class IndexTaskProcessor {
         };
         Future future = executor.submit(newThreadTask);
         futureQueue.add(future);
-    }
+    }*/
 
-    private void batchProcessTasks(List<IndexTask> taskList) {
+    /*private void batchProcessTasks(List<IndexTask> taskList) {
         if(taskList == null) {
             return;
         }
@@ -431,7 +431,7 @@ public class IndexTaskProcessor {
         }
         
         perfLog.log("IndexTaskProcessor.batchProcessTasks process "+size+" objects in ", System.currentTimeMillis()-startBatch);
-    }
+    }*/
     
     private void batchCheckReadinessProcessResourceMap(List<IndexTask> tasks) throws Exception{
         lock.lock();
