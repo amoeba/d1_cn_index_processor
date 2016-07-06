@@ -60,8 +60,7 @@ import org.xml.sax.SAXException;
  * 
  * Updates entries for related documents in index. For document relational
  * information refer to
- * http://mule1.dataone.org/ArchitectureDocs-current/design/
- * SearchMetadata.html#id4
+ * http://purl.dataone.org/architecture/design/SearchMetadata.html#id4
  * 
  * Date: 9/26/11
  * Time: 3:51 PM

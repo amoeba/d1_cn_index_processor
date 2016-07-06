@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
+import org.dataone.exceptions.MarshallingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
@@ -62,7 +63,6 @@ import org.dataone.service.types.v1.util.AccessUtil;
 import org.dataone.service.types.v1.util.ChecksumUtil;
 import org.dataone.service.types.v2.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
-import org.jibx.runtime.JiBXException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -495,7 +495,7 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
                 TypeMarshaller.marshalTypeToOutputStream(sysmeta, baos);
                 log.trace(baos.toString());
 
-            } catch (JiBXException e) {
+            } catch (MarshallingException e) {
                 fail("System metadata could not be parsed. Check for errors: " + e.getMessage());
 
             } catch (IOException e) {
