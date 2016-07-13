@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,7 @@ public class AnnotatorSubprocessorTest {
 		
 	}
 	
-	@Test
+	@Ignore @Test
 	public void testConceptExpansionECSO() {
 		
 		try {
