@@ -49,11 +49,11 @@ public class TemporalPeriodParsingUtilityTest {
         Assert.assertEquals(null,
                 temporalParsingtUtil.getFormattedStartDate("start=2000; end=2005;", "BAD_SCHEME"));
         
-        Assert.assertEquals(dateConverter.convert("2000-01-01T07:00:00.000Z"),
+        Assert.assertEquals(dateConverter.convert("2000-01-01T00:00:00.000"),
                 temporalParsingtUtil.getFormattedStartDate("start=2000; end=2005;", null));
-        Assert.assertEquals(dateConverter.convert("2000-08-01T06:00:00.000Z"),
+        Assert.assertEquals(dateConverter.convert("2000-08-01T00:00:00.000"),
                 temporalParsingtUtil.getFormattedStartDate("start=2000-08; end=2005;", null));
-        Assert.assertEquals(dateConverter.convert("2000-08-02T06:00:00.000Z"),
+        Assert.assertEquals(dateConverter.convert("2000-08-02T00:00:00.000"),
                 temporalParsingtUtil.getFormattedStartDate("start=2000-08-02; end=2005;", null));
         
         Assert.assertEquals(dateConverter.convert("1999-09-25T04:20:00.000Z"),
@@ -89,11 +89,11 @@ public class TemporalPeriodParsingUtilityTest {
         Assert.assertEquals(null,
                 temporalParsingtUtil.getFormattedEndDate("start=2000; end=2005;", "BAD_SCHEME"));
         
-        Assert.assertEquals(dateConverter.convert("2005-01-01T07:00:00.000Z"),
+        Assert.assertEquals(dateConverter.convert("2005-01-01T00:00:00.000"),
                 temporalParsingtUtil.getFormattedEndDate("end=2005;", null));
-        Assert.assertEquals(dateConverter.convert("2005-03-01T07:00:00.000Z"),
+        Assert.assertEquals(dateConverter.convert("2005-03-01T00:00:00.000"),
                 temporalParsingtUtil.getFormattedEndDate("end=2005-03; start=2000;", null));
-        Assert.assertEquals(dateConverter.convert("2005-03-02T07:00:00.000Z"),
+        Assert.assertEquals(dateConverter.convert("2005-03-02T00:00:00.000"),
                 temporalParsingtUtil.getFormattedEndDate("end=2005-03-02;", null));
         
         Assert.assertEquals(dateConverter.convert("1999-09-25T06:40:00.000Z"),
