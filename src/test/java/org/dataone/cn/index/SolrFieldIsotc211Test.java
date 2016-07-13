@@ -709,8 +709,10 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
                 + "#" + "NOAA/NESDIS USA, 5200 Auth Rd, Camp Springs, MD, 20746");
         distributionInfoExpected.put("abstract", "The Geostationary Operational Environmental Satellites (GOES) operated by the United States National Oceanographic and Atmospheric Administration (NOAA) support weather forecasting, severe storm tracking, meteorology and oceanography research. Generally there are several GOES satellites in geosynchronous orbit at any one time viewing different earth locations including the GOES-13 launched 24 May 2006. The radiometer aboard the satellite, The GOES N-P Imager, is a five channel (one visible, four infrared) imaging radiometer designed to sense radiant and solar reflected energy from sampled areas of the earth. The multi-element spectral channels simultaneously sweep east-west and west-east along a north-to-south path by means of a two-axis mirror scan system retuning telemetry in 10-bit precision. For this Group for High Resolution Sea Surface Temperature (GHRSST) dataset, skin sea surface temperature (SST) measurements are calculated from the far IR channels of GOES-13 at full resolution on a half hourly basis. In native satellite projection, vertically adjacent pixels are averaged and read out at every pixel. L2P datasets including Single Sensor Error Statistics (SSES) are then derived following the GHRSST Data Processing Specification (GDS) version 2.0. The full disk image is subsetted into granules representing distinct northern and southern regions.");
         distributionInfoExpected.put("title", "GHRSST Level 2P Western Atlantic Regional Skin Sea Surface Temperature from the Geostationary Operational Environmental Satellites (GOES) Imager on the GOES-13 satellite (GDS versions 1 and 2)");
-        distributionInfoExpected.put("pubDate", dateConverter.convert("2016-01-24T12:44:41.000Z"));
-        distributionInfoExpected.put("beginDate", "2010-06-21T06:00:00.000Z");
+        //distributionInfoExpected.put("pubDate", dateConverter.convert("2016-01-24T12:44:41.000Z"));
+        distributionInfoExpected.put("pubDate", dateConverter.convert("2016-01-24T05:44:41"));
+        //distributionInfoExpected.put("beginDate", "2010-06-21T06:00:00.000Z");
+        distributionInfoExpected.put("beginDate", dateConverter.convert("2010-06-21"));
         distributionInfoExpected.put("endDate", "");
         distributionInfoExpected.put("keywords", "DOC/NOAA/NESDIS/NODC > National Oceanographic Data Center, NESDIS, NOAA, U.S. Department of Commerce"
                 + "#" + "DOC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce");
@@ -806,7 +808,8 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         geoserverExpected.put("investigator", "Bob Smith");
         geoserverExpected.put("abstract", "");
         geoserverExpected.put("title", "");
-        geoserverExpected.put("pubDate", dateConverter.convert("2016-02-10T20:44:24.000Z"));
+        //geoserverExpected.put("pubDate", dateConverter.convert("2016-02-10T20:44:24.000Z"));
+        geoserverExpected.put("pubDate", dateConverter.convert("2016-02-10T13:44:24"));
         geoserverExpected.put("beginDate", "");
         geoserverExpected.put("endDate", "");
         geoserverExpected.put("keywords", "");
