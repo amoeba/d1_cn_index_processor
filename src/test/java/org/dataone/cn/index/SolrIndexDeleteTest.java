@@ -43,6 +43,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.core.io.Resource;
 
+import com.carrotsearch.randomizedtesting.annotations.ThreadLeakScope;
+
 /**
  * Solr unit test framework is dependent on JUnit 4.7. Later versions of junit
  * will break the base test classes.
@@ -50,6 +52,7 @@ import org.springframework.core.io.Resource;
  * @author sroseboo
  * 
  */
+@ThreadLeakScope(ThreadLeakScope.Scope.NONE)
 public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
 
     private static Logger logger = Logger.getLogger(SolrIndexDeleteTest.class.getName());
@@ -71,6 +74,8 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     private Resource peggymResourcemap2SysArchived;
     private Resource peggymResourcemap1OverlapSys;
     private Resource peggymResourcemap2OverlapSys;
+    
+    private static final int SLEEPTIME = 2000;
 
     /**
      * Unit test of the HTTPService.sendSolrDelete(pid) method. Inserts record
@@ -83,9 +88,11 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         Resource systemMetadataResource = (Resource) context.getBean("peggym1304Sys");
         deleteAll();
         addEmlToSolrIndex(systemMetadataResource);
+        Thread.sleep(SLEEPTIME);
         assertPresentInSolrIndex(pid);
         HTTPService httpService = (HTTPService) context.getBean("httpService");
         httpService.sendSolrDelete(pid);
+        Thread.sleep(SLEEPTIME);
         assertNotPresentInSolrIndex(pid);
     }
 
@@ -101,9 +108,11 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         deleteAll();
         addSystemMetadata(peggym1304Sys);
         processor.processIndexTaskQueue();
+        Thread.sleep(SLEEPTIME);
         assertPresentInSolrIndex(pid);
         addSystemMetadata(peggym1304SysArchived);
         processor.processIndexTaskQueue();
+        Thread.sleep(SLEEPTIME);
         assertNotPresentInSolrIndex(pid);
     }
 
@@ -123,17 +132,20 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         deleteAll();
         indexTestDataPackage();
         // verify in index correct
+        Thread.sleep(SLEEPTIME);
         verifyTestDataPackageIndexed();
         // remove a data object by adding system metadata to task queue with
         // archive=true
         addSystemMetadata(peggym1271SysArchived);
         processor.processIndexTaskQueue();
         // verify data package info correct in index
+        Thread.sleep(SLEEPTIME);
         verifyDataPackageNo1271();
         // update package object (resource map)
         addSystemMetadata(peggymResourcemapSys);
         processor.processIndexTaskQueue();
         // verify again
+        Thread.sleep(SLEEPTIME);
         verifyDataPackageNo1271();
     }
 
@@ -303,6 +315,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     }
 
     private void verifyDataPackageNoResourceMap() throws Exception {
+        Thread.sleep(SLEEPTIME);
         SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
         Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP));
         Assert.assertNull(data.getFieldValues(SolrElementField.FIELD_ISDOCUMENTEDBY));
@@ -327,6 +340,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     }
 
     private void verifyDataPackageNo1304() throws Exception {
+        Thread.sleep(SLEEPTIME);
         assertPresentInSolrIndex("peggym.127.1");
 
         SolrDocument data = assertPresentInSolrIndex("peggym.128.1");
@@ -357,6 +371,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     }
 
     private void verifyDataPackageNo1271() throws Exception {
+        Thread.sleep(SLEEPTIME);
         assertNotPresentInSolrIndex("peggym.127.1");
         SolrDocument data = assertPresentInSolrIndex("peggym.128.1");
         Assert.assertEquals(1,
@@ -450,6 +465,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     }
 
     private void verifyFirstOverlapDataPackageIndexed() throws Exception {
+        Thread.sleep(SLEEPTIME);
         SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
         Assert.assertEquals(1,
                 ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
@@ -478,6 +494,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     }
 
     private void verifySecondOverlapDataPackageIndexed() throws Exception {
+        Thread.sleep(SLEEPTIME);
         SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
         Assert.assertEquals(1,
                 ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
@@ -532,6 +549,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     }
 
     private void verifyComplicatedDataPackageIndexed() throws Exception {
+        Thread.sleep(SLEEPTIME);
         SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
         Assert.assertEquals(1,
                 ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
@@ -585,6 +603,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     }
 
     private void verifySecondComplicatedDataPackageIndexed() throws Exception {
+        Thread.sleep(SLEEPTIME);
         SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
         Assert.assertEquals(2,
                 ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
@@ -647,6 +666,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     }
 
     private void verifyTestDataPackageIndexed() throws Exception {
+        Thread.sleep(SLEEPTIME);
         SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
         Assert.assertEquals(1,
                 ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
@@ -680,6 +700,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     }
 
     private void verifySecondTestDataPackageIndexed() throws Exception {
+        Thread.sleep(SLEEPTIME);
         SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
         Assert.assertEquals(2,
                 ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
