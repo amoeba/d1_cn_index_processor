@@ -77,6 +77,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     
     private static final int SLEEPTIME = 2000;
 
+
     /**
      * Unit test of the HTTPService.sendSolrDelete(pid) method. Inserts record
      * into solr index using XPathDocumentParser. Does not use index task
@@ -129,24 +130,26 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     @Test
     public void testArchiveDataInPackage() throws Exception {
         // create/index data package
+        System.out.println("++++++++++++++++++++++++++ start of testArchiveDataInPackage");
         deleteAll();
         indexTestDataPackage();
         // verify in index correct
-        Thread.sleep(SLEEPTIME);
         verifyTestDataPackageIndexed();
         // remove a data object by adding system metadata to task queue with
         // archive=true
         addSystemMetadata(peggym1271SysArchived);
+        Thread.sleep(SLEEPTIME);
         processor.processIndexTaskQueue();
         // verify data package info correct in index
-        Thread.sleep(SLEEPTIME);
         verifyDataPackageNo1271();
         // update package object (resource map)
         addSystemMetadata(peggymResourcemapSys);
+        Thread.sleep(SLEEPTIME);
         processor.processIndexTaskQueue();
         // verify again
         Thread.sleep(SLEEPTIME);
         verifyDataPackageNo1271();
+        System.out.println("++++++++++++++++++++++++++ end of testArchiveDataInPackage");
     }
 
     /**
@@ -157,6 +160,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
      */
     @Test
     public void testArchiveScienceMetadataInPackage() throws Exception {
+        System.out.println("++++++++++++++++++++++++++ start of testArchiveScienceMetadataInPackage");
         // create/index data package
         deleteAll();
         indexTestDataPackage();
@@ -165,14 +169,17 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         // remove a data object by adding system metadata to task queue with
         // archive=true
         addSystemMetadata(peggym1304SysArchived);
+        Thread.sleep(SLEEPTIME);
         processor.processIndexTaskQueue();
         // verify data package info correct in index
         verifyDataPackageNo1304();
         // update package object (resource map)
         addSystemMetadata(peggymResourcemapSys);
+        Thread.sleep(SLEEPTIME);
         processor.processIndexTaskQueue();
         // verify again
         verifyDataPackageNo1304();
+        System.out.println("++++++++++++++++++++++++++ end of testArchiveScienceMetadataInPackage");
     }
 
     /**
@@ -184,6 +191,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
      */
     @Test
     public void testArchiveDataPackage() throws Exception {
+        System.out.println("++++++++++++++++++++++++++ start of testArchiveDataPackage");
         // create/index data package
         deleteAll();
         indexTestDataPackage();
@@ -192,15 +200,17 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         // remove a data object by adding system metadata to task queue with
         // archive=true
         addSystemMetadata(peggymResourcemapSysArchived);
-
+        Thread.sleep(SLEEPTIME);
         processor.processIndexTaskQueue();
         // verify data package info correct in index
         verifyDataPackageNoResourceMap();
         // update package object (resource map)
         addSystemMetadata(peggym1304Sys);
+        Thread.sleep(SLEEPTIME);
         processor.processIndexTaskQueue();
         // verify again
         verifyDataPackageNoResourceMap();
+        System.out.println("++++++++++++++++++++++++++ end of testArchiveDataPackage");
     }
 
     /**
@@ -208,16 +218,19 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
      */
     @Test
     public void testDeleteDataPackage() throws Exception {
+        System.out.println("++++++++++++++++++++++++++ start of testDeleteDataPackage");
         // create/index data package
         deleteAll();
         indexTestDataPackage();
         //verify in index correct
         verifyTestDataPackageIndexed();
         deleteSystemMetadata(peggymResourcemapSys);
+        Thread.sleep(SLEEPTIME);
         processor.processIndexTaskQueue();
         // verify data package info correct in index
         verifyDataPackageNoResourceMap();
         assertNotPresentInSolrIndex("peggym.resourcemap");
+        System.out.println("++++++++++++++++++++++++++ end of testDeleteDataPackage");
     }
 
     /**
@@ -226,6 +239,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
      */
     @Test
     public void testDeleteDataPackageWithDuplicatedRelationship() throws Exception {
+        System.out.println("++++++++++++++++++++++++++ start of testDeleteDataPackageWithDuplicatedRelationship");
         // create/index data package
         deleteAll();
         indexTestDataPackage();
@@ -234,6 +248,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         indexSecondTestDataPackage();
         verifySecondTestDataPackageIndexed();
         deleteSystemMetadata(peggymResourcemap2Sys);
+        Thread.sleep(SLEEPTIME);
         processor.processIndexTaskQueue();
         // verify data package info correct in index.
         // we removed the second one. So it will recover 
@@ -241,10 +256,12 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         verifyTestDataPackageIndexed();
         assertNotPresentInSolrIndex("peggym.resourcemap2");
         deleteSystemMetadata(peggymResourcemapSys);
+        Thread.sleep(SLEEPTIME);
         processor.processIndexTaskQueue();
         // verify data package info correct in index
         verifyDataPackageNoResourceMap();
         assertNotPresentInSolrIndex("peggym.resourcemap");
+        System.out.println("++++++++++++++++++++++++++ end of testDeleteDataPackageWithDuplicatedRelationship");
     }
 
     /**
@@ -259,12 +276,14 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
      */
     @Test
     public void testDeleteDataPackagesWithComplicatedRelation() throws Exception {
+        System.out.println("++++++++++++++++++++++++++ start of testDeleteDataPackagesWithComplicatedRelation");
         deleteAll();
         indexComplicatedDataPackage();
         verifyComplicatedDataPackageIndexed();
         indexSecondComplicatedDataPackage();
         verifySecondComplicatedDataPackageIndexed();
         deleteSystemMetadata(peggymResourcemap2ComplicatedSys);
+        Thread.sleep(SLEEPTIME);
         processor.processIndexTaskQueue();
         // verify data package info correct in index.
         // we removed the second one. So it will recover 
@@ -272,10 +291,12 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         verifyComplicatedDataPackageIndexed();
         assertNotPresentInSolrIndex("peggym.resourcemap2-complicated");
         deleteSystemMetadata(peggymResourcemapComplicatedSys);
+        Thread.sleep(SLEEPTIME);
         processor.processIndexTaskQueue();
         // verify data package info correct in index
         verifyDataPackageNoResourceMap();
         assertNotPresentInSolrIndex("peggym.resourcemap-complicated");
+        System.out.println("++++++++++++++++++++++++++ end of testDeleteDataPackagesWithComplicatedRelation");
     }
 
     /**
@@ -286,6 +307,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
      */
     @Test
     public void testDeleteTwoOverlappedDataPackage() throws Exception {
+        System.out.println("++++++++++++++++++++++++++ start of testDeleteTwoOverlappedDataPackage");
         deleteAll();
         indexFirstOverlapDataPackage();
         verifyFirstOverlapDataPackageIndexed();
@@ -299,6 +321,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         processor.processIndexTaskQueue();
         verifyDataPackageNoResourceMap();
         assertNotPresentInSolrIndex("peggym.resourcemap1-overlap");
+        System.out.println("++++++++++++++++++++++++++ end of testDeleteTwoOverlappedDataPackage");
     }
 
     /**
@@ -309,9 +332,11 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
      */
     @Test
     public void testDataPackageWithArchivedDoc() throws Exception {
+        System.out.println("++++++++++++++++++++++++++ start of testDataPackageWithArchivedDoc");
         deleteAll();
         indexTestDataPackageWithArchived1271Doc();
         verifyDataPackageNo1271();
+        System.out.println("++++++++++++++++++++++++++ end of testDataPackageWithArchivedDoc");
     }
 
     private void verifyDataPackageNoResourceMap() throws Exception {
@@ -404,63 +429,84 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         assertPresentInSolrIndex("peggym.resourcemap");
     }
 
-    private void indexFirstOverlapDataPackage() {
+    private void indexFirstOverlapDataPackage() throws Exception {
         addSystemMetadata(peggym1271Sys);
         addSystemMetadata(peggym1304Sys);
+        Thread.sleep(SLEEPTIME);
+        processor.processIndexTaskQueue();
         addSystemMetadata(peggymResourcemap1OverlapSys);
+        Thread.sleep(SLEEPTIME);
         processor.processIndexTaskQueue();
     }
 
-    private void indexSecondOverlapDataPackage() {
+    private void indexSecondOverlapDataPackage() throws Exception {
         addSystemMetadata(peggym1281Sys);
         addSystemMetadata(peggym1291Sys);
         addSystemMetadata(peggym1304Sys);
+        Thread.sleep(SLEEPTIME);
+        processor.processIndexTaskQueue();
         addSystemMetadata(peggymResourcemap2OverlapSys);
+        Thread.sleep(SLEEPTIME);
         processor.processIndexTaskQueue();
     }
 
-    private void indexTestDataPackage() {
+    private void indexTestDataPackage() throws Exception {
         addSystemMetadata(peggym1271Sys);
         addSystemMetadata(peggym1281Sys);
         addSystemMetadata(peggym1291Sys);
         addSystemMetadata(peggym1304Sys);
+        Thread.sleep(SLEEPTIME);
+        processor.processIndexTaskQueue();
         addSystemMetadata(peggymResourcemapSys);
+        Thread.sleep(SLEEPTIME);
         processor.processIndexTaskQueue();
     }
 
-    private void indexSecondTestDataPackage() {
+    private void indexSecondTestDataPackage() throws Exception {
         addSystemMetadata(peggym1271Sys);
         addSystemMetadata(peggym1281Sys);
         addSystemMetadata(peggym1291Sys);
         addSystemMetadata(peggym1304Sys);
+        Thread.sleep(SLEEPTIME);
+        processor.processIndexTaskQueue();
         addSystemMetadata(peggymResourcemap2Sys);
+        Thread.sleep(SLEEPTIME);
         processor.processIndexTaskQueue();
     }
 
-    private void indexComplicatedDataPackage() {
+    private void indexComplicatedDataPackage() throws Exception {
         addSystemMetadata(peggym1271Sys);
         addSystemMetadata(peggym1281Sys);
         addSystemMetadata(peggym1291Sys);
         addSystemMetadata(peggym1304Sys);
+        Thread.sleep(SLEEPTIME);
+        processor.processIndexTaskQueue();
         addSystemMetadata(peggymResourcemapComplicatedSys);
+        Thread.sleep(SLEEPTIME);
         processor.processIndexTaskQueue();
     }
 
-    private void indexSecondComplicatedDataPackage() {
+    private void indexSecondComplicatedDataPackage() throws Exception {
         addSystemMetadata(peggym1271Sys);
         addSystemMetadata(peggym1281Sys);
         addSystemMetadata(peggym1291Sys);
         addSystemMetadata(peggym1304Sys);
+        Thread.sleep(SLEEPTIME);
+        processor.processIndexTaskQueue();
         addSystemMetadata(peggymResourcemap2ComplicatedSys);
+        Thread.sleep(SLEEPTIME);
         processor.processIndexTaskQueue();
     }
 
-    private void indexTestDataPackageWithArchived1271Doc() {
+    private void indexTestDataPackageWithArchived1271Doc() throws Exception {
         addSystemMetadata(peggym1271SysArchived);
         addSystemMetadata(peggym1281Sys);
         addSystemMetadata(peggym1291Sys);
         addSystemMetadata(peggym1304Sys);
+        Thread.sleep(SLEEPTIME);
+        processor.processIndexTaskQueue();
         addSystemMetadata(peggymResourcemapSys);
+        Thread.sleep(SLEEPTIME);
         processor.processIndexTaskQueue();
     }
 
