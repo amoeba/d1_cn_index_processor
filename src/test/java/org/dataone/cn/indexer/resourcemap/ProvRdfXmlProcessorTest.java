@@ -73,9 +73,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
 
+import com.carrotsearch.randomizedtesting.annotations.ThreadLeakScope;
+
 /**
  * RDF/XML Subprocessor test for provenance field handling
  */
+@ThreadLeakScope(ThreadLeakScope.Scope.NONE)
 public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
 
     /* Log it */
@@ -133,6 +136,8 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
     private String HAS_SOURCES_FIELD = "prov_hasSources";
     private String HAS_DERIVATIONS_FIELD = "prov_hasDerivations";
     private String INSTANCE_OF_CLASS_FIELD = "prov_instanceOfClass";
+    
+    private static final int SLEEPTIME = 5000;
 
     @BeforeClass
     public static void init() {
@@ -159,7 +164,7 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
         configureSpringResources();
 
         // instantiate the subprocessor
-        provRdfXmlSubprocessor = (RdfXmlSubprocessor) context.getBean("provRdfXmlSubprocessor");
+        provRdfXmlSubprocessor = (RdfXmlSubprocessor) context.getBean("prov20150115RdfXmlSubprocessor");
 
     }
 
@@ -342,15 +347,22 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
         String ctdData = "ala-wai-ns02-ctd-data.1.txt";
         formatId = "text/plain";
         insertResource(ctdData, formatId, provAlaWaiNS02CTDData1txt, nodeid, userDN);
+        
+        Thread.sleep(SLEEPTIME);
+        // now process the tasks
+        processor.processIndexTaskQueue();
 
         // Insert the resource map into the task queue
         String resourceMap = "ala-wai-canal-ns02-matlab-processing.2.rdf";
         formatId = "http://www.openarchives.org/ore/terms";
         insertResource(resourceMap, formatId, provAlaWaiNS02MatlabProcessing2RDF, nodeid, userDN);
 
+        Thread.sleep(SLEEPTIME);
         // now process the tasks
         processor.processIndexTaskQueue();
+        
 
+        Thread.sleep(SLEEPTIME);
         // ensure everything indexed properly
         assertPresentInSolrIndex(script1);
         assertPresentInSolrIndex(script2);
