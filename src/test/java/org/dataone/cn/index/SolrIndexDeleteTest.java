@@ -108,10 +108,12 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         String pid = "peggym.130.4";
         deleteAll();
         addSystemMetadata(peggym1304Sys);
+        Thread.sleep(SLEEPTIME);
         processor.processIndexTaskQueue();
         Thread.sleep(SLEEPTIME);
         assertPresentInSolrIndex(pid);
         addSystemMetadata(peggym1304SysArchived);
+        Thread.sleep(SLEEPTIME);
         processor.processIndexTaskQueue();
         Thread.sleep(SLEEPTIME);
         assertNotPresentInSolrIndex(pid);
