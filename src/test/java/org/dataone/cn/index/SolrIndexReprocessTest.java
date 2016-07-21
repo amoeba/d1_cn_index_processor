@@ -43,6 +43,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.core.io.Resource;
 
+import com.carrotsearch.randomizedtesting.annotations.ThreadLeakScope;
+
 /**
  * Solr unit test framework is dependent on JUnit 4.7. Later versions of junit
  * will break the base test classes.
@@ -50,6 +52,7 @@ import org.springframework.core.io.Resource;
  * @author sroseboo
  * 
  */
+@ThreadLeakScope(ThreadLeakScope.Scope.NONE)
 public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
 
     private static Logger logger = Logger.getLogger(SolrIndexReprocessTest.class.getName());
@@ -66,6 +69,8 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
     private Resource peggym1305Sys;
     private Resource peggym1304SysObsoletedBy;
     private Resource peggymResourcemapSeriesSys;
+    
+    private static final int SLEEPTIME = 2000;
 
     @BeforeClass
     public static void init() {
@@ -112,21 +117,27 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
         httpService.sendSolrDelete("peggym.resourcemap.series");
     }
 
-    private void indexTestDataPackage() {
+    private void indexTestDataPackage() throws Exception {
         addSystemMetadata(peggym1271Sys);
         addSystemMetadata(peggym1281Sys);
         addSystemMetadata(peggym1291Sys);
         addSystemMetadata(peggym1304Sys);
+        Thread.sleep(SLEEPTIME);
+        processor.processIndexTaskQueue();
+        Thread.sleep(SLEEPTIME);
         addSystemMetadata(peggymResourcemapSeriesSys);
+        Thread.sleep(SLEEPTIME);
         processor.processIndexTaskQueue();
     }
 
-    private void indexNewRevision(Resource resource) {
+    private void indexNewRevision(Resource resource) throws Exception{
         addSystemMetadata(resource);
+        Thread.sleep(SLEEPTIME);
         processor.processIndexTaskQueue();
     }
 
     private void verifyDataPackageNewRevision() throws Exception {
+        Thread.sleep(SLEEPTIME);
         SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
         Assert.assertEquals(1,
                 ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
@@ -174,6 +185,7 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
     }
 
     private void verifyDataPackageNewDataRevision() throws Exception {
+        Thread.sleep(SLEEPTIME);
     	// make sure the original data is not in the package now
         SolrDocument dataOrig = assertPresentInSolrIndex("peggym.128.1");
         Assert.assertNull(dataOrig.getFieldValues(SolrElementField.FIELD_RESOURCEMAP));
@@ -232,6 +244,7 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
     }
 
     private void verifyTestDataPackageIndexed() throws Exception {
+        Thread.sleep(SLEEPTIME);
         SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
         logger.debug("DATA=" + data);
         Assert.assertEquals(1,
