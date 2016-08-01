@@ -375,36 +375,40 @@ public class IndexTaskProcessor {
             Identifier pid = new Identifier();
             pid.setValue(task.getPid());
             SystemMetadata smd = HazelcastClientFactory.getSystemMetadataMap().get(pid);
-            Identifier sid = smd.getSeriesId();
-            if(sid != null && sid.getValue() != null && !sid.getValue().trim().equals("")) {
-                lock.lock();
-                try {
-                    logger.debug("xxxxxxxxxxxxxxxxxxxx the index task "+task.getPid()+" has a sid "+sid.getValue()+" in the the thread "+ Thread.currentThread().getId());
-                    boolean clear = false;
-                    for(int i=0; i<MAXATTEMPTS; i++) {
-                        if(seriesIdsSet.contains(sid.getValue())) {
-                            logger.debug("###################Another index task is process the object with series id "+sid.getValue()+" as well. So the thread to process id "
-                                    +task.getPid()+" has to wait 0.5 seconds.");
-                            Thread.sleep(500);
-                        } else {
-                            clear = true;
-                            seriesIdsSet.add(sid.getValue());
-                            break;
+            if(smd != null) {
+                Identifier sid = smd.getSeriesId();
+                if(sid != null && sid.getValue() != null && !sid.getValue().trim().equals("")) {
+                    lock.lock();
+                    try {
+                        logger.debug("xxxxxxxxxxxxxxxxxxxx the index task "+task.getPid()+" has a sid "+sid.getValue()+" in the the thread "+ Thread.currentThread().getId());
+                        boolean clear = false;
+                        for(int i=0; i<MAXATTEMPTS; i++) {
+                            if(seriesIdsSet.contains(sid.getValue())) {
+                                logger.debug("###################Another index task is process the object with series id "+sid.getValue()+" as well. So the thread to process id "
+                                        +task.getPid()+" has to wait 0.5 seconds.");
+                                Thread.sleep(500);
+                            } else {
+                                clear = true;
+                                seriesIdsSet.add(sid.getValue());
+                                break;
+                            }
                         }
+                        if(!clear) {
+                            removeIdsFromResourceMapReferencedSetAndSeriesIdsSet(task);
+                            String message = "We waited for another thread to finish indexing a pid with series id "+sid.getValue()+
+                                               " for a while. Now we quited and can't index id "+task.getPid();
+                            logger.error(message);
+                            throw new Exception(message);
+                        }
+                    } catch (Exception e) {
+                        throw e;
+                    } finally {
+                        lock.unlock();
                     }
-                    if(!clear) {
-                        removeIdsFromResourceMapReferencedSetAndSeriesIdsSet(task);
-                        String message = "We waited for another thread to finish indexing a pid with series id "+sid.getValue()+
-                                           " for a while. Now we quited and can't index id "+task.getPid();
-                        logger.error(message);
-                        throw new Exception(message);
-                    }
-                } catch (Exception e) {
-                    throw e;
-                } finally {
-                    lock.unlock();
                 }
+                
             }
+            
         }
     }
     
