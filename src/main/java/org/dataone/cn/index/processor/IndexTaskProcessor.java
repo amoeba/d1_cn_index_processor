@@ -24,9 +24,12 @@ package org.dataone.cn.index.processor;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Queue;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -42,6 +45,7 @@ import org.dataone.cn.index.task.IndexTaskRepository;
 import org.dataone.cn.index.task.ResourceMapIndexTask;
 import org.dataone.cn.index.util.PerformanceLogger;
 import org.dataone.cn.indexer.XmlDocumentUtility;
+import org.dataone.cn.indexer.parser.utility.SeriesIdResolver;
 import org.dataone.cn.indexer.resourcemap.ForesiteResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMapFactory;
@@ -83,6 +87,7 @@ public class IndexTaskProcessor {
     //a concurrent map to main the information about current processing resource map objects and their referenced ids
     //the key is a referenced id and value is the id of resource map.
     private static ConcurrentHashMap <String, String> referencedIdsMap = new ConcurrentHashMap<String, String>(); 
+    private static ConcurrentSkipListSet<String> seriesIdsSet = new ConcurrentSkipListSet<String>();
     
     @Autowired
     private IndexTaskRepository repo;
@@ -252,11 +257,17 @@ public class IndexTaskProcessor {
         try {
             checkReadinessProcessResourceMap(task);
             if (task.isDeleteTask()) {
-                logger.info("Indexing delete task for pid: " + task.getPid());
+                logger.info("+++++++++++++start to process delete index task for "+task.getPid()+" in thread "+Thread.currentThread().getId());
+                //System.out.println("+++++++++++++start to process delete index task for "+task.getPid()+" in thread "+Thread.currentThread().getId());
                 deleteProcessor.process(task);
+                //System.out.println("+++++++++++++end to process delete index task for "+task.getPid()+" in thread "+Thread.currentThread().getId());
+                logger.info("+++++++++++++end to process delete index task for "+task.getPid()+" in thread "+Thread.currentThread().getId());
             } else {
-                logger.info("Indexing update task for pid: " + task.getPid());
+                logger.info("*********************start to process update index task for "+task.getPid()+" in thread "+Thread.currentThread().getId());
+                //System.out.println("*********************start to process update index task for "+task.getPid()+" in thread "+Thread.currentThread().getId());
                 updateProcessor.process(task);
+                //System.out.println("*********************end to process update index task for "+task.getPid()+" in thread "+Thread.currentThread().getId());
+                logger.info("*********************end to process update index task for "+task.getPid()+" in thread "+Thread.currentThread().getId());
             }
         } catch (Exception e) {
             logger.error("Unable to process task for pid: " + task.getPid(), e);
@@ -266,7 +277,7 @@ public class IndexTaskProcessor {
             handleFailedTask(task);
             return;
         } finally {
-            removeIdsFromResourceMapReferencedSet(task);
+            removeIdsFromResourceMapReferencedSetAndSeriesIdsSet(task);
         }
         if(task != null) {
             repo.delete(task.getId());
@@ -290,12 +301,38 @@ public class IndexTaskProcessor {
     private void checkReadinessProcessResourceMap(IndexTask task) throws Exception{
         //only handle resourceMap index task
         if(task != null && task instanceof ResourceMapIndexTask ) {
+            logger.debug("$$$$$$$$$$$$$$$$$ the index task "+task.getPid()+" is a resource map task in the the thread "+ Thread.currentThread().getId());
             lock.lock();
             try {
                 ResourceMapIndexTask resourceMapTask = (ResourceMapIndexTask) task;
                 List<String> referencedIds = resourceMapTask.getReferencedIds();
                 if(referencedIds != null) {
                     for (String id : referencedIds) {
+                        Identifier sid = new Identifier();
+                        sid.setValue(id);
+                        if(SeriesIdResolver.isSeriesId(sid)) {
+                            boolean isClear = false;
+                            for(int i=0; i<MAXATTEMPTS; i++) {
+                                if(seriesIdsSet.contains(sid.getValue())) {
+                                    System.out.println("###################Another index task is process the object with series id "+sid.getValue()+" as well. So the thread to process id "
+                                            +task.getPid()+" has to wait 0.5 seconds.");
+                                    Thread.sleep(500);
+                                } else {
+                                    isClear = true;
+                                    seriesIdsSet.add(sid.getValue());
+                                    break;
+                                }
+                            }
+                            if(!isClear) {
+                                removeIdsFromResourceMapReferencedSetAndSeriesIdsSet(task);
+                                String message = "We waited for another thread to finish indexing a pid with series id "+sid.getValue()+
+                                                   " for a while. Now we quited and can't index id "+task.getPid();
+                                logger.error(message);
+                                throw new Exception(message);
+                            }
+                            
+                        }
+                        
                         boolean clear = false;
                         for(int i=0; i<MAXATTEMPTS; i++) {
                             if(id != null && !id.trim().equals("") && referencedIdsMap.containsKey(id)) {
@@ -306,7 +343,7 @@ public class IndexTaskProcessor {
                                     break;
                                 } else {
                                     // this referenced id was put by another resource map object. Wait .5 second.
-                                    logger.info("Another resource map is process the referenced id "+id+" as well. So the thread to process id "
+                                    logger.info("###################Another resource map is process the referenced id "+id+" as well. So the thread to process id "
                                             +resourceMapTask.getPid()+" has to wait 0.5 seconds.");
                                     Thread.sleep(500);
                                 }
@@ -318,7 +355,7 @@ public class IndexTaskProcessor {
                             }
                         }
                         if(!clear) {
-                            removeIdsFromResourceMapReferencedSet(resourceMapTask);
+                            removeIdsFromResourceMapReferencedSetAndSeriesIdsSet(resourceMapTask);
                             String message = "We waited for another thread to finish indexing a resource map which has the referenced id "+id+
                                                " for a while. Now we quited and can't index id "+resourceMapTask.getPid();
                             logger.error(message);
@@ -333,6 +370,41 @@ public class IndexTaskProcessor {
             } finally {
                 lock.unlock();
             }
+        } else {
+            logger.debug("xxxxxxxxxxxxxxxxxxxx the index task "+task.getPid()+" is NOT a resource map task in the the thread "+ Thread.currentThread().getId());
+            Identifier pid = new Identifier();
+            pid.setValue(task.getPid());
+            SystemMetadata smd = HazelcastClientFactory.getSystemMetadataMap().get(pid);
+            Identifier sid = smd.getSeriesId();
+            if(sid != null && sid.getValue() != null && !sid.getValue().trim().equals("")) {
+                lock.lock();
+                try {
+                    logger.debug("xxxxxxxxxxxxxxxxxxxx the index task "+task.getPid()+" has a sid "+sid.getValue()+" in the the thread "+ Thread.currentThread().getId());
+                    boolean clear = false;
+                    for(int i=0; i<MAXATTEMPTS; i++) {
+                        if(seriesIdsSet.contains(sid.getValue())) {
+                            logger.debug("###################Another index task is process the object with series id "+sid.getValue()+" as well. So the thread to process id "
+                                    +task.getPid()+" has to wait 0.5 seconds.");
+                            Thread.sleep(500);
+                        } else {
+                            clear = true;
+                            seriesIdsSet.add(sid.getValue());
+                            break;
+                        }
+                    }
+                    if(!clear) {
+                        removeIdsFromResourceMapReferencedSetAndSeriesIdsSet(task);
+                        String message = "We waited for another thread to finish indexing a pid with series id "+sid.getValue()+
+                                           " for a while. Now we quited and can't index id "+task.getPid();
+                        logger.error(message);
+                        throw new Exception(message);
+                    }
+                } catch (Exception e) {
+                    throw e;
+                } finally {
+                    lock.unlock();
+                }
+            }
         }
     }
     
@@ -340,7 +412,7 @@ public class IndexTaskProcessor {
     /*
      * Remove the referenced ids from the set.
      */
-    private void removeIdsFromResourceMapReferencedSet(IndexTask task) {
+    private void removeIdsFromResourceMapReferencedSetAndSeriesIdsSet(IndexTask task) {
         if(task != null && task instanceof ResourceMapIndexTask ) {
             ResourceMapIndexTask resourceMapTask = (ResourceMapIndexTask) task;
             List<String> referencedIds = resourceMapTask.getReferencedIds();
@@ -348,8 +420,18 @@ public class IndexTaskProcessor {
                 for (String id : referencedIds) {
                     if(id != null) {
                         referencedIdsMap.remove(id);
+                        seriesIdsSet.remove(id);
                     }
                 }
+            }
+        } else {
+            Identifier id = new Identifier();
+            id.setValue(task.getPid());
+            SystemMetadata smd = HazelcastClientFactory.getSystemMetadataMap().get(id);
+            logger.debug("remove the series id (if it has) for +++++ "+task.getPid());
+            if(smd != null && smd.getSeriesId()!= null && smd.getSeriesId().getValue()!= null) {
+                logger.debug("remove the series id "+smd.getSeriesId().getValue()+" for +++++ "+task.getPid());
+                seriesIdsSet.remove(smd.getSeriesId().getValue());
             }
         }
     }
@@ -450,7 +532,7 @@ public class IndexTaskProcessor {
     private void batchRemoveIdsFromResourceMapReferencedSet(List<IndexTask> tasks) {
         if(tasks != null) {
             for (IndexTask task : tasks) {
-                removeIdsFromResourceMapReferencedSet(task);
+                removeIdsFromResourceMapReferencedSetAndSeriesIdsSet(task);
             }
         }
     }
@@ -510,7 +592,7 @@ public class IndexTaskProcessor {
                     }
 
                     if (areAllReferencedDocsIndexed(referencedIds) == false) {
-                        logger.info("Not all map resource references indexed for map: " + task.getPid()
+                        logger.info("****************Not all map resource references indexed for map: " + task.getPid()
                                 + ".  Marking new and continuing...");
                         ready = false;
                     }
