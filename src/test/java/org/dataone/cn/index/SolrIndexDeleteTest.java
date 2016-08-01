@@ -75,7 +75,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     private Resource peggymResourcemap1OverlapSys;
     private Resource peggymResourcemap2OverlapSys;
     
-    private static final int SLEEPTIME = 2000;
+    private static final int SLEEPTIME = 4000;
 
 
     /**
