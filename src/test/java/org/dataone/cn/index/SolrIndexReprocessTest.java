@@ -40,6 +40,7 @@ import org.dataone.service.util.TypeMarshaller;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.core.io.Resource;
 
@@ -85,6 +86,7 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
     /**
      * Test reprocessing when new version of object in a data package is updated
      */
+    @Ignore
     @Test
     public void testReprocessDataPackage() throws Exception {
         // create/index data package
@@ -92,8 +94,15 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
         indexTestDataPackage();
         //verify in index correct
         verifyTestDataPackageIndexed();
+        System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&finished the initial index and everything is good.");
         indexNewRevision(peggym1304SysObsoletedBy);
+        //Thread.sleep(2000);
+        processor.processIndexTaskQueue();
+        //Thread.sleep(2000);
+        
+        
         indexNewRevision(peggym1305Sys);
+        Thread.sleep(2000);
         processor.processIndexTaskQueue();
         // verify data package info correct in index
         verifyDataPackageNewRevision();
@@ -137,7 +146,7 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
     }
 
     private void verifyDataPackageNewRevision() throws Exception {
-        Thread.sleep(SLEEPTIME);
+        Thread.sleep(20000);
         SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
         Assert.assertEquals(1,
                 ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
@@ -185,7 +194,7 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
     }
 
     private void verifyDataPackageNewDataRevision() throws Exception {
-        Thread.sleep(SLEEPTIME);
+        Thread.sleep(20000);
     	// make sure the original data is not in the package now
         SolrDocument dataOrig = assertPresentInSolrIndex("peggym.128.1");
         Assert.assertNull(dataOrig.getFieldValues(SolrElementField.FIELD_RESOURCEMAP));
@@ -244,7 +253,7 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
     }
 
     private void verifyTestDataPackageIndexed() throws Exception {
-        Thread.sleep(SLEEPTIME);
+        Thread.sleep(20000);
         SolrDocument data = assertPresentInSolrIndex("peggym.127.1");
         logger.debug("DATA=" + data);
         Assert.assertEquals(1,
