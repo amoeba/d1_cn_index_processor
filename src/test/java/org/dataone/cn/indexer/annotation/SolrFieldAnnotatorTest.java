@@ -44,6 +44,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.carrotsearch.randomizedtesting.annotations.ThreadLeakScope;
+
+@ThreadLeakScope(ThreadLeakScope.Scope.NONE)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "../../index/test-context.xml", "test-context-annotator.xml" })
 public class SolrFieldAnnotatorTest extends BaseSolrFieldXPathTest {

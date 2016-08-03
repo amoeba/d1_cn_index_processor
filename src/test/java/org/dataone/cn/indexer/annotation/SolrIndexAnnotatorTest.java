@@ -36,6 +36,8 @@ import org.junit.Test;
 import org.springframework.core.io.Resource;
 import org.w3c.dom.Document;
 
+import com.carrotsearch.randomizedtesting.annotations.ThreadLeakScope;
+
 /**
  * Solr unit test framework is dependent on JUnit 4.7. Later versions of junit
  * will break the base test classes.
@@ -43,6 +45,7 @@ import org.w3c.dom.Document;
  * @author sroseboo
  * 
  */
+@ThreadLeakScope(ThreadLeakScope.Scope.NONE)
 public class SolrIndexAnnotatorTest extends DataONESolrJettyTestBase {
 
     protected BaseXPathDocumentSubprocessor systemMetadata200Subprocessor;

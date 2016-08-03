@@ -9,11 +9,13 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.carrotsearch.randomizedtesting.annotations.ThreadLeakScope;
 import com.hazelcast.config.ClasspathXmlConfig;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 
+@ThreadLeakScope(ThreadLeakScope.Scope.NONE)
 public class HazelcastClientFactoryTest {
 
     private static HazelcastInstance hzMember;

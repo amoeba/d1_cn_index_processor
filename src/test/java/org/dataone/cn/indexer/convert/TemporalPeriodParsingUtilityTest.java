@@ -27,6 +27,9 @@ import junit.framework.Assert;
 import org.dataone.cn.indexer.parser.utility.TemporalPeriodParsingUtility;
 import org.junit.Test;
 
+import com.carrotsearch.randomizedtesting.annotations.ThreadLeakScope;
+
+@ThreadLeakScope(ThreadLeakScope.Scope.NONE)
 public class TemporalPeriodParsingUtilityTest {
 
     private TemporalPeriodParsingUtility temporalParsingtUtil = new TemporalPeriodParsingUtility();

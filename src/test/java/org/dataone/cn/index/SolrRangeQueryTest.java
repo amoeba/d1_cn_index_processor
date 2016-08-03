@@ -28,6 +28,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.core.io.Resource;
 
+import com.carrotsearch.randomizedtesting.annotations.ThreadLeakScope;
+
+@ThreadLeakScope(ThreadLeakScope.Scope.NONE)
 public class SolrRangeQueryTest extends DataONESolrJettyTestBase {
 
     private Resource peggym1304Sys;

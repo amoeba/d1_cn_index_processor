@@ -45,6 +45,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.carrotsearch.randomizedtesting.annotations.ThreadLeakScope;
+
 /**
  * This test loads the generator and processor daemons which will open their
  * application context configuration to load the processor/generator. This means
@@ -60,6 +62,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 // TODO: CONVERT to DataONESolrJetty test to verify index changes
 
+@ThreadLeakScope(ThreadLeakScope.Scope.NONE)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "test-context.xml" })
 public class IndexTaskProcessingIntegrationTest {
