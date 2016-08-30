@@ -9,6 +9,7 @@
  
 	<properties>
 	  	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <compiler.target.version>1.7</compiler.target.version>
 	  	<spring.version>3.1.4.RELEASE</spring.version>
 	  	<hazelcast.version>2.4.1</hazelcast.version>
 	  	<solr.version>5.2.1</solr.version>
@@ -297,7 +298,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
           <source>1.7</source>
-          <target>1.7</target>
+          <target>${compiler.target.version}</target>
         </configuration>
       </plugin>
       <plugin>
