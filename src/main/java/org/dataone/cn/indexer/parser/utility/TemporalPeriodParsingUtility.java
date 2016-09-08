@@ -30,7 +30,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.dataone.cn.indexer.convert.IConverter;
 import org.dataone.cn.indexer.convert.SolrDateConverter;

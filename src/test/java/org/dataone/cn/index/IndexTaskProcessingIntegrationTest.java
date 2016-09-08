@@ -29,7 +29,7 @@ import java.io.IOException;
 
 import junit.framework.Assert;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.generator.IndexTaskGeneratorDaemon;

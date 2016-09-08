@@ -22,7 +22,7 @@
 
 package org.dataone.cn.indexer.parser.utility;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class LogicalOrPostProcessor {
 

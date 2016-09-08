@@ -33,7 +33,7 @@ import java.util.Set;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.codec.EncoderException;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;

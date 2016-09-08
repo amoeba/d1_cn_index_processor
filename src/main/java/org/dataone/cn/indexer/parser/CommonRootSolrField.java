@@ -27,7 +27,7 @@ import java.util.List;
 
 import javax.xml.xpath.XPath;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.dataone.cn.indexer.parser.utility.LogicalOrPostProcessor;
 import org.dataone.cn.indexer.parser.utility.RootElement;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;

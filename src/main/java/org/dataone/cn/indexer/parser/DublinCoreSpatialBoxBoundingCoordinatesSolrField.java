@@ -25,7 +25,7 @@ package org.dataone.cn.indexer.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.dataone.cn.indexer.parser.utility.SpatialBoxParsingUtility;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;

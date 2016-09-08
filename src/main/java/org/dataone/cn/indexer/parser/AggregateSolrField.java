@@ -27,7 +27,7 @@ import java.util.List;
 
 import javax.xml.xpath.XPath;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.w3c.dom.Document;
 
