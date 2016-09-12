@@ -32,7 +32,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -89,9 +88,6 @@ public class MergeSolrField extends SolrField {
                 }
             }
             String nodeValue = sb.toString().trim();
-            if (escapeXML) {
-                nodeValue = StringEscapeUtils.escapeXml(nodeValue);
-            }
             fields.add(new SolrElementField(name, nodeValue));
         } catch (Exception ex) {
             ex.printStackTrace();

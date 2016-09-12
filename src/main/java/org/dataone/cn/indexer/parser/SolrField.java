@@ -34,7 +34,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.dataone.cn.indexer.convert.IConverter;
@@ -69,9 +68,7 @@ public class SolrField implements ISolrField {
     protected boolean multivalue = false;
     protected XPathExpression xPathExpression = null;
     protected IConverter converter = null;
-    // should be escaping values when serializing to XML, keep them are literal
-    // values in the app
-    protected boolean escapeXML = false;
+
     protected boolean combineNodes = false;
     private String combineDelimiter = " ";
     protected boolean dedupe = false;
@@ -217,9 +214,6 @@ public class SolrField implements ISolrField {
             nodeValue = nodeValue.trim();
             if (this.converter != null) {
                 nodeValue = this.converter.convert(nodeValue);
-            }
-            if (this.escapeXML) {
-                nodeValue = StringEscapeUtils.escapeXml(nodeValue);
             }
             if (!dedupe || (dedupe & !usedValues.contains(nodeValue))) {
                 if (StringUtils.isNotEmpty(nodeValue) && allowedValue(nodeValue)) {
@@ -368,14 +362,6 @@ public class SolrField implements ISolrField {
 
     public void setConverter(IConverter converter) {
         this.converter = converter;
-    }
-
-    public boolean isEscapeXML() {
-        return escapeXML;
-    }
-
-    public void setEscapeXML(boolean escapeXML) {
-        this.escapeXML = escapeXML;
     }
 
     public String getSplitOnString() {

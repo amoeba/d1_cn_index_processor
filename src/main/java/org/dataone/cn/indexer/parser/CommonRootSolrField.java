@@ -27,7 +27,6 @@ import java.util.List;
 
 import javax.xml.xpath.XPath;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.dataone.cn.indexer.parser.utility.LogicalOrPostProcessor;
 import org.dataone.cn.indexer.parser.utility.RootElement;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
@@ -69,9 +68,6 @@ public class CommonRootSolrField extends SolrField {
                 }
                 if (getConverter() != null) {
                     value = getConverter().convert(value);
-                }
-                if (isEscapeXML()) {
-                    value = StringEscapeUtils.escapeXml(value);
                 }
                 if (value != null && !value.isEmpty()) {
                     fields.add(new SolrElementField(this.name, value));

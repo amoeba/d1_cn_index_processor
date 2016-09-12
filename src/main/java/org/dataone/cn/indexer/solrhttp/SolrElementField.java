@@ -117,14 +117,9 @@ public class SolrElementField {
         cw.append("=\"");
         cw.append(name);
         cw.append("\">");
-
         IOUtils.write(cw.toCharArray(), outputStream, encoding);
-        char[] toWrite = null;
-        if (escapeXML) {
-            toWrite = StringEscapeUtils.escapeXml(value).toCharArray();
-        } else {
-            toWrite = value.toCharArray();
-        }
+
+        char[] toWrite = StringEscapeUtils.escapeXml11(value).toCharArray();
         IOUtils.write(toWrite, outputStream, encoding);
 
         IOUtils.write(ELEMENT_FIELD_CLOSE, outputStream, encoding);
@@ -134,13 +129,5 @@ public class SolrElementField {
         if (log.isDebugEnabled()) {
             log.debug("SolrElementField serializing field: " + name + " with value: " + value);
         }
-    }
-
-    public boolean isEscapeXML() {
-        return escapeXML;
-    }
-
-    public void setEscapeXML(boolean escapeXML) {
-        this.escapeXML = escapeXML;
     }
 }
