@@ -231,7 +231,7 @@ public class SolrIndexService {
                         perfLog.log("Loop "+i+". "+"SolrIndexService.processObject() " + subprocessor.getClass().getSimpleName() + ".processDocument() total subprocessor processing time for id "+id+" with format: " + formatId, System.currentTimeMillis() - scimetaProcStart);
                     }
                 } catch (Exception e) {
-                    log.error(e.getMessage());
+                    log.warn("The subprocessor"+subprocessor.getClass().getName()+" can't process the id "+id+" since "+e.getMessage()+". However, the index still can be achieved without this part of information provided by the processor.", e);
                 }
             }
             i++;
