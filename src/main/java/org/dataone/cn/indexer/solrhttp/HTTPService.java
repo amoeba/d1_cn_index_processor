@@ -42,6 +42,7 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -172,7 +173,8 @@ public class HTTPService {
         try {
             IOUtils.write("<?xml version=\"1.1\" encoding=\"utf-8\"?>\n", outputStream,
                     CHAR_ENCODING);
-            IOUtils.write("<delete><id>" + pid + "</id></delete>", outputStream, CHAR_ENCODING);
+            String escapedId = StringEscapeUtils.escapeXml(pid);
+            IOUtils.write("<delete><id>" + escapedId + "</id></delete>", outputStream, CHAR_ENCODING);
             sendPost(getSolrIndexUri(), outputStream.toString());
         } catch (IOException e) {
             e.printStackTrace();
@@ -186,8 +188,10 @@ public class HTTPService {
             IOUtils.write("<?xml version=\"1.1\" encoding=\"utf-8\"?>\n", outputStream,
                     CHAR_ENCODING);
             IOUtils.write("<update>", outputStream, CHAR_ENCODING);
-            for (String pid : pids)
-                IOUtils.write("<delete><id>" + pid + "</id></delete>", outputStream, CHAR_ENCODING);    
+            for (String pid : pids) {
+                String escapedId = StringEscapeUtils.escapeXml(pid);
+                IOUtils.write("<delete><id>" + escapedId + "</id></delete>", outputStream, CHAR_ENCODING);  
+            }
             IOUtils.write("</update>", outputStream, CHAR_ENCODING);
             sendPost(getSolrIndexUri(), outputStream.toString());
         } catch (IOException e) {
