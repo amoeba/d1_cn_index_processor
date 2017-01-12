@@ -257,10 +257,19 @@ public class SolrDoc {
         this.merged = merged;
     }
 
+    /**
+     * A document is visible in the index if systemMetdata.archived is 
+     * not set to true (null or false)
+     * @param smd - a systemmetadata object
+     * @return - false if smd is null or archived.  true otherwise
+     */
     public static boolean visibleInIndex(SystemMetadata smd) {
-        if (smd == null) {
-            return false;
-        }
-        return !(smd.getArchived() != null && smd.getArchived().booleanValue());
+        
+        if (smd == null)                return false; // can't assume it's visible if it's null...
+        if (smd.getArchived() == null)  return true;  // null = no archived, so visible
+        if (smd.getArchived())          return false; // archived means not visible
+        return true;                                  // fall-through case is not archived, so visible
+
+        //        return !(smd.getArchived() != null && smd.getArchived().booleanValue());
     }
 }

@@ -17,11 +17,11 @@ public class SeriesIdResolver {
     public static Log log = LogFactory.getLog(SeriesIdResolver.class);
 
     /**
-     * Method to find HEAD PID for a given SID.
-     * If the provided identifier is already a PID, then it will simply be returned.
-     * If the provided identifier is a SID, then the latest SystemMetadata will be fetched
-     * and the PID for this latest revision will be returned.
-     * @param identifier the SID to look up (if a PID is provided it will simply be returned)
+     * Method to find HEAD PID for a given SID using cn.getSystemMetadata(id)
+     * If the provided identifier is a PID, then it will be returned.
+     * If the provided identifier is a SID, the PID from the systemMetadata will be returned
+     * (and a debug log message will be generated)
+     * @param identifier a PID or SID
      * @return the HEAD PID for the given identifier
      * @throws InvalidToken
      * @throws ServiceFailure
@@ -32,10 +32,11 @@ public class SeriesIdResolver {
 	public static Identifier getPid(Identifier identifier) throws InvalidToken, ServiceFailure, NotAuthorized, NotFound, NotImplemented {
 		// check if this is this a sid
 		Identifier pid = identifier;
-        log.debug("pid===" + pid.getValue());
+        log.debug("id===" + pid.getValue());
         SystemMetadata fetchedSysmeta = D1Client.getCN().getSystemMetadata(null, identifier);
         if (!fetchedSysmeta.getIdentifier().getValue().equals(identifier.getValue())) {
-            log.debug("Found pid: " + fetchedSysmeta.getIdentifier().getValue() + " for sid: " + identifier.getValue());
+            if (log.isDebugEnabled())
+                log.debug("Found pid: " + fetchedSysmeta.getIdentifier().getValue() + " for sid: " + identifier.getValue());
             pid = fetchedSysmeta.getIdentifier();
         }
         
@@ -43,7 +44,7 @@ public class SeriesIdResolver {
 	}
 	
 	/**
-	 * Check if the given identifier is a PID or a SID
+	 * Check if the given identifier is a PID or a SID using Hazelcast
 	 * @param identifier
 	 * @return true if the identifier is a SID, false if a PID
 	 */

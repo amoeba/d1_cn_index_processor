@@ -14,7 +14,10 @@ public class IndexVisibilityDelegateHazelcastImpl implements IndexVisibilityDele
 
     public IndexVisibilityDelegateHazelcastImpl() {
     }
-
+    
+    /**
+     * @param pid - will not work if the identifier is a SID  (will always return true)
+     */
     public boolean isDocumentVisible(Identifier pid) {
         boolean visible = false;
         try {
@@ -28,11 +31,12 @@ public class IndexVisibilityDelegateHazelcastImpl implements IndexVisibilityDele
                 visible = true;
             }
         } catch (NullPointerException npe) {
-            logger.warn("Could not get visible value for pid: " + pid.getValue());
+            logger.warn("Could not determine isDocumentVisible for pid: " + pid.getValue());
         }
         return visible;
     }
 
+    // TODO:  this routine does nothing!  always returns true unless there's a null pointer exception
     public boolean documentExists(Identifier pid) {
         boolean exists = false;
         try {
@@ -44,7 +48,7 @@ public class IndexVisibilityDelegateHazelcastImpl implements IndexVisibilityDele
                 return true;
             }
         } catch (NullPointerException npe) {
-            logger.warn("Could not get visible value for pid: " + pid.getValue());
+            logger.warn("Could not determine if documentExists for pid: " + pid.getValue());
         }
         return exists;
     }

@@ -29,7 +29,8 @@ import javax.persistence.Transient;
 
 /**
  * This class represents an index task for a resource map object. 
- * Besides the base index task, it has a new fields which contains referenced objects' ids (excluding itself) of the resource map objects.
+ * Besides the base index task, it has a new field which contains the ids of  
+ * object referenced by the resource map.
  * @author tao
  *
  */
