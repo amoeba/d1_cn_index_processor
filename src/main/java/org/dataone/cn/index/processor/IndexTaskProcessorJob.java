@@ -24,14 +24,23 @@ package org.dataone.cn.index.processor;
 
 import org.apache.log4j.Logger;
 import org.quartz.DisallowConcurrentExecution;
+import org.quartz.InterruptableJob;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.UnableToInterruptJobException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+/**
+ * The scope of each job is processing a list of IndexTasks.  Only one Job is 
+ * permitted to run at a time.
+ * 
+ * @author rnahf
+ *
+ */
 @DisallowConcurrentExecution
-public class IndexTaskProcessorJob implements Job {
+public class IndexTaskProcessorJob implements InterruptableJob {
 
     private static Logger logger = Logger.getLogger(IndexTaskProcessorJob.class.getName());
 
@@ -41,16 +50,49 @@ public class IndexTaskProcessorJob implements Job {
     public IndexTaskProcessorJob() {
     }
 
+    @Override
     public void execute(JobExecutionContext arg0) throws JobExecutionException {
         logger.info("executing index task processor...");
         setContext();
         processor.processIndexTaskQueue();
+        logger.info("...finished execution of index task processor");
     }
 
     private static void setContext() {
         if (context == null || processor == null) {
             context = new ClassPathXmlApplicationContext("processor-daemon-context.xml");
             processor = (IndexTaskProcessor) context.getBean("indexTaskProcessor");
+        }
+    }
+
+    /**
+     * Interrupt will call shutdown on the processor's executor service.
+     * This will let executing tasks complete, but effective cancels the 
+     * rest of the submitted tasks (which can be quite a long list)
+     * 
+     * @throws UnableToInterruptJobException
+     */
+    @Override
+    public void interrupt() throws UnableToInterruptJobException {
+        
+        try {
+            if (processor != null) {
+                processor.getExecutorService().shutdown(); 
+                // shutdown allows previously submitted tasks to finish executing
+                // but abandons submitted tasks waiting for execution.
+                // this leaves these tasks in "IN PROCESS" state.
+
+                // return those tasks stuck in process to new status
+                processor.resetTasksInProcessToNew();
+
+
+            }
+        } catch (Throwable t) {
+            UnableToInterruptJobException e = new UnableToInterruptJobException(
+                    "Unable to shutdown the executorService that is processing index tasks."
+                    );
+            e.initCause(t);
+            throw e;
         }
     }
 }
