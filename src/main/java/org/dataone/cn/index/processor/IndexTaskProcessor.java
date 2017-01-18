@@ -23,11 +23,10 @@
 package org.dataone.cn.index.processor;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutorService;
@@ -84,6 +83,7 @@ public class IndexTaskProcessor {
     private static int FUTUREQUEUESIZE = Settings.getConfiguration().getInt("dataone.indexing.multiThreads.futureQueueSize", 100);
     private static ExecutorService executor = Executors.newFixedThreadPool(NUMOFPROCESSOR);
     private static final Lock lock = new ReentrantLock();
+    private static Map<Runnable, IndexTask> taskExecutionMap = new HashMap<>();
     private static CircularFifoQueue<Future> futureQueue = new CircularFifoQueue<Future>(FUTUREQUEUESIZE);
     //a concurrent map to main the information about current processing resource map objects and their referenced ids
     //the key is a referenced id and value is the id of resource map.
@@ -174,6 +174,7 @@ public class IndexTaskProcessor {
             task = getNextIndexTask(queue);
         }
 
+        // effectively process failed tasks from previous run
         processFailedIndexTaskQueue();
         /*List<IndexTask> retryQueue = getIndexTaskRetryQueue();
         task = getNextIndexTask(retryQueue);
@@ -225,16 +226,16 @@ public class IndexTaskProcessor {
         
         Logger loadLogger = Logger.getLogger(LOAD_LOGGER_NAME);
         
-        Long newTasks = null;
-        Long failedTasks = null;
         try {
-            newTasks = repo.countByStatus(IndexTask.STATUS_NEW);
-            failedTasks = repo.countByStatus(IndexTask.STATUS_FAILED);
+            Long newTasks = repo.countByStatus(IndexTask.STATUS_NEW);
+            Long failedTasks = repo.countByStatus(IndexTask.STATUS_FAILED);
+            loadLogger.info("new tasks:" + newTasks + ", tasks previously failed: " + failedTasks );
+            
         } catch (Exception e) {
             logger.error("Unable to count NEW or FAILED tasks in task index repository.", e);
         }
         
-        loadLogger.info("new tasks:" + newTasks + ", tasks previously failed: " + failedTasks );
+        
     }
     
     
@@ -249,6 +250,7 @@ public class IndexTaskProcessor {
                 processTask(task);
             }
         };
+        taskExecutionMap.put(newThreadTask, task);
         Future future = executor.submit(newThreadTask);
         futureQueue.add(future);
     }
@@ -749,49 +751,50 @@ public class IndexTaskProcessor {
     }
 
     /**
-     * returns true if the task is for a data object, otherwise, if the objectPath 
-     * in the task is not filled, attempt to fill it via hazelclient.
-     * if not available, the task is not ready and false is returned.
-     * if object path is available, update the task and return true
+     * returns true if the task is for a data object, Otherwise, verify that the 
+     * object path stored in the task, or the one in the Hazelcast object path map
+     * exists on the file system.
+     * Updates the task with the one from Hazelcast if the Hazelcast one is valid,
+     * and the one in the task is wrong or previously not set.
+
+     * @return false if a valid path cannot be found
      */
     private boolean isObjectPathReady(IndexTask task) {
         
         if (isDataObject(task)) 
             return true;
 
-        boolean ok = true;
-
-        if (task.getObjectPath() == null) {
-            String objectPath = retrieveHzObjectPath(task.getPid());
-            if (objectPath == null) {
-                ok = false;
-                evictHzObjectPathEntry(task.getPid());
-                logger.info("Object path for pid: " + task.getPid()
-                        + " is not available.  Object path entry will be evicting from map.  "
-                        + "Task will be retried.");
-            }
-            task.setObjectPath(objectPath);
-        }
-
-        // TODO: if the task has the wrong path to begin with, but the right path 
-        // exists in Hazelcast, we never get to for the correct information.
-        // if the objectPath is invalid, should we not check Hazelcast to see if it 
-        // has a valid path?
-
+        boolean ready = false;
+        
+        String hzObjectPath = null;
         if (task.getObjectPath() != null) {
-            File objectPathFile = new File(task.getObjectPath());
-            if (!objectPathFile.exists()) {
-                // object path is present but doesn't correspond to a file
-                // this task is not ready to index.
-                ok = false;
-                logger.info("Object path exists for pid: " + task.getPid()
-                        + " however the file location: " + task.getObjectPath()
-                        + " does not exist.  "
-                        + "Marking not ready - task will be marked new and retried.");
+            if (new File(task.getObjectPath()).exists()) {
+                ready = true;
+            } else {
+                hzObjectPath = retrieveHzObjectPath(task.getPid());
+                if (hzObjectPath != null && new File(hzObjectPath).exists()) {
+                    task.setObjectPath(hzObjectPath);
+                    ready = true;
+                }
+            }
+        } else {
+            hzObjectPath = retrieveHzObjectPath(task.getPid());
+            if (new File(hzObjectPath).exists()) {
+                task.setObjectPath(hzObjectPath);
+                ready = true;
             }
         }
-        return ok;
+        
+        if (!ready) {
+            logger.info("Valid Object Path could not be found for pid: " + task.getPid()
+                    + "  Checked path strings in the task [" + task.getObjectPath() + 
+                    "] and Hazelcast [" + hzObjectPath + 
+                    "]");
+        }
+        
+        return ready;
     }
+    
 
     private boolean isDataObject(IndexTask task) {
         ObjectFormat format = null;
@@ -806,16 +809,17 @@ public class IndexTaskProcessor {
         return FORMAT_TYPE_DATA.equals(format.getFormatType());
     }
 
-    private String retrieveHzObjectPath(String pid) {
-        Identifier PID = new Identifier();
-        PID.setValue(pid);
-        return HazelcastClientFactory.getObjectPathMap().get(PID);
-    }
-
-    private void evictHzObjectPathEntry(String pid) {
-        Identifier PID = new Identifier();
-        PID.setValue(pid);
-        HazelcastClientFactory.getObjectPathMap().evict(PID);
+    private String retrieveHzObjectPath(String pidString) {
+        Identifier pid = TypeFactory.buildIdentifier(pidString);
+        String path = HazelcastClientFactory.getObjectPathMap().get(pid);
+        if (path == null) {
+            // cleanup the map
+            HazelcastClientFactory.getObjectPathMap().evict(pid);
+            if (logger.isDebugEnabled())
+                logger.debug("did not find Object Path for pid: " + pidString
+                        + " cleaning up the map by evicting the pid.");
+        }
+        return path;
     }
 
     private List<IndexTask> getIndexTaskQueue() {
@@ -919,15 +923,14 @@ public class IndexTaskProcessor {
      * Call at the end of processing, when canceled tasks would otherwise be left 
      * in the IN PROCESS state.
      */
-    void resetTasksInProcessToNew() {
-        // TODO: need to refactor this to only reset tasks actually moved into
-        // IN PROCESS by this process.
-        List<IndexTask> tasksStuckInProcess = repo.findByStatusAndNextExecutionLessThan(IndexTask.STATUS_IN_PROCESS, System.currentTimeMillis());
-        if (tasksStuckInProcess != null) {
-            for (IndexTask t : tasksStuckInProcess) {
+    public void shutdownExecutor() {
+        logger.warn("Shutting down ExecutorService.  Restting unprocessed tasks to New...");
+        List<Runnable> shutdownTasks = getExecutorService().shutdownNow();
+        if (shutdownTasks != null)
+            for (Runnable r: shutdownTasks) {
+                IndexTask t = taskExecutionMap.get(r);
                 t.markNew();
+                repo.save(t);
             }
-            repo.save(tasksStuckInProcess);
-        }
     }
 }

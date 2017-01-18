@@ -8,13 +8,16 @@ import static org.quartz.TriggerBuilder.newTrigger;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 import org.dataone.cn.index.processor.IndexTaskProcessorJob;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.quartz.InterruptableJob;
 import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
@@ -38,7 +41,7 @@ public class TestIndexTaskProcessorConcurrency {
         ;
     }
 
-    //   @Test
+       @Test
     public void runThroughSchedulerBehavior() throws IOException, SchedulerException {
 
 
@@ -48,12 +51,14 @@ public class TestIndexTaskProcessorConcurrency {
             SchedulerFactory schedulerFactory = new StdSchedulerFactory(properties);
             Scheduler scheduler = schedulerFactory.getScheduler();
 
-            JobDetail job = newJob(MockIndexTaskProcessorJob.class).withIdentity("test_job", "test_group").build();
+            JobDetail job = newJob(MockIndexTaskProcessorJob.class)
+                    .withIdentity("test_job", "test_group")
+                    .build();
 
             SimpleTrigger trigger = newTrigger()
                     .withIdentity("test_trigger", "test_group")
                     .startNow()
-                    .withSchedule(SimpleScheduleBuilder.repeatSecondlyForever())
+                    .withSchedule(SimpleScheduleBuilder.repeatHourlyForever())
                     .build();
             
             scheduler.scheduleJob(job, trigger);
@@ -66,23 +71,25 @@ public class TestIndexTaskProcessorConcurrency {
             } catch (InterruptedException e) {
                 throw new SchedulerException("Interrupted", e);
             }
-            System.out.println("============= scheduler STANDBY ==============" + new Date());
-            scheduler.standby();
+//            System.out.println("============= scheduler STANDBY ==============" + new Date());
+//            scheduler.standby();
+//            
+//            
+//
+//            
+//            try {
+//                Thread.sleep(5000);
+//            } catch (InterruptedException e) {
+//                throw new SchedulerException("Scheduler Interrupted", e);
+//            }
             
-            
-
-            
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                throw new SchedulerException("Interrupted", e);
-            }
-            
-            System.out.println("============= attempt to deleteJob ==============" + new Date());
+            System.out.println("============= attempt to kill the Job ==============" + new Date());
             try {
                 if (scheduler.isStarted()) {
                     scheduler.standby();
 //                    scheduler.unscheduleJob(new TriggerKey(QUARTZ_PROCESSOR_TRIGGER, QUARTZ_PROCESSOR_GROUP));
+                    MockIndexTaskProcessorJob.interruptCurrent();
+                    
                     while (!(scheduler.getCurrentlyExecutingJobs().isEmpty())) {
                         System.out.println(String.format("%d jobs executing,  waiting for them to complete...", 
                                 scheduler.getCurrentlyExecutingJobs().size()));
@@ -94,7 +101,6 @@ public class TestIndexTaskProcessorConcurrency {
                         }
                     }
                     System.out.println("Job scheduler finish executing all jobs.");
-//                    scheduler.deleteJob(jobKey("test_job", "test_group"));
                 }
             } catch (SchedulerException e) {
                 e.printStackTrace();
@@ -108,17 +114,17 @@ public class TestIndexTaskProcessorConcurrency {
             
             
             
-            System.out.println("============= scheduler START (again) ==============" + new Date());
-            scheduler. start();
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                throw new SchedulerException("Interrupted", e);
-            }
+//            System.out.println("============= scheduler START (again) ==============" + new Date());
+//            scheduler. start();
+//            try {
+//                Thread.sleep(5000);
+//            } catch (InterruptedException e) {
+//                throw new SchedulerException("Interrupted", e);
+//            }
             System.out.println("============= scheduler SHUTDOWN ==============" + new Date());
             scheduler.shutdown(false);
             try {
-                Thread.sleep(3000);
+                Thread.sleep(30000);
             } catch (InterruptedException e) {
                 throw new SchedulerException("Interrupted", e);
             }

@@ -26,9 +26,11 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.quartz.DisallowConcurrentExecution;
+import org.quartz.InterruptableJob;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.UnableToInterruptJobException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -40,12 +42,12 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  *
  */
 @DisallowConcurrentExecution
-public class MockIndexTaskProcessorJob implements Job {
+public class MockIndexTaskProcessorJob implements InterruptableJob {
 
     private static Logger logger = Logger.getLogger(MockIndexTaskProcessorJob.class.getName());
 
     private static Date context;
-    private static MockIndexTaskProcessor processor;
+    private static MockTaskProcessor processor = new MockTaskProcessor();
 
     public MockIndexTaskProcessorJob() {
         System.out.println("instantiating MockIndexTaskProcessorJob: ");
@@ -53,23 +55,22 @@ public class MockIndexTaskProcessorJob implements Job {
 
     public void execute(JobExecutionContext arg0) throws JobExecutionException {
         long start = System.currentTimeMillis();
-        System.out.println("executing index task processor... ");
-        setContext();
-        processor.mockProcessIndexTaskQueue();
-        long end = System.currentTimeMillis();
-        System.out.println("...finished execution of index task processor in (millis) " + (end - start));//System.currentTimeMillis());
-    }
+        System.out.println("MockIndexTaskProcessorJob: entering execute... ");
 
-    private static void setContext() {
-        System.out.println("Entering setContext...");
-        if (context == null || processor == null) {
-            context = new Date();
-            try {
-                processor = new MockIndexTaskProcessor();
-            } catch (Exception e)
-            {}
-            System.out.println("Set Job context and processor: " + context + " " + processor);
-            
-        }
+        processor.processList();
+        long end = System.currentTimeMillis();
+        System.out.println("MockIndexTaskProcessorJob...finished execution in (millis) " + (end - start));//System.currentTimeMillis());
+    }
+    
+
+    @Override
+    public void interrupt() throws UnableToInterruptJobException {
+        interruptCurrent();
+        
+    }
+    
+    public static void interruptCurrent() {
+        System.out.println("********************* ProcessorJob interrupt called, calling executorservice shutdown...");
+        processor.getExecutorService().shutdown();
     }
 }
