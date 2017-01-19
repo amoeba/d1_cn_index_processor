@@ -904,7 +904,7 @@ public class IndexTaskProcessor {
     }
     
     /**
-     * Get the ExecutorService to handle multiple thread
+     * Not sure if this is/should be used outside the class...
      * @return
      */
     public ExecutorService getExecutorService() {

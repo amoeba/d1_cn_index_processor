@@ -22,12 +22,9 @@
 
 package org.dataone.cn.index.processor;
 
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.InterruptableJob;
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.UnableToInterruptJobException;
@@ -74,42 +71,25 @@ public class IndexTaskProcessorJob implements InterruptableJob {
         
     }
     
-    public static void interruptCurrent() {
-        processor.shutdownExecutor();
-        
-    }
-
-    
-    
     /**
-     * Interrupt will call shutdown on the processor's executor service.
+     * InterruptCurrent will call shutdown on the processor jobs's executor service.
      * This will let executing tasks complete, but effectively cancels the 
-     * rest of the submitted tasks (which can be quite a long list)
+     * rest of the submitted tasks (which can be quite a long list), and returns
+     * 
      * 
      * @throws UnableToInterruptJobException
      */
-//    @Override
-//    public void interrupt() throws UnableToInterruptJobException {
-//        
-//        try {
-//            if (processor != null) {
-//                processor.getExecutorService().shutdown(); 
-//                // shutdown allows previously submitted tasks to finish executing
-//                // but abandons submitted tasks waiting for execution.
-//                // this leaves these tasks in "IN PROCESS" state.
-//
-//                // return those tasks stuck in process to new status
-//                processor.resetTasksInProcessToNew();
-//              //  processor.getExecutorService().
-//
-//
-//            }
-//        } catch (Throwable t) {
-//            UnableToInterruptJobException e = new UnableToInterruptJobException(
-//                    "Unable to shutdown the executorService that is processing index tasks."
-//                    );
-//            e.initCause(t);
-//            throw e;
-//        }
-//    }
+    public static void interruptCurrent() throws UnableToInterruptJobException {
+        try {
+            processor.shutdownExecutor();
+        } catch (Throwable t) {
+            UnableToInterruptJobException e = new UnableToInterruptJobException(
+                    "Unable to shutdown the executorService that is processing index tasks."
+                    );
+            e.initCause(t);
+            throw e;
+        }
+        
+    }
+
 }
