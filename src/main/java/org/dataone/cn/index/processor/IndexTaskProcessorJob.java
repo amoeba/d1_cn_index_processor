@@ -45,16 +45,17 @@ public class IndexTaskProcessorJob implements InterruptableJob {
 
     private static ApplicationContext context;
     private static IndexTaskProcessor processor;
+    private static int jobIdentityHash = System.identityHashCode(IndexTaskProcessorJob.class);
 
     public IndexTaskProcessorJob() {
     }
 
     @Override
     public void execute(JobExecutionContext arg0) throws JobExecutionException {
-        logger.info("executing index task processor...");
+        logger.warn("processing job [" + jobIdentityHash + "/" + this + "] executing index task with processor [" + processor + "]");
         setContext();
         processor.processIndexTaskQueue();
-        logger.info("...finished execution of index task processor");
+        logger.warn("processing job [" + this + "] finished execution of index task processor [" + processor + "]");
     }
 
     private static void setContext() {
@@ -64,15 +65,32 @@ public class IndexTaskProcessorJob implements InterruptableJob {
         }
     }
 
-    
+    /**
+     * Interrupt calls the held processor's executor service.
+     * This will let executing tasks complete, but effectively cancels the 
+     * rest of the submitted tasks (which can be quite a long list), and returns
+     * 
+     * 
+     * @throws UnableToInterruptJobException
+     */  
     @Override
     public void interrupt() throws UnableToInterruptJobException {
-        interruptCurrent();
+        try {
+            logger.warn("IndexTaskProcessorJob [" + this + "] interrupted, shutting down processor [" + processor + "]");
+            processor.shutdownExecutor();
+        } catch (Throwable t) {
+            UnableToInterruptJobException e = new UnableToInterruptJobException(
+                    "Unable to shutdown the executorService that is processing index tasks."
+                    );
+            e.initCause(t);
+            throw e;
+        }
+        
         
     }
     
     /**
-     * InterruptCurrent will call shutdown on the processor jobs's executor service.
+     * Interrupt calls the held processor's executor service.
      * This will let executing tasks complete, but effectively cancels the 
      * rest of the submitted tasks (which can be quite a long list), and returns
      * 
@@ -81,6 +99,7 @@ public class IndexTaskProcessorJob implements InterruptableJob {
      */
     public static void interruptCurrent() throws UnableToInterruptJobException {
         try {
+            logger.warn("IndexTaskProcessorJob class [" + jobIdentityHash + "] interruptCurrent called, shutting down processor [" + processor + "]");
             processor.shutdownExecutor();
         } catch (Throwable t) {
             UnableToInterruptJobException e = new UnableToInterruptJobException(

@@ -924,7 +924,7 @@ public class IndexTaskProcessor {
      * in the IN PROCESS state.
      */
     public void shutdownExecutor() {
-        logger.warn("Shutting down ExecutorService.  Restting unprocessed tasks to New...");
+        logger.warn("processor [" + this + "] shutting down ExecutorService.  Restting unprocessed tasks to New...");
         List<Runnable> shutdownTasks = getExecutorService().shutdownNow();
         if (shutdownTasks != null)
             for (Runnable r: shutdownTasks) {

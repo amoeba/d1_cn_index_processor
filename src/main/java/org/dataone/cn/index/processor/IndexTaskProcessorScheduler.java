@@ -60,7 +60,7 @@ public class IndexTaskProcessorScheduler {
      */
     public void start() {
         try {
-            logger.info("starting index task processor quartz scheduler....");
+            logger.warn("starting index task processor quartz scheduler [" + this + "] ...");
             Properties properties = new Properties();
             properties.load(this.getClass().getResourceAsStream(
                     "/org/dataone/configuration/quartz.properties"));
@@ -96,7 +96,7 @@ public class IndexTaskProcessorScheduler {
      * TODO:  should we send an interrupt or stop to the job? 
      */
     public void stop() {
-        logger.info("stopping index task processor quartz scheduler...");
+        logger.warn("stopping index task processor quartz scheduler [" + this + "] ...");
         try {
             
             if (scheduler.isStarted()) {
@@ -108,21 +108,24 @@ public class IndexTaskProcessorScheduler {
                 if (jobs != null)
                     for (JobExecutionContext j : jobs) {
                         if (j.getJobInstance() instanceof InterruptableJob) {
+                            logger.warn("interrupting processing job [" + j.getJobInstance() + "] ...");
                             ((InterruptableJob)j.getJobInstance()).interrupt();
+                        } else {
+                            logger.warn("processing job [" + j.getJobInstance() + "] not interruptable...");
                         }
                     }
                 // wait for concurrently executing Jobs to finish
                 while (!(scheduler.getCurrentlyExecutingJobs().isEmpty())) {
-                    logger.info(String.format("%d jobs executing,  waiting for them to complete...", 
+                    logger.warn(String.format("%d jobs executing,  waiting for them to complete...", 
                             scheduler.getCurrentlyExecutingJobs().size()));
                     
                     try {
                         Thread.sleep(5000);
                     } catch (InterruptedException ex) {
-                        logger.warn("Sleep interrupted. check again!");
+                        logger.warn("Sleep interrupted while waiting for executing jobs to finish. check again!");
                     }
                 }
-                logger.info("Job scheduler finish executing all jobs.");
+                logger.warn("Job scheduler [" + this + "] finished executing all jobs.");
                 scheduler.deleteJob(jobKey(QUARTZ_PROCESSOR_JOB, QUARTZ_PROCESSOR_GROUP));
             }
         } catch (SchedulerException e) {
