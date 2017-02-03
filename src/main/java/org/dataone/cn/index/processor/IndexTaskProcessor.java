@@ -24,6 +24,7 @@ package org.dataone.cn.index.processor;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -85,7 +86,7 @@ public class IndexTaskProcessor {
     private static int FUTUREQUEUESIZE = Settings.getConfiguration().getInt("dataone.indexing.multiThreads.futureQueueSize", 100);
     private static ExecutorService executor = Executors.newFixedThreadPool(NUMOFPROCESSOR);
     private static final Lock lock = new ReentrantLock();
-    private static Map<Runnable, IndexTask> taskExecutionMap = new HashMap<>();
+    private static Map<Future, IndexTask> futureMap = new HashMap<>();
     private static CircularFifoQueue<Future> futureQueue = new CircularFifoQueue<Future>(FUTUREQUEUESIZE);
     //a concurrent map to main the information about current processing resource map objects and their referenced ids
     //the key is a referenced id and value is the id of resource map.
@@ -252,9 +253,9 @@ public class IndexTaskProcessor {
                 processTask(task);
             }
         };
-        taskExecutionMap.put(newThreadTask, task);
+//        taskExecutionMap.put(newThreadTask, task);
         Future future = executor.submit(newThreadTask);
-        futureQueue.add(future);
+        futureMap.put(future, task);
     }
     
     private void processTask(IndexTask task) {
@@ -927,32 +928,59 @@ public class IndexTaskProcessor {
      */
     public void shutdownExecutor() {
         logger.warn("processor [" + this + "] shutting down ExecutorService.  Restting unprocessed tasks to New...");
-        List<Runnable> shutdownTasks = getExecutorService().shutdownNow();
-        
-        if (shutdownTasks != null) {
-            logger.warn(String.format("...number of tasks waiting to be executed: %d", shutdownTasks.size()));
-            logger.warn("... number of tasks in RunnablesMap: " + taskExecutionMap.size());
-            int marked = 0;
-            int noTaskMapping = 0;
-            for (Runnable r: shutdownTasks) {
-                IndexTask t = taskExecutionMap.get(r);
-                if (t != null) {
-                    t.markNew();
-                    repo.save(t);
-                    marked++;
+        getExecutorService().shutdown();
+        logger.warn(String.format("...number of futures: %d", futureQueue.size()));
+        logger.warn("... number of tasks in futures map: " + futureMap.size());
+        int marked = 0;
+        int noTaskMapping = 0;
+        List<Future> uncancellable = new LinkedList<>();
+        // cycle through list of futures to see which are cancellable
+        if (!futureQueue.isEmpty()) {
+            for (Future f : futureQueue) {
+                IndexTask t = futureMap.get(f);
+                if (f.cancel(/* interrupt while running */ false)) {
+                    // cancellable, so try to mark new
+                    if (t != null) {
+                        t.markNew();
+                        repo.save(t);
+                        marked++; 
+                    } else {
+                        noTaskMapping++;
+                    }
                 } else {
-                    noTaskMapping++;
+                    uncancellable.add(f);
+                    // the task is already completed (success, failure or exception)
+                    // so nothing needed to be done.
                 }
             }
-            logger.warn(String.format("...number of (waiting) runnables/tasks reset to new: %d", marked));
-            logger.warn(String.format("...number of (waiting) runnables not mapped to tasks: %d", noTaskMapping));
-        } else {
-            logger.warn("No tasks waiting to be executed.");
-        }
+            logger.warn(String.format("...number of (cancellable) runnables/tasks reset to new: %d", marked));
+            logger.warn(String.format("...number of (cancellable) runnables not mapped to tasks: %d", noTaskMapping));
+            logger.warn(String.format("...number of uncancellable runnables: %d (completed or in process)", uncancellable.size()));
+        } 
         try {
+            // the typical time for the longest type of task is 2 minutes (for ResourceMaps)
+            // so wait a little longer then give up
             getExecutorService().awaitTermination(3, TimeUnit.MINUTES);
+            // we should probably report on the in-process threads
+            if (!uncancellable.isEmpty()) {
+                for (Future f : uncancellable) {
+                    if (!f.isDone()) {
+                        IndexTask t = futureMap.get(f);
+                        if (t != null) {
+                            t.markNew();
+                            repo.save(t);
+                            logger.warn("...active future for pid " + t.getPid() 
+                                    + " not done.  Resetting to NEW, to allow reprocessing next time...");
+                        } else {
+                            logger.error("...CANNOT requeue task. No task mapped to  future!!");
+                        }
+                    }
+                }
+            }
         } catch (InterruptedException e) {
             logger.warn("interrupt caught while waiting for executor service to finish executing uninterruptable tasks.");
+        } finally {
+            getExecutorService().shutdownNow();
         }
     }
 }
