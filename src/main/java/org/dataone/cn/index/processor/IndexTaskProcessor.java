@@ -779,7 +779,7 @@ public class IndexTaskProcessor {
             }
         } else {
             hzObjectPath = retrieveHzObjectPath(task.getPid());
-            if (new File(hzObjectPath).exists()) {
+            if (hzObjectPath != null && new File(hzObjectPath).exists()) {
                 task.setObjectPath(hzObjectPath);
                 ready = true;
             }
