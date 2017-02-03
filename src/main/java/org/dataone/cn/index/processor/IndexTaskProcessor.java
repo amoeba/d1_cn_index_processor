@@ -926,11 +926,19 @@ public class IndexTaskProcessor {
     public void shutdownExecutor() {
         logger.warn("processor [" + this + "] shutting down ExecutorService.  Restting unprocessed tasks to New...");
         List<Runnable> shutdownTasks = getExecutorService().shutdownNow();
-        if (shutdownTasks != null)
+        
+        if (shutdownTasks != null) {
+            logger.warn(String.format("...number of tasks waiting to be executed: %d", shutdownTasks.size()));
+            int marked = 0;
             for (Runnable r: shutdownTasks) {
                 IndexTask t = taskExecutionMap.get(r);
                 t.markNew();
                 repo.save(t);
+                marked++;
             }
+            logger.warn(String.format("...number of (waiting) tasks reset to new: %d", marked));
+        } else {
+            logger.warn("No tasks waiting to be executed.");
+        }
     }
 }
