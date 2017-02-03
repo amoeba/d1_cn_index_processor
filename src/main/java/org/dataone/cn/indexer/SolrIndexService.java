@@ -212,29 +212,45 @@ public class SolrIndexService {
             e.printStackTrace();
         }
 
-        String formatId = docs.get(id).getFirstFieldValue(SolrElementField.FIELD_OBJECTFORMAT);
-        int i=1;
-        for (IDocumentSubprocessor subprocessor : getSubprocessors()) {
-            if (subprocessor.canProcess(formatId)) {
-                try {
-                    // note that resource map processing touches all objects
-                    // referenced by the resource map.
-                    long startFechingFile = System.currentTimeMillis();
-                    FileInputStream objectStream = new FileInputStream(objectPath);
-                    perfLog.log("Loop "+i+". "+"SolrIndexService.processObject() fetch file for id "+id, System.currentTimeMillis() - startFechingFile);
-                    if (!objectStream.getFD().valid()) {
-                        log.error("Could not load OBJECT file for ID,Path=" + id + ", "
-                                + objectPath);
-                    } else {
-                        long scimetaProcStart = System.currentTimeMillis();
-                        docs = subprocessor.processDocument(id, docs, objectStream);
-                        perfLog.log("Loop "+i+". "+"SolrIndexService.processObject() " + subprocessor.getClass().getSimpleName() + ".processDocument() total subprocessor processing time for id "+id+" with format: " + formatId, System.currentTimeMillis() - scimetaProcStart);
-                    }
-                } catch (Exception e) {
-                    log.warn("The subprocessor"+subprocessor.getClass().getName()+" can't process the id "+id+" since "+e.getMessage()+". However, the index still can be achieved without this part of information provided by the processor.", e);
+        if (objectPath != null) {
+            String formatId = docs.get(id).getFirstFieldValue(SolrElementField.FIELD_OBJECTFORMAT);
+            int i=1;
+            for (IDocumentSubprocessor subprocessor : getSubprocessors()) {
+                if (subprocessor.canProcess(formatId)) {
+                    try {
+                        // note that resource map processing touches all objects
+                        // referenced by the resource map.
+                        long startFechingFile = System.currentTimeMillis();
+                        FileInputStream objectStream = new FileInputStream(objectPath);
+                        perfLog.log("Loop "+i+". SolrIndexService.processObject() fetch file for id "+id, System.currentTimeMillis() - startFechingFile);
+                        if (!objectStream.getFD().valid()) {
+                            log.error("Could not load OBJECT file for ID,Path=" + id + ", "
+                                    + objectPath);
+                        } else {
+                            long scimetaProcStart = System.currentTimeMillis();
+                            docs = subprocessor.processDocument(id, docs, objectStream);
+                            perfLog.log(String.format(
+                                    "Loop %d. SolrIndexService.processObject() " 
+                                            + "%s.processDocument() total subprocessor processing time for id %s with format: %s",
+                                            i, 
+                                            subprocessor.getClass().getSimpleName(),
+                                            id,
+                                            formatId),
+                                            System.currentTimeMillis() - scimetaProcStart);
+                        }
+                    } catch (Exception e) {
+                        log.warn(String.format("The subprocessor %s can't process the id %s since %s. " +
+                                "However, the index still can be achieved without this part of information provided by the processor.",
+                                subprocessor.getClass().getName(),
+                                id,
+                                e.getMessage()),
+                                e);
+                    } 
                 }
+                i++;
             }
-            i++;
+        } else {
+            log.warn("The optional objectPath for pid " + id + " is null, so skipping processing with content subprocessors");
         }
 
         long mergeProcStart = System.currentTimeMillis();

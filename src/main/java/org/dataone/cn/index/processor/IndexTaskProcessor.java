@@ -936,10 +936,11 @@ public class IndexTaskProcessor {
         List<Future> uncancellable = new LinkedList<>();
         // cycle through list of futures to see which are cancellable
         if (!futureQueue.isEmpty()) {
-            for (Future f : futureQueue) {
-                IndexTask t = futureMap.get(f);
+            for (int i=futureQueue.size()-1; i > -1; i--) {
+                Future f = futureQueue.get(i);
                 if (f.cancel(/* interrupt while running */ false)) {
                     // cancellable, so try to mark new
+                    IndexTask t = futureMap.get(f);
                     if (t != null) {
                         t.markNew();
                         repo.save(t);
