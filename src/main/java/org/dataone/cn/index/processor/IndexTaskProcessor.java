@@ -32,10 +32,12 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.collections4.queue.CircularFifoQueue;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.log4j.Logger;
 import org.dataone.client.v2.formats.ObjectFormatCache;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
@@ -929,16 +931,28 @@ public class IndexTaskProcessor {
         
         if (shutdownTasks != null) {
             logger.warn(String.format("...number of tasks waiting to be executed: %d", shutdownTasks.size()));
+            logger.warn("... number of tasks in RunnablesMap: " + taskExecutionMap.size());
             int marked = 0;
+            int noTaskMapping = 0;
             for (Runnable r: shutdownTasks) {
                 IndexTask t = taskExecutionMap.get(r);
-                t.markNew();
-                repo.save(t);
-                marked++;
+                if (t != null) {
+                    t.markNew();
+                    repo.save(t);
+                    marked++;
+                } else {
+                    noTaskMapping++;
+                }
             }
-            logger.warn(String.format("...number of (waiting) tasks reset to new: %d", marked));
+            logger.warn(String.format("...number of (waiting) runnables/tasks reset to new: %d", marked));
+            logger.warn(String.format("...number of (waiting) runnables not mapped to tasks: %d", noTaskMapping));
         } else {
             logger.warn("No tasks waiting to be executed.");
+        }
+        try {
+            getExecutorService().awaitTermination(3, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            logger.warn("interrupt caught while waiting for executor service to finish executing uninterruptable tasks.");
         }
     }
 }
