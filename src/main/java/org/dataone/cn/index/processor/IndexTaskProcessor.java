@@ -253,14 +253,15 @@ public class IndexTaskProcessor {
                 processTask(task);
             }
         };
-//        taskExecutionMap.put(newThreadTask, task);
         Future future = executor.submit(newThreadTask);
+        futureQueue.add(future);
         futureMap.put(future, task);
     }
     
     private void processTask(IndexTask task) {
         long start = System.currentTimeMillis();
         try {
+//            task.setStatus("IN_PROCESS_running");
             checkReadinessProcessResourceMap(task);
             if (task.isDeleteTask()) {
                 logger.info("+++++++++++++start to process delete index task for "+task.getPid()+" in thread "+Thread.currentThread().getId());
