@@ -24,10 +24,12 @@ package org.dataone.cn.index.processor;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutorService;
@@ -86,8 +88,15 @@ public class IndexTaskProcessor {
     private static int FUTUREQUEUESIZE = Settings.getConfiguration().getInt("dataone.indexing.multiThreads.futureQueueSize", 100);
     private static ExecutorService executor = Executors.newFixedThreadPool(NUMOFPROCESSOR);
     private static final Lock lock = new ReentrantLock();
+    
+    /* a map used to aid in quick executor shutdown */
     private static Map<Future, IndexTask> futureMap = new HashMap<>();
+    /* a queue used to aid in quick executor shutdown */
     private static CircularFifoQueue<Future> futureQueue = new CircularFifoQueue<Future>(FUTUREQUEUESIZE);
+    /* a queue used to aid in quick executor shutdown, specifically to track tasks 
+     * that are marked as in process, but not handed to the executor yet */
+    private static Set<IndexTask> preSubmittedTasks = new HashSet<>();
+    
     //a concurrent map to main the information about current processing resource map objects and their referenced ids
     //the key is a referenced id and value is the id of resource map.
     private static ConcurrentHashMap <String, String> referencedIdsMap = new ConcurrentHashMap<String, String>(); 
@@ -255,6 +264,7 @@ public class IndexTaskProcessor {
         };
         Future future = executor.submit(newThreadTask);
         futureQueue.add(future);
+        preSubmittedTasks.remove(task);
         futureMap.put(future, task);
     }
     
@@ -586,6 +596,7 @@ public class IndexTaskProcessor {
             
             task.markInProgress();
             task = saveTask(task);
+            preSubmittedTasks.add(task);
             
             if (task == null) continue;  // saveTask can return null
 
@@ -928,8 +939,12 @@ public class IndexTaskProcessor {
      * in the IN PROCESS state.
      */
     public void shutdownExecutor() {
-        logger.warn("processor [" + this + "] shutting down ExecutorService.  Restting unprocessed tasks to New...");
+        logger.warn("processor [" + this + "] Shutting down the ExecutorService.  Will allow active tasks to finish; " +
+        		"will cancel submitted tasks and return them to NEW status, wait for active tasks to finish, then " +
+        		"return any remaining task not yet submitted to NEW status....");
+        logger.warn("...1.) closing ExecutorService to new tasks...");
         getExecutorService().shutdown();
+        logger.warn("...2.) cancelling cancellable futures...");
         logger.warn(String.format("...number of futures: %d", futureQueue.size()));
         logger.warn("... number of tasks in futures map: " + futureMap.size());
         int marked = 0;
@@ -951,8 +966,9 @@ public class IndexTaskProcessor {
                     }
                 } else {
                     uncancellable.add(f);
-                    // the task is already completed (success, failure or exception)
-                    // so nothing needed to be done.
+                    // uncancellables includes completed, previously cancelled tasks, 
+                    // and "others" that for some reason could not be cancelled.
+                    
                 }
             }
             logger.warn(String.format("...number of (cancellable) runnables/tasks reset to new: %d", marked));
@@ -960,21 +976,28 @@ public class IndexTaskProcessor {
             logger.warn(String.format("...number of uncancellable runnables: %d (completed or in process)", uncancellable.size()));
         } 
         try {
+            logger.warn("...3.) waiting (with timeout) for active futures to finish...");
             // the typical time for the longest type of task is 2 minutes (for ResourceMaps)
             // so wait a little longer then give up
             getExecutorService().awaitTermination(3, TimeUnit.MINUTES);
             // we should probably report on the in-process threads
+            logger.warn("...4.) Reviewing remaining uncancellables to check for completion, returning incomplete ones to NEW status...");
             if (!uncancellable.isEmpty()) {
                 for (Future f : uncancellable) {
                     if (!f.isDone()) {
                         IndexTask t = futureMap.get(f);
                         if (t != null) {
-                            t.markNew();
-                            repo.save(t);
-                            logger.warn("...active future for pid " + t.getPid() 
-                                    + " not done.  Resetting to NEW, to allow reprocessing next time...");
+                            if (IndexTask.STATUS_IN_PROCESS.equals(t.getStatus())) {
+                                t.markNew();
+                                repo.save(t);
+                                logger.warn("...active future for pid " + t.getPid() 
+                                        + " not done.  Resetting to NEW, to allow reprocessing next time...");
+                            } else {
+                                logger.warn("...active future for pid " + t.getPid() + 
+                                        "completed during wait period with status " + t.getStatus());
+                            }
                         } else {
-                            logger.error("...CANNOT requeue task. No task mapped to  future!!");
+                            logger.error("...CANNOT requeue task. No task mapped to this future!!");
                         }
                     }
                 }
@@ -982,7 +1005,16 @@ public class IndexTaskProcessor {
         } catch (InterruptedException e) {
             logger.warn("interrupt caught while waiting for executor service to finish executing uninterruptable tasks.");
         } finally {
+            logger.warn("...5.) Calling shutdownNow on the executor service.");
             getExecutorService().shutdownNow();
+            
+            logger.warn("...6.) returning preSubmitted tasks to NEW status...");
+            for(IndexTask t : preSubmittedTasks) {
+                t.markNew();
+                repo.save(t);
+                logger.warn("... preSubmittedTask for pid " + t.getPid() + "returned to NEW status.");
+            }
+            logger.warn("...7.) DONE with shutdown.");
         }
     }
 }
