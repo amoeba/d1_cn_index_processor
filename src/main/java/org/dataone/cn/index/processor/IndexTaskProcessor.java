@@ -1026,7 +1026,7 @@ public class IndexTaskProcessor {
                     t.markNew();
                     repo.save(t);
                     logger.warn("... preSubmittedTask for pid " + t.getPid() + "returned to NEW status.");
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     logger.error("....... Exception thrown trying to return task to NEW status for pid: " + t.getPid(),e);
                 }
             }
