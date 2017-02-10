@@ -273,7 +273,6 @@ public class IndexTaskProcessor {
     private void processTask(IndexTask task) {
         long start = System.currentTimeMillis();
         try {
-//            task.setStatus("IN_PROCESS_running");
             checkReadinessProcessResourceMap(task);
             if (task.isDeleteTask()) {
                 logger.info("+++++++++++++start to process delete index task for "+task.getPid()+" in thread "+Thread.currentThread().getId());
@@ -287,6 +286,12 @@ public class IndexTaskProcessor {
                 updateProcessor.process(task);
                 //System.out.println("*********************end to process update index task for "+task.getPid()+" in thread "+Thread.currentThread().getId());
                 logger.info("*********************end to process update index task for "+task.getPid()+" in thread "+Thread.currentThread().getId());
+            }
+        } catch (InterruptedException interruptedE) {
+            logger.warn("Task Interrupted before processing started. Resetting to NEW, for pid: " + task.getPid());
+            if (task != null) {
+                task.markNew();
+                repo.save(task);
             }
         } catch (Exception e) {
             logger.error("Unable to process task for pid: " + task.getPid(), e);
@@ -317,7 +322,7 @@ public class IndexTaskProcessor {
      * So we maintain a set containing the referenced ids which the resource map objects are currently being processed.
      * Before we start to process a new resource map object on a thread, we need to check the set.
      */
-    private void checkReadinessProcessResourceMap(IndexTask task) throws Exception{
+    private void checkReadinessProcessResourceMap(IndexTask task) throws InterruptedException, Exception{
         //only handle resourceMap index task
         if(task != null && task instanceof ResourceMapIndexTask ) {
             logger.debug("$$$$$$$$$$$$$$$$$ the index task "+task.getPid()+" is a resource map task in the the thread "+ Thread.currentThread().getId());
@@ -959,7 +964,7 @@ public class IndexTaskProcessor {
         if (!futureQueue.isEmpty()) {
             for (int i=futureQueue.size()-1; i > -1; i--) {
                 Future f = futureQueue.get(i);
-                if (f.cancel(/* interrupt while running */ false)) {
+                if (f.cancel(/* interrupt while running? */ false)) {
                     // cancellable, so try to mark new
                     IndexTask t = futureMap.get(f);
                     if (t != null) {
@@ -1011,9 +1016,11 @@ public class IndexTaskProcessor {
             logger.warn("interrupt caught while waiting for executor service to finish executing uninterruptable tasks.");
         } finally {
             logger.warn("...5.) Calling shutdownNow on the executor service.");
-            getExecutorService().shutdownNow();
-            
+            List<Runnable> stillWaiting = getExecutorService().shutdownNow();
+            logger.warn("... .... number of runnables still waiting: " + stillWaiting.size());
+
             logger.warn("...6.) returning preSubmitted tasks to NEW status...");
+            logger.warn("... .... number of preSubmitted tasks: " + preSubmittedTasks.size());
             for(IndexTask t : preSubmittedTasks) {
                 t.markNew();
                 repo.save(t);
