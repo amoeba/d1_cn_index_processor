@@ -96,6 +96,7 @@ public class IndexTaskProcessor {
     /* a queue used to aid in quick executor shutdown, specifically to track tasks 
      * that are marked as in process, but not handed to the executor yet */
     private static Set<IndexTask> preSubmittedTasks = new HashSet<>();
+    private static boolean inShutdownMode = false;
     
     //a concurrent map to main the information about current processing resource map objects and their referenced ids
     //the key is a referenced id and value is the id of resource map.
@@ -590,7 +591,7 @@ public class IndexTaskProcessor {
      */
     private IndexTask getNextIndexTask(List<IndexTask> queue) {
         IndexTask task = null;
-        while (task == null && queue.isEmpty() == false) {
+        while (task == null && queue.isEmpty() == false && !inShutdownMode) {
             task = queue.remove(0);
 
             if (task == null) continue;
@@ -940,6 +941,9 @@ public class IndexTaskProcessor {
      * in the IN PROCESS state.
      */
     public void shutdownExecutor() {
+        
+        inShutdownMode = true;
+        
         logger.warn("processor [" + this + "] Shutting down the ExecutorService.  Will allow active tasks to finish; " +
         		"will cancel submitted tasks and return them to NEW status, wait for active tasks to finish, then " +
         		"return any remaining task not yet submitted to NEW status....");
