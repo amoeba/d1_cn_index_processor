@@ -265,8 +265,8 @@ public class IndexTaskProcessor {
         };
         @SuppressWarnings("unchecked")
         Future<Void> future = (Future<Void>) executor.submit(newThreadTask);
-        futureQueue.add(future);
         preSubmittedTasks.remove(task);
+        futureQueue.add(future);
         futureMap.put(future, task);
     }
     
@@ -1022,9 +1022,13 @@ public class IndexTaskProcessor {
             logger.warn("...6.) returning preSubmitted tasks to NEW status...");
             logger.warn("... .... number of preSubmitted tasks: " + preSubmittedTasks.size());
             for(IndexTask t : preSubmittedTasks) {
-                t.markNew();
-                repo.save(t);
-                logger.warn("... preSubmittedTask for pid " + t.getPid() + "returned to NEW status.");
+                try {
+                    t.markNew();
+                    repo.save(t);
+                    logger.warn("... preSubmittedTask for pid " + t.getPid() + "returned to NEW status.");
+                } catch (Exception e) {
+                    logger.error("....... Exception thrown trying to return task to NEW status for pid: " + t.getPid(),e);
+                }
             }
             logger.warn("...7.) DONE with shutdown.");
         }
