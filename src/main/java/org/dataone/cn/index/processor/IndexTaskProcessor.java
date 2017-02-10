@@ -82,17 +82,17 @@ public class IndexTaskProcessor {
     private static Logger logger = Logger.getLogger(IndexTaskProcessor.class.getName());
     private static final String FORMAT_TYPE_DATA = "DATA";
     private static final String LOAD_LOGGER_NAME = "indexProcessorLoad";
-    private static int BATCH_UPDATE_SIZE = Settings.getConfiguration().getInt("dataone.indexing.batchUpdateSize", 1000);
+//    private static int BATCH_UPDATE_SIZE = Settings.getConfiguration().getInt("dataone.indexing.batchUpdateSize", 1000);
     private static int NUMOFPROCESSOR = Settings.getConfiguration().getInt("dataone.indexing.multiThreads.processThreadPoolSize", 10);
     private static int MAXATTEMPTS = Settings.getConfiguration().getInt("dataone.indexing.multiThreads.resourceMapWait.maxAttempt", 10);
-    private static int FUTUREQUEUESIZE = Settings.getConfiguration().getInt("dataone.indexing.multiThreads.futureQueueSize", 100);
+//    private static int FUTUREQUEUESIZE = Settings.getConfiguration().getInt("dataone.indexing.multiThreads.futureQueueSize", 100);
     private static ExecutorService executor = Executors.newFixedThreadPool(NUMOFPROCESSOR);
     private static final Lock lock = new ReentrantLock();
     
     /* a map used to aid in quick executor shutdown */
-    private static Map<Future, IndexTask> futureMap = new HashMap<>();
+    private static Map<Future<Void>, IndexTask> futureMap = new HashMap<>();
     /* a queue used to aid in quick executor shutdown */
-    private static CircularFifoQueue<Future> futureQueue = new CircularFifoQueue<Future>(FUTUREQUEUESIZE);
+    private static List<Future<Void>> futureQueue = new LinkedList<>();
     /* a queue used to aid in quick executor shutdown, specifically to track tasks 
      * that are marked as in process, but not handed to the executor yet */
     private static Set<IndexTask> preSubmittedTasks = new HashSet<>();
@@ -262,7 +262,8 @@ public class IndexTaskProcessor {
                 processTask(task);
             }
         };
-        Future future = executor.submit(newThreadTask);
+        @SuppressWarnings("unchecked")
+        Future<Void> future = (Future<Void>) executor.submit(newThreadTask);
         futureQueue.add(future);
         preSubmittedTasks.remove(task);
         futureMap.put(future, task);
@@ -927,11 +928,11 @@ public class IndexTaskProcessor {
     }
     
     /**
-     * Get the last 100 futures of the index task threads scheduled by executor service.
+     * Get the list of index task futures submitted to the executor service.
      * @return
      */
     public Queue<Future> getFutureQueue() {
-        return futureQueue;
+        return new CircularFifoQueue(futureQueue);
     }
     
     /**
