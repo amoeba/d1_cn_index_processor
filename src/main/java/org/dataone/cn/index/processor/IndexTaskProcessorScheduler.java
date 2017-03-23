@@ -28,15 +28,21 @@ import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.quartz.InterruptableJob;
+import org.quartz.Job;
 import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
 import org.quartz.SimpleScheduleBuilder;
 import org.quartz.SimpleTrigger;
+import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 
 public class IndexTaskProcessorScheduler {
@@ -49,9 +55,12 @@ public class IndexTaskProcessorScheduler {
 
     private Scheduler scheduler;
 
+    /**
+     * called by the IndexTaskProcessorDaemon's start method 
+     */
     public void start() {
         try {
-            logger.info("starting index task processor quartz scheduler....");
+            logger.warn("starting index task processor quartz scheduler [" + this + "] ...");
             Properties properties = new Properties();
             properties.load(this.getClass().getResourceAsStream(
                     "/org/dataone/configuration/quartz.properties"));
@@ -79,19 +88,44 @@ public class IndexTaskProcessorScheduler {
         }
     }
 
+    /** 
+     * called by IndexTaskProcessorDaemon's stop method.  Puts the started scheduler
+     * on standby, then waits for the scheduler's executing IndexTaskProcesssorJobs 
+     * to finish.  Depending on the configuration of the Job, there may me more than
+     * one executing at a time.  
+     * TODO:  should we send an interrupt or stop to the job? 
+     */
     public void stop() {
-        logger.info("stopping index task processor quartz scheduler...");
+        logger.warn("stopping index task processor quartz scheduler [" + this + "] ...");
         try {
+            
             if (scheduler.isStarted()) {
-                scheduler.standby();
+                scheduler.standby();  // this stops execution and triggering
+                                      // keeping backlogged triggers from executing
+                
+                // signal interrupt to the executing jobs
+                List<JobExecutionContext> jobs = scheduler.getCurrentlyExecutingJobs();
+                if (jobs != null)
+                    for (JobExecutionContext j : jobs) {
+                        if (j.getJobInstance() instanceof InterruptableJob) {
+                            logger.warn("interrupting processing job [" + j.getJobInstance() + "] ...");
+                            ((InterruptableJob)j.getJobInstance()).interrupt();
+                        } else {
+                            logger.warn("processing job [" + j.getJobInstance() + "] not interruptable...");
+                        }
+                    }
+                // wait for concurrently executing Jobs to finish
                 while (!(scheduler.getCurrentlyExecutingJobs().isEmpty())) {
-                    logger.info("Job executing, waiting for it to complete.....");
+                    logger.warn(String.format("%d jobs executing,  waiting for them to complete...", 
+                            scheduler.getCurrentlyExecutingJobs().size()));
+                    
                     try {
                         Thread.sleep(5000);
                     } catch (InterruptedException ex) {
-                        logger.warn("Sleep interrupted. check again!");
+                        logger.warn("Sleep interrupted while waiting for executing jobs to finish. check again!");
                     }
                 }
+                logger.warn("Job scheduler [" + this + "] finished executing all jobs.");
                 scheduler.deleteJob(jobKey(QUARTZ_PROCESSOR_JOB, QUARTZ_PROCESSOR_GROUP));
             }
         } catch (SchedulerException e) {

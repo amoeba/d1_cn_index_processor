@@ -34,7 +34,7 @@ public class IndexTaskProcessorDaemon implements Daemon {
 
     @Override
     public void start() throws Exception {
-        System.out.println("starting index task processor daemon instance: " + this + " ...");
+        System.out.println("starting index task processor daemon [" + this + "] ..." );
         context = new ClassPathXmlApplicationContext("processor-daemon-context.xml");
         scheduler = (IndexTaskProcessorScheduler) context.getBean("indexTaskProcessorScheduler");
         scheduler.start();
@@ -42,10 +42,9 @@ public class IndexTaskProcessorDaemon implements Daemon {
 
     @Override
     public void stop() throws Exception {
-        System.out.println("stopping index task processor daemon instance: " + this + " ...");
+        System.out.println("stopping index task processor daemon [" + this + "] ...");
         scheduler.stop();
-        System.out.println("... daemon stopped. [ "  + this + " ]");
-        
+        System.out.println("index task processor daemon  [" + this + "] stopped.");
     }
 
     @Override
