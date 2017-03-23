@@ -37,6 +37,6 @@ import org.xml.sax.SAXException;
  * Time: 11:09 AM
  */
 public interface IDocumentProvider {
-    public Document GetDocument(String identifier) throws ParserConfigurationException,
+    public Document getDocument(String identifier) throws ParserConfigurationException,
             IOException, SAXException;
 }

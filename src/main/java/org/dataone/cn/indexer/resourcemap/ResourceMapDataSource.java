@@ -61,13 +61,13 @@ public class ResourceMapDataSource implements IDocumentProvider {
     }
 
 
-    public Document GetDocument(String identifier) {
+    public Document getDocument(String identifier) {
         HttpClient client = getClient();
         String uri = getResourceMapURI(identifier);
         HttpGet request = new HttpGet(uri);
         HttpResponse response = null;
         try {
-            client.execute(request);
+            response = client.execute(request);
             Document doc = parseDocument(response.getEntity().getContent());
             return doc;
         } catch (Exception e) {
