@@ -283,11 +283,11 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
                 "ala-wai-canal-ns02-matlab-processing-schedule_AW02XX_001CTDXXXXR00_processing.1.m");
 
         // Ensure fields associated with the data input object's metadata are indexed
-        //expectedFields.clear();
-        //expectedFields.put(HAS_DERIVATIONS_FIELD, "ala-wai-canal-ns02-image-data-AW02XX_001CTDXXXXR00_20150203_10day.1.jpg");
-        //compareFields(expectedFields, provAlaWaiNS02MatlabProcessing2RDF.getInputStream(), 
-        //    provRdfXmlSubprocessor, "ala-wai-ns02-matlab-processing.2.rdf", 
-        //    "ala-wai-canal-ns02-ctd-data.eml.1.xml");
+        expectedFields.clear();
+        expectedFields.put(HAS_DERIVATIONS_FIELD, "ala-wai-canal-ns02-image-data-AW02XX_001CTDXXXXR00_20150203_10day.1.jpg");
+        compareFields(expectedFields, provAlaWaiNS02MatlabProcessing2RDF.getInputStream(), 
+            provRdfXmlSubprocessor, "ala-wai-ns02-matlab-processing.2.rdf", 
+            "ala-wai-canal-ns02-ctd-data.1.txt");
 
         // Ensure fields associated with the data output object's metadata are indexed
         //expectedFields.clear();
