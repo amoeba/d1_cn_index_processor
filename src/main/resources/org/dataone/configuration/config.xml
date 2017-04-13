@@ -7,4 +7,6 @@
   <!-- Provides the DNS hostname -->
   <properties fileName="file:/etc/dataone/node.properties" />
   <properties fileName="file:/etc/dataone/index/d1client.properties" />
+  <!-- Some specific properties for CNs -->
+  <properties fileName="file:/etc/dataone/index/cn-index-processor.properties" />
 </configuration>
