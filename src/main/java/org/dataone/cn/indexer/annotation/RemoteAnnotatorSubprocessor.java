@@ -250,50 +250,57 @@ public class RemoteAnnotatorSubprocessor implements IDocumentSubprocessor {
 
         // get the triples tore dataset
         Dataset dataset = TripleStoreService.getInstance().getDataset();
-
-        // load the ontology
-        boolean loaded = dataset.containsNamedModel(uri);
-        if (!loaded) {
-            OntModel ontModel = ModelFactory.createOntologyModel();
-            //InputStream sourceStream = new URI(uri).toURL().openStream();
-            // TODO: look up physical source from bioportal
-            ontModel.read(uri);
-            dataset.addNamedModel(uri, ontModel);
-        }
-
-        // process each field query
-        for (ISolrDataField field : fieldList) {
-            String q = null;
-            if (field instanceof SparqlField) {
-                q = ((SparqlField) field).getQuery();
-                q = q.replaceAll("\\$CONCEPT_URI", uri);
-                q = q.replaceAll("\\$GRAPH_NAME", uri);
-                Query query = QueryFactory.create(q);
-                QueryExecution qexec = QueryExecutionFactory.create(query, dataset);
-                ResultSet results = qexec.execSelect();
-
-                // each field might have multiple solution values
-                String name = field.getName();
-                Set<String> values = new TreeSet<String>();
-
-                while (results.hasNext()) {
-
-                    QuerySolution solution = results.next();
-                    log.debug(solution.toString());
-
-                    // the value[s] for that field
-                    if (solution.contains(name)) {
-                        String value = solution.get(field.getName()).toString();
-                        values.add(value);
+        try {
+            
+            // load the ontology
+            boolean loaded = dataset.containsNamedModel(uri);
+            if (!loaded) {
+                OntModel ontModel = ModelFactory.createOntologyModel();
+                //InputStream sourceStream = new URI(uri).toURL().openStream();
+                // TODO: look up physical source from bioportal
+                ontModel.read(uri);
+                dataset.addNamedModel(uri, ontModel);
+            }
+    
+            // process each field query
+            for (ISolrDataField field : fieldList) {
+                String q = null;
+                if (field instanceof SparqlField) {
+                    q = ((SparqlField) field).getQuery();
+                    q = q.replaceAll("\\$CONCEPT_URI", uri);
+                    q = q.replaceAll("\\$GRAPH_NAME", uri);
+                    Query query = QueryFactory.create(q);
+                    QueryExecution qexec = QueryExecutionFactory.create(query, dataset);
+                    ResultSet results = qexec.execSelect();
+    
+                    // each field might have multiple solution values
+                    String name = field.getName();
+                    Set<String> values = new TreeSet<String>();
+    
+                    while (results.hasNext()) {
+    
+                        QuerySolution solution = results.next();
+                        log.debug(solution.toString());
+    
+                        // the value[s] for that field
+                        if (solution.contains(name)) {
+                            String value = solution.get(field.getName()).toString();
+                            values.add(value);
+                        }
                     }
+                    conceptFields.put(name, values);
+    
                 }
-                conceptFields.put(name, values);
-
+            }
+        } finally {
+            try {
+                TripleStoreService.getInstance().destoryDataset(dataset);
+            } catch (Exception e) {
+                log.warn("A tdb directory can't be removed since "+e.getMessage(), e);
             }
         }
-
         // clean up the triple store
-        TDBFactory.release(dataset);
+        //TDBFactory.release(dataset);
 
         return conceptFields;
 
