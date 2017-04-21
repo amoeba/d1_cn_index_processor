@@ -51,6 +51,7 @@ public class TripleStoreService {
 	 */
 	public void destoryDataset(Dataset dataset) throws IOException {
 	    if(dataset != null) {
+	        TDBFactory.release(dataset);
 	        File file = dataset_location_map.remove(dataset);
 	        if(file != null) {
 	            FileUtils.deleteDirectory(file);	           
