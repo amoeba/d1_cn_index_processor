@@ -21,6 +21,12 @@
  */
 package org.dataone.cn.index.task;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,23 +40,18 @@ import javax.persistence.Transient;
  * @author tao
  *
  */
-public class ResourceMapIndexTask extends IndexTask {
-    @Transient
-    private List<String> referencedIds = new ArrayList<String> ();
+public class ResourceMapIndexTask extends IndexTask implements Serializable {
 
-    /**
-     * Default constructor
-     */
-    public ResourceMapIndexTask() {
-
-    }
+    private static final long serialVersionUID = 859612867797015876L;
+   
+    private List<String> referencedIds;
     
-    @Transient
+
     public List<String> getReferencedIds() {
         return referencedIds;
     }
 
-    @Transient
+
     public void setReferencedIds(List<String> referencedIds) {
         this.referencedIds = referencedIds;
     }
@@ -75,7 +76,35 @@ public class ResourceMapIndexTask extends IndexTask {
             this.setPriority(task.getPriority());
             this.setStatus(task.getStatus());
             this.setTaskModifiedDate(task.getTaskModifiedDate());
-        }
+        }    
+    }
+    
+
+    public byte[] serialize() throws IOException {
         
+        ByteArrayOutputStream baos;
+        ObjectOutputStream out = null;
+        try {
+            baos = new ByteArrayOutputStream();
+            out = new ObjectOutputStream(baos);
+            out.writeObject(this);
+            out.flush();
+            
+            return baos.toByteArray();
+        } finally {
+            if (out != null)
+                out.close();    
+        }      
+    }
+    
+    public static ResourceMapIndexTask deserialize(byte[] objectBytes) throws IOException, ClassNotFoundException {
+
+        ObjectInputStream in = null;
+        try {
+            in = new ObjectInputStream(new ByteArrayInputStream(objectBytes));
+            return (ResourceMapIndexTask) in.readObject();
+        } finally {
+            if (in != null) in.close();
+        }
     }
 }
