@@ -7,6 +7,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -89,7 +92,8 @@ public class QueuePrioritizerTest {
     public void testOnSyncOrder() throws IOException {
         QueuePrioritizer qp = new QueuePrioritizer(100, 5);
         
-        BufferedReader r = new BufferedReader(new FileReader("/Users/rnahf/software/syncDistribution.csv"));
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream("org/dataone/cn/indexer/processor/syncDistribution.csv");
+        BufferedReader r = new BufferedReader(new InputStreamReader(is,"UTF-8"));
         String line = null;
         int i = 0;
         float lastPriority = 5;
