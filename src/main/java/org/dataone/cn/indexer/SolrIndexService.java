@@ -42,14 +42,16 @@ import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.index.util.PerformanceLogger;
 import org.dataone.cn.indexer.parser.IDocumentDeleteSubprocessor;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
-import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementAdd;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
+import org.dataone.exceptions.MarshallingException;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v2.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
+import org.restlet.engine.io.IoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 
 /**
@@ -59,13 +61,13 @@ import org.xml.sax.SAXException;
  * index data from document objects.  Each sub-processor is configured via spring
  * to collect data from different types of documents (by formatId).
  * 
- * There should only be one instance of XPathDocumentParser in place at a time
+ * There should only be one instance of this class in place at a time
  * since it performs updates on the SOLR index and transactions on SOLR are at
  * the server level - so if multiple threads write and commit then things could
  * get messy.
  * 
  */
-
+@Component
 public class SolrIndexService {
 
     private static Logger log = Logger.getLogger(SolrIndexService.class);
@@ -75,7 +77,7 @@ public class SolrIndexService {
     private IDocumentSubprocessor systemMetadataProcessor = null;
 
     @Autowired
-    private HTTPService httpService = null;
+    private D1IndexerSolrClient httpService = null;
 
     @Autowired
     private String solrIndexUri = null;
@@ -88,6 +90,12 @@ public class SolrIndexService {
     public SolrIndexService() {
     }
 
+    /**
+     * Removing a document from the index can involve changes to several related documents
+     * 
+     * @param identifier
+     * @throws Exception
+     */
     public void removeFromIndex(String identifier) throws Exception {
 
         Map<String, SolrDoc> docs = new HashMap<String, SolrDoc>();
@@ -182,21 +190,8 @@ public class SolrIndexService {
         */
     }
     
-    /**
-     * Given a PID, system metadata input stream, and an optional document
-     * path, populate the set of SOLR fields for the document. 
-     * 
-     * @param id
-     * @param systemMetaDataStream
-     * @param objectPath
-     * @return
-     * @throws IOException
-     * @throws SAXException
-     * @throws ParserConfigurationException
-     * @throws XPathExpressionException
-     * @throws EncoderException
-     */
-    public SolrElementAdd processObject(String id, InputStream systemMetaDataStream,
+ 
+    public Map<String, SolrDoc> parseTaskObject(String id, InputStream systemMetaDataStream,
             String objectPath) throws IOException, SAXException, ParserConfigurationException,
             XPathExpressionException, EncoderException {
 
@@ -213,11 +208,14 @@ public class SolrIndexService {
         }
 
         if (objectPath != null) {
-            String formatId = docs.get(id).getFirstFieldValue(SolrElementField.FIELD_OBJECTFORMAT);
+            SolrDoc sDoc = docs.get(id);            
+            String formatId = sDoc.getFirstFieldValue(SolrElementField.FIELD_OBJECTFORMAT);
             int i=1;
             for (IDocumentSubprocessor subprocessor : getSubprocessors()) {
                 if (subprocessor.canProcess(formatId)) {
                     try {
+                        if (log.isDebugEnabled()) 
+                            log.debug("...subprocessor " + subprocessor.getClass().getSimpleName() + " invoked for " + id);
                         // note that resource map processing touches all objects
                         // referenced by the resource map.
                         long startFechingFile = System.currentTimeMillis();
@@ -252,6 +250,30 @@ public class SolrIndexService {
         } else {
             log.warn("The optional objectPath for pid " + id + " is null, so skipping processing with content subprocessors");
         }
+        return docs;
+    }
+ 
+    /**
+     * Given a PID, system metadata input stream, and an optional document
+     * path, populate the set of SOLR fields for the document. 
+     * 
+     * @param id
+     * @param systemMetaDataStream
+     * @param objectPath
+     * @return
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     * @throws XPathExpressionException
+     * @throws EncoderException
+     */
+    public SolrElementAdd processObject(String id, InputStream systemMetaDataStream,
+            String objectPath) throws IOException, SAXException, ParserConfigurationException,
+            XPathExpressionException, EncoderException { 
+
+        long processObjStart = System.currentTimeMillis();
+        
+        Map<String, SolrDoc> docs = parseTaskObject(id, systemMetaDataStream, objectPath);
 
         long mergeProcStart = System.currentTimeMillis();
         Map<String, SolrDoc> mergedDocs = new HashMap<String, SolrDoc>();
@@ -340,7 +362,7 @@ public class SolrIndexService {
     }
     
     private void sendCommand(SolrElementAdd addCommand) throws IOException {
-        HTTPService service = getHttpService();
+        D1IndexerSolrClient service = getHttpService();
         service.sendUpdate(getSolrindexUri(), addCommand, OUTPUT_ENCODING);
     }
 
@@ -360,11 +382,11 @@ public class SolrIndexService {
         this.solrIndexUri = solrindexUri;
     }
 
-    public void setHttpService(HTTPService service) {
+    public void setHttpService(D1IndexerSolrClient service) {
         this.httpService = service;
     }
 
-    public HTTPService getHttpService() {
+    public D1IndexerSolrClient getHttpService() {
         return httpService;
     }
 

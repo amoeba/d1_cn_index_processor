@@ -48,12 +48,12 @@ import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.index.task.IndexTaskRepository;
 import org.dataone.cn.index.task.ResourceMapIndexTask;
 import org.dataone.cn.index.util.PerformanceLogger;
+import org.dataone.cn.indexer.D1IndexerSolrClient;
 import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.cn.indexer.parser.utility.SeriesIdResolver;
 import org.dataone.cn.indexer.resourcemap.ForesiteResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMapFactory;
-import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.configuration.Settings;
 import org.dataone.service.exceptions.BaseException;
@@ -113,7 +113,7 @@ public class IndexTaskProcessor {
     private IndexTaskProcessingStrategy updateProcessor;
 
     @Autowired
-    private HTTPService httpService;
+    private D1IndexerSolrClient httpService;
 
     @Autowired
     private String solrQueryUri;
@@ -729,7 +729,7 @@ public class IndexTaskProcessor {
         List<SolrDoc> updateDocuments = null;
         int numberOfIndexedOrRemovedReferences = 0;
         try {
-            updateDocuments = httpService.getDocumentsById(this.solrQueryUri, referencedIds);
+            updateDocuments = httpService.getDocumentsByD1Identifier(this.solrQueryUri, referencedIds);
             numberOfIndexedOrRemovedReferences = 0;
             for (String id : referencedIds) {
                 boolean foundId = false;

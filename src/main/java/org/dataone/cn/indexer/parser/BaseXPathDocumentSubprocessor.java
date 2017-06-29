@@ -63,7 +63,11 @@ public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
     private PerformanceLogger perfLog = PerformanceLogger.getInstance();
     
     private static XPathFactory xpathFactory = null;
+
     private static XPath xpath = null;
+
+    
+
 
     /**
      * If xpath returns true execute the processDocument Method
@@ -157,6 +161,10 @@ public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
     }
 
     public static void setXmlNamespaceConfig(XMLNamespaceConfig xmlNamespaceConfig) {
+        xpath.setNamespaceContext(xmlNamespaceConfig);
+    }
+    
+    public static void setXMLNamespaceConfig(XMLNamespaceConfig xmlNamespaceConfig) {
         xpath.setNamespaceContext(xmlNamespaceConfig);
     }
 

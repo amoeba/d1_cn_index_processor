@@ -8,8 +8,6 @@ xmlns:context="http://www.springframework.org/schema/context"
    		http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
     <context:property-placeholder location="classpath:org/dataone/configuration/jdbc.properties, classpath:org/dataone/configuration/solr.properties"/>
-
-    <import resource="classpath:index-processor-context.xml"/>
     
     <import resource="classpath:application-context-systemmeta200.xml" />
  	<import resource="classpath:application-context-resourcemap.xml" />
@@ -51,6 +49,8 @@ xmlns:context="http://www.springframework.org/schema/context"
     <import resource="classpath:application-context-annotator.xml" />
     
     <import resource="classpath:org/dataone/cn/indexer/annotation/test-context-annotator.xml"/>
+ 
+  <import resource="classpath:index-processor-context.xml"/>
     
     <!-- 
     This import overrides default postgres datasource for testing.

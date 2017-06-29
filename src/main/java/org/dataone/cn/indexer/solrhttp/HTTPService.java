@@ -54,6 +54,7 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
+import org.dataone.cn.indexer.D1IndexerSolrClient;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -68,7 +69,7 @@ import org.xml.sax.SAXException;
  * solr functions including adding documents to index.
  */
 
-public class HTTPService {
+public class HTTPService implements D1IndexerSolrClient {
 
     private static final String CHAR_ENCODING = "UTF-8";
     private static final String XML_CONTENT_TYPE = "text/xml";
@@ -93,27 +94,27 @@ public class HTTPService {
         httpRequestFactory = requestFactory;
     }
 
-    /**
-     * Posts document data to Solr indexer.
-     * 
-     * @param uri
-     *            Solr index url example:
-     *            http://localhost:8080/solr/update?commit=true
-     * @param data
-     *            documents to index
-     * @param encoding
-     *            use "UTF-8"
-     * @throws IOException
+    /* (non-Javadoc)
+     * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#sendUpdate(java.lang.String, org.dataone.cn.indexer.solrhttp.SolrElementAdd, java.lang.String)
      */
 
+    @Override
     public void sendUpdate(String uri, SolrElementAdd data, String encoding) throws IOException {
         this.sendUpdate(uri, data, encoding, XML_CONTENT_TYPE);
     }
 
+    /* (non-Javadoc)
+     * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#sendUpdate(java.lang.String, org.dataone.cn.indexer.solrhttp.SolrElementAdd)
+     */
+    @Override
     public void sendUpdate(String uri, SolrElementAdd data) throws IOException {
         sendUpdate(uri, data, CHAR_ENCODING, XML_CONTENT_TYPE);
     }
 
+    /* (non-Javadoc)
+     * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#sendUpdate(java.lang.String, org.dataone.cn.indexer.solrhttp.SolrElementAdd, java.lang.String, java.lang.String)
+     */
+    @Override
     public void sendUpdate(String uri, SolrElementAdd data, String encoding, String contentType)
             throws IOException {
         InputStream inputStreamResponse = null;
@@ -167,6 +168,10 @@ public class HTTPService {
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#sendSolrDelete(java.lang.String)
+     */
+    @Override
     public void sendSolrDelete(String pid) {
         // generate request to solr server to remove index record for task.pid
         OutputStream outputStream = new ByteArrayOutputStream();
@@ -181,6 +186,10 @@ public class HTTPService {
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#sendSolrDeletes(java.util.List)
+     */
+    @Override
     public void sendSolrDeletes(List<String> pids) {
         // generate request to solr server to remove index record for task.pid
         OutputStream outputStream = new ByteArrayOutputStream();
@@ -269,35 +278,41 @@ public class HTTPService {
 
     // ?q=id%3Ac6a8c20f-3503-4ded-b395-98fcb0fdd78c+OR+f5aaac58-dee1-4254-8cc4-95c5626ab037+OR+f3229cfb-2c53-4aa0-8437-057c2a52f502&version=2.2
 
-    /**
-     * Return the SOLR records for the specified PIDs
-     * 
-     * @param uir
-     * @param ids
-     * @return
-     * @throws IOException
-     * @throws XPathExpressionException
-     * @throws EncoderException
+    /* (non-Javadoc)
+     * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#getDocumentsById(java.lang.String, java.util.List)
      */
-    public List<SolrDoc> getDocumentsById(String uir, List<String> ids) throws IOException,
+    @Override
+    public List<SolrDoc> getDocumentsByD1Identifier(String uir, List<String> ids) throws IOException,
             XPathExpressionException, EncoderException {
         List<SolrDoc> docs = getDocumentsByField(uir, ids, SolrElementField.FIELD_SERIES_ID, false);
         docs.addAll(getDocumentsByField(uir, ids, SolrElementField.FIELD_ID, false));
         return docs;
     }
 
-    public List<SolrDoc> getDocumentById(String uir, String id) throws IOException,
+    /* (non-Javadoc)
+     * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#getDocumentById(java.lang.String, java.lang.String)
+     */
+    @Override
+    public List<SolrDoc> getDocumentBySolrId(String uir, String id) throws IOException,
             XPathExpressionException, EncoderException {
         return getDocumentsByField(uir, Collections.singletonList(id), SolrElementField.FIELD_ID,
                 false);
     }
 
+    /* (non-Javadoc)
+     * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#getDocumentsByResourceMap(java.lang.String, java.lang.String)
+     */
+    @Override
     public List<SolrDoc> getDocumentsByResourceMap(String uir, String resourceMapId)
             throws IOException, XPathExpressionException, EncoderException {
         return getDocumentsByField(uir, Collections.singletonList(resourceMapId),
                 SolrElementField.FIELD_RESOURCEMAP, true);
     }
 
+    /* (non-Javadoc)
+     * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#getDocumentsByField(java.lang.String, java.util.List, java.lang.String, boolean)
+     */
+    @Override
     public List<SolrDoc> getDocumentsByField(String uir, List<String> fieldValues,
             String queryField, boolean maxRows) throws IOException, XPathExpressionException,
             EncoderException {
@@ -341,6 +356,10 @@ public class HTTPService {
         return docs;
     }
 
+    /* (non-Javadoc)
+     * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#getDocumentsByResourceMapFieldAndDocumentsField(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
     public List<SolrDoc> getDocumentsByResourceMapFieldAndDocumentsField(String uir,
             String resourceMapId, String documentsId) throws IOException, XPathExpressionException,
             EncoderException {
@@ -348,6 +367,10 @@ public class HTTPService {
                 SolrElementField.FIELD_DOCUMENTS, documentsId);
     }
 
+    /* (non-Javadoc)
+     * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#getDocumentsByResourceMapFieldAndIsDocumentedByField(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
     public List<SolrDoc> getDocumentsByResourceMapFieldAndIsDocumentedByField(String uir,
             String resourceMapId, String isDocumentedById) throws IOException,
             XPathExpressionException, EncoderException {
@@ -398,11 +421,15 @@ public class HTTPService {
         return docs;
     }
 
+    /* (non-Javadoc)
+     * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#retrieveDocumentFromSolrServer(java.lang.String, java.lang.String)
+     */
+    @Override
     public SolrDoc retrieveDocumentFromSolrServer(String id, String solrQueryUri)
-            throws XPathExpressionException, IOException, EncoderException {
+               throws XPathExpressionException, IOException, EncoderException {
         List<String> ids = new ArrayList<String>();
         ids.add(id);
-        List<SolrDoc> indexedDocuments = getDocumentsById(solrQueryUri, ids);
+        List<SolrDoc> indexedDocuments = getDocumentsByD1Identifier(solrQueryUri, ids);
         if (indexedDocuments.size() > 0) {
             return indexedDocuments.get(0);
         } else {
@@ -430,6 +457,10 @@ public class HTTPService {
         return doc;
     }
 
+    /* (non-Javadoc)
+     * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#setSolrSchemaPath(java.lang.String)
+     */
+    @Override
     public void setSolrSchemaPath(String path) {
         SOLR_SCHEMA_PATH = path;
     }
@@ -493,14 +524,26 @@ public class HTTPService {
         return doc;
     }
 
+    /* (non-Javadoc)
+     * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#setSolrIndexUri(java.lang.String)
+     */
+    @Override
     public void setSolrIndexUri(String uri) {
         this.solrIndexUri = uri;
     }
 
+    /* (non-Javadoc)
+     * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#getSolrIndexUri()
+     */
+    @Override
     public String getSolrIndexUri() {
         return this.solrIndexUri;
     }
 
+    /* (non-Javadoc)
+     * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#getHttpClient()
+     */
+    @Override
     public HttpClient getHttpClient() {
         return httpRequestFactory.getHttpClient();
     }

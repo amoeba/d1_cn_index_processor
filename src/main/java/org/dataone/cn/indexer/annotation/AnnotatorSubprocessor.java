@@ -20,10 +20,10 @@ import org.apache.commons.codec.EncoderException;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.dataone.cn.index.util.PerformanceLogger;
+import org.dataone.cn.indexer.D1IndexerSolrClient;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.ISolrDataField;
 import org.dataone.cn.indexer.parser.SubprocessorUtility;
-import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +58,7 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
     private SubprocessorUtility processorUtility;
 
     @Autowired
-    private HTTPService httpService = null;
+    private D1IndexerSolrClient httpService = null;
 
     @Autowired
     private String solrQueryUri = null;

@@ -5,15 +5,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.log4j.Logger;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.task.ResourceMapIndexTask;
+import org.dataone.cn.indexer.D1IndexerSolrClient;
 import org.dataone.cn.indexer.resourcemap.ResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMapFactory;
-import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.cn.messaging.QueueAccess;
@@ -22,29 +23,47 @@ import org.dspace.foresite.OREParserException;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 
+@Component
+public class ResourceMapReadinessMessageProcessor  {
 
-public class ResourceMapReadinessProcessor  {
-
-    static final Logger logger = Logger.getLogger(ResourceMapReadinessProcessor.class);
-    private CachingConnectionFactory connFact = new CachingConnectionFactory();
+    static final Logger logger = Logger.getLogger(ResourceMapReadinessMessageProcessor.class);
+ 
+    private CachingConnectionFactory connFact = new CachingConnectionFactory("localhost");
     
-    public final static String RESOURCE_MAP_QUEUE_NAME = "indexing.resmap_waiting_for_readiness";
+    public final static String RESOURCE_MAP_QUEUE_NAME = "indexing.waitingForReadinessTaskQueue";
     public final static String READY_TO_PROCESS_QUEUE_NAME = "indexing.ready_to_process";
     public final static String FAILED_RESMAP_READINESS_PROCESSING = "indexing.failed_resmap_readiness_processing";
-
-    private QueueAccess sourceQueue;
     
-    @Autowired
-    private HTTPService httpService;
+    public final static String DELAY_QUEUE_BASE = "indexing.delayedRetryQueue";
+    public final static int[] DELAYS = new int[]{5,10,20,120,1800};
     
-    @Autowired
+    
+    @Autowired @Qualifier("httpService")
+    private D1IndexerSolrClient d1IndexerSolrClient;
+    
+    @Resource
     private String solrQueryUri;
     
+    @Autowired @Qualifier("waitingForReadinessTaskQueueAccess")
+    private QueueAccess waitingForReadinessTaskQueueAccess;
+   
     
-    public ResourceMapReadinessProcessor(QueueAccess sourceQueue) {
-        this.sourceQueue = sourceQueue;
+    public ResourceMapReadinessMessageProcessor() {
+        connFact.setUsername("guest");
+        connFact.setPassword("guest");
+        connFact.setPublisherConfirms(true);
+    }
+    
+    public ResourceMapReadinessMessageProcessor(D1IndexerSolrClient solrClient, String solrQueryUri) {
+        this.solrQueryUri = solrQueryUri;
+        this.d1IndexerSolrClient = solrClient;
+        connFact.setUsername("guest");
+        connFact.setPassword("guest");
+        connFact.setPublisherConfirms(true);
     }
 
     /**
@@ -59,7 +78,7 @@ public class ResourceMapReadinessProcessor  {
      * @throws IOException 
      * 
      */
-    public boolean processHandler(Message message) throws IOException  {
+    public void processMessage(Message message) throws IOException  {
  
         QueueAccess destinationQueue;
         ResourceMapIndexTask rmit;
@@ -69,7 +88,7 @@ public class ResourceMapReadinessProcessor  {
         } catch (IOException | ClassNotFoundException e) {
             destinationQueue = new QueueAccess(connFact, FAILED_RESMAP_READINESS_PROCESSING);
             destinationQueue.publish(message);
-            return true;
+            return;
         }
         
         
@@ -81,21 +100,22 @@ public class ResourceMapReadinessProcessor  {
 
             // see if it's already indexed
             // if so, then no need to delay re-indexing
-            List<SolrDoc> resMap = httpService.getDocumentById(this.solrQueryUri, rmit.getPid());
+            System.out.println("!^!^!^!^!^!^!^!^!^!     Successfully deserialized ResourceMapIndexTask for pid: " +rmit.getPid());
+            System.out.println("!^!^!^!^!^!^!^!^!^!     " + this.solrQueryUri + " : " + this.d1IndexerSolrClient);
+            List<SolrDoc> resMap = d1IndexerSolrClient.getDocumentBySolrId(this.solrQueryUri, rmit.getPid());
  
-            
             if (resMap != null && resMap.size() > 0) {
                 ready = true;
-                destinationQueue = new QueueAccess(connFact, READY_TO_PROCESS_QUEUE_NAME);
 
                 
             } else {
 
-                
+                // see if the resourceMap constituents are indexed
+                // if so, the task is ready
                 waitingForIds =  extractReferencedIds(rmit);
 
                 // find by ID in the index, and filter the list
-                List<SolrDoc> foundSolrDocs = httpService.getDocumentsByField(this.solrQueryUri, waitingForIds,
+                List<SolrDoc> foundSolrDocs = d1IndexerSolrClient.getDocumentsByField(this.solrQueryUri, waitingForIds,
                         SolrElementField.FIELD_ID, false);
                 ArrayList<String> foundInIndex = new ArrayList<>();
                 for (SolrDoc doc : foundSolrDocs) {
@@ -108,10 +128,10 @@ public class ResourceMapReadinessProcessor  {
  
                 } else {
 
-
                     // find by SERIES_ID in the index, and filter the list
+                    // (same thing as above but using SERIES_ID field to find in SOLR)
                     
-                    foundSolrDocs = httpService.getDocumentsByField(this.solrQueryUri, waitingForIds,
+                    foundSolrDocs = d1IndexerSolrClient.getDocumentsByField(this.solrQueryUri, waitingForIds,
                             SolrElementField.FIELD_SERIES_ID, false);
                     foundInIndex.clear();
                     for (SolrDoc doc : foundSolrDocs) {
@@ -130,6 +150,7 @@ public class ResourceMapReadinessProcessor  {
                         for (Iterator<String> it = waitingForIds.iterator(); it.hasNext();) {
                             String id = it.next();
                             SystemMetadata smd = HazelcastClientFactory.getSystemMetadataMap().get(id);
+//                            SystemMetadata smd = null;
                             if (smd != null && ! SolrDoc.visibleInIndex(smd)) {
                                 it.remove();
                             }
@@ -157,17 +178,7 @@ public class ResourceMapReadinessProcessor  {
         }
         
         
-        if (ready) {
-            destinationQueue = new QueueAccess(connFact, READY_TO_PROCESS_QUEUE_NAME);
-        } else {
-            // it's not ready to put to the end of starting queue
-            if (destinationQueue == null) {
-                // TODO: set delay
-                destinationQueue = this.sourceQueue;
-            } else {
-                ; // there was an unrecoverable error
-            }
-        }
+        
         
         
         // set the winnowed referenced id list for the next time.
@@ -175,6 +186,7 @@ public class ResourceMapReadinessProcessor  {
         Message resultingMessage = null;
         try {
             rmit.setReferencedIds(waitingForIds);
+            destinationQueue = determineDelayQueue(rmit);
             resultingMessage = new Message(rmit.serialize(), message.getMessageProperties());
         } catch (IOException e) {
             // this IOException has to do with message serialization, so, unlike the others
@@ -188,10 +200,47 @@ public class ResourceMapReadinessProcessor  {
             // have to use the original message
             destinationQueue.publish(message);
         }
-        destinationQueue.publish(resultingMessage);
-        return true;
+        
+        
+        if (ready) {
+            destinationQueue = new QueueAccess(connFact, READY_TO_PROCESS_QUEUE_NAME);
+            destinationQueue.publish(resultingMessage);
+        } else {
+            // it's not ready to put to the end of starting queue
+            if (destinationQueue == null) {
+                
+                destinationQueue.publish(resultingMessage);
+            } else {
+                // fail
+                destinationQueue.publish(resultingMessage);
+            }
+        }
     }
  
+    /**
+     * sets the new delay based on the previous one, using a back-off strategy that maxes out at 5 minutes
+     * @param message
+     */
+    private QueueAccess determineDelayQueue(ResourceMapIndexTask indexTask) {
+
+        Integer currentTry = indexTask.getTryCount();
+        if (currentTry == null) {
+            currentTry = 0;
+        }
+        
+        int delayQueue = 5;
+        
+        if (currentTry >= DELAYS.length) {
+            delayQueue = DELAYS[DELAYS.length-1];
+        } else {
+            delayQueue = DELAYS[currentTry];
+        }
+        indexTask.setTryCount(currentTry+1);
+        
+        
+        return new QueueAccess(connFact, DELAY_QUEUE_BASE + delayQueue + "s");
+    }
+    
     
     /*
      * retrieves or builds the referencedId list for the task.

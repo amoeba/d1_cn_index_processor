@@ -33,7 +33,7 @@ import org.apache.solr.common.SolrDocument;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.generator.IndexTaskGenerator;
 import org.dataone.cn.index.processor.IndexTaskProcessor;
-import org.dataone.cn.indexer.solrhttp.HTTPService;
+import org.dataone.cn.indexer.D1IndexerSolrClient;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.service.types.v2.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
@@ -91,7 +91,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         addEmlToSolrIndex(systemMetadataResource);
         Thread.sleep(SLEEPTIME);
         assertPresentInSolrIndex(pid);
-        HTTPService httpService = (HTTPService) context.getBean("httpService");
+        D1IndexerSolrClient httpService = (D1IndexerSolrClient) context.getBean("httpService");
         httpService.sendSolrDelete(pid);
         Thread.sleep(SLEEPTIME);
         assertNotPresentInSolrIndex(pid);
@@ -384,7 +384,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     }
 
     private void deleteAll() {
-        HTTPService httpService = (HTTPService) context.getBean("httpService");
+        D1IndexerSolrClient httpService = (D1IndexerSolrClient) context.getBean("httpService");
         httpService.sendSolrDelete("peggym.130.4");
         httpService.sendSolrDelete("peggym.127.1");
         httpService.sendSolrDelete("peggym.128.1");

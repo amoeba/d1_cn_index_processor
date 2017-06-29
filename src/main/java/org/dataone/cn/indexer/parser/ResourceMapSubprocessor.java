@@ -37,11 +37,11 @@ import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.processor.IndexTaskDeleteProcessor;
 import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.index.util.PerformanceLogger;
+import org.dataone.cn.indexer.D1IndexerSolrClient;
 import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.cn.indexer.parser.utility.SeriesIdResolver;
 import org.dataone.cn.indexer.resourcemap.ResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMapFactory;
-import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v2.SystemMetadata;
@@ -70,7 +70,7 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
     private static Logger logger = Logger.getLogger(ResourceMapSubprocessor.class.getName());
 
     @Autowired
-    private HTTPService httpService = null;
+    private D1IndexerSolrClient httpService = null;
 
     @Autowired
     private String solrQueryUri = null;
@@ -153,7 +153,7 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
         perfLog.log("ResourceMapSubprocessor.clearSidChain() removing obsoletes chain from Solr index", System.currentTimeMillis() - clearSidChainStart);
         
         long getSolrDocsStart = System.currentTimeMillis();
-        List<SolrDoc> updateDocuments = httpService.getDocumentsById(solrQueryUri, documentIds);
+        List<SolrDoc> updateDocuments = httpService.getDocumentsByD1Identifier(solrQueryUri, documentIds);
         perfLog.log("HttpService.getDocumentsById() get existing referenced ids' Solr docs", System.currentTimeMillis() - getSolrDocsStart);
         
         List<SolrDoc> mergedDocuments = resourceMap.mergeIndexedDocuments(updateDocuments);

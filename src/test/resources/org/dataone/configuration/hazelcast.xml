@@ -9,7 +9,7 @@
 
   <network>
       <!-- do not conflict with other testing ports-->
-    <port auto-increment="false">5742</port>
+    <port auto-increment="false">5720</port>
     <join>
       <multicast enabled="false">
         <multicast-group>224.2.2.3</multicast-group>

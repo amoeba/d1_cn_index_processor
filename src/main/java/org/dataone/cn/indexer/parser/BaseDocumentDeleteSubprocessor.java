@@ -34,7 +34,7 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.lang3.StringUtils;
-import org.dataone.cn.indexer.solrhttp.HTTPService;
+import org.dataone.cn.indexer.D1IndexerSolrClient;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class BaseDocumentDeleteSubprocessor implements IDocumentDeleteSubprocessor {
 
     @Autowired
-    private HTTPService httpService;
+    private D1IndexerSolrClient httpService;
 
     @Autowired
     private String solrQueryUri;

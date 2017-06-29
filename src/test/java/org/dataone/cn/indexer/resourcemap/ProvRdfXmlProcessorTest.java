@@ -47,9 +47,9 @@ import org.dataone.cn.index.HazelcastClientFactoryTest;
 import org.dataone.cn.index.generator.IndexTaskGenerator;
 import org.dataone.cn.index.processor.IndexTaskProcessor;
 import org.dataone.cn.index.task.IndexTask;
+import org.dataone.cn.indexer.D1IndexerSolrClient;
 import org.dataone.cn.indexer.annotation.RdfXmlSubprocessor;
 import org.dataone.cn.indexer.convert.SolrDateConverter;
-import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.service.types.v1.AccessPolicy;
@@ -419,7 +419,7 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
 
     /* Delete a solr entry based on its identifier */
     private void deleteFromSolr(String pid) throws Exception {
-        HTTPService httpService = (HTTPService) context.getBean("httpService");
+        D1IndexerSolrClient httpService = (D1IndexerSolrClient) context.getBean("httpService");
         httpService.sendSolrDelete(pid);
 
     }
