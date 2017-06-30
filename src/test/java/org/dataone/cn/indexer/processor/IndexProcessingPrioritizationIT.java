@@ -113,7 +113,7 @@ public class IndexProcessingPrioritizationIT {
      * @throws ClientSideException
      */
     @SuppressWarnings("resource")
-    @Test
+//    @Test
     public void indexConsumerConfiguration_PojoListener_IT() throws InterruptedException, ServiceFailure, InvalidRequest, InvalidToken, NotAuthorized, NotImplemented, IOException, ClientSideException {
 
         ApplicationContext messagingContext = new AnnotationConfigApplicationContext(TestMessagingClientConfiguration.class);
@@ -225,7 +225,7 @@ public class IndexProcessingPrioritizationIT {
     
     
     @Test
-    public void testConsumerContainerSetup() throws ServiceFailure, InvalidRequest, InvalidToken, NotAuthorized, NotImplemented, InterruptedException {
+    public void consumerContainerSetup_IT() throws ServiceFailure, InvalidRequest, InvalidToken, NotAuthorized, NotImplemented, InterruptedException {
   
         
         ApplicationContext clientContext = new AnnotationConfigApplicationContext(TestMessagingClientConfiguration.class);
