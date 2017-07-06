@@ -16,13 +16,13 @@ public class IndexVisibilityDelegateHazelcastImpl implements IndexVisibilityDele
     }
     
     /**
-     * @param pid - will not work if the identifier is a SID  (will always return true)
+     * @param id - if sid, it will always return true
      */
-    public boolean isDocumentVisible(Identifier pid) {
+    public boolean isDocumentVisible(Identifier id) {
         boolean visible = false;
         try {
 
-            SystemMetadata systemMetadata = HazelcastClientFactory.getSystemMetadataMap().get(pid);
+            SystemMetadata systemMetadata = HazelcastClientFactory.getSystemMetadataMap().get(id);
             // TODO: Is pid Identifier a SID?
             if (systemMetadata == null) {
                 return true;
@@ -31,24 +31,28 @@ public class IndexVisibilityDelegateHazelcastImpl implements IndexVisibilityDele
                 visible = true;
             }
         } catch (NullPointerException npe) {
-            logger.warn("Could not determine isDocumentVisible for pid: " + pid.getValue());
+            logger.warn("Could not determine isDocumentVisible for id: " + id.getValue());
         }
         return visible;
     }
 
     // TODO:  this routine does nothing!  always returns true unless there's a null pointer exception
-    public boolean documentExists(Identifier pid) {
+    /**
+     * Returns true if there is systemMetadata for the identifier
+     */
+    public boolean documentExists(Identifier id) {
         boolean exists = false;
         try {
-            SystemMetadata systemMetadata = HazelcastClientFactory.getSystemMetadataMap().get(pid);
+            SystemMetadata systemMetadata = HazelcastClientFactory.getSystemMetadataMap().get(id);
             if (systemMetadata != null) {
                 exists = true;
             } else {
-                // TODO: Is pid Identifier a SID?
+                // TODO: if id is a sid, we could get here
+                // what are the semantics of sid visibility?
                 return true;
             }
         } catch (NullPointerException npe) {
-            logger.warn("Could not determine if documentExists for pid: " + pid.getValue());
+            logger.warn("Could not determine if documentExists for id: " + id.getValue());
         }
         return exists;
     }

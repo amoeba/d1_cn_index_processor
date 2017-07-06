@@ -17,7 +17,7 @@ public class SubprocessorUtility {
     private static Logger logger = Logger.getLogger(SubprocessorUtility.class.getName());
 
     @Autowired
-    private D1IndexerSolrClient httpService = null;
+    private D1IndexerSolrClient d1IndexerSolrClient = null;
 
     @Autowired
     private String solrQueryUri = null;
@@ -30,7 +30,7 @@ public class SubprocessorUtility {
 
         logger.debug("about to merge indexed document with new doc to insert for pid: "
                 + indexDocument.getIdentifier());
-        SolrDoc solrDoc = httpService.retrieveDocumentFromSolrServer(indexDocument.getIdentifier(),
+        SolrDoc solrDoc = d1IndexerSolrClient.retrieveDocumentFromSolrServer(indexDocument.getIdentifier(),
                 solrQueryUri);
         if (solrDoc != null) {
             logger.debug("found existing doc to merge for pid: " + indexDocument.getIdentifier());

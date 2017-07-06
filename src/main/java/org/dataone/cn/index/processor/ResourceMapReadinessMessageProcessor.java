@@ -42,7 +42,8 @@ public class ResourceMapReadinessMessageProcessor  {
     public final static int[] DELAYS = new int[]{5,10,20,120,1800};
     
     
-    @Autowired @Qualifier("httpService")
+//    @Autowired @Qualifier("httpService")
+    @Autowired
     private D1IndexerSolrClient d1IndexerSolrClient;
     
     @Resource

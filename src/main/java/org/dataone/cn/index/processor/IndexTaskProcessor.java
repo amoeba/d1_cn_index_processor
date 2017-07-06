@@ -113,7 +113,7 @@ public class IndexTaskProcessor {
     private IndexTaskProcessingStrategy updateProcessor;
 
     @Autowired
-    private D1IndexerSolrClient httpService;
+    private D1IndexerSolrClient d1IndexerSolrClient;
 
     @Autowired
     private String solrQueryUri;
@@ -729,7 +729,7 @@ public class IndexTaskProcessor {
         List<SolrDoc> updateDocuments = null;
         int numberOfIndexedOrRemovedReferences = 0;
         try {
-            updateDocuments = httpService.getDocumentsByD1Identifier(this.solrQueryUri, referencedIds);
+            updateDocuments = d1IndexerSolrClient.getDocumentsByD1Identifier(this.solrQueryUri, referencedIds);
             numberOfIndexedOrRemovedReferences = 0;
             for (String id : referencedIds) {
                 boolean foundId = false;

@@ -32,8 +32,6 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.dataone.cn.indexer.convert.IConverter;
-import org.dataone.cn.indexer.convert.SolrDateConverter;
 import org.dataone.cn.indexer.parser.TemporalPeriodSolrField;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;

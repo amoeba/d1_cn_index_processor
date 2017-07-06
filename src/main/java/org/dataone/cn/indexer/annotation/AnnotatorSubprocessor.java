@@ -58,7 +58,7 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
     private SubprocessorUtility processorUtility;
 
     @Autowired
-    private D1IndexerSolrClient httpService = null;
+    private D1IndexerSolrClient d1IndexerSolrClient = null;
 
     @Autowired
     private String solrQueryUri = null;
@@ -135,7 +135,7 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
             // make sure we have a reference for the document we annotating
             if (referencedDoc == null) {
                 try {
-                    referencedDoc = httpService.retrieveDocumentFromSolrServer(referencedPid,
+                    referencedDoc = d1IndexerSolrClient.retrieveDocumentFromSolrServer(referencedPid,
                             solrQueryUri);
                 } catch (Exception e) {
                 	//} catch (XPathExpressionException | IOException | EncoderException e) {

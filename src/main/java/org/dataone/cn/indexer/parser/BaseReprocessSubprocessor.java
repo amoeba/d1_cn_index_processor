@@ -38,6 +38,7 @@ import org.dataone.client.v2.formats.ObjectFormatCache;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.generator.IndexTaskGenerator;
 import org.dataone.cn.index.util.PerformanceLogger;
+import org.dataone.cn.indexer.D1IndexerSolrClient;
 import org.dataone.cn.indexer.parser.utility.SeriesIdResolver;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
@@ -52,7 +53,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
 
     @Autowired
-    private HTTPService httpService;
+    private D1IndexerSolrClient d1IndexerSolrClient;
 
     @Autowired
     private String solrQueryUri;
@@ -95,10 +96,10 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
 
             // find the other objects in the series
             long getIdsInSeriesStart = System.currentTimeMillis();
-            List<SolrDoc> previousDocs = httpService.getDocumentsByField(solrQueryUri,
+            List<SolrDoc> previousDocs = d1IndexerSolrClient.getDocumentsByField(solrQueryUri,
                     Collections.singletonList(seriesId.getValue()),
                     SolrElementField.FIELD_SERIES_ID, true);
-            perfLog.log("BaseReprocessSubprocessor.processDocument() HttpService.getDocumentsByField(idsInSeries) for id "+identifier, System.currentTimeMillis() - getIdsInSeriesStart);
+            perfLog.log("BaseReprocessSubprocessor.processDocument() d1IndexerSolrClient.getDocumentsByField(idsInSeries) for id "+identifier, System.currentTimeMillis() - getIdsInSeriesStart);
             
             log.debug("previousDocs===" + previousDocs);
 

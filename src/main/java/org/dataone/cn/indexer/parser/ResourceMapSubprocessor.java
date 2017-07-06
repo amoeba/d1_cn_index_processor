@@ -70,7 +70,7 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
     private static Logger logger = Logger.getLogger(ResourceMapSubprocessor.class.getName());
 
     @Autowired
-    private D1IndexerSolrClient httpService = null;
+    private D1IndexerSolrClient d1IndexerSolrClient = null;
 
     @Autowired
     private String solrQueryUri = null;
@@ -153,8 +153,8 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
         perfLog.log("ResourceMapSubprocessor.clearSidChain() removing obsoletes chain from Solr index", System.currentTimeMillis() - clearSidChainStart);
         
         long getSolrDocsStart = System.currentTimeMillis();
-        List<SolrDoc> updateDocuments = httpService.getDocumentsByD1Identifier(solrQueryUri, documentIds);
-        perfLog.log("HttpService.getDocumentsById() get existing referenced ids' Solr docs", System.currentTimeMillis() - getSolrDocsStart);
+        List<SolrDoc> updateDocuments = d1IndexerSolrClient.getDocumentsByD1Identifier(solrQueryUri, documentIds);
+        perfLog.log("d1IndexerSolrClient.getDocumentsById() get existing referenced ids' Solr docs", System.currentTimeMillis() - getSolrDocsStart);
         
         List<SolrDoc> mergedDocuments = resourceMap.mergeIndexedDocuments(updateDocuments);
         mergedDocuments.add(indexDocument);

@@ -42,7 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class BaseDocumentDeleteSubprocessor implements IDocumentDeleteSubprocessor {
 
     @Autowired
-    private D1IndexerSolrClient httpService;
+    private D1IndexerSolrClient d1IndexerSolrClient;
 
     @Autowired
     private String solrQueryUri;
@@ -58,7 +58,7 @@ public class BaseDocumentDeleteSubprocessor implements IDocumentDeleteSubprocess
     public Map<String, SolrDoc> processDocForDelete(String identifier, Map<String, SolrDoc> docs)
             throws Exception {
 
-        SolrDoc indexedDoc = httpService.retrieveDocumentFromSolrServer(identifier, solrQueryUri);
+        SolrDoc indexedDoc = d1IndexerSolrClient.retrieveDocumentFromSolrServer(identifier, solrQueryUri);
         if (indexedDoc != null) {
             if (hasRelationsBySource(indexedDoc)) {
                 docs.putAll(removeBiDirectionalRelationsForDoc(identifier, indexedDoc, docs));
@@ -74,7 +74,7 @@ public class BaseDocumentDeleteSubprocessor implements IDocumentDeleteSubprocess
             SolrDoc indexedDoc, Map<String, SolrDoc> docs) throws Exception {
 
         // gather all docs with relations from self source
-        List<SolrDoc> relatedDocs = httpService.getDocumentsByField(solrQueryUri,
+        List<SolrDoc> relatedDocs = d1IndexerSolrClient.getDocumentsByField(solrQueryUri,
                 Collections.singletonList(relationSourceId), relationSourceField, true);
 
         Set<String> otherSourceDocs = new HashSet<String>();
@@ -123,7 +123,7 @@ public class BaseDocumentDeleteSubprocessor implements IDocumentDeleteSubprocess
             SolrDoc indexedDoc, Map<String, SolrDoc> docs) throws Exception {
 
         for (String relationField : getBiDirectionalRelationFields()) {
-            List<SolrDoc> inverseDocs = httpService.getDocumentsByField(solrQueryUri,
+            List<SolrDoc> inverseDocs = d1IndexerSolrClient.getDocumentsByField(solrQueryUri,
                     Collections.singletonList(identifier), relationField, true);
             for (SolrDoc inverseDoc : inverseDocs) {
                 String inverseDocId = inverseDoc.getFirstFieldValue(SolrElementField.FIELD_ID);

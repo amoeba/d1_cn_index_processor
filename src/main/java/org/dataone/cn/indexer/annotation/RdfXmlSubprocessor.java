@@ -72,7 +72,7 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
     private List<String> fieldsToMerge = new ArrayList<String>();
 
     @Autowired
-    private D1IndexerSolrClient httpService = null;
+    private D1IndexerSolrClient d1IndexerSolrClient = null;
 
     @Autowired
     private String solrQueryUri = null;
@@ -286,7 +286,7 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
         Map<String, SolrDoc> list = new HashMap<String, SolrDoc>();
         if (ids != null) {
             for (String id : ids) {
-                SolrDoc doc = httpService.retrieveDocumentFromSolrServer(id, solrQueryUri);
+                SolrDoc doc = d1IndexerSolrClient.retrieveDocumentFromSolrServer(id, solrQueryUri);
                 if (doc != null) {
                     list.put(id, doc);
                 }

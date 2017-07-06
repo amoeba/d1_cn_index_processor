@@ -75,7 +75,7 @@ public class SolrIndexService {
     private IDocumentSubprocessor systemMetadataProcessor = null;
 
     @Autowired
-    private D1IndexerSolrClient httpService = null;
+    private D1IndexerSolrClient d1IndexerSolrClient = null;
 
     @Autowired
     private String solrIndexUri = null;
@@ -183,7 +183,7 @@ public class SolrIndexService {
         }
         
         sendCommand(addCommand);
-        httpService.sendSolrDeletes(identifiersToDelete);
+        d1IndexerSolrClient.sendSolrDeletes(identifiersToDelete);
         insertIntoIndex(tasksToIndex);
         */
     }
@@ -360,7 +360,7 @@ public class SolrIndexService {
     }
     
     private void sendCommand(SolrElementAdd addCommand) throws IOException {
-        D1IndexerSolrClient service = getHttpService();
+        D1IndexerSolrClient service = getD1IndexerSolrClient();
         service.sendUpdate(getSolrindexUri(), addCommand, OUTPUT_ENCODING);
     }
 
@@ -369,7 +369,7 @@ public class SolrIndexService {
     }
 
     private void deleteDocFromIndex(String identifier) {
-        httpService.sendSolrDelete(identifier);
+        d1IndexerSolrClient.sendSolrDelete(identifier);
     }
 
     public String getSolrindexUri() {
@@ -380,12 +380,12 @@ public class SolrIndexService {
         this.solrIndexUri = solrindexUri;
     }
 
-    public void setHttpService(D1IndexerSolrClient service) {
-        this.httpService = service;
+    public void setD1IndexerSolrClient(D1IndexerSolrClient service) {
+        this.d1IndexerSolrClient = service;
     }
 
-    public D1IndexerSolrClient getHttpService() {
-        return httpService;
+    public D1IndexerSolrClient getD1IndexerSolrClient() {
+        return d1IndexerSolrClient;
     }
 
     public String getSolrQueryUri() {
