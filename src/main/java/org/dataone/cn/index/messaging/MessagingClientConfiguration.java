@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
-//@Profile("production")
 //@Configuration
 @Import(MessagingServerConfiguration.class)
 //@ImportResource({"classpath:org/dataone/cn/index/test-context.xml"})
