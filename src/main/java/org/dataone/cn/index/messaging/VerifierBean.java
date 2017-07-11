@@ -12,7 +12,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.PriorityOrdered;
 import org.springframework.core.env.Environment;
 
-@Configuration
+//@Configuration
 public class VerifierBean implements BeanFactoryPostProcessor, PriorityOrdered {
 
     public VerifierBean() {

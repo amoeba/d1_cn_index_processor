@@ -208,7 +208,7 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
 
     protected void loadSpringContext() {
         if (context == null) {
-            context = new ClassPathXmlApplicationContext("org/dataone/cn/index/test-context.xml");
+            context = new ClassPathXmlApplicationContext("/org/dataone/cn/index/test-context.xml");
         }
         solrIndexService = (SolrIndexService) context.getBean("solrIndexService");
     }

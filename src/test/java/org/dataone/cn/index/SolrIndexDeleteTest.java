@@ -91,7 +91,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         addEmlToSolrIndex(systemMetadataResource);
         Thread.sleep(SLEEPTIME);
         assertPresentInSolrIndex(pid);
-        D1IndexerSolrClient httpService = (D1IndexerSolrClient) context.getBean("httpService");
+        D1IndexerSolrClient httpService = (D1IndexerSolrClient) context.getBean("d1IndexerSolrClient");
         httpService.sendSolrDelete(pid);
         Thread.sleep(SLEEPTIME);
         assertNotPresentInSolrIndex(pid);
@@ -384,7 +384,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
     }
 
     private void deleteAll() {
-        D1IndexerSolrClient httpService = (D1IndexerSolrClient) context.getBean("httpService");
+        D1IndexerSolrClient httpService = (D1IndexerSolrClient) context.getBean("d1IndexerSolrClient");
         httpService.sendSolrDelete("peggym.130.4");
         httpService.sendSolrDelete("peggym.127.1");
         httpService.sendSolrDelete("peggym.128.1");

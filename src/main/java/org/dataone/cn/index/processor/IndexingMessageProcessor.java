@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 
-@Component
+//@Component
 //@RabbitListener(queues = "indexing.prioritizedTaskQueue")
 public class IndexingMessageProcessor {
 

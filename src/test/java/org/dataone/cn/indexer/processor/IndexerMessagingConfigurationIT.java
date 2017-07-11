@@ -9,6 +9,7 @@ import org.dataone.cn.index.processor.IndexTaskTriageMessageProcessor;
 import org.dataone.cn.index.processor.IndexingMessageProcessor;
 import org.dataone.cn.messaging.QueueAccess;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.core.MessageDeliveryMode;
@@ -20,8 +21,11 @@ import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {MessagingServerConfiguration.class})
 public class IndexerMessagingConfigurationIT {
     
     @Test

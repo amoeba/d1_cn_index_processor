@@ -22,9 +22,10 @@
 package org.dataone.cn.indexer.convert;
 
 import static org.junit.Assert.assertTrue;
-import junit.framework.Assert;
+
 
 import org.dataone.cn.indexer.parser.utility.TemporalPeriodParsingUtility;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.carrotsearch.randomizedtesting.annotations.ThreadLeakScope;

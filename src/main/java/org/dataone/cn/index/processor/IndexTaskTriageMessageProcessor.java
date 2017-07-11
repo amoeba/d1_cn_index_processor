@@ -11,7 +11,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 //@RabbitListener(queues = "indexing.newTaskQueue")
 public class IndexTaskTriageMessageProcessor {
 

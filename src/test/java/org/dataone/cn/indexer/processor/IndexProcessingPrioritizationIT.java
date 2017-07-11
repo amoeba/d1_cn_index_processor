@@ -17,7 +17,8 @@ import org.dataone.client.v2.CNode;
 import org.dataone.client.v2.itk.D1Client;
 import org.dataone.cn.index.messaging.IndexProcessingPipelineManager;
 import org.dataone.cn.index.messaging.MessagingClientConfiguration;
-import org.dataone.cn.index.messaging.TestMessagingClientConfiguration;
+import org.dataone.cn.index.messaging.ITMessagingClientConfiguration;
+import org.dataone.cn.index.messaging.MessagingServerConfiguration;
 import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.index.task.ResourceMapIndexTask;
 import org.dataone.cn.indexer.D1IndexerSolrClient;
@@ -38,6 +39,7 @@ import org.dataone.service.types.v2.SystemMetadata;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.core.MessageDeliveryMode;
@@ -48,13 +50,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.hazelcast.config.ClasspathXmlConfig;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {ITMessagingClientConfiguration.class})
 public class IndexProcessingPrioritizationIT {
 
 
@@ -116,7 +120,7 @@ public class IndexProcessingPrioritizationIT {
 //    @Test
     public void indexConsumerConfiguration_PojoListener_IT() throws InterruptedException, ServiceFailure, InvalidRequest, InvalidToken, NotAuthorized, NotImplemented, IOException, ClientSideException {
 
-        ApplicationContext messagingContext = new AnnotationConfigApplicationContext(TestMessagingClientConfiguration.class);
+        ApplicationContext messagingContext = new AnnotationConfigApplicationContext(ITMessagingClientConfiguration.class);
 //        ApplicationContext mainContext = new ClassPathXmlApplicationContext("test-context.xml");
 
         CachingConnectionFactory cf = (CachingConnectionFactory) messagingContext.getBean("rabbitConnectionFactory");
@@ -228,7 +232,7 @@ public class IndexProcessingPrioritizationIT {
     public void consumerContainerSetup_IT() throws ServiceFailure, InvalidRequest, InvalidToken, NotAuthorized, NotImplemented, InterruptedException {
   
         
-        ApplicationContext clientContext = new AnnotationConfigApplicationContext(TestMessagingClientConfiguration.class);
+        ApplicationContext clientContext = new AnnotationConfigApplicationContext(ITMessagingClientConfiguration.class);
         CachingConnectionFactory cf = (CachingConnectionFactory) clientContext.getBean("rabbitConnectionFactory");
  
         QueueAccess newTaskQueue = (QueueAccess) clientContext.getBean("newTaskQueueAccess");

@@ -20,11 +20,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Profile;
 
-@Configuration
+//@Configuration
 //@Profile("test")
 @Import(MessagingServerConfiguration.class)
 @ImportResource({"classpath:org/dataone/cn/index/test-context.xml"})
-public class TestMessagingClientConfiguration {
+public class ITMessagingClientConfiguration {
     
     @Autowired
     CachingConnectionFactory rabbitConnectionFactory;
