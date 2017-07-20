@@ -30,6 +30,7 @@ public class MessagingServerConfiguration {
         return new RabbitAdmin(rabbitConnectionFactory());
     }
 
+    // in the future, import this from d1_cn_index_common 
     @Bean
     public Queue newTaskQueue() {
         Queue queue = new Queue("indexing.newTaskQueue");

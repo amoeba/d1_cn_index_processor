@@ -39,11 +39,13 @@ public class IndexProcessingPipelineManager {
             
             processingQueueAllocation.put(queueName, count);
             
+            // effectively creates a naming convention for the beans
+            // the listener has to have the same base name as the QueueAccess
+            // and the base is the queueName
             String qaBean = queueName + "Access";
             String mlBean = queueName + "Listener";
             
 
-            
             QueueAccess qa = (QueueAccess) context.getBean(qaBean);
             MessageListener ml = (MessageListener) context.getBean(mlBean);
             

@@ -17,7 +17,7 @@ import org.dataone.client.v2.CNode;
 import org.dataone.client.v2.itk.D1Client;
 import org.dataone.cn.index.messaging.IndexProcessingPipelineManager;
 import org.dataone.cn.index.messaging.MessagingClientConfiguration;
-import org.dataone.cn.index.messaging.ITMessagingClientConfiguration;
+import org.dataone.cn.index.messaging.MockMessagingClientConfiguration;
 import org.dataone.cn.index.messaging.MessagingServerConfiguration;
 import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.index.task.ResourceMapIndexTask;
@@ -38,6 +38,7 @@ import org.dataone.service.types.v2.ObjectFormatList;
 import org.dataone.service.types.v2.SystemMetadata;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.amqp.core.Message;
@@ -58,7 +59,7 @@ import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {ITMessagingClientConfiguration.class})
+@ContextConfiguration(classes = {MockMessagingClientConfiguration.class})
 public class IndexProcessingPrioritizationIT {
 
 
@@ -106,6 +107,9 @@ public class IndexProcessingPrioritizationIT {
     
     /**
      * this test creates a bunch of IndexTasks from listObjects / getSystemMetadata
+     * from one of the testing environments (calling the CN).
+     * 
+     * Doesn't look like it's setting up the listeners, so 
      * 
      * @throws InterruptedException
      * @throws ServiceFailure
@@ -117,11 +121,12 @@ public class IndexProcessingPrioritizationIT {
      * @throws ClientSideException
      */
     @SuppressWarnings("resource")
-//    @Test
+    @Ignore("this doesn't seem to set up the listeners, so it's probably outdated")
+    @Test
     public void indexConsumerConfiguration_PojoListener_IT() throws InterruptedException, ServiceFailure, InvalidRequest, InvalidToken, NotAuthorized, NotImplemented, IOException, ClientSideException {
 
-        ApplicationContext messagingContext = new AnnotationConfigApplicationContext(ITMessagingClientConfiguration.class);
-//        ApplicationContext mainContext = new ClassPathXmlApplicationContext("test-context.xml");
+        ApplicationContext messagingContext = new AnnotationConfigApplicationContext(MockMessagingClientConfiguration.class);
+
 
         CachingConnectionFactory cf = (CachingConnectionFactory) messagingContext.getBean("rabbitConnectionFactory");
         messagingContext.getBean("messageListenerAdapterContainer");
@@ -218,6 +223,9 @@ public class IndexProcessingPrioritizationIT {
 //        }
 //    }
     
+    /**
+     * A trivial test to make sure messageListener information are available.
+     */
     @Test
     public void testQueueProperties() {
         Properties props = Settings.getConfiguration().getProperties("dataone.index.queue");
@@ -227,12 +235,24 @@ public class IndexProcessingPrioritizationIT {
         }
     }
     
-    
+    /**
+     * The most sophisticated test so far (July 20, 2017)...
+     * It creates index tasks from test objects on one of the test CNs,
+     * sets up the index processor (using the IndextProcessingPipelineManager) 
+     * then submits tasks and times task execution
+     * 
+     * @throws ServiceFailure
+     * @throws InvalidRequest
+     * @throws InvalidToken
+     * @throws NotAuthorized
+     * @throws NotImplemented
+     * @throws InterruptedException
+     */
     @Test
     public void consumerContainerSetup_IT() throws ServiceFailure, InvalidRequest, InvalidToken, NotAuthorized, NotImplemented, InterruptedException {
   
         
-        ApplicationContext clientContext = new AnnotationConfigApplicationContext(ITMessagingClientConfiguration.class);
+        ApplicationContext clientContext = new AnnotationConfigApplicationContext(MockMessagingClientConfiguration.class);
         CachingConnectionFactory cf = (CachingConnectionFactory) clientContext.getBean("rabbitConnectionFactory");
  
         QueueAccess newTaskQueue = (QueueAccess) clientContext.getBean("newTaskQueueAccess");

@@ -193,7 +193,6 @@ public class SolrIndexService {
             String objectPath) throws IOException, SAXException, ParserConfigurationException,
             XPathExpressionException, EncoderException {
 
-        long processObjStart = System.currentTimeMillis();
         
         Map<String, SolrDoc> docs = new HashMap<String, SolrDoc>();
         try {
@@ -214,6 +213,7 @@ public class SolrIndexService {
                     try {
                         if (log.isDebugEnabled()) 
                             log.debug("...subprocessor " + subprocessor.getClass().getSimpleName() + " invoked for " + id);
+                        
                         // note that resource map processing touches all objects
                         // referenced by the resource map.
                         long startFechingFile = System.currentTimeMillis();

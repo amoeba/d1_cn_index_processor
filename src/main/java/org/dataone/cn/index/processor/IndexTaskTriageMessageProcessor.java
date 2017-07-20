@@ -12,15 +12,16 @@ import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.stereotype.Component;
 
 //@Component
-//@RabbitListener(queues = "indexing.newTaskQueue")
 public class IndexTaskTriageMessageProcessor {
 
-//    public static final Logger logger = Logger.getLogger(IndexTaskTriageMessageProcessor.class);
+    //    public static final Logger logger = Logger.getLogger(IndexTaskTriageMessageProcessor.class);
             
     private CachingConnectionFactory connFact = new CachingConnectionFactory("localhost");
     
+    // TODO: centralize the queue names in own enumeration or map to the serverConfig
     public final static String RESOURCE_MAP_QUEUE_NAME = "indexing.waitingForReadinessTaskQueue";
     public final static String READY_TO_PROCESS_QUEUE_NAME = "indexing.prioritizedTaskQueue";
+
     public final static int PRIORITY_RANGE = 5;
     public final static int PRIORITY_LOOKBACK = 100;
     

@@ -8,6 +8,7 @@ import org.dataone.cn.index.messaging.MessagingServerConfiguration;
 import org.dataone.cn.index.processor.IndexTaskTriageMessageProcessor;
 import org.dataone.cn.index.processor.IndexingMessageProcessor;
 import org.dataone.cn.messaging.QueueAccess;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.amqp.core.Message;
@@ -28,7 +29,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(classes = {MessagingServerConfiguration.class})
 public class IndexerMessagingConfigurationIT {
     
-    @Test
+    
+    /**
+     * trivial test for bean instantiation
+     */
+//    @Test
     public void indexServerConfigurationIT() {
         ApplicationContext serverContext = new AnnotationConfigApplicationContext(MessagingServerConfiguration.class);
         Queue newTaskQueue = (Queue) serverContext.getBean("newTaskQueue");
@@ -36,7 +41,12 @@ public class IndexerMessagingConfigurationIT {
     }
     
     
-    
+    /**
+     * Original intent was to demonstrate the effect of multiple listeners on the timing of processing
+     * (shows that the tasks are processed in parallel when there are multiple listeners) 
+     * @throws InterruptedException
+     */
+    @Ignore("this is defunct since the exampleListener doesn't exist anymore in the configuration")
     @Test
     public void indexConsumerConfigurationIT() throws InterruptedException {
         ApplicationContext clientContext = new AnnotationConfigApplicationContext(MessagingClientConfiguration.class);
@@ -47,6 +57,7 @@ public class IndexerMessagingConfigurationIT {
         
         MessageListener ml = (MessageListener) clientContext.getBean("exampleListener");
         newTaskQueue.registerAsynchronousMessageListener(1, ml); 
+        
         
         
         Message m = MessageBuilder.withBody("A MESSAGE!!!".getBytes())
@@ -65,35 +76,5 @@ public class IndexerMessagingConfigurationIT {
 
         Thread.sleep(10000);
         
-    }
-
-    @Test
-    public void indexConsumerConfiguration_PojoListener_IT() throws InterruptedException {
-        
-        ApplicationContext clientContext = new AnnotationConfigApplicationContext(MessagingClientConfiguration.class);
-        
-
-        CachingConnectionFactory cf = (CachingConnectionFactory) clientContext.getBean("rabbitConnectionFactory");
-        clientContext.getBean("messageListenerAdapterContainer");
-        QueueAccess newTaskQueue = new QueueAccess(cf, "indexing.newTaskQueue");
-        
-//        MessageListener ml = (MessageListener) clientContext.getBean("exampleListenerAdapter");
-//        newTaskQueue.registerAsynchronousMessageListener(1, ml); 
-        
-        
-        Message m = MessageBuilder.withBody("A MESSAGE!!!".getBytes())
-                .setDeliveryMode(MessageDeliveryMode.PERSISTENT)
-                .build();
-        newTaskQueue.publish(m);
-        newTaskQueue.publish(m);
-        newTaskQueue.publish(m);
-        newTaskQueue.publish(m);
-        
-        Thread.sleep(5000);
-    }
-    
-    
-    
-    
-    
+    }   
 }

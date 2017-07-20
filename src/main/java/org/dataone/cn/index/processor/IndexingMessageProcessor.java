@@ -25,7 +25,6 @@ import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 
 //@Component
-//@RabbitListener(queues = "indexing.prioritizedTaskQueue")
 public class IndexingMessageProcessor {
 
 
@@ -33,8 +32,7 @@ public class IndexingMessageProcessor {
     SolrIndexService solrIndexService;
 
     private CachingConnectionFactory connFact = new CachingConnectionFactory("localhost");
-    
-    
+        
     public IndexingMessageProcessor() {
         connFact.setUsername("guest");
         connFact.setPassword("guest");
@@ -45,6 +43,7 @@ public class IndexingMessageProcessor {
         solrIndexService = service;
     }
 
+
     @RabbitHandler
     public void processMessage(Message message) {
         long start = System.currentTimeMillis();
@@ -54,16 +53,30 @@ public class IndexingMessageProcessor {
 
             InputStream sysmetaStream = new ByteArrayInputStream(it.getSysMetadata().getBytes());
             
+            // So far, this processor only parses the fields in the systemMetadata and metadata
+            // contained in the indexTask itself.  (It is not calling out to Solr to compare as
+            // we would do in production.
+            
             Map<String,SolrDoc> docMap = solrIndexService.parseTaskObject(it.getPid(), sysmetaStream, it.getObjectPath());
             Collection<SolrDoc> docs = docMap.values();
             SolrElementAdd addCommand = new SolrElementAdd(new ArrayList(docs));
           
+            // prints the solr add command to Stdout
             addCommand.serialize(System.out, "UTF-8");
             System.out.println();
+            
+                   
+            // this is likely the production call instead of the above 5 lines
+            // but does processObject handle delete tasks as well?
+            
+            //SolrElementAdd addCommand = solrIndexService.processObject(it.getPid(), sysmetaStream, it.getObjectPath());
+                        
             long stop = System.currentTimeMillis();
             System.out.println("processMessage WallTime: " + (stop-start));
             
-            
+            // if success, we probably won't push the task to a queue (because it will never be read 
+            // and the queue will just fill up, but it's helpful for now while we're testing
+
             QueueAccess destinationQueue = new QueueAccess(connFact, "indexing.finalTaskQueue");
             destinationQueue.publish(message);
            

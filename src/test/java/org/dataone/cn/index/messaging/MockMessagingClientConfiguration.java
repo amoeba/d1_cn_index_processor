@@ -21,10 +21,9 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Profile;
 
 //@Configuration
-//@Profile("test")
 @Import(MessagingServerConfiguration.class)
 @ImportResource({"classpath:org/dataone/cn/index/test-context.xml"})
-public class ITMessagingClientConfiguration {
+public class MockMessagingClientConfiguration {
     
     @Autowired
     CachingConnectionFactory rabbitConnectionFactory;
@@ -93,7 +92,7 @@ public class ITMessagingClientConfiguration {
     public MessageListener waitingForReadinessTaskQueueListener() {
         
         
-        // We are plugging in a NockD1IndexerSolrClient to avoid actualy communication with a Solr server
+        // We are plugging in a MockD1IndexerSolrClient to avoid actually communication with a Solr server
         MessageListenerAdapter ml = new MessageListenerAdapter(new ResourceMapReadinessMessageProcessor(new MockD1IndexerSolrClient(), solrQueryUri));
         ml.setDefaultListenerMethod("processMessage");
         ml.setMessageConverter(null); // we're happy to take a Message

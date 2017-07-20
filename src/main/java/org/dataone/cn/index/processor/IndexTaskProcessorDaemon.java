@@ -24,6 +24,7 @@ package org.dataone.cn.index.processor;
 
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
+import org.dataone.cn.index.messaging.IndexProcessingPipelineManager;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -36,8 +37,11 @@ public class IndexTaskProcessorDaemon implements Daemon {
     public void start() throws Exception {
         System.out.println("starting index task processor daemon [" + this + "] ..." );
         context = new ClassPathXmlApplicationContext("processor-daemon-context.xml");
-        scheduler = (IndexTaskProcessorScheduler) context.getBean("indexTaskProcessorScheduler");
-        scheduler.start();
+
+//        scheduler = (IndexTaskProcessorScheduler) context.getBean("indexTaskProcessorScheduler");
+//        scheduler.start();
+        
+        new IndexProcessingPipelineManager(context);
     }
 
     @Override

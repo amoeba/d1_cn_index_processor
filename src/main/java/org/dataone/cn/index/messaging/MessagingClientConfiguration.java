@@ -47,13 +47,11 @@ public class MessagingClientConfiguration {
 
    
      
-       
-    
     @Bean  @Qualifier("newTaskQueueAccess")
     public QueueAccess newTaskQueueAccess() {
         return new QueueAccess(rabbitConnectionFactory, newTaskQueue.getName());
     }
-    
+   
     @Bean @Qualifier("newTaskQueueListener")
     public MessageListener newTaskQueueListener() {
         MessageListenerAdapter ml = new MessageListenerAdapter(new IndexTaskTriageMessageProcessor());

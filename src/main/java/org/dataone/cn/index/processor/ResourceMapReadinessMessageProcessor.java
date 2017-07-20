@@ -34,10 +34,12 @@ public class ResourceMapReadinessMessageProcessor  {
  
     private CachingConnectionFactory connFact = new CachingConnectionFactory("localhost");
     
+    // TODO: centralize the queue names in own enumeration or map to the serverConfig
     public final static String RESOURCE_MAP_QUEUE_NAME = "indexing.waitingForReadinessTaskQueue";
     public final static String READY_TO_PROCESS_QUEUE_NAME = "indexing.ready_to_process";
     public final static String FAILED_RESMAP_READINESS_PROCESSING = "indexing.failed_resmap_readiness_processing";
     
+    // TODO: refactor because these are fragile
     public final static String DELAY_QUEUE_BASE = "indexing.delayedRetryQueue";
     public final static int[] DELAYS = new int[]{5,10,20,120,1800};
     
@@ -99,6 +101,7 @@ public class ResourceMapReadinessMessageProcessor  {
         
         try {
 
+            // TODO: convert System.out.printlns back to log statements
             // see if it's already indexed
             // if so, then no need to delay re-indexing
             System.out.println("!^!^!^!^!^!^!^!^!^!     Successfully deserialized ResourceMapIndexTask for pid: " +rmit.getPid());
