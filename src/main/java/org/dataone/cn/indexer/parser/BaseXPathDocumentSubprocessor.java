@@ -160,11 +160,11 @@ public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
         this.matchDocuments = matchDocuments;
     }
 
-    public static void setXmlNamespaceConfig(XMLNamespaceConfig xmlNamespaceConfig) {
+    public void setXmlNamespaceConfig(XMLNamespaceConfig xmlNamespaceConfig) {
         xpath.setNamespaceContext(xmlNamespaceConfig);
     }
     
-    public static XMLNamespaceConfig getXmlNamespaceConfig() {
+    public XMLNamespaceConfig getXmlNamespaceConfig() {
         return (XMLNamespaceConfig)xpath.getNamespaceContext();
     }
     
