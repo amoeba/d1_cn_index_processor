@@ -8,6 +8,7 @@ import java.util.Properties;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.dataone.cn.index.processor.IndexingMessageProcessor;
 import org.dataone.cn.messaging.QueueAccess;
 import org.dataone.configuration.Settings;
@@ -27,11 +28,13 @@ public class IndexProcessingPipelineManager {
     
     private Map<String,Integer> processingQueueAllocation = new HashMap<>();
     private Map<String,QueueAccess> processingQueueAccessRegistry = new HashMap<>();
-    
+    private static Logger logger = Logger.getLogger(IndexProcessingPipelineManager.class);
     
     
     public IndexProcessingPipelineManager(ApplicationContext context) {
+        logger.info("IndexProcessingPipelineManager.IndexProcessingPipelineManager - the start point.");
         Properties props = Settings.getConfiguration().getProperties("dataone.index.queue");
+        logger.info("IndexProcessingPipelineManager.IndexProcessingPipelineManager - the size of property \"dataone.index.queue\" is "+props.size());
         for (Object key: props.keySet()) {
         
             String queueName = (String) key;
@@ -51,7 +54,7 @@ public class IndexProcessingPipelineManager {
             
             
             qa.registerAsynchronousMessageListener(count, ml);
-            System.out.println(String.format("Registered %d '%s' listeners to queue '%s'", count, mlBean, qaBean));
+            logger.info(String.format("Registered %d '%s' listeners to queue '%s'", count, mlBean, qaBean));
         }
     }
     
