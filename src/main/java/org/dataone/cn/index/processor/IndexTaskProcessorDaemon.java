@@ -24,6 +24,7 @@ package org.dataone.cn.index.processor;
 
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
+import org.apache.log4j.Logger;
 import org.dataone.cn.index.messaging.IndexProcessingPipelineManager;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -32,23 +33,24 @@ public class IndexTaskProcessorDaemon implements Daemon {
 
     private ApplicationContext context;
     private IndexTaskProcessorScheduler scheduler;
+    private static Logger logger = Logger.getLogger(IndexTaskProcessorDaemon.class);
 
     @Override
     public void start() throws Exception {
-        System.out.println("starting index task processor daemon [" + this + "] ..." );
+        logger.info("IndexTaskProcessorDaemon.start - starting index task processor daemon [" + this + "] ..." );
         context = new ClassPathXmlApplicationContext("processor-daemon-context.xml");
+        logger.info("IndexTaskProcessorDaemon.start - after creating the context." );
 
 //        scheduler = (IndexTaskProcessorScheduler) context.getBean("indexTaskProcessorScheduler");
 //        scheduler.start();
-        
         new IndexProcessingPipelineManager(context);
     }
 
     @Override
     public void stop() throws Exception {
-        System.out.println("stopping index task processor daemon [" + this + "] ...");
+        logger.info("stopping index task processor daemon [" + this + "] ...");
         scheduler.stop();
-        System.out.println("index task processor daemon  [" + this + "] stopped.");
+        logger.info("index task processor daemon  [" + this + "] stopped.");
     }
 
     @Override
