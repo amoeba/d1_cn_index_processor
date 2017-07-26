@@ -36,10 +36,10 @@ public class IndexProcessingPipelineManager {
         Properties props = Settings.getConfiguration().getProperties("dataone.index.queue");
         logger.info("IndexProcessingPipelineManager.IndexProcessingPipelineManager - the size of property \"dataone.index.queue\" is "+props.size());
         for (Object key: props.keySet()) {
-        
+            
             String queueName = (String) key;
             Integer count = new Integer((String)props.get(key));
-            
+            logger.info("IndexProcessingPipelineManager.IndexProcessingPipelineManager - the queue with name "+ queueName+" will have "+count.intValue()+" listeners.");
             processingQueueAllocation.put(queueName, count);
             
             // effectively creates a naming convention for the beans
@@ -49,9 +49,11 @@ public class IndexProcessingPipelineManager {
             String mlBean = queueName + "Listener";
             
 
+            logger.info("IndexProcessingPipelineManager.IndexProcessingPipelineManager - before creating QueueAccess object.");
             QueueAccess qa = (QueueAccess) context.getBean(qaBean);
+            logger.info("IndexProcessingPipelineManager.IndexProcessingPipelineManager - after creating QueueAccess object.");
             MessageListener ml = (MessageListener) context.getBean(mlBean);
-            
+            logger.info("IndexProcessingPipelineManager.IndexProcessingPipelineManager - after creating the message listeners.");
             
             qa.registerAsynchronousMessageListener(count, ml);
             logger.info(String.format("Registered %d '%s' listeners to queue '%s'", count, mlBean, qaBean));
