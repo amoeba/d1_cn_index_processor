@@ -164,10 +164,7 @@ public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
         xpath.setNamespaceContext(xmlNamespaceConfig);
     }
     
-    public static void setXMLNamespaceConfig(XMLNamespaceConfig xmlNamespaceConfig) {
-        xpath.setNamespaceContext(xmlNamespaceConfig);
-    }
-
+   
     @Override
     public SolrDoc mergeWithIndexedDocument(SolrDoc indexDocument) throws IOException,
             EncoderException, XPathExpressionException {
