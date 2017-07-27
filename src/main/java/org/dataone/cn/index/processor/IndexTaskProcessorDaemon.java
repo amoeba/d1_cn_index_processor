@@ -37,7 +37,7 @@ public class IndexTaskProcessorDaemon implements Daemon {
 
     @Override
     public void start() throws Exception {
-        logger.info("IndexTaskProcessorDaemon.start - starting index task processor daemon [" + this + "] ..." );
+        logger.info("IndexTaskProcessorDaemon.start - starting index task processor daemon..." );
         context = new ClassPathXmlApplicationContext("processor-daemon-context.xml");
         logger.info("IndexTaskProcessorDaemon.start - after creating the context." );
 
@@ -48,9 +48,9 @@ public class IndexTaskProcessorDaemon implements Daemon {
 
     @Override
     public void stop() throws Exception {
-        logger.info("stopping index task processor daemon [" + this + "] ...");
+        logger.info("stopping index task processor daemon...");
         scheduler.stop();
-        logger.info("index task processor daemon  [" + this + "] stopped.");
+        logger.info("index task processor daemon stopped.");
     }
 
     @Override

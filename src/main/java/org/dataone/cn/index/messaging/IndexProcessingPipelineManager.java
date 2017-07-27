@@ -16,6 +16,7 @@ import org.springframework.amqp.core.MessageListener;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  * A class that allocates consumers to queues, especially the number
@@ -33,6 +34,7 @@ public class IndexProcessingPipelineManager {
     
     public IndexProcessingPipelineManager(ApplicationContext context) {
         logger.info("IndexProcessingPipelineManager.IndexProcessingPipelineManager - the start point.");
+        ApplicationContext clientContext = new AnnotationConfigApplicationContext(MessagingClientConfiguration.class);
         Properties props = Settings.getConfiguration().getProperties("dataone.index.queue");
         logger.info("IndexProcessingPipelineManager.IndexProcessingPipelineManager - the size of property \"dataone.index.queue\" is "+props.size());
         for (Object key: props.keySet()) {
@@ -50,9 +52,9 @@ public class IndexProcessingPipelineManager {
             
 
             logger.info("IndexProcessingPipelineManager.IndexProcessingPipelineManager - before creating QueueAccess object.");
-            QueueAccess qa = (QueueAccess) context.getBean(qaBean);
+            QueueAccess qa = (QueueAccess) clientContext.getBean(qaBean);
             logger.info("IndexProcessingPipelineManager.IndexProcessingPipelineManager - after creating QueueAccess object.");
-            MessageListener ml = (MessageListener) context.getBean(mlBean);
+            MessageListener ml = (MessageListener) clientContext.getBean(mlBean);
             logger.info("IndexProcessingPipelineManager.IndexProcessingPipelineManager - after creating the message listeners.");
             
             qa.registerAsynchronousMessageListener(count, ml);
