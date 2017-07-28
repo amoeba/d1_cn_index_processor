@@ -78,20 +78,12 @@
     <bean id="ResourceMapReadinessMessageProcessor"
       class="org.dataone.cn.index.processor.ResourceMapReadinessMessageProcessor">
       <constructor-arg name="solrClient">
-         <ref bean="HTTPSolrClient"/>
+         <ref bean="d1IndexerSolrClient"/>
       </constructor-arg>
       <constructor-arg name="solrQueryUri" value="${solr.query.uri}"/>
    </bean>
- 
-   <bean id="HTTPSolrClient"
-      class="org.dataone.cn.indexer.solrhttp.HTTPService">
-      <constructor-arg ref="HTTPRequestFactory"/>
-   </bean>
-    
-    <bean id="HTTPRequestFactory"
-      class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
-   </bean>
-   
+
+
    <bean id="deleteProcessor" class="org.dataone.cn.index.processor.IndexTaskDeleteProcessor" />
 	
 </beans>
