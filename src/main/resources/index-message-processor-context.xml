@@ -91,5 +91,7 @@
     <bean id="HTTPRequestFactory"
       class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
    </bean>
+   
+   <bean id="deleteProcessor" class="org.dataone.cn.index.processor.IndexTaskDeleteProcessor" />
 	
 </beans>
