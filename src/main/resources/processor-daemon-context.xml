@@ -10,7 +10,7 @@
  	
 	<import resource="classpath:index-context-file-includes.xml" />   
     
-	<import resource="classpath:index-message-processor-context.xml"/>
+	<import resource="classpath:index-processor-context.xml"/>
 	
 	<bean id="log4jInitialization"
      class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
