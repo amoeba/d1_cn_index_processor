@@ -34,7 +34,6 @@ public class IndexProcessingPipelineManager {
     
     public IndexProcessingPipelineManager(ApplicationContext context) {
         logger.info("IndexProcessingPipelineManager.IndexProcessingPipelineManager - the start point.");
-        ApplicationContext clientContext = new AnnotationConfigApplicationContext(MessagingClientConfiguration.class);
         Properties props = Settings.getConfiguration().getProperties("dataone.index.queue");
         logger.info("IndexProcessingPipelineManager.IndexProcessingPipelineManager - the size of property \"dataone.index.queue\" is "+props.size());
         for (Object key: props.keySet()) {
@@ -52,9 +51,9 @@ public class IndexProcessingPipelineManager {
             
 
             logger.info("IndexProcessingPipelineManager.IndexProcessingPipelineManager - before creating QueueAccess object.");
-            QueueAccess qa = (QueueAccess) clientContext.getBean(qaBean);
+            QueueAccess qa = (QueueAccess) context.getBean(qaBean);
             logger.info("IndexProcessingPipelineManager.IndexProcessingPipelineManager - after creating QueueAccess object.");
-            MessageListener ml = (MessageListener) clientContext.getBean(mlBean);
+            MessageListener ml = (MessageListener) context.getBean(mlBean);
             logger.info("IndexProcessingPipelineManager.IndexProcessingPipelineManager - after creating the message listeners.");
             
             qa.registerAsynchronousMessageListener(count, ml);
