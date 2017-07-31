@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 //@Component
 public class IndexTaskTriageMessageProcessor {
 
-    //    public static final Logger logger = Logger.getLogger(IndexTaskTriageMessageProcessor.class);
+     private static final Logger logger = Logger.getLogger(IndexTaskTriageMessageProcessor.class);
             
     private CachingConnectionFactory connFact = new CachingConnectionFactory("localhost");
     
@@ -51,7 +51,7 @@ public class IndexTaskTriageMessageProcessor {
         } 
         // else the priority is 1
 
-        System.out.println(String.format("message received. nodeID = %s : formatType = %s : pid = %s : priority = %d",
+        logger.info(String.format("message received. nodeID = %s : formatType = %s : pid = %s : priority = %d",
                 msgHeaders.get("nodeId"),
                 msgHeaders.get("formatType"),
                 msgHeaders.get("pid"),
@@ -74,6 +74,7 @@ public class IndexTaskTriageMessageProcessor {
         }
         
         message.getMessageProperties().setPriority((int)priority);
+        logger.info("IndexTaskTriageMessageProcessor.processMessage - the index message for the object "+msgHeaders.get("pid")+" will be published to the queue"+destinationQueue.getQueueName());
         destinationQueue.publish(message);                
     }
 }

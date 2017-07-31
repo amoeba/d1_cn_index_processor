@@ -57,7 +57,7 @@ public class IndexProcessingPipelineManager {
             logger.info("IndexProcessingPipelineManager.IndexProcessingPipelineManager - after creating the message listeners.");
             
             qa.registerAsynchronousMessageListener(count, ml);
-            logger.info(String.format("Registered %d '%s' listeners to queue '%s'", count, mlBean, qaBean));
+            logger.info(String.format("Registered %d '%s' listeners to queue '%s'", count, ml.getClass().getName(), qa.getQueueName()));
         }
     }
     
