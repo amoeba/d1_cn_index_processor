@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>                                                                                                                                                                                                                                                                                                    
+<beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:p="http://www.springframework.org/schema/p"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:context="http://www.springframework.org/schema/context"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans.xsd
+ http://www.springframework.org/schema/context
+ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+ 
+  <bean id="declareNewTaskQueue"
+      class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+      <property name="targetObject" ref="RabbitAdmin"/>
+	    <property name="targetMethod" value="declareQueue"/>
+      <property name="arguments">
+        <ref bean="newTaskQueue"/>
+      </property>
+  </bean> 
+
+  <bean id="declarePrioritizedTaskQueue"
+      class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+      <property name="targetObject" ref="RabbitAdmin"/>
+      <property name="targetMethod" value="declareQueue"/>
+      <property name="arguments">
+        <ref bean="prioritizedTaskQueue"/>
+      </property>
+  </bean> 
+ 
+  <bean id="declareWaitingForReadinessTaskQueue"
+      class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+      <property name="targetObject" ref="RabbitAdmin"/>
+      <property name="targetMethod" value="declareQueue"/>
+      <property name="arguments">
+        <ref bean="waitingForReadinessTaskQueue"/>
+      </property>
+  </bean> 
+
+  <bean id="newTaskQueue" class="org.springframework.amqp.core.Queue">
+       <constructor-arg name="name" ref="${messaging.newTaskQueue.name}"/>
+  </bean>
+
+  <bean id="prioritizedTaskQueue" class="org.springframework.amqp.core.Queue">
+       <constructor-arg name="name" ref="${messaging.prioritizedTaskQueue.name}"/>
+  </bean>
+
+  <bean id="waitingForReadinessTaskQueue" class="org.springframework.amqp.core.Queue">
+       <constructor-arg name="name" ref="${messaging.waitingForReadinessTaskQueue.name}"/>
+  </bean>
+
+
+  <bean id="RabbitAdmin" class="org.springframework.amqp.rabbit.core.RabbitAdmin">
+       <constructor-arg name="connFactory" ref="connFactory"/>
+  </bean>
+	
+	<bean id="newTaskQueueAccess"
+	  	class="org.dataone.cn.messaging.QueueAccess">
+      <constructor-arg name="connFactory" ref="connFactory"/>
+      <constructor-arg name="queueName" value="${messaging.newTaskQueue.name}"/>
+	</bean>
+  
+   <bean id="prioritizedTaskQueueAccess"
+      class="org.dataone.cn.messaging.QueueAccess">
+      <constructor-arg name="connFactory" ref="connFactory"/>
+      <constructor-arg name="queueName" value="${messaging.prioritizedTaskQueue.name}"/>
+  </bean>
+
+  <bean id="waitingForReadinessTaskQueueAccess"
+      class="org.dataone.cn.messaging.QueueAccess">
+      <constructor-arg name="connFactory" ref="connFactory"/>
+      <constructor-arg name="queueName" value="${messaging.waitingForReadinessTaskQueue.name}"/>
+  </bean>
+
+
+  <bean id="connFactory"
+      class="org.springframework.amqp.rabbit.connection.CachingConnectionFactory">
+      <constructor-arg name="hostname" value = "localhost"/>
+      <property name="username" value="guest"/>
+      <property name="password" value="guest"/>
+      <property name="publisherConfirms" value="true"/>
+      <property name="publisherReturns" value="false"/>
+  </bean>
+
+  <bean id="newTaskQueueListener"
+      class="org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter">
+      <property name="delegate">
+        <ref bean="IndexTaskTriageMessageProcessor"/>
+      </property>
+      <property name="defaultListenerMethod" value="processMessage"/>
+      <property name="messageConverter"><null/></property>
+  </bean>
+ 
+  <bean id="IndexTaskTriageMessageProcessor"
+      class="org.dataone.cn.index.processor.IndexTaskTriageMessageProcessor">
+  </bean>
+
+   <bean id="prioritizedTaskQueueListener"
+      class="org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter">
+      <property name="delegate">
+        <ref bean="IndexingMessageProcessor"/>
+      </property>
+      <property name="defaultListenerMethod" value="processMessage"/>
+      <property name="messageConverter"><null/></property>
+   </bean>
+   
+   <bean id="IndexingMessageProcessor"
+      class="org.dataone.cn.index.processor.IndexingMessageProcessor">
+      <constructor-arg ref="solrIndexService"/>
+   </bean>
+   
+   <bean id="waitingForReadinessTaskQueueListener"
+      class="org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter">
+      <property name="delegate">
+        <ref bean="ResourceMapReadinessMessageProcessor"/>
+      </property>
+      <property name="defaultListenerMethod" value="processMessage"/>
+      <property name="messageConverter"><null/></property>
+   </bean>
+ 
+    <bean id="ResourceMapReadinessMessageProcessor"
+      class="org.dataone.cn.index.processor.ResourceMapReadinessMessageProcessor">
+      <constructor-arg name="solrClient">
+         <ref bean="d1IndexerSolrClient"/>
+      </constructor-arg>
+      <constructor-arg name="solrQueryUri" value="${solr.query.uri}"/>
+   </bean>
+
+	
+</beans>
