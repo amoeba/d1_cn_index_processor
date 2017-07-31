@@ -36,15 +36,15 @@
   </bean> 
 
   <bean id="newTaskQueue" class="org.springframework.amqp.core.Queue">
-       <constructor-arg name="name" ref="${messaging.newTaskQueue.name}"/>
+       <constructor-arg name="name" value="${messaging.newTaskQueue.name}"/>
   </bean>
 
   <bean id="prioritizedTaskQueue" class="org.springframework.amqp.core.Queue">
-       <constructor-arg name="name" ref="${messaging.prioritizedTaskQueue.name}"/>
+       <constructor-arg name="name" value="${messaging.prioritizedTaskQueue.name}"/>
   </bean>
 
   <bean id="waitingForReadinessTaskQueue" class="org.springframework.amqp.core.Queue">
-       <constructor-arg name="name" ref="${messaging.waitingForReadinessTaskQueue.name}"/>
+       <constructor-arg name="name" value="${messaging.waitingForReadinessTaskQueue.name}"/>
   </bean>
 
 
