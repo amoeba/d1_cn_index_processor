@@ -53,13 +53,11 @@ public class IndexProcessingPipelineManager {
             logger.info("IndexProcessingPipelineManager.IndexProcessingPipelineManager - before creating QueueAccess object.");
             QueueAccess qa = (QueueAccess) context.getBean(qaBean);
             logger.info("IndexProcessingPipelineManager.IndexProcessingPipelineManager - after creating QueueAccess object.");
-            Object object = context.getBean(mlBean);
-            String className = object.getClass().getCanonicalName();
-            MessageListener ml = (MessageListener) object;
+            MessageListener ml = (MessageListener) context.getBean(mlBean);;
             logger.info("IndexProcessingPipelineManager.IndexProcessingPipelineManager - after creating the message listeners.");
             
             qa.registerAsynchronousMessageListener(count, ml);
-            logger.info(String.format("Registered %d '%s' listeners to queue '%s'", count, className, qa.getQueueName()));
+            logger.info(String.format("Registered %d '%s' listeners to queue '%s'", count, mlBean, qa.getQueueName()));
         }
     }
     
