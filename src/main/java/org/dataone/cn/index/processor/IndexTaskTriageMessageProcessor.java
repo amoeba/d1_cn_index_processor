@@ -74,7 +74,7 @@ public class IndexTaskTriageMessageProcessor {
         }
         
         message.getMessageProperties().setPriority((int)priority);
-        logger.info("IndexTaskTriageMessageProcessor.processMessage - the index message for the object "+msgHeaders.get("pid")+" will be published to the queue"+destinationQueue.getQueueName());
+        logger.info("IndexTaskTriageMessageProcessor.processMessage - the index message for the object "+msgHeaders.get("pid")+" will be distributed from the new task queue to the queue"+destinationQueue.getQueueName());
         destinationQueue.publish(message);                
     }
 }

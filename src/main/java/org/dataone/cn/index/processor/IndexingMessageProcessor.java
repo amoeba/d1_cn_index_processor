@@ -74,7 +74,7 @@ public class IndexingMessageProcessor {
             //SolrElementAdd addCommand = solrIndexService.processObject(it.getPid(), sysmetaStream, it.getObjectPath());
             solrIndexService.insertIntoIndex(it.getPid(), sysmetaStream, it.getObjectPath());            
             long stop = System.currentTimeMillis();
-            logger.info("IndexingMessageProcessor.procesMessage - processing "+ it.getPid()+" takes : " + (stop-start));
+            logger.info("IndexingMessageProcessor.procesMessage - successfully indexed the object "+ it.getPid()+" and the processing time takes : " + (stop-start)+ " milliseconds.");
             
             // if success, we probably won't push the task to a queue (because it will never be read 
             // and the queue will just fill up, but it's helpful for now while we're testing
