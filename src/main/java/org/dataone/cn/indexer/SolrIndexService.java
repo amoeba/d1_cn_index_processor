@@ -37,6 +37,7 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.log4j.Logger;
+import org.apache.solr.common.util.IOUtils;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.index.util.PerformanceLogger;
@@ -210,6 +211,7 @@ public class SolrIndexService {
             int i=1;
             for (IDocumentSubprocessor subprocessor : getSubprocessors()) {
                 if (subprocessor.canProcess(formatId)) {
+                    FileInputStream objectStream = null;
                     try {
                         if (log.isDebugEnabled()) 
                             log.debug("...subprocessor " + subprocessor.getClass().getSimpleName() + " invoked for " + id);
@@ -217,7 +219,7 @@ public class SolrIndexService {
                         // note that resource map processing touches all objects
                         // referenced by the resource map.
                         long startFechingFile = System.currentTimeMillis();
-                        FileInputStream objectStream = new FileInputStream(objectPath);
+                        objectStream = new FileInputStream(objectPath);
                         perfLog.log("Loop "+i+". SolrIndexService.processObject() fetch file for id "+id, System.currentTimeMillis() - startFechingFile);
                         if (!objectStream.getFD().valid()) {
                             log.error("Could not load OBJECT file for ID,Path=" + id + ", "
@@ -241,7 +243,9 @@ public class SolrIndexService {
                                 id,
                                 e.getMessage()),
                                 e);
-                    } 
+                    }  finally {
+                       IOUtils.closeQuietly(objectStream);
+                    }
                 }
                 i++;
             }
