@@ -357,9 +357,14 @@ public class ForesiteResourceMap implements ResourceMap {
                 //System.out.println(">>>>>>>>in mergeIndexedDocuments of ForesiteResourceMap, the doc id is  "+doc.getIdentifier() +" in the thread "+Thread.currentThread().getId());
                 //System.out.println(">>>>>>>>in mergeIndexedDocuments of ForesiteResourceMap, the doc series id is  "+doc.getSeriesId()+" in the thread "+Thread.currentThread().getId());
                 //System.out.println(">>>>>>>>in mergeIndexedDocuments of ForesiteResourceMap, the resource entry id is  "+resourceEntry.getIdentifier()+" in the thread "+Thread.currentThread().getId());
-                logger.debug(">>>>>>>>in mergeIndexedDocuments of ForesiteResourceMap, the doc id is  "+doc.getIdentifier() +" in the thread "+Thread.currentThread().getId());
-                logger.debug(">>>>>>>>in mergeIndexedDocuments of ForesiteResourceMap, the doc series id is  "+doc.getSeriesId()+" in the thread "+Thread.currentThread().getId());
-                logger.debug(">>>>>>>>in mergeIndexedDocuments of ForesiteResourceMap, the resource entry id is  "+resourceEntry.getIdentifier()+" in the thread "+Thread.currentThread().getId());
+                if (logger.isDebugEnabled()) {
+                    logger.debug(">>>>>>>>in mergeIndexedDocuments of ForesiteResourceMap, the doc id is  "
+                            +doc.getIdentifier() +" in the thread "+Thread.currentThread().getId());
+                    logger.debug(">>>>>>>>in mergeIndexedDocuments of ForesiteResourceMap, the doc series id is  "
+                            +doc.getSeriesId()+" in the thread "+Thread.currentThread().getId());
+                    logger.debug(">>>>>>>>in mergeIndexedDocuments of ForesiteResourceMap, the resource entry id is  "
+                            +resourceEntry.getIdentifier()+" in the thread "+Thread.currentThread().getId());
+                }
                
                 if (doc.getIdentifier().equals(resourceEntry.getIdentifier())
                         || resourceEntry.getIdentifier().equals(doc.getSeriesId())) {
