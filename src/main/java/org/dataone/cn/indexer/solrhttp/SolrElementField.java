@@ -31,7 +31,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
 /**
- * User: Porter Date: 7/25/11 Time: 4:14 PM Contains constants FILED_XXXX for
+ * User: Porter Date: 7/25/11 Time: 4:14 PM Contains constants FIELD_XXXX for
  * DataOne system metdata solr index fields.
  * 
  * @see SolrElementAdd
@@ -104,6 +104,14 @@ public class SolrElementField {
         this.value = value;
     }
 
+    /**
+     * puts the SolrElementField's serialized content on the outputStream and flushes.
+     * Hardcoded to XML format, XML escaping done for the content. 
+     * @param outputStream
+     * @param encoding
+     * @throws IOException
+     */
+    
     public void serialize(OutputStream outputStream, String encoding) throws IOException {
         if (value == null || value.equals("")) {
             return;

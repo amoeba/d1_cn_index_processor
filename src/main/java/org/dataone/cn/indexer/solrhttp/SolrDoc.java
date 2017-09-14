@@ -87,6 +87,12 @@ public class SolrDoc {
         return false;
     }
 
+    /**
+     * A simple lookup of the solr document's field value for comparison with the given string.
+     * @param fieldName
+     * @param value
+     * @return
+     */
     public boolean hasFieldWithValue(String fieldName, String value) {
         for (SolrElementField field : fieldList) {
             if (field.getName() != null && field.getName().equals(fieldName)) {
