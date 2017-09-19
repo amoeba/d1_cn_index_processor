@@ -49,6 +49,13 @@
 		  <version>2.9.1</version>
 		</dependency>
  
+        <!-- https://mvnrepository.com/artifact/org.apache.solr/solr-solrj -->
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-solrj</artifactId>
+            <version>5.2.1</version>
+        </dependency>
+ 
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
@@ -317,7 +324,7 @@
     <plugin>
 	    <groupId>org.apache.maven.plugins</groupId>
 	    <artifactId>maven-surefire-plugin</artifactId>
-	    <version>2.16</version>
+	    <version>2.20</version>
 	    <configuration>
 	        <enableAssertions>true</enableAssertions>
 	    </configuration>

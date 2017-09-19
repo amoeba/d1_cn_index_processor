@@ -185,7 +185,7 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
         if (containsSeriesId) {
             Identifier pidToProcess = identifier;
             while (pidToProcess != null) {
-                // queue a delete processing of all versions in the SID chain
+                // queue a delete processing of all versions in the obsoletes chain
                 SystemMetadata sysmeta = HazelcastClientFactory.getSystemMetadataMap().get(
                         pidToProcess);
                 String objectPath = HazelcastClientFactory.getObjectPathMap().get(pidToProcess);

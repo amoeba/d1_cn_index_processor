@@ -642,8 +642,10 @@ public class IndexTaskProcessor {
                     }
                 } catch (OREParserException oreException) {
                     ready = false;
+                    Throwable cause = oreException.getCause();
                     logger.error("Unable to parse ORE doc: " + task.getPid()
-                            + ".  Unrecoverable parse error: task will not be re-tried.");
+                            + ".  Unrecoverable parse error: task will not be re-tried.  Cause:: " 
+                            + cause.getClass().getSimpleName() + ": " + cause.getMessage());
                     if (logger.isTraceEnabled()) {
                         oreException.printStackTrace();
 
@@ -652,7 +654,7 @@ public class IndexTaskProcessor {
                     ready = false;
                     logger.error("unable to load resource for pid: " + task.getPid()
                             + " at object path: " + task.getObjectPath()
-                            + ".  Marking new and continuing...");
+                            + ".  Marking new and continuing...  Cause:: " + e.getClass().getSimpleName() + ": " + e.getMessage() );
                 }
                 if(!ready) {
                     task.markNew();
@@ -741,6 +743,7 @@ public class IndexTaskProcessor {
                     }
                 }
                 if (foundId == false) {
+                    // could be archived
                     Identifier pid = new Identifier();
                     pid.setValue(id);
                     logger.info("Identifier " + id
@@ -765,7 +768,7 @@ public class IndexTaskProcessor {
             
         return ! SolrDoc.visibleInIndex(smd);
     }
-//        return (!SolrDoc.visibleInIndex(smd) && smd != null);
+
 
 
     private boolean representsResourceMap(IndexTask task) {

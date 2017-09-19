@@ -217,7 +217,7 @@ public class SolrIndexService {
                             log.debug("...subprocessor " + subprocessor.getClass().getSimpleName() + " invoked for " + id);
                         
                         // note that resource map processing touches all objects
-                        // referenced by the resource map.
+                        // referenced by the resource ma  p.
                         long startFechingFile = System.currentTimeMillis();
                         objectStream = new FileInputStream(objectPath);
                         perfLog.log("Loop "+i+". SolrIndexService.processObject() fetch file for id "+id, System.currentTimeMillis() - startFechingFile);

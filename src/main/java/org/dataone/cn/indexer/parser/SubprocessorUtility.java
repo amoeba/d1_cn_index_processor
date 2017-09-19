@@ -25,6 +25,20 @@ public class SubprocessorUtility {
     public SubprocessorUtility() {
     }
 
+    /**
+     * For every field-name in the fieldsToMerge list, adds the corresponding field from the
+     * retrieved SolrDoc (index record) to the provided indexDocument, if they don't have
+     * the same value.
+     * (If values are different, there will be more than one SolrElementFields in returned SolrDoc
+     * with the same name, but different values)
+     * This routine effectively controls duplicates in multi-valued fields.
+     * @param indexDocument
+     * @param fieldsToMerge
+     * @return
+     * @throws IOException
+     * @throws EncoderException
+     * @throws XPathExpressionException
+     */
     public SolrDoc mergeWithIndexedDocument(SolrDoc indexDocument, List<String> fieldsToMerge)
             throws IOException, EncoderException, XPathExpressionException {
 
@@ -36,8 +50,10 @@ public class SubprocessorUtility {
             logger.debug("found existing doc to merge for pid: " + indexDocument.getIdentifier());
             for (SolrElementField field : solrDoc.getFieldList()) {
                 if (fieldsToMerge.contains(field.getName())
-                        && !indexDocument.hasFieldWithValue(field.getName(), field.getValue())) {
+                        && !indexDocument.hasFieldWithValue(field.getName(), field.getValue())) 
+                {
                     indexDocument.addField(field);
+                
                     logger.debug("merging field: " + field.getName() + " with value: "
                             + field.getValue());
                 }

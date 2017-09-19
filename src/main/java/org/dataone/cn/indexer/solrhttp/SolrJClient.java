@@ -94,16 +94,21 @@ public class SolrJClient implements D1IndexerSolrClient {
     private String solrIndexUri;
     private List<String> validSolrFieldNames = new ArrayList<String>();
 
+    /**
+     * 
+     * @param requestFactory
+     * @param zkHost - a zookeeper client endpoint (passed to CloudSolrClient)
+     */
     public SolrJClient(HttpComponentsClientHttpRequestFactory requestFactory, String zkHost) {
         httpRequestFactory = requestFactory;
         httpClient = httpRequestFactory.getHttpClient();
-        solrClient = new HttpSolrClient(zkHost);
-        solrClient = new CloudSolrClient(zkHost, true, httpClient);
+ //       solrClient = new HttpSolrClient(zkHost);
+        solrClient = new CloudSolrClient(zkHost, false, httpClient);
     }
     
     /**
      * A constructor to be used for testing.  It only uses an HttpSolrClient, not
-     * the CloudSolrClient.  (In the future, we should set the client by configuration...
+     * the CloudSolrClient.  (In the future, we should set the client by configuration...)
      * 
      * @param uri
      */
@@ -438,7 +443,9 @@ public class SolrJClient implements D1IndexerSolrClient {
             } else if (o instanceof Boolean) {
                 return Boolean.toString((Boolean) o);
             } else if (o instanceof Date) {
-                return DateTimeMarshaller.serializeDateToUTC((Date) o);
+                String date = DateTimeMarshaller.serializeDateToUTC((Date) o);
+                return StringUtils.replace(date, "+00:00", "Z");
+                
             } else if (o instanceof Float) {
                 return Float.toString((Float) o);
             }
@@ -462,25 +469,6 @@ public class SolrJClient implements D1IndexerSolrClient {
         }
     }
 
-//    private List<SolrDoc> parseResults(Document document) throws XPathExpressionException {
-//
-//        NodeList nodeList = (NodeList) XPathFactory.newInstance().newXPath()
-//                .evaluate("/response/result/doc", document, XPathConstants.NODESET);
-//        List<SolrDoc> docList = new ArrayList<SolrDoc>();
-//        for (int i = 0; i < nodeList.getLength(); i++) {
-//            Element docElement = (Element) nodeList.item(i);
-//            docList.add(parseDoc(docElement));
-//
-//        }
-//
-//        return docList;
-//    }
-//
-//    private SolrDoc parseDoc(Element docElement) {
-//        SolrDoc doc = new SolrDoc();
-//        doc.loadFromElement(docElement, validSolrFieldNames);
-//        return doc;
-//    }
 
     /* (non-Javadoc)
      * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#setSolrSchemaPath(java.lang.String)
