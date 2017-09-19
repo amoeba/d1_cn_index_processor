@@ -83,6 +83,8 @@ public class SolrJClient implements D1IndexerSolrClient {
     private static final String MAX_ROWS = "5000";
     
     private static final String DYNAMIC_FIELD_SUFFIX = "_sm";
+    
+    public static final int COMMIT_WITHIN_MS = 15000; // for solr updates.
 
     private static Logger log = Logger.getLogger(SolrJClient.class.getName());
     private HttpComponentsClientHttpRequestFactory httpRequestFactory;
@@ -153,7 +155,7 @@ public class SolrJClient implements D1IndexerSolrClient {
         }
         
         try {
-            getSolrClient().add(updateDocs);
+            getSolrClient().add(updateDocs,COMMIT_WITHIN_MS);
         } catch (SolrServerException e) {
             logError(e,data,e.getMessage(),"Using zkHost");
             throw new IOException("Unable to update solr (see cause)",e);
