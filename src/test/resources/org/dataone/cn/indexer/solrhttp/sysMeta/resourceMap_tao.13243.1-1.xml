@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns3:systemMetadata xmlns:ns2="http://ns.dataone.org/service/types/v1" xmlns:ns3="http://ns.dataone.org/service/types/v2.0">
+    <serialVersion>6</serialVersion>
+    <identifier>resourceMap_tao.13243.1</identifier>
+    <formatId>http://www.openarchives.org/ore/terms</formatId>
+    <size>2692</size>
+    <checksum algorithm="MD5">e7a9d0deb9f6fb9118bf1bb6cc183d01</checksum>
+    <submitter>uid=tao,o=NCEAS,dc=ecoinformatics,dc=org</submitter>
+    <rightsHolder>uid=tao,o=NCEAS,dc=ecoinformatics,dc=org</rightsHolder>
+    <accessPolicy>
+        <allow>
+            <subject>public</subject>
+            <permission>read</permission>
+        </allow>
+    </accessPolicy>
+    <replicationPolicy replicationAllowed="true" numberReplicas="2"/>
+    <archived>false</archived>
+    <dateUploaded>2014-11-21T00:00:00.000+00:00</dateUploaded>
+    <dateSysMetadataModified>2015-11-10T22:42:26.657+00:00</dateSysMetadataModified>
+    <originMemberNode>urn:node:mnSandboxUCSB1</originMemberNode>
+    <authoritativeMemberNode>urn:node:mnSandboxUCSB1</authoritativeMemberNode>
+    <replica>
+        <replicaMemberNode>urn:node:mnSandboxUCSB2</replicaMemberNode>
+        <replicationStatus>completed</replicationStatus>
+        <replicaVerified>2017-05-26T02:07:46.151+00:00</replicaVerified>
+    </replica>
+    <replica>
+        <replicaMemberNode>urn:node:cnSandbox</replicaMemberNode>
+        <replicationStatus>completed</replicationStatus>
+        <replicaVerified>2017-06-12T11:27:15.685+00:00</replicaVerified>
+    </replica>
+</ns3:systemMetadata>

@@ -44,8 +44,6 @@ import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.CloudSolrClient;
-import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
@@ -53,7 +51,6 @@ import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.dataone.cn.indexer.D1IndexerSolrClient;
 import org.dataone.service.util.DateTimeMarshaller;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -84,10 +81,10 @@ public class SolrJClient implements D1IndexerSolrClient {
     
     private static final String DYNAMIC_FIELD_SUFFIX = "_sm";
     
-    public static final int COMMIT_WITHIN_MS = 15000; // for solr updates.
+    public static final int COMMIT_WITHIN_MS = 50; // for solr updates.
 
     private static Logger log = Logger.getLogger(SolrJClient.class.getName());
-    private HttpComponentsClientHttpRequestFactory httpRequestFactory;
+
     private HttpClient httpClient;
     private SolrClient solrClient;
 
@@ -97,27 +94,12 @@ public class SolrJClient implements D1IndexerSolrClient {
     private List<String> validSolrFieldNames = new ArrayList<String>();
 
     /**
-     * 
-     * @param requestFactory
-     * @param zkHost - a zookeeper client endpoint (passed to CloudSolrClient)
+     * @param SolrClient
      */
-    public SolrJClient(HttpComponentsClientHttpRequestFactory requestFactory, String zkHost) {
-        httpRequestFactory = requestFactory;
-        httpClient = httpRequestFactory.getHttpClient();
- //       solrClient = new HttpSolrClient(zkHost);
-        solrClient = new CloudSolrClient(zkHost, false, httpClient);
+    public SolrJClient(SolrClient client) {
+        solrClient = client;
     }
     
-    /**
-     * A constructor to be used for testing.  It only uses an HttpSolrClient, not
-     * the CloudSolrClient.  (In the future, we should set the client by configuration...)
-     * 
-     * @param uri
-     */
-    public SolrJClient( String uri) {
-        solrClient = new HttpSolrClient(uri);
-
-    }
 
     /* (non-Javadoc)
      * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#sendUpdate(java.lang.String, org.dataone.cn.indexer.solrhttp.SolrElementAdd, java.lang.String)
@@ -145,17 +127,17 @@ public class SolrJClient implements D1IndexerSolrClient {
 
         
         // convert SolrElementAdd to SolrJ's SolrInputDocument
-        List<SolrInputDocument> updateDocs = new ArrayList<SolrInputDocument>();
+        List<SolrInputDocument> updateDocList = new ArrayList<SolrInputDocument>();
         for (SolrDoc doc : data.getDocList()) {
-            SolrInputDocument childDoc = new SolrInputDocument();
+            SolrInputDocument updateDoc = new SolrInputDocument();
             for (SolrElementField sef : doc.getFieldList()) {
-                childDoc.addField(sef.getName(), sef.getValue());
+                updateDoc.addField(sef.getName(), sef.getValue());
             }
-            updateDocs.add(childDoc);
+            updateDocList.add(updateDoc);
         }
         
         try {
-            getSolrClient().add(updateDocs,COMMIT_WITHIN_MS);
+            getSolrClient().add(updateDocList,COMMIT_WITHIN_MS);
         } catch (SolrServerException e) {
             logError(e,data,e.getMessage(),"Using zkHost");
             throw new IOException("Unable to update solr (see cause)",e);
@@ -233,7 +215,6 @@ public class SolrJClient implements D1IndexerSolrClient {
         }
     }
 
-    // ?q=id%3Ac6a8c20f-3503-4ded-b395-98fcb0fdd78c+OR+f5aaac58-dee1-4254-8cc4-95c5626ab037+OR+f3229cfb-2c53-4aa0-8437-057c2a52f502&version=2.2
 
     /* (non-Javadoc)
      * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#getDocumentsById(java.lang.String, java.util.List)
@@ -246,14 +227,42 @@ public class SolrJClient implements D1IndexerSolrClient {
         return docs;
     }
 
-    /* (non-Javadoc)
+    /** 
+     * wrapper for the solrClient getById() method that provides 'real-time get' to uncommitted updates. 
+     * (this is not a normal query)
      * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#getDocumentById(java.lang.String, java.lang.String)
      */
     @Override
     public List<SolrDoc> getDocumentBySolrId(String uir, String id) throws IOException
     {
-        return getDocumentsByField(uir, Collections.singletonList(id), SolrElementField.FIELD_ID,
-                false);
+        try {
+            SolrDocument d = this.getSolrClient().getById(id);
+            
+            List<SolrDoc> docs = new ArrayList<SolrDoc>();
+            docs.add(parseResponse(d));
+            return docs;
+            
+        } catch (SolrServerException e) {
+            throw new IOException(e);
+        }
+    }
+    /**
+     * wrapper for the solrClient getById() that takes a list.  This method provides 'real-time get' to uncommitted updates.
+     * @param ids
+     * @return
+     * @throws IOException
+     */
+    public List<SolrDoc> getDocumentsBySolrId(List<String> ids) throws IOException
+    {
+        try {
+            SolrDocumentList d = this.getSolrClient().getById(ids);
+            List<SolrDoc> docs = new ArrayList<SolrDoc>();
+            docs.addAll(parseResponse(d));
+            return docs;
+            
+        } catch (SolrServerException e) {
+            throw new IOException(e);
+        }
     }
 
     /* (non-Javadoc)
@@ -382,59 +391,74 @@ public class SolrJClient implements D1IndexerSolrClient {
         }
     }
     
+    
+    
     protected List<SolrDoc> parseResponse(SolrDocumentList sdl) {
-        loadSolrSchemaFields();
+        
         Iterator<SolrDocument> it = sdl.iterator();
         int countDoc = 0;
         List<SolrDoc> docs = new ArrayList<SolrDoc>();
         while (it.hasNext()) {
             countDoc++;
-            SolrDoc solrDoc = new SolrDoc();
-            SolrDocument sd = it.next();
-            if (sd.hasChildDocuments()) {
-                log.info("ChildDocCount = " + sd.getChildDocumentCount());
-            }
-            int fieldCount = 0;
-            StringBuffer sb = new StringBuffer();
-            for (String fieldName : sd.getFieldNames()) {
-                fieldCount++;
-                sb.append(fieldName + ": ");
-                
-                // ensure valid field, or a dynamic field matching the pattern
-                // NOTE: there are many kinds of dynamic fields, only handling one for now.
-                if (this.validSolrFieldNames.contains(fieldName) || fieldName.endsWith(DYNAMIC_FIELD_SUFFIX)) {
-                    sb.append("valid: ");
-                    Object v = sd.getFieldValue(fieldName);
-
-                    if (v instanceof Collection) {
-                        sb.append("multi-valued: ");
-                        for (Object vv : sd.getFieldValues(fieldName)) {
-                            SolrElementField sef = new SolrElementField();
-                            sef.setName(fieldName);
-                            sef.setValue(valueConverter(vv));
-                            solrDoc.addField(sef);
-                            sb.append(valueConverter(vv) + "'");
-                        }
-                    } else {
-                        SolrElementField sef = new SolrElementField();
-                        sef.setName(fieldName);
-                        sef.setValue(valueConverter(v));
-                        solrDoc.addField(sef);
-                        sb.append(valueConverter(v));
-                    }  
-                } else {
-                    sb.append("NOT valid");
-                }
-                if (log.isTraceEnabled()) {
-                    log.trace(sb.toString());
-                }
-            }
-            log.info("FieldCount = " + fieldCount);
-            docs.add(solrDoc);
+            docs.add(parseResponse(it.next()));
         }
         log.info("DocCount = " + countDoc);
         return docs;
+    
     }
+    
+    protected SolrDoc parseResponse(SolrDocument sd) {
+                       
+        loadSolrSchemaFields();
+
+        SolrDoc solrDoc = new SolrDoc();
+        
+        if (sd == null) {
+            return null;
+        }
+        if (sd.hasChildDocuments()) {
+            log.info("ChildDocCount = " + sd.getChildDocumentCount());
+        }
+        int fieldCount = 0;
+        StringBuffer sb = new StringBuffer();
+        for (String fieldName : sd.getFieldNames()) {
+            fieldCount++;
+            sb.append(fieldName + ": ");
+
+            // ensure valid field, or a dynamic field matching the pattern
+            // NOTE: there are many kinds of dynamic fields, only handling one for now.
+            if (this.validSolrFieldNames.contains(fieldName) || fieldName.endsWith(DYNAMIC_FIELD_SUFFIX)) {
+                sb.append("valid: ");
+                Object v = sd.getFieldValue(fieldName);
+
+                if (v instanceof Collection) {
+                    sb.append("multi-valued: ");
+                    for (Object vv : sd.getFieldValues(fieldName)) {
+                        SolrElementField sef = new SolrElementField();
+                        sef.setName(fieldName);
+                        sef.setValue(valueConverter(vv));
+                        solrDoc.addField(sef);
+                        sb.append(valueConverter(vv) + "'");
+                    }
+                } else {
+                    SolrElementField sef = new SolrElementField();
+                    sef.setName(fieldName);
+                    sef.setValue(valueConverter(v));
+                    solrDoc.addField(sef);
+                    sb.append(valueConverter(v));
+                }  
+            } else {
+                sb.append("NOT valid");
+            }
+            if (log.isTraceEnabled()) {
+                log.trace(sb.toString());
+            }
+        }
+        log.info("FieldCount = " + fieldCount);
+        return solrDoc;
+    }
+    
+    
     
     private String valueConverter(Object o) {
         try {
@@ -450,6 +474,8 @@ public class SolrJClient implements D1IndexerSolrClient {
                 
             } else if (o instanceof Float) {
                 return Float.toString((Float) o);
+            } else if (o instanceof Integer) {
+                return Integer.toString((Integer) o);
             }
             throw e;
         }

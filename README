@@ -16,4 +16,20 @@ The integration test - IndexTaskProcessingIntegrationTest makes use of the gener
 daemon classes.  Since these classes load configuration from a production environment, configuration should
 be present in /etc/dataone/indexing.  This includes jdbc.properties, hazelcast.xml, solr.properties.
 
+
+Package design:
+
+the index processor has 4 major components:
+1. task prioritization and execution:  org.dataone.cn.index.processor
+
+2. document merging logic for processing updates : org.dataone.cn.indexer.SolrIndexService
+
+3. format-specific parsers that convert metadata, systemMetadata, resourceMap, 
+   (annotation, and provenance) files into Solr record format:  org.dataone.cn.indexer.parser & spring-bean configurations in src/main/resources and cn-buildout
+
+4. solr communication utilities:  classes for creating and sending and receiving solr records:  org.dataone.cn.indexer.solrhttp  
+
+Logic in the processor package calls the solrIndexService, which calls the parsers, merges changes and sends the updates with the solr communication client.
+
+
 See LICENSE.txt for the details of distributing this software.

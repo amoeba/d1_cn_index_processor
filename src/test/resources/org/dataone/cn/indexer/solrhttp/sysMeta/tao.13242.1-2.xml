@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns3:systemMetadata xmlns:ns2="http://ns.dataone.org/service/types/v1" xmlns:ns3="http://ns.dataone.org/service/types/v2.0">
+    <serialVersion>7</serialVersion>
+    <identifier>tao.13242.1</identifier>
+    <formatId>text/csv</formatId>
+    <size>8</size>
+    <checksum algorithm="MD5">00f7d50ab4278a7899d7499481c9603a</checksum>
+    <submitter>uid=tao,o=NCEAS,dc=ecoinformatics,dc=org</submitter>
+    <rightsHolder>uid=tao,o=NCEAS,dc=ecoinformatics,dc=org</rightsHolder>
+    <accessPolicy>
+        <allow>
+            <subject>public</subject>
+            <permission>read</permission>
+        </allow>
+    </accessPolicy>
+    <replicationPolicy replicationAllowed="true" numberReplicas="2"/>
+    <archived>false</archived>
+    <dateUploaded>2014-11-21T00:00:00.000+00:00</dateUploaded>
+    <dateSysMetadataModified>2015-11-10T22:42:39.800+00:00</dateSysMetadataModified>
+    <originMemberNode>urn:node:mnSandboxUCSB1</originMemberNode>
+    <authoritativeMemberNode>urn:node:mnSandboxUCSB1</authoritativeMemberNode>
+    <replica>
+        <replicaMemberNode>urn:node:mnSandboxUCSB2</replicaMemberNode>
+        <replicationStatus>completed</replicationStatus>
+        <replicaVerified>2017-05-25T23:10:21.668+00:00</replicaVerified>
+    </replica>
+    <replica>
+        <replicaMemberNode>urn:node:mnSandboxUCSB3</replicaMemberNode>
+        <replicationStatus>completed</replicationStatus>
+        <replicaVerified>2017-09-01T00:00:00.000+00:00</replicaVerified>
+    </replica>
+</ns3:systemMetadata>
