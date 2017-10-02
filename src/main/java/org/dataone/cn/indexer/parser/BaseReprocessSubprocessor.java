@@ -26,8 +26,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -46,6 +48,7 @@ import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.service.exceptions.BaseException;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.ObjectFormatIdentifier;
+import org.dataone.service.types.v1.TypeFactory;
 import org.dataone.service.types.v2.ObjectFormat;
 import org.dataone.service.types.v2.SystemMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,88 +75,107 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
     public BaseReprocessSubprocessor() {
     }
 
+
+    /**
+     * If the item has a seriesId, and is not the only one, create IndexTasks for
+     * the others in the series, so they ick up the relationship fields, too.
+     * 
+     */
     @Override
     public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs,
             InputStream is) throws Exception {
 
-        Identifier id = new Identifier();
-        id.setValue(identifier);
-        long getSysMetaStart = System.currentTimeMillis();
-        SystemMetadata sysMeta = HazelcastClientFactory.getSystemMetadataMap().get(id);
-        perfLog.log("BaseReprocessSubprocessor.processDocument() HazelcastClientFactory.getSystemMetadataMap().get(id) for id "+identifier, System.currentTimeMillis() - getSysMetaStart);
         
-        if (sysMeta == null) {
+        ////////     do nothing if can't find the systemMetadata or it has no seriesId
+        
+        long getSysMetaStart = System.currentTimeMillis();
+        
+        SystemMetadata sysMeta = HazelcastClientFactory.getSystemMetadataMap().get(TypeFactory.buildIdentifier(identifier));
+        perfLog.log("BaseReprocessSubprocessor.processDocument() HazelcastClientFactory.getSystemMetadataMap().get(id) for id "+identifier, 
+                System.currentTimeMillis() - getSysMetaStart);
+        
+        if (sysMeta == null || sysMeta.getSeriesId() == null) {
+            return docs;
+        }
+        
+        log.debug("seriesId===" + sysMeta.getSeriesId().getValue());
+
+        
+        
+        ////////     do nothing if there are no other series members to act on
+        
+        long getIdsInSeriesStart = System.currentTimeMillis();
+        
+        List<SolrDoc> previousDocs = d1IndexerSolrClient.getDocumentsByField(solrQueryUri,
+                Collections.singletonList(sysMeta.getSeriesId().getValue()),
+                SolrElementField.FIELD_SERIES_ID, true);
+        
+        perfLog.log(
+                "BaseReprocessSubprocessor.processDocument() d1IndexerSolrClient.getDocumentsByField(idsInSeries) for id "+identifier, 
+                System.currentTimeMillis() - getIdsInSeriesStart);
+
+        if (previousDocs == null || previousDocs.isEmpty()) {
             return docs;
         }
 
-        Identifier seriesId = sysMeta.getSeriesId();
+        
+        
+        ////// for each identifier in each relationField in each of the retrieved index documents, 
+        ////// reprocess the head pid of the series, if the relation was defined using a SID
+        ////// (does nothing if the identifier can't be found 
+        
+        Set<String> pidsToReprocess = new HashSet<>();
+        for (SolrDoc indexedDoc : previousDocs) {
+            log.debug("indexedDoc===" + indexedDoc);
 
-        log.debug("seriesId===" + seriesId);
+            for (String fieldName : relationFields) {
+                log.debug("fieldName===" + fieldName);
 
-        // only need to reprocess for series Id
-        if (seriesId != null) {
-            log.debug("seriesId===" + seriesId.getValue());
+                //////  are there relations that need to be reindexed?
+                List<String> relationFieldValues = indexedDoc.getAllFieldValues(fieldName);
+                if (relationFieldValues == null) {
+                    continue;
+                }
 
-            // find the other objects in the series
-            long getIdsInSeriesStart = System.currentTimeMillis();
-            List<SolrDoc> previousDocs = d1IndexerSolrClient.getDocumentsByField(solrQueryUri,
-                    Collections.singletonList(seriesId.getValue()),
-                    SolrElementField.FIELD_SERIES_ID, true);
-            perfLog.log("BaseReprocessSubprocessor.processDocument() d1IndexerSolrClient.getDocumentsByField(idsInSeries) for id "+identifier, System.currentTimeMillis() - getIdsInSeriesStart);
-            
-            log.debug("previousDocs===" + previousDocs);
+                for (String relationFieldValue : relationFieldValues) {
+                    Identifier relatedId = TypeFactory.buildIdentifier(relationFieldValue);
 
-            if (previousDocs != null && !previousDocs.isEmpty()) {
+                    try {
+                        // if it's a sid, resolve to a pid
+                        SystemMetadata relatedSysMeta = HazelcastClientFactory.getSystemMetadataMap().get(relatedId);
+                        if (relatedSysMeta == null) {
 
-                List<Identifier> pidsToProcess = new ArrayList<Identifier>();
-                for (SolrDoc indexedDoc : previousDocs) {
-                    log.debug("indexedDoc===" + indexedDoc);
-
-                    for (String fieldName : relationFields) {
-                        log.debug("fieldName===" + fieldName);
-
-                        // are there relations that need to be reindexed?
-                        List<String> relationFieldValues = indexedDoc.getAllFieldValues(fieldName);
-                        if (relationFieldValues != null) {
-
-                            for (String relationFieldValue : relationFieldValues) {
-
-                                // check if this is this a sid
-                                Identifier relatedPid = new Identifier();
-                                relatedPid.setValue(relationFieldValue);
-                                if (SeriesIdResolver.isSeriesId(relatedPid)) {
-                                    try {
-                                        relatedPid = SeriesIdResolver.getPid(relatedPid);
-                                    } catch (BaseException be) {
-                                        log.error("could not locate PID for given identifier: "
-                                                + relatedPid.getValue(), be);
-                                        // nothing we can do but continue
-                                        continue;
-                                    }
-                                }
-
-                                // only need to reprocess related docs once
-                                if (!pidsToProcess.contains(relatedPid)) {
-                                    log.debug("Processing relatedPid===" + relatedPid.getValue());
-
-                                    pidsToProcess.add(relatedPid);
-                                    // queue a reprocessing of this related document
-                                    SystemMetadata relatedSysMeta = HazelcastClientFactory
-                                            .getSystemMetadataMap().get(relatedPid);
-                                    String objectPath = HazelcastClientFactory.getObjectPathMap()
-                                            .get(relatedPid);
-                                    log.debug("Processing relatedSysMeta===" + relatedSysMeta);
-                                    log.debug("Processing objectPath===" + objectPath);
-                                    indexTaskGenerator.processSystemMetaDataUpdate(relatedSysMeta,
-                                            objectPath);
-                                }
-                            }
+                            // calls cn.getSystemMetadata() which resolves SIDs to PIDs
+                            Identifier pid = SeriesIdResolver.getPid(relatedId);
+                            relatedId = pid;
                         }
+
+                        // don't reprocess if the item was already reprocessed in this method call.
+                        if (! pidsToReprocess.contains(relatedId.getValue())) {
+                            pidsToReprocess.add(relatedId.getValue());
+
+                            log.debug("Processing relatedPid===" + relatedId.getValue());
+                            
+                            // queue a create a new IndexTask of this related document
+                            relatedSysMeta = HazelcastClientFactory.getSystemMetadataMap().get(relatedId);
+                            String objectPath = HazelcastClientFactory.getObjectPathMap().get(relatedId);
+
+                            log.debug("Processing relatedSysMeta===" + relatedSysMeta);
+                            log.debug("Processing objectPath===" + objectPath);
+
+                            indexTaskGenerator.processSystemMetaDataUpdate(relatedSysMeta, objectPath);
+                        }
+                    }
+                    catch (BaseException be) {
+                        log.error("Could not locate PID for given identifier: " + relatedId.getValue(), be);
+                        // nothing we can do but continue
+                        continue;
                     }
                 }
             }
-            perfLog.log("BaseReprocessSubprocessor.processDocument() reprocessing all docs earlier in sid chain for id "+identifier, System.currentTimeMillis() - getIdsInSeriesStart);
         }
+        perfLog.log("BaseReprocessSubprocessor.processDocument() reprocessing all docs earlier in sid chain for id "+identifier, System.currentTimeMillis() - getIdsInSeriesStart);
+
         return docs;
     }
 

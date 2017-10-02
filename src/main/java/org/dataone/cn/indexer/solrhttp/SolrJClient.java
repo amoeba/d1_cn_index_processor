@@ -81,7 +81,12 @@ public class SolrJClient implements D1IndexerSolrClient {
     
     private static final String DYNAMIC_FIELD_SUFFIX = "_sm";
     
-    public static final int COMMIT_WITHIN_MS = 50; // for solr updates.
+    // >0 value ensures a soft commit after that number of millis
+    // 0 value is an immediate soft commit
+    // -1 value switches client behavior to add a hard commit from the client
+    public static final int COMMIT_WITHIN_MS = -1; // for solr updates.
+    
+    public static final boolean USE_REAL_TIME_GETS = false;
 
     private static Logger log = Logger.getLogger(SolrJClient.class.getName());
 
@@ -137,7 +142,14 @@ public class SolrJClient implements D1IndexerSolrClient {
         }
         
         try {
-            getSolrClient().add(updateDocList,COMMIT_WITHIN_MS);
+            log.info("submitting update for " + updateDocList.size() + " documents.");
+            if (COMMIT_WITHIN_MS == -1) {
+                getSolrClient().add(updateDocList);
+                getSolrClient().commit();
+            } else {
+                getSolrClient().add(updateDocList,COMMIT_WITHIN_MS);
+            }
+            log.info(".... update submitted");
         } catch (SolrServerException e) {
             logError(e,data,e.getMessage(),"Using zkHost");
             throw new IOException("Unable to update solr (see cause)",e);
@@ -222,8 +234,11 @@ public class SolrJClient implements D1IndexerSolrClient {
     @Override
     public List<SolrDoc> getDocumentsByD1Identifier(String uir, List<String> ids) throws IOException
     {
-        List<SolrDoc> docs = getDocumentsByField(uir, ids, SolrElementField.FIELD_SERIES_ID, false);
-        docs.addAll(getDocumentsByField(uir, ids, SolrElementField.FIELD_ID, false));
+        List<SolrDoc> docs = getDocumentsBySolrId(ids);
+    
+        if (docs.size() < ids.size()) 
+            docs.addAll(getDocumentsByField(uir, ids, SolrElementField.FIELD_SERIES_ID, false));
+    
         return docs;
     }
 
@@ -235,7 +250,19 @@ public class SolrJClient implements D1IndexerSolrClient {
     @Override
     public List<SolrDoc> getDocumentBySolrId(String uir, String id) throws IOException
     {
+       if (USE_REAL_TIME_GETS) {
+           
+      
+        
         try {
+            log.info("Id for solrId get: " + id);
+            if (log.isTraceEnabled()) {
+                log.trace(Thread.currentThread().getStackTrace()[1].getMethodName());
+                log.trace(Thread.currentThread().getStackTrace()[2].getMethodName());
+                log.trace(Thread.currentThread().getStackTrace()[3].getClassName() + ":"+ Thread.currentThread().getStackTrace()[5].getMethodName());
+                log.trace(Thread.currentThread().getStackTrace()[4].getClassName() + ":"+ Thread.currentThread().getStackTrace()[6].getMethodName());            
+            }
+            
             SolrDocument d = this.getSolrClient().getById(id);
             
             List<SolrDoc> docs = new ArrayList<SolrDoc>();
@@ -245,6 +272,10 @@ public class SolrJClient implements D1IndexerSolrClient {
         } catch (SolrServerException e) {
             throw new IOException(e);
         }
+        
+       } else {
+        return getDocumentsByField(uir, Collections.singletonList(id), SolrElementField.FIELD_ID, false);
+       }
     }
     /**
      * wrapper for the solrClient getById() that takes a list.  This method provides 'real-time get' to uncommitted updates.
@@ -255,6 +286,13 @@ public class SolrJClient implements D1IndexerSolrClient {
     public List<SolrDoc> getDocumentsBySolrId(List<String> ids) throws IOException
     {
         try {
+            log.info("Ids for solrId get: " + String.join(", ",ids));
+            if (log.isTraceEnabled()) {
+                log.trace(Thread.currentThread().getStackTrace()[1].getMethodName());
+                log.trace(Thread.currentThread().getStackTrace()[2].getMethodName());
+                log.trace(Thread.currentThread().getStackTrace()[3].getClassName() + ":"+ Thread.currentThread().getStackTrace()[5].getMethodName());
+                log.trace(Thread.currentThread().getStackTrace()[4].getClassName() + ":"+ Thread.currentThread().getStackTrace()[6].getMethodName());       
+            }
             SolrDocumentList d = this.getSolrClient().getById(ids);
             List<SolrDoc> docs = new ArrayList<SolrDoc>();
             docs.addAll(parseResponse(d));
@@ -372,6 +410,15 @@ public class SolrJClient implements D1IndexerSolrClient {
     {
         String solrQ = sb.toString();// ClientUtils.escapeQueryChars(sb.toString());
         log.info(solrQ);
+        if (log.isTraceEnabled()) {
+            log.trace(Thread.currentThread().getStackTrace()[3].getMethodName());
+            log.trace(Thread.currentThread().getStackTrace()[4].getMethodName());
+            log.trace(Thread.currentThread().getStackTrace()[5].getClassName() + ":"+ Thread.currentThread().getStackTrace()[5].getMethodName());
+            log.trace(Thread.currentThread().getStackTrace()[6].getClassName() + ":"+ Thread.currentThread().getStackTrace()[6].getMethodName());
+            
+            
+            
+        }
         SolrQuery sq = new SolrQuery();
 
         sq.setQuery(solrQ);
@@ -423,7 +470,7 @@ public class SolrJClient implements D1IndexerSolrClient {
         StringBuffer sb = new StringBuffer();
         for (String fieldName : sd.getFieldNames()) {
             fieldCount++;
-            sb.append(fieldName + ": ");
+            sb.append(" [" + fieldName + ": ");
 
             // ensure valid field, or a dynamic field matching the pattern
             // NOTE: there are many kinds of dynamic fields, only handling one for now.
@@ -450,8 +497,10 @@ public class SolrJClient implements D1IndexerSolrClient {
             } else {
                 sb.append("NOT valid");
             }
+            sb.append("]");
             if (log.isTraceEnabled()) {
                 log.trace(sb.toString());
+                
             }
         }
         log.info("FieldCount = " + fieldCount);

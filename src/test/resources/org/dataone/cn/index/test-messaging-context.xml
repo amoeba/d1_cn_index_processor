@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://www.springframework.org/schema/context  
+   		http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <context:property-placeholder location="classpath:org/dataone/configuration/jdbc.properties, classpath:org/dataone/configuration/solr.properties"/>
+
+
+
+    
+<!--     <import resource="classpath:index-processor-context.xml"/> -->
+    
+    <import resource="classpath:index-parser-context.xml"/>    
+    
+    <context:annotation-config />
+    <context:component-scan base-package="org.dataone.cn.index.processor, org.dataone.cn.indexer"/>
+
+    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+
+    <import resource="classpath:application-context-systemmeta200.xml" />
+ 	<import resource="classpath:application-context-resourcemap.xml" />
+    <import resource="classpath:application-context-delete-subprocessors.xml" />
+    <import resource="classpath:application-context-reprocess-subprocessors.xml" />
+    	
+	<import resource="classpath:application-context-eml-base.xml" />
+ 	<import resource="classpath:application-context-eml200.xml" />
+ 	<import resource="classpath:application-context-eml201.xml" />
+ 	<import resource="classpath:application-context-eml210.xml" />
+ 	<import resource="classpath:application-context-eml211.xml" />
+ 	
+ 	<import resource="classpath:application-context-fgdc-base.xml" />
+ 	<import resource="classpath:application-context-fgdc-std-001-1998.xml" />
+ 	<import resource="classpath:application-context-fgdc-std-0011-1999.xml" />
+ 	<import resource="classpath:application-context-fgdc-std-0012-1999.xml" />
+ 	<import resource="classpath:application-context-fgdc-esri-csdg-80.xml" />
+ 	<import resource="classpath:application-context-ornl-mercury10.xml" />
+ 
+ 	<import resource="classpath:application-context-dryad-base.xml" />
+ 	<import resource="classpath:application-context-dryad30.xml" />
+ 	<import resource="classpath:application-context-dryad31.xml" />
+    
+    <import resource="classpath:application-context-dc-base.xml" />
+    <import resource="classpath:application-context-qdc.xml" />
+    <import resource="classpath:application-context-dcx.xml" />
+
+    <import resource="classpath:application-context-datacite-base.xml" />
+    <import resource="classpath:application-context-datacite-3.xml" />
+    
+    <import resource="classpath:application-context-isotc211-base.xml" />
+    <import resource="classpath:application-context-isotc211.xml" />
+    <import resource="classpath:application-context-isotc211-noaa.xml" />
+    
+    <import resource="classpath:application-context-prov-base.xml" />
+    <import resource="classpath:application-context-provone20150115.xml" />
+	
+    <import resource="classpath:application-context-oa.xml" />
+    <import resource="classpath:application-context-annotator.xml" />
+    
+    <import resource="classpath:org/dataone/cn/indexer/annotation/test-context-annotator.xml"/>
+    
+    <!-- 
+    This import overrides default postgres datasource for testing.
+    	 To test with postgres, comment out the following import 
+	-->
+	<import resource="classpath:org/dataone/configuration/hsql-datasource.xml" />
+
+	<bean id="fgdc_scan_Sys" class="org.springframework.core.io.ClassPathResource">
+		<constructor-arg type="java.lang.String"
+		value="org/dataone/cn/index/resources/d1_testdocs/fgdc/68e96cf6-fb14-42aa-bbea-6da546ccb507-scan_201407_2172.SystemMetadata.xml" />
+	</bean>
+	<bean id="fgdc_scan_Sci" class="org.springframework.core.io.ClassPathResource">
+		<constructor-arg type="java.lang.String"
+		value="org/dataone/cn/index/resources/d1_testdocs/fgdc/68e96cf6-fb14-42aa-bbea-6da546ccb507-scan_201407_2172.xml" />
+	</bean>	
+	
+	<bean id="peggym1271Sys" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.127.1"/>
+    </bean>
+	<bean id="peggym1271SysArchived" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.127.1-archived"/>
+    </bean>    
+	<bean id="peggym1281Sys" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.128.1"/>
+    </bean>
+    <bean id="peggym1281SysObsoletedBy" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.128.1-obsoletedBy"/>
+    </bean>
+    <bean id="peggym1282Sys" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.128.2"/>
+    </bean>
+	<bean id="peggym1291Sys" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.129.1"/>
+    </bean>
+	<bean id="peggym1304Sys" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.130.4"/>
+    </bean>
+    <bean id="peggym1305Sys" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.130.5"/>
+    </bean>
+    <bean id="peggym1304SysArchived" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.130.4-archived"/>
+    </bean>
+    <bean id="peggym1304SysObsoletedBy" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.130.4-obsoletedBy"/>
+    </bean>
+	<bean id="peggym1304Sci" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/peggym.130.4"/>
+    </bean>
+    <bean id="peggymResourcemapSys" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap"/>   	
+    </bean>
+    <bean id="peggymResourcemapSeriesSys" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap.series"/>   	
+    </bean>
+    <bean id="peggymResourcemap2Sys" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap2"/>   	
+    </bean>
+    <bean id="peggymResourcemapComplicatedSys" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap-complicated"/>       
+    </bean>
+    <bean id="peggymResourcemap2ComplicatedSys" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap2-complicated"/>      
+    </bean>
+     <bean id="peggymResourcemap1OverlapSys" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap1-overlap"/>       
+    </bean>
+    <bean id="peggymResourcemap2OverlapSys" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap2-overlap"/>      
+    </bean>
+    <bean id="peggymResourcemapSysArchived" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap-archived"/>   	
+    </bean>	
+    <bean id="peggymResourcemap2SysArchived" class="org.springframework.core.io.ClassPathResource" >
+         <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap2-archived"/>      
+    </bean> 
+	
+	<bean id="systemMetadataResource5" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/peggym.resourcemap"/>
+    </bean>
+    
+    <bean id="commonBMPCharSetExample" class="org.springframework.core.io.ClassPathResource">
+    	<constructor-arg type="java.lang.String"
+    	value="org/dataone/cn/index/resources/d1_testdocs/CommonBMPCharSetExample.xml"/>
+    </bean>
+    
+    <bean id="fdgc01111999SciMeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/fgdc/csiro_d_abayadultprawns.xml"/>
+    </bean>
+    
+    <bean id="fdgc01111999SysMeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/fgdc/csiro_d_abayadultprawnsSysmeta.xml"/>
+    </bean>
+    
+     <bean id="fgdcNasaSciMeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/fgdc/nasa_d_FEDGPS1293.xml"/>
+    </bean>
+    
+    <bean id="fgdcNasaSysMeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/fgdc/nasa_d_FEDGPS1293Sysmeta.xml"/>
+    </bean>
+    
+	<bean id="fgdcEsriSysMeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/fgdc/nikkis1801FgdcEsri-SystemMetadata.xml"/>
+    </bean>
+    
+    <bean id="fgdcEsriSciMeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/fgdc/nikkis1801FgdcEsri.xml"/>
+    </bean>
+    
+     <bean id="dryadDataPackage1" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/dryad/DryadDataPackage-m4h77.xml"/>
+    </bean>
+    <bean id="dryadDataPackage1SysMeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/dryad/SystemMetadata-m4h77.xml"/>
+    </bean>    
+
+     <bean id="dryadDataFile1" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/dryad/DryadDataFile-m4h771.xml"/>
+    </bean>
+    <bean id="dryadDataFile1SysMeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/dryad/SystemMetadata-m4h771.xml"/>
+    </bean> 
+    
+	<bean id="emlRefSciMeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/df35c.9.14"/>
+    </bean>
+    
+    <bean id="serviceDescriptionEmlSysMeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/serviceDescriptionEMLsysmeta.xml"/>
+    </bean>
+    
+    <bean id="serviceDescriptionEmlSciMeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/serviceDescriptionEML.xml"/>
+    </bean>
+    
+	<bean id="tao129301" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/tao.12930.1"/>
+    </bean>
+    <bean id="tao129301Sys" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml210/SystemMetadata/tao.12930.1"/>
+    </bean>
+    
+   	<bean id="ornl_mercury_science_metadata" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/fgdc/ornl-mercury-science-metadata.xml"/>
+    </bean>
+    
+  	<bean id="ornl_mercury_system_metadata" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/fgdc/ornl-mercury-system-metadata.xml"/>
+    </bean>
+    
+     <bean id="dcx_ipumsi_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/dcx/SystemMetadata-ipumsi_6-3_br_2000_dcx.xml"/>
+    </bean>
+    
+    <bean id="dcx_ipumsi_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/dcx/ipumsi_6-3_br_2000_dcx.xml"/>
+    </bean>
+    
+    <bean id="dcterms_spatial_no_namespace_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/dcx/dcterms_spatial_no_namespace_sysmeta.xml"/>
+    </bean>
+    
+    <bean id="dcterms_spatial_no_namespace_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/dcx/dcterms_spatial_no_namespace.xml"/>
+    </bean>
+    
+   	<bean id="datacite_1_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/datacite/datacite-system-metadata-1.xml"/>
+    </bean>
+    
+    <bean id="datacite_1_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/datacite/datacite-science-metadata-1.xml"/>
+    </bean>
+
+   	<bean id="datacite_2_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/datacite/datacite-system-metadata-2.xml"/>
+    </bean>
+    
+    <bean id="datacite_2_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/datacite/datacite-science-metadata-2.xml"/>
+    </bean>
+    
+   	<bean id="isotc211_nodc_1_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/gov.noaa.nodc-9900233.System.Metadata"/>
+    </bean>
+    
+    <bean id="isotc211_nodc_1_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/gov.noaa.nodc-9900233"/>
+    </bean>
+
+   	<bean id="isotc211_nodc_2_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/gov.noaa.nodc-GHRSST-NEODAAS-L2P-AVHRR17_L.System.Metadata"/>
+    </bean>
+    
+    <bean id="isotc211_nodc_2_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/gov.noaa.nodc-GHRSST-NEODAAS-L2P-AVHRR17_L"/>
+    </bean>
+
+   	<bean id="isotc211_iarc_1_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/iso19139_8bd65007-f4b7-4b6e-8e71-05d7cf48a620_0.System.Metadata"/>
+    </bean>
+    
+    <bean id="isotc211_iarc_1_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/iso19139_8bd65007-f4b7-4b6e-8e71-05d7cf48a620_0"/>
+    </bean>
+    
+   	<bean id="isotc211_iarc_2_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/iso19139_bcc7e1be-2683-433c-b351-bc061f35ceb8_0.System.Metadata"/>
+    </bean>
+    
+    <bean id="isotc211_iarc_2_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/iso19139_bcc7e1be-2683-433c-b351-bc061f35ceb8_0"/>
+    </bean>
+    
+    <bean id="isotc211_tightlyCoupledService_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_tightlyCoupledService_SysMeta.xml"/>
+    </bean>
+    
+    <bean id="isotc211_tightlyCoupledService_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_tightlyCoupledService_SciMeta.xml"/>
+    </bean>
+    
+    <bean id="isotc211_looselyCoupledService_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_looselyCoupledService_SysMeta.xml"/>
+    </bean>
+    
+    <bean id="isotc211_looselyCoupledService_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_looselyCoupledService_SciMeta.xml"/>
+    </bean>
+    
+    <bean id="isotc211_distributionInfo_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_distributionInfo_SciMeta.xml"/>
+    </bean>
+    
+    <bean id="isotc211_distributionInfo_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_distributionInfo_SysMeta.xml"/>
+    </bean>
+    
+    <bean id="iso19139_geoserver_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/iso19139_geoserver_SysMeta.xml"/>
+    </bean>
+    
+    <bean id="iso19139_geoserver_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/iso19139_geoserver_SciMeta.xml"/>
+    </bean>
+    
+    <bean id="isotc211_looselyCoupledServiceSrvAndDistrib_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_looselyCoupledServiceSrvAndDistrib_SysMeta.xml"/>
+    </bean>
+    
+    <bean id="isotc211_looselyCoupledServiceSrvAndDistrib_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_looselyCoupledServiceSrvAndDistrib_SciMeta.xml"/>
+    </bean>
+    
+    <bean id="isotc211_tightlyCoupledServiceSrvOnly_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_tightlyCoupledServiceSrvOnly_SysMeta.xml"/>
+    </bean>
+    
+    <bean id="isotc211_tightlyCoupledServiceSrvOnly_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_tightlyCoupledServiceSrvOnly_SciMeta.xml"/>
+    </bean>
+    
+    <bean id="isotc211_noaa_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_noaa_SysMeta.xml"/>
+    </bean>
+    
+    <bean id="isotc211_noaa_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_noaa_SciMeta.xml"/>
+    </bean>
+</beans>

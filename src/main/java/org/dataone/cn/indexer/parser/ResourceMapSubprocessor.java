@@ -110,7 +110,7 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
     @Override
     public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs,
             InputStream is) throws XPathExpressionException, IOException, EncoderException {
-        SolrDoc resourceMapDoc = docs.get(identifier);
+        SolrDoc resourceMapSolrDoc = docs.get(identifier);
         List<SolrDoc> processedDocs = new ArrayList<SolrDoc>();
         try {
             long fetchXmlStart = System.currentTimeMillis();
@@ -118,7 +118,7 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
             perfLog.log("ResourceMapSubprocessor.processDocument() XmlDocumentUtility.generateXmlDocument() for id "+identifier, System.currentTimeMillis() - fetchXmlStart);
             
             long procResMapStart = System.currentTimeMillis();
-            processedDocs = processResourceMap(resourceMapDoc, doc);
+            processedDocs = processResourceMap(resourceMapSolrDoc, doc);
             perfLog.log("ResourceMapSubprocessor.processResourceMap() for id "+identifier, System.currentTimeMillis() - procResMapStart);
         } catch (OREParserException oreException) {
             logger.error("Unable to parse resource map: " + identifier
@@ -135,7 +135,8 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
     }
 
     /**
-     * 
+     * Given the starting SolrDoc for the resourcemap (from upstream processors), and parsed XML,
+     * get all the members,  
      */
     private List<SolrDoc> processResourceMap(SolrDoc indexDocument, Document resourceMapDocument)
             throws OREParserException, XPathExpressionException, IOException, EncoderException {
@@ -145,18 +146,18 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
         perfLog.log("ResourceMapFactory.buildResourceMap() create ResourceMap from Document", System.currentTimeMillis() - buildResMapStart);
         
         long getReferencedStart = System.currentTimeMillis();
-        List<String> documentIds = resourceMap.getAllDocumentIDs();     // all pids referenced in ResourceMap
+        List<String> memberIds = resourceMap.getAllDocumentIDs();     // all pids referenced in ResourceMap
         perfLog.log("ResourceMap.getAllDocumentIDs() referenced in ResourceMap", System.currentTimeMillis() - getReferencedStart);
         
         long clearSidChainStart = System.currentTimeMillis();
-        this.clearSidChain(indexDocument.getIdentifier(), documentIds);
+        this.clearSidChain(indexDocument.getIdentifier(), memberIds);
         perfLog.log("ResourceMapSubprocessor.clearSidChain() removing obsoletes chain from Solr index", System.currentTimeMillis() - clearSidChainStart);
         
         long getSolrDocsStart = System.currentTimeMillis();
-        List<SolrDoc> updateDocuments = d1IndexerSolrClient.getDocumentsByD1Identifier(solrQueryUri, documentIds);
+        List<SolrDoc> memberUpdateDocuments = d1IndexerSolrClient.getDocumentsByD1Identifier(solrQueryUri, memberIds);
         perfLog.log("d1IndexerSolrClient.getDocumentsById() get existing referenced ids' Solr docs", System.currentTimeMillis() - getSolrDocsStart);
         
-        List<SolrDoc> mergedDocuments = resourceMap.mergeIndexedDocuments(updateDocuments);
+        List<SolrDoc> mergedDocuments = resourceMap.mergeIndexedDocuments(memberUpdateDocuments);
         mergedDocuments.add(indexDocument);
         return mergedDocuments;
     }
@@ -188,18 +189,24 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
                 // queue a delete processing of all versions in the obsoletes chain
                 SystemMetadata sysmeta = HazelcastClientFactory.getSystemMetadataMap().get(
                         pidToProcess);
-                String objectPath = HazelcastClientFactory.getObjectPathMap().get(pidToProcess);
-                logger.debug("Removing pidToProcess===" + pidToProcess.getValue());
-                logger.debug("Removing objectPath===" + objectPath);
+                if (sysmeta != null) {
+                    String objectPath = HazelcastClientFactory.getObjectPathMap().get(pidToProcess);
+                    logger.debug("Removing pidToProcess===" + pidToProcess.getValue());
+                    logger.debug("Removing objectPath===" + objectPath);
 
-                IndexTask task = new IndexTask(sysmeta, objectPath);
-                try {
-                    deleteProcessor.process(task);
-                } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
+
+                    IndexTask task = new IndexTask(sysmeta, objectPath);
+                    try {
+                        deleteProcessor.process(task);
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                    // go to the next one
+                    pidToProcess = sysmeta.getObsoletes();
                 }
-                // go to the next one
-                pidToProcess = sysmeta.getObsoletes();
+                else {
+                    pidToProcess = null;
+                }
             }
 
         }

@@ -1,17 +1,16 @@
 package org.dataone.cn.indexer.solrhttp;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FilterInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -21,26 +20,25 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.io.IOUtils;
-import org.apache.jena.atlas.logging.Log;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import org.dataone.cn.index.messaging.MockMessagingClientConfiguration;
+import org.dataone.cn.hazelcast.HazelcastConfigLocationFactory;
 import org.dataone.cn.indexer.SolrIndexService;
 import org.dataone.cn.indexer.parser.SubprocessorUtility;
 import org.dataone.configuration.Settings;
 import org.dataone.exceptions.MarshallingException;
-import org.dataone.service.types.v1.AccessPolicy;
 import org.dataone.service.types.v1.Checksum;
 import org.dataone.service.types.v1.Identifier;
-import org.dataone.service.types.v1.Replica;
-import org.dataone.service.types.v1.ReplicationStatus;
 import org.dataone.service.types.v1.TypeFactory;
 import org.dataone.service.types.v1.util.AccessUtil;
 import org.dataone.service.types.v2.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -51,10 +49,20 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.xml.sax.SAXException;
 
+import com.hazelcast.config.ClasspathXmlConfig;
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
+
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "../../index/test-context.xml"})
 public class SolrJClientIT {
 
+    public static final Log logger = LogFactory.getLog(SolrJClientIT.class);
+
+    static String hzConfigLocation = Settings.getConfiguration().getString("dataone.hazelcast.location.processing.clientconfig");
+    static HazelcastInstance hzInstance; 
+    
     @Autowired
     SolrIndexService indexService;
     
@@ -63,13 +71,30 @@ public class SolrJClientIT {
     
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
+      
+        String cLoc = HazelcastConfigLocationFactory.getStorageConfigLocation();
+        logger.info("Hazelcast configuration location: " + cLoc);
+        if (cLoc != null && cLoc.startsWith("classpath:")) 
+        {
+            cLoc = cLoc.replace("classpath:", "");
+        }
+        ClasspathXmlConfig config = new ClasspathXmlConfig(cLoc);
+
+        hzInstance = Hazelcast.newHazelcastInstance(config);
+
+    }
+    
+    @AfterClass
+    public static void setUpAfterClass() throws InterruptedException {
+        Thread.sleep(2000);
+        hzInstance.getLifecycleService().shutdown();
     }
 
     @Before
     public void setUp() throws Exception {
         // test requires port-forwarding unless you have a populated solr instance running locally 
         // of course, you will need ssh access to the host to forward to
-        // for example: ssh -L 8983:localhost:8983 cn-stage-ucsb-1.test.dataone
+        // for example: ssh -L 8983:localhost:8983 cn-dev-ucsb-1.test.dataone.org
 //        String solrCoreName = "search_core";
 //        this.client = new SolrJClient("http://localhost:8983/solr/" + solrCoreName);
 //        this.client.setSolrSchemaPath(Settings.getConfiguration().getString("solr.schema.path"));
@@ -178,7 +203,8 @@ public class SolrJClientIT {
     }
     // a test to see if two diverging updates interfere with each other.  The scenario is two channels read the same record, alter it, then submit updates to solr.
     // the second update should not overwrite the first.
- //   @Test
+    @Ignore(" this is an integration test")
+    @Test
     public void testRaceWrites() 
             throws XPathExpressionException, MarshallingException, IOException, SAXException, ParserConfigurationException, EncoderException, InstantiationException, IllegalAccessException, InterruptedException {
 
@@ -264,22 +290,10 @@ public class SolrJClientIT {
         assertTrue("Should have at least as many fields as before", results1.get(0).getFieldList().size() >= originalSize);
         assertTrue("SHould have testFAKE replica", replicas2.contains("urn:node:testFAKE"));
     }
+        
+        
 
-    
-    
- //   @Test 
-    public void testPath() {
-        
-        System.out.println(this.getClass().getResource("tao.13243.1.object.xml").toExternalForm());
-        System.out.println(this.getClass().getResource("/org/dataone/cn/indexer/solrhttp/tao.13243.1.object.xml").toString());
-        System.out.println(this.getClass().getResource("/org/dataone/cn/indexer/solrhttp/tao.13243.1.object.xml").getFile());
-        System.out.println(this.getClass().getResource("/org/dataone/cn/indexer/solrhttp/tao.13243.1.object.xml").getPath());
-        
-        
-        
-        
-    }
-   @Ignore ("Not passing - still needs better Hz control") 
+   @Ignore ("this is an integration test")
    @Test
     public void testTypicalPackageSynchronization() throws IOException, XPathExpressionException, SAXException, ParserConfigurationException, EncoderException, InterruptedException {
   
@@ -293,77 +307,99 @@ public class SolrJClientIT {
         String mdPidPattern = new String("tao.13243.1");
         String dataPidPattern = new String("tao.13242.1");
         String resMapPattern = new String("resourceMap_tao.13243.1");
-        
-        String[] replacements = new String[]{mdPid,dataPid,resMapPid};
-        String[] originals = new String[]{mdPidPattern,dataPidPattern,resMapPattern};
+        // since the MD document is a substring of the resourceMap, we need to put the resourceMap at the front of the list!
+        String[] replacements = new String[]{resMapPid,mdPid,dataPid};
+        String[] originals = new String[]{resMapPattern,mdPidPattern,dataPidPattern};
         
         System.out.println(dataPid);
         InputStream stream = replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13242.1-0.xml"), originals, replacements);
-//        String s = IOUtils.toString(stream);
-//        System.out.println(s);
         
         // submit the data object
         try {
+
+           
+            
+            
             submitUpdate(dataPid,
-                replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13242.1-0.xml"), originals, replacements), 
-                null);
-        
+                    replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13242.1-0.xml"), originals, replacements), 
+                    null);
+
             Thread.sleep(60);
-        
+
             List<SolrDoc> queryResults = this.d1IndexerSolrClient.getDocumentBySolrId(null, dataPid);
             assertTrue("data object should be queryable",queryResults.get(0).getField("id").getValue().equals(dataPid));
-        
-        
-        // submit the metadata object
-        submitUpdate(new String(mdPid),
-                replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13243.1-0.xml"), originals, replacements), 
-                this.getClass().getResource("./tao.13243.1.object.xml"));
-       
-        
-      
-//        // update the data object        
-//        submitUpdate(new String(dataPid),
-//                replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13242.1-1.xml"), originals, replacements), null);
-//        
-//        // update the metadata object    
-//        submitUpdate(new String(mdPid),
-//                replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13243.1-1.xml"), originals, replacements), null);
-//        
-//        
-//
-//        // update the data object
-//        submitUpdate(new String(dataPid),
-//                replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13242.1-2.xml"), originals, replacements), null);
-//
-//        // update the metadata object    
-//        submitUpdate(new String(mdPid),
-//                replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13243.1-2.xml"), originals, replacements), null);
-//             
-//        
-        
-        submitUpdate(new String(resMapPid),
-                replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/resourceMap_tao.13243.1-0.xml"), originals, replacements), 
-                this.getClass().getResource("./resourceMap_tao.13243.1.rdf"));
-        
-//        submitUpdate(new String(resMapPid),
-//                replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/resourceMap_tao.13243.1-1.xml"), originals, replacements), null);
-//
-//        
-//        submitUpdate(new String(resMapPid),
-//                replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/resourceMap_tao.13243.1-2.xml"), originals, replacements), null);
-//     
 
-       
+
+            // submit the metadata object
+            submitUpdate(new String(mdPid),
+                    replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13243.1-0.xml"), originals, replacements), 
+                    this.getClass().getResource("./tao.13243.1.object.xml").getFile());
+
+
+
+                    // update the data object        
+                    submitUpdate(new String(dataPid),
+                            replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13242.1-1.xml"), originals, replacements), null);
+                    
+                    // update the metadata object    
+                    submitUpdate(new String(mdPid),
+                            replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13243.1-1.xml"), originals, replacements), null);
+                    
+                    
+            
+                    // update the data object
+                    submitUpdate(new String(dataPid),
+                            replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13242.1-2.xml"), originals, replacements), null);
+            
+                    // update the metadata object    
+                    submitUpdate(new String(mdPid),
+                            replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13243.1-2.xml"), originals, replacements), null);
+                         
+                    
+
+            
+            InputStream resMap = replaceIdentifiers(this.getClass().getResourceAsStream("./resourceMap_tao.13243.1.rdf"), originals, replacements);
+            java.io.File file = java.io.File.createTempFile("SolrJClientIT.", "rdf");
+            FileOutputStream fos = new FileOutputStream(file);
+            IOUtils.copy(resMap, fos);
+            fos.flush();
+            fos.close();
+
+            submitUpdate(new String(resMapPid),
+                    replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/resourceMap_tao.13243.1-0.xml"), originals, replacements), 
+                    file.getAbsolutePath());
+
+                    submitUpdate(new String(resMapPid),
+                            replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/resourceMap_tao.13243.1-1.xml"), originals, replacements), null);
+            
+                    
+                    submitUpdate(new String(resMapPid),
+                            replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/resourceMap_tao.13243.1-2.xml"), originals, replacements), null);
+               
+            
+  
+
+            List<SolrDoc> d = this.d1IndexerSolrClient.getDocumentBySolrId(null, dataPid);
+            List<SolrDoc> md = this.d1IndexerSolrClient.getDocumentBySolrId(null, mdPid);
+            List<SolrDoc> rm = this.d1IndexerSolrClient.getDocumentBySolrId(null, resMapPid);
+            
+            
+            assertNotNull("Data index doc should have a resourceMap field", d.get(0).getFirstFieldValue("resourceMap"));
+            assertNotNull("Data index doc should have a resourceMap field", d.get(0).getFirstFieldValue("isDocumentedBy"));
+            assertNotNull("Metadata index doc should have a resourceMap field", md.get(0).getFirstFieldValue("resourceMap"));
+            assertNotNull("Metadata index doc should have a resourceMap field", md.get(0).getFirstFieldValue("documents"));
+
+            
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
    }
     
-    private void submitUpdate(String id, InputStream sysMeta, URL objectPath) 
+    private void submitUpdate(String id, InputStream sysMeta, String objectPath) 
             throws XPathExpressionException, IOException, SAXException, ParserConfigurationException, EncoderException, InterruptedException {
 
-        String path = objectPath != null ? objectPath.getFile() : null;
+        String path = objectPath != null ? objectPath : null;
  //       Map<String,SolrDoc> docs = indexService.parseTaskObject(id, sysMeta, path);
         SolrElementAdd updates = indexService.processObject(id, sysMeta, path);
 

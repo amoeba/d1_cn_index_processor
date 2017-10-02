@@ -53,10 +53,10 @@ public interface IDocumentSubprocessor {
     /**
      * Method allows for manipulation of indexed fields that should be added to solr index
      *
-     * @param identifier id of original document in Map docs
-     * @param docs Documents indexed by identifiers
-     * @param is original document stream
-     * @return Updated solr index documents
+     * @param identifier: id of original document in Map docs
+     * @param docs: map of Solr Documents indexed by id
+     * @param is: the document to process, as an input stream
+     * @return map of SolrDocs solr index documents
      */
     public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs,
             InputStream is) throws Exception;

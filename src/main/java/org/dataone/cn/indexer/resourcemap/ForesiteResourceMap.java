@@ -249,21 +249,29 @@ public class ForesiteResourceMap implements ResourceMap {
         return isHead;
     }
 
+    /**
+     * Add the relationship fields to the mergeDocument, IFF the mergeDocument represents
+     * the head of the series (or is not part of a series).
+     * @param resourceEntry - from the object XML
+     * @param mergeDocument - from solr
+     * @return
+     */
     private SolrDoc _mergeMappedReference(ResourceEntry resourceEntry, SolrDoc mergeDocument) {
 
     	Identifier identifier = new Identifier();
     	identifier.setValue(mergeDocument.getIdentifier());
     	SystemMetadata sysMeta = HazelcastClientFactory.getSystemMetadataMap().get(identifier);
-    	if (sysMeta.getSeriesId() != null && sysMeta.getSeriesId().getValue() != null && !sysMeta.getSeriesId().getValue().trim().equals("")) {
+    	if (sysMeta != null && sysMeta.getSeriesId() != null && sysMeta.getSeriesId().getValue() != null && !sysMeta.getSeriesId().getValue().trim().equals("")) {
     		// skip this one
     	    if(!isHeadVersion(identifier, sysMeta.getSeriesId())) {
-    	        //System.out.println("The id "+identifier+" is not the head of the serial id "+sysMeta.getSeriesId().getValue()+" So, skip merge this one!!!!!!!!!!!!!!!!!!!!!!"+mergeDocument.getIdentifier());
-    	        logger.info("The id "+identifier+" is not the head of the serial id "+sysMeta.getSeriesId().getValue()+" So, skip merge this one!!!!!!!!!!!!!!!!!!!!!!"+mergeDocument.getIdentifier());
+ 
+    	        logger.info("The (p)id "+identifier+" is not the head of the series id "+sysMeta.getSeriesId().getValue()+" So, skip merge this one!!!!!!!! "+mergeDocument.getIdentifier());
     	        return mergeDocument;
     	    }
     	    
     	}
     	
+    	//Q:  why is this needed?  when wouldn't the mergeDocument not have an ID field?
         if (mergeDocument.hasField(SolrElementField.FIELD_ID) == false) {
             mergeDocument.addField(new SolrElementField(SolrElementField.FIELD_ID, resourceEntry
                     .getIdentifier()));
@@ -349,14 +357,21 @@ public class ForesiteResourceMap implements ResourceMap {
         return docIds;
     }
 
+    /**
+     * For each SolrDoc, assumedly from resourceMap members, merge in 
+     * relationship information derived from the parsed ResourceMap
+     * If related by SID, then only merge if the SolrDoc is the head
+     * of the series.
+     */
     @Override
     public List<SolrDoc> mergeIndexedDocuments(List<SolrDoc> docs) {
         List<SolrDoc> mergedDocuments = new ArrayList<SolrDoc>();
+        
+        
+        // TODO: this is an order N-squared operation to match up entries in two lists...
+        // not good for resmaps with 10000 entries
         for (ResourceEntry resourceEntry : this.resourceMap.values()) {
             for (SolrDoc doc : docs) {
-                //System.out.println(">>>>>>>>in mergeIndexedDocuments of ForesiteResourceMap, the doc id is  "+doc.getIdentifier() +" in the thread "+Thread.currentThread().getId());
-                //System.out.println(">>>>>>>>in mergeIndexedDocuments of ForesiteResourceMap, the doc series id is  "+doc.getSeriesId()+" in the thread "+Thread.currentThread().getId());
-                //System.out.println(">>>>>>>>in mergeIndexedDocuments of ForesiteResourceMap, the resource entry id is  "+resourceEntry.getIdentifier()+" in the thread "+Thread.currentThread().getId());
                 if (logger.isDebugEnabled()) {
                     logger.debug(">>>>>>>>in mergeIndexedDocuments of ForesiteResourceMap, the doc id is  "
                             +doc.getIdentifier() +" in the thread "+Thread.currentThread().getId());
@@ -365,7 +380,8 @@ public class ForesiteResourceMap implements ResourceMap {
                     logger.debug(">>>>>>>>in mergeIndexedDocuments of ForesiteResourceMap, the resource entry id is  "
                             +resourceEntry.getIdentifier()+" in the thread "+Thread.currentThread().getId());
                 }
-               
+                
+                
                 if (doc.getIdentifier().equals(resourceEntry.getIdentifier())
                         || resourceEntry.getIdentifier().equals(doc.getSeriesId())) {
                     mergedDocuments.add(_mergeMappedReference(resourceEntry, doc));
