@@ -84,7 +84,7 @@ public class SolrJClient implements D1IndexerSolrClient {
     // >0 value ensures a soft commit after that number of millis
     // 0 value is an immediate soft commit
     // -1 value switches client behavior to add a hard commit from the client
-    public static final int COMMIT_WITHIN_MS = -1; // for solr updates.
+    public static int COMMIT_WITHIN_MS = 0; // for solr updates.
     
     public static final boolean USE_REAL_TIME_GETS = false;
 
@@ -97,6 +97,10 @@ public class SolrJClient implements D1IndexerSolrClient {
     private String SOLR_SCHEMA_PATH;
     private String solrIndexUri;
     private List<String> validSolrFieldNames = new ArrayList<String>();
+    
+    protected List<String> solrCallList = new ArrayList<String>();
+    protected List<Date> solrCallStartTimeList = new ArrayList<Date>();
+    protected List<Long> solrCallDurationList = new ArrayList<Long>();
 
     /**
      * @param SolrClient
@@ -140,19 +144,27 @@ public class SolrJClient implements D1IndexerSolrClient {
             }
             updateDocList.add(updateDoc);
         }
-        
+
+        Date callStart = null;
+        long callEnd = 0;
         try {
             log.info("submitting update for " + updateDocList.size() + " documents.");
+            callStart = new Date();
             if (COMMIT_WITHIN_MS == -1) {
                 getSolrClient().add(updateDocList);
                 getSolrClient().commit();
             } else {
                 getSolrClient().add(updateDocList,COMMIT_WITHIN_MS);
             }
+            callEnd = System.currentTimeMillis();
             log.info(".... update submitted");
         } catch (SolrServerException e) {
             logError(e,data,e.getMessage(),"Using zkHost");
             throw new IOException("Unable to update solr (see cause)",e);
+        } finally {
+            this.solrCallList.add("update:" + updateDocList.size());
+            this.solrCallDurationList.add(callEnd - callStart.getTime());
+            this.solrCallStartTimeList.add(callStart);
         }
     }
 
@@ -250,32 +262,29 @@ public class SolrJClient implements D1IndexerSolrClient {
     @Override
     public List<SolrDoc> getDocumentBySolrId(String uir, String id) throws IOException
     {
-       if (USE_REAL_TIME_GETS) {
-           
-      
-        
-        try {
-            log.info("Id for solrId get: " + id);
-            if (log.isTraceEnabled()) {
-                log.trace(Thread.currentThread().getStackTrace()[1].getMethodName());
-                log.trace(Thread.currentThread().getStackTrace()[2].getMethodName());
-                log.trace(Thread.currentThread().getStackTrace()[3].getClassName() + ":"+ Thread.currentThread().getStackTrace()[5].getMethodName());
-                log.trace(Thread.currentThread().getStackTrace()[4].getClassName() + ":"+ Thread.currentThread().getStackTrace()[6].getMethodName());            
+        if (USE_REAL_TIME_GETS) {
+            try {
+                log.info("Id for solrId get: " + id);
+                if (log.isTraceEnabled()) {
+                    log.trace(Thread.currentThread().getStackTrace()[1].getMethodName());
+                    log.trace(Thread.currentThread().getStackTrace()[2].getMethodName());
+                    log.trace(Thread.currentThread().getStackTrace()[3].getClassName() + ":"+ Thread.currentThread().getStackTrace()[5].getMethodName());
+                    log.trace(Thread.currentThread().getStackTrace()[4].getClassName() + ":"+ Thread.currentThread().getStackTrace()[6].getMethodName());            
+                }
+
+                SolrDocument d = this.getSolrClient().getById(id);
+
+                List<SolrDoc> docs = new ArrayList<SolrDoc>();
+                docs.add(parseResponse(d));
+                return docs;
+
+            } catch (SolrServerException e) {
+                throw new IOException(e);
             }
-            
-            SolrDocument d = this.getSolrClient().getById(id);
-            
-            List<SolrDoc> docs = new ArrayList<SolrDoc>();
-            docs.add(parseResponse(d));
-            return docs;
-            
-        } catch (SolrServerException e) {
-            throw new IOException(e);
+
+        } else {
+            return getDocumentsByField(uir, Collections.singletonList(id), SolrElementField.FIELD_ID, false);
         }
-        
-       } else {
-        return getDocumentsByField(uir, Collections.singletonList(id), SolrElementField.FIELD_ID, false);
-       }
     }
     /**
      * wrapper for the solrClient getById() that takes a list.  This method provides 'real-time get' to uncommitted updates.
@@ -285,21 +294,25 @@ public class SolrJClient implements D1IndexerSolrClient {
      */
     public List<SolrDoc> getDocumentsBySolrId(List<String> ids) throws IOException
     {
-        try {
-            log.info("Ids for solrId get: " + String.join(", ",ids));
-            if (log.isTraceEnabled()) {
-                log.trace(Thread.currentThread().getStackTrace()[1].getMethodName());
-                log.trace(Thread.currentThread().getStackTrace()[2].getMethodName());
-                log.trace(Thread.currentThread().getStackTrace()[3].getClassName() + ":"+ Thread.currentThread().getStackTrace()[5].getMethodName());
-                log.trace(Thread.currentThread().getStackTrace()[4].getClassName() + ":"+ Thread.currentThread().getStackTrace()[6].getMethodName());       
+        if (USE_REAL_TIME_GETS) {
+            try {
+                log.info("Ids for solrId get: " + String.join(", ",ids));
+                if (log.isTraceEnabled()) {
+                    log.trace(Thread.currentThread().getStackTrace()[1].getMethodName());
+                    log.trace(Thread.currentThread().getStackTrace()[2].getMethodName());
+                    log.trace(Thread.currentThread().getStackTrace()[3].getClassName() + ":"+ Thread.currentThread().getStackTrace()[5].getMethodName());
+                    log.trace(Thread.currentThread().getStackTrace()[4].getClassName() + ":"+ Thread.currentThread().getStackTrace()[6].getMethodName());       
+                }
+                SolrDocumentList d = this.getSolrClient().getById(ids);
+                List<SolrDoc> docs = new ArrayList<SolrDoc>();
+                docs.addAll(parseResponse(d));
+                return docs;
+
+            } catch (SolrServerException e) {
+                throw new IOException(e);
             }
-            SolrDocumentList d = this.getSolrClient().getById(ids);
-            List<SolrDoc> docs = new ArrayList<SolrDoc>();
-            docs.addAll(parseResponse(d));
-            return docs;
-            
-        } catch (SolrServerException e) {
-            throw new IOException(e);
+        } else {
+            return getDocumentsByField(null, ids, SolrElementField.FIELD_ID, false);
         }
     }
 
@@ -409,15 +422,14 @@ public class SolrJClient implements D1IndexerSolrClient {
     protected List<SolrDoc> doRequest(String uir, StringBuilder sb, String rows) throws IOException 
     {
         String solrQ = sb.toString();// ClientUtils.escapeQueryChars(sb.toString());
+        
         log.info(solrQ);
         if (log.isTraceEnabled()) {
+            log.trace(this);
             log.trace(Thread.currentThread().getStackTrace()[3].getMethodName());
             log.trace(Thread.currentThread().getStackTrace()[4].getMethodName());
             log.trace(Thread.currentThread().getStackTrace()[5].getClassName() + ":"+ Thread.currentThread().getStackTrace()[5].getMethodName());
-            log.trace(Thread.currentThread().getStackTrace()[6].getClassName() + ":"+ Thread.currentThread().getStackTrace()[6].getMethodName());
-            
-            
-            
+            log.trace(Thread.currentThread().getStackTrace()[6].getClassName() + ":"+ Thread.currentThread().getStackTrace()[6].getMethodName());    
         }
         SolrQuery sq = new SolrQuery();
 
@@ -428,13 +440,21 @@ public class SolrJClient implements D1IndexerSolrClient {
             sq.setParam(PARAM_ROWS, ClientUtils.escapeQueryChars(rows)); // probably not needed, but who knows what will be passed in?
         }
 
+        Date callStart = new Date();
+        long callEnd = 0;
         try {
             QueryResponse qr = getSolrClient().query(sq);
 
-            return parseResponse(qr.getResults());
+            List<SolrDoc> response =  parseResponse(qr.getResults());
+            callEnd = System.currentTimeMillis();
+            return response;
             
         } catch (SolrServerException e1) {
             throw new IOException(e1);
+        } finally {
+            this.solrCallList.add(solrQ);
+            this.solrCallDurationList.add(callEnd - callStart.getTime());
+            this.solrCallStartTimeList.add(callStart);
         }
     }
     

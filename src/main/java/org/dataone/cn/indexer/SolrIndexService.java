@@ -199,6 +199,8 @@ public class SolrIndexService {
         try {
             long sysmetaProcStart = System.currentTimeMillis();
             docs = systemMetadataProcessor.processDocument(id, docs, systemMetaDataStream);
+            if (log.isDebugEnabled()) 
+                log.debug("...subprocessor SystemMetadataProcessor invoked for " + id);
             perfLog.log(systemMetadataProcessor.getClass().getSimpleName() + ".processDocument() processing sysmeta for id "+id, System.currentTimeMillis() - sysmetaProcStart);
         } catch (Exception e) {
             log.error("Error parsing system metadata for id: " + id + e.getMessage());
