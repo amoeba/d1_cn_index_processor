@@ -4,13 +4,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -23,15 +26,10 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
-import org.apache.solr.client.solrj.response.QueryResponse;
 import org.dataone.cn.hazelcast.HazelcastConfigLocationFactory;
-import org.dataone.cn.index.util.PerformanceLogger;
 import org.dataone.cn.indexer.D1IndexerSolrClient;
 import org.dataone.cn.indexer.SolrIndexService;
-import org.dataone.cn.indexer.parser.SubprocessorUtility;
 import org.dataone.configuration.Settings;
 import org.dataone.exceptions.MarshallingException;
 import org.dataone.service.types.v1.Checksum;
@@ -220,8 +218,8 @@ public class SolrUpdatePerformanceIT {
         
         
 
-   @Ignore ("this is an integration test")
-   @Test
+    @Ignore ("scale up the package size ")
+    @Test
     public void testTypicalPackageSynchronization() throws IOException, XPathExpressionException, SAXException, ParserConfigurationException, EncoderException, InterruptedException {
   
 //       String solrCoreName = "search_core";
@@ -230,7 +228,12 @@ public class SolrUpdatePerformanceIT {
 //       
 //       d1IndexerSolrClient.setSolrSchemaPath(Settings.getConfiguration().getString("solr.schema.path"));
 //       
+        ((SolrJClient)d1IndexerSolrClient).COMMIT_WITHIN_MS = 10;
        
+       // this parameter slows down the data object update rates - I could be swamping local network (comcast)
+        long safeFollowingDistance = 10; 
+       
+        int dataMemberCount = 10;
        
         String mdPid = "IndexerIT.md." + System.currentTimeMillis();
         String dataPid = "IndexerIT.data." + System.currentTimeMillis();
@@ -250,60 +253,146 @@ public class SolrUpdatePerformanceIT {
         
         // submit the data object
         try {
+            List<String> dataIdList = new ArrayList<>();
+            // create the original data records in the index
+            for (int d=1; d<=dataMemberCount; d++) {
+                System.out.println("==============================================================================");
+                String id = dataPid + "." + d;
+                dataIdList.add(id);
+                submitUpdate(id,
+                        replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13242.1-0.xml"), 
+                                new String[]{dataPidPattern}, new String[]{id}), 
+                                null);
+                Thread.sleep(safeFollowingDistance);
+            }
 
-           
             
+            // create the original metadata object in the index
             System.out.println("==============================================================================");
-            submitUpdate(dataPid,
-                    replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13242.1-0.xml"), originals, replacements), 
-                    null);
 
-            Thread.sleep(60);
-
-            List<SolrDoc> queryResults = this.d1IndexerSolrClient.getDocumentBySolrId(null, dataPid);
-            assertTrue("data object should be queryable",queryResults.get(0).getField("id").getValue().equals(dataPid));
-
-            System.out.println("==============================================================================");
-            // submit the metadata object
             submitUpdate(new String(mdPid),
                     replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13243.1-0.xml"), originals, replacements), 
                     this.getClass().getResource("./tao.13243.1.object.xml").getFile());
 
 
-            System.out.println("==============================================================================");
-            // update the data object        
-            submitUpdate(new String(dataPid),
-                    replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13242.1-1.xml"), originals, replacements),
-                    null);
+            // update the data objects with new replica information     
+            for (int d=1; d<=dataMemberCount; d++) {
+                System.out.println("==============================================================================");
+                String id = dataPid + "." + d;
+                submitUpdate(new String(id),
+                    replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13242.1-1.xml"), 
+                            new String[]{dataPidPattern}, new String[]{id}), 
+                            null);
+                Thread.sleep(safeFollowingDistance);
+            }
 
-            System.out.println("==============================================================================");
-            // update the metadata object    
+            // update the metadata object with new replica information
+            System.out.println("==============================================================================");   
             submitUpdate(new String(mdPid),
                     replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13243.1-1.xml"), originals, replacements),
                     this.getClass().getResource("./tao.13243.1.object.xml").getFile());
 
 
-            System.out.println("==============================================================================");
-            // update the data object
-            submitUpdate(new String(dataPid),
-                    replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13242.1-2.xml"), originals, replacements), null);
+            
+            // update the data objects with more new replica information     
+            for (int d=1; d<=dataMemberCount; d++) {
+                System.out.println("==============================================================================");
+                String id = dataPid + "." + d;
+                submitUpdate(new String(id),
+                    replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13242.1-2.xml"), 
+                            new String[]{dataPidPattern}, new String[]{id}), 
+                            null);
+                Thread.sleep(safeFollowingDistance);
+            }
 
-            System.out.println("==============================================================================");
-            // update the metadata object    
+            // update the metadata object with new replica information
+            System.out.println("==============================================================================");  
             submitUpdate(new String(mdPid),
                     replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13243.1-2.xml"), originals, replacements),
                     this.getClass().getResource("./tao.13243.1.object.xml").getFile());
 
-                    
 
             System.out.println("==============================================================================");
-            InputStream resMap = replaceIdentifiers(this.getClass().getResourceAsStream("./resourceMap_tao.13243.1.rdf"), originals, replacements);
-            java.io.File file = java.io.File.createTempFile("SolrJClientIT.", "rdf");
-            FileOutputStream fos = new FileOutputStream(file);
-            IOUtils.copy(resMap, fos);
-            fos.flush();
-            fos.close();
+            System.out.println("==============================================================================");
+           
+            File file = null;
+            LineNumberReader lr = null;
+            LineNumberReader lr2 = null;
+            try
+            {
+                // build the head            
+                InputStream resMap = replaceIdentifiers(this.getClass().getResourceAsStream("./resourceMap_tao.13243.1-head.rdf"), originals, replacements);
+                file = File.createTempFile("SolrUpdatePerformanceIT.", "rdf");
+                FileOutputStream fos = new FileOutputStream(file);
+                IOUtils.copy(resMap, fos);
 
+                // add data statements
+                for (String id : dataIdList) {
+                    InputStream dataStatements = replaceIdentifiers(this.getClass().getResourceAsStream("./resourceMap_tao.13243.1-dataDesc.rdf"),
+                            new String[]{resMapPattern, mdPidPattern, dataPidPattern}, new String[]{resMapPid,mdPid,id});
+                    IOUtils.copy(dataStatements, fos);
+                }
+                
+                // such a hack...
+                // add the metadata descriptions, but need to duplicate the 4th line for every data object in the package
+                lr = new LineNumberReader(new InputStreamReader(replaceIdentifiers(this.getClass().getResourceAsStream("./resourceMap_tao.13243.1-mdDesc.rdf"),
+                            new String[]{resMapPattern, mdPidPattern, dataPidPattern}, new String[]{resMapPid,mdPid,dataPid})));
+                String line = lr.readLine();
+                while (!line.contains("documents")) {
+                    IOUtils.write(line, fos);
+                    fos.write("\n".getBytes());
+                    line = lr.readLine();
+                }
+                for (String id : dataIdList) {
+                    String l = line.replaceAll(dataPid, id);
+                    IOUtils.write(l, fos);
+                    fos.write("\n".getBytes());
+                }
+                while (line != null) {
+                    line = lr.readLine();
+                    IOUtils.write(line, fos);
+                    fos.write("\n".getBytes());
+                }
+
+                // same such hack...
+                // add the aggregation descriptions, but need to duplicate the 5th line for every data object in the package
+                lr2 = new LineNumberReader(new InputStreamReader(replaceIdentifiers(this.getClass().getResourceAsStream("./resourceMap_tao.13243.1-aggDesc.rdf"),
+                            new String[]{resMapPattern, mdPidPattern, dataPidPattern}, new String[]{resMapPid,mdPid,dataPid})));
+                line = lr2.readLine();
+                while (!line.contains(dataPid)) {
+                    IOUtils.write(line, fos);
+                    fos.write("\n".getBytes());
+                    line = lr2.readLine();
+                }
+                for (String id : dataIdList) {
+                    String l = line.replaceAll(dataPid, id);
+                    IOUtils.write(l, fos);
+                    fos.write("\n".getBytes());
+                }
+                while (line != null) {
+                    line = lr2.readLine();
+                    IOUtils.write(line, fos);
+                    fos.write("\n".getBytes());
+                }
+                
+                
+                // add the tail    
+                InputStream tail = replaceIdentifiers(this.getClass().getResourceAsStream("./resourceMap_tao.13243.1-tail.rdf"), originals, replacements);
+                IOUtils.copy(tail, fos);
+                
+                fos.flush();
+                fos.close();
+            }
+            finally {
+                IOUtils.closeQuietly(lr);
+                IOUtils.closeQuietly(lr2);
+            }
+            
+            System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+            System.out.println("ResourceMap: " + file.getAbsolutePath());
+            System.out.println(IOUtils.toString(new FileInputStream(file), "UTF-8"));
+            System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+            
             submitUpdate(new String(resMapPid),
                     replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/resourceMap_tao.13243.1-0.xml"), originals, replacements), 
                     file.getAbsolutePath());
@@ -319,62 +408,69 @@ public class SolrUpdatePerformanceIT {
                     file.getAbsolutePath());
 
 
+            if (d1IndexerSolrClient instanceof SolrJClient) {
+                SolrJClient cl = (SolrJClient) d1IndexerSolrClient;
+                int i = 0;
+                int updateTtot = 0;
+                int updateN = 0;
+                int queryTtot = 0;
+                int queryN = 0;
+                try {
+                    while(true) {
+                        if (cl.solrCallList.get(i).startsWith("update")) {
+                            updateN++;
+                            updateTtot += cl.solrCallDurationList.get(i);
+                        } else {
+                            queryN++;
+                            queryTtot += cl.solrCallDurationList.get(i);
+                        }
+                        System.out.println(String.format("%s\t%s\t%s",
+                            cl.solrCallList.get(i),
+                            cl.solrCallDurationList.get(i),
+                            cl.solrCallStartTimeList.get(i++)));
+                    } 
+                }
+                catch (IndexOutOfBoundsException e) {
+                    ;
+                }
+                System.out.println("===========================");
+                System.out.println("Queries: " + queryN);
+                System.out.println("   Total time: " + queryTtot);
+                System.out.println("   Avg time: " + (queryN == 0 ? 0 : queryTtot / queryN));
+                System.out.println();
+                System.out.println("===========================");
+                System.out.println("Updates: " + updateN);
+                System.out.println("   Total time: " + updateTtot);
+                System.out.println("   Avg time: " + (updateN == 0 ? 0 : updateTtot / updateN));
+                System.out.println("   commit within (ms): " + cl.COMMIT_WITHIN_MS);
+                System.out.println();
+                
+            }
 
-
-            List<SolrDoc> d = this.d1IndexerSolrClient.getDocumentBySolrId(null, dataPid);
+            Thread.sleep(15);
+            
             List<SolrDoc> md = this.d1IndexerSolrClient.getDocumentBySolrId(null, mdPid);
             List<SolrDoc> rm = this.d1IndexerSolrClient.getDocumentBySolrId(null, resMapPid);
             
-            
-            assertNotNull("Data index doc should have a resourceMap field", d.get(0).getFirstFieldValue("resourceMap"));
-            assertNotNull("Data index doc should have a resourceMap field", d.get(0).getFirstFieldValue("isDocumentedBy"));
             assertNotNull("Metadata index doc should have a resourceMap field", md.get(0).getFirstFieldValue("resourceMap"));
-            assertNotNull("Metadata index doc should have a resourceMap field", md.get(0).getFirstFieldValue("documents"));
+            assertNotNull("Metadata index doc should have a documents field", md.get(0).getFirstFieldValue("documents"));
+            assertTrue("Metadata index doc should have many values in documents field", md.get(0).getAllFieldValues("documents").size() == dataMemberCount);
+            assertNotNull("ResourceMap index doc should exist", rm);
+            assertTrue("ResourceMap index doc should exist", rm.size() == 1 );
 
-            
+            for (String id : dataIdList) {
+                List<SolrDoc> d = this.d1IndexerSolrClient.getDocumentBySolrId(null, id);
+                assertNotNull("Data index doc should have a resourceMap field ["+ id + "]", d.get(0).getFirstFieldValue("resourceMap"));
+                assertNotNull("Data index doc should have an isDocumentedBy field ["+ id + "]", d.get(0).getFirstFieldValue("isDocumentedBy"));
+                System.out.print(".");
+            }
+            System.out.println();
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
         
-        if (d1IndexerSolrClient instanceof SolrJClient) {
-            SolrJClient cl = (SolrJClient) d1IndexerSolrClient;
-            int i = 0;
-            int updateTtot = 0;
-            int updateN = 0;
-            int queryTtot = 0;
-            int queryN = 0;
-            try {
-                while(true) {
-                    if (cl.solrCallList.get(i).startsWith("update")) {
-                        updateN++;
-                        updateTtot += cl.solrCallDurationList.get(i);
-                    } else {
-                        queryN++;
-                        queryTtot += cl.solrCallDurationList.get(i);
-                    }
-                    System.out.println(String.format("%s\t%s\t%s",
-                        cl.solrCallList.get(i),
-                        cl.solrCallDurationList.get(i),
-                        cl.solrCallStartTimeList.get(i++)));
-                } 
-            }
-            catch (IndexOutOfBoundsException e) {
-                ;
-            }
-            System.out.println("===========================");
-            System.out.println("Queries: " + queryN);
-            System.out.println("   Total time: " + queryTtot);
-            System.out.println("   Avg time: " + (queryN == 0 ? 0 : queryTtot / queryN));
-            System.out.println();
-            System.out.println("===========================");
-            System.out.println("Updates: " + updateN);
-            System.out.println("   Total time: " + updateTtot);
-            System.out.println("   Avg time: " + (updateN == 0 ? 0 : updateTtot / updateN));
-            System.out.println("   commit within (ms): " + cl.COMMIT_WITHIN_MS);
-            System.out.println();
-            
-        }
+        
    }
     
     private void submitUpdate(String id, InputStream sysMeta, String objectPath) 
@@ -454,6 +550,29 @@ public class SolrUpdatePerformanceIT {
         }
         return IOUtils.toInputStream(input);
         
+    }
+    
+    
+    protected File buildResourceMap(String resMapId, String mdId, List<String> dataIds, String[] originals, String[] replacements) throws IOException {
+        
+      // build the head 
+      InputStream resMap = replaceIdentifiers(this.getClass().getResourceAsStream("./resourceMap_tao.13243.1-head.rdf"), originals, replacements);
+      java.io.File file = java.io.File.createTempFile("SolrUpdatePerformanceIT.", "rdf");
+      FileOutputStream fos = new FileOutputStream(file);
+      IOUtils.copy(resMap, fos);
+
+      // add data statements
+      for (String id : dataIds) {
+          InputStream dataStatements = replaceIdentifiers(this.getClass().getResourceAsStream("./resourceMap_tao.13243.1-head.rdf"),
+                  new String[]{}, new String[]{id});
+          IOUtils.copy(dataStatements, fos);
+      }
+      
+      
+      fos.flush();
+      fos.close();
+
+      return file;
     }
    
 }
