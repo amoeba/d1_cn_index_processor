@@ -159,7 +159,6 @@ public class SolrJClientIT {
         client.setSolrSchemaPath(Settings.getConfiguration().getString("solr.schema.path"));
        
         
-        SolrElementAdd data = new SolrElementAdd();
 
         Identifier id = TypeFactory.buildIdentifier("foo-" + System.currentTimeMillis());
         
@@ -183,9 +182,9 @@ public class SolrJClientIT {
                 System.out.println("== adding: " + e.getKey());
                 docList.add(e.getValue());
             }
-            data.setDocList(docList);
 
-            client.sendUpdate(null, data);
+
+            client.sendUpdate(null, docList);
             client.getSolrClient().commit();
             
         } catch (XPathExpressionException | SAXException
@@ -218,10 +217,8 @@ public class SolrJClientIT {
         System.out.println("Identifier = " + original.getIdentifier().getValue());
 
         List<SolrDoc> docs = smdToSolrDocList(original);
-        SolrElementAdd data = new SolrElementAdd();
-        data.setDocList(docs);
 
-        this.d1IndexerSolrClient.sendUpdate(null, data);
+        this.d1IndexerSolrClient.sendUpdate(null, docs);
 
         System.out.println("Created original object");
 
@@ -249,10 +246,9 @@ public class SolrJClientIT {
 //            System.out.println("==");
 //            assertTrue("Should only have one field", d.getFieldList().size() == 1);
             d.addField(sef);
-            SolrElementAdd add = new SolrElementAdd();
-            add.setDocList(queryOriginal1);
+
             System.out.println("==========  >>>  about to send the first update...");
-            this.d1IndexerSolrClient.sendUpdate(null, add);
+            this.d1IndexerSolrClient.sendUpdate(null, queryOriginal1);
         }
 
         Thread.sleep(60);
@@ -269,10 +265,8 @@ public class SolrJClientIT {
             sef.setValue("urn:node:testPHONY");
 
             queryOriginal2.get(0).addField(sef);
-            SolrElementAdd add = new SolrElementAdd();
-            add.setDocList(queryOriginal2);
             try {
-                this.d1IndexerSolrClient.sendUpdate(null, add);
+                this.d1IndexerSolrClient.sendUpdate(null, queryOriginal2);
             } catch (IOException e) {
                 e.printStackTrace();
                 throw e;
@@ -401,7 +395,7 @@ public class SolrJClientIT {
 
         String path = objectPath != null ? objectPath : null;
  //       Map<String,SolrDoc> docs = indexService.parseTaskObject(id, sysMeta, path);
-        SolrElementAdd updates = indexService.processObject(id, sysMeta, path);
+        List<SolrDoc> updates = indexService.processObject(id, sysMeta, path);
 
 //        List<SolrElementAdd> updates = new ArrayList<SolrElementAdd>();
 //

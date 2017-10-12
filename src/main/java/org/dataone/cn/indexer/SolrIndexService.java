@@ -27,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +45,6 @@ import org.dataone.cn.index.util.PerformanceLogger;
 import org.dataone.cn.indexer.parser.IDocumentDeleteSubprocessor;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
-import org.dataone.cn.indexer.solrhttp.SolrElementAdd;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v2.SystemMetadata;
@@ -86,6 +86,10 @@ public class SolrIndexService {
 
     private PerformanceLogger perfLog = PerformanceLogger.getInstance();
     
+    public List<String> parseList = new ArrayList<String>();
+    public List<Date> parseStartTimeList = new ArrayList<Date>();
+    public List<Long> parseDurationList = new ArrayList<Long>();
+    
     public SolrIndexService() {
     }
 
@@ -112,8 +116,7 @@ public class SolrIndexService {
             }
         }
 
-        SolrElementAdd addCommand = getAddCommand(docsToUpdate);
-        sendCommand(addCommand);
+        sendCommand(docsToUpdate);
 
         deleteDocFromIndex(identifier);
 
@@ -195,10 +198,14 @@ public class SolrIndexService {
             XPathExpressionException, EncoderException {
 
         
-        Map<String, SolrDoc> docs = new HashMap<String, SolrDoc>();
+        Map<String, SolrDoc> newlyParsedFieldValues = new HashMap<String, SolrDoc>();
         try {
             long sysmetaProcStart = System.currentTimeMillis();
-            docs = systemMetadataProcessor.processDocument(id, docs, systemMetaDataStream);
+            parseList.add("id : SysMetaProcessor");
+            Date d = new Date();
+            parseStartTimeList.add(d);
+            newlyParsedFieldValues = systemMetadataProcessor.processDocument(id, newlyParsedFieldValues, systemMetaDataStream);
+            parseDurationList.add(System.currentTimeMillis() - d.getTime());
             if (log.isDebugEnabled()) 
                 log.debug("...subprocessor SystemMetadataProcessor invoked for " + id);
             perfLog.log(systemMetadataProcessor.getClass().getSimpleName() + ".processDocument() processing sysmeta for id "+id, System.currentTimeMillis() - sysmetaProcStart);
@@ -208,7 +215,7 @@ public class SolrIndexService {
         }
 
         if (objectPath != null) {
-            SolrDoc sDoc = docs.get(id);            
+            SolrDoc sDoc = newlyParsedFieldValues.get(id);            
             String formatId = sDoc.getFirstFieldValue(SolrElementField.FIELD_OBJECTFORMAT);
             int i=1;
             for (IDocumentSubprocessor subprocessor : getSubprocessors()) {
@@ -219,7 +226,7 @@ public class SolrIndexService {
                             log.debug("...subprocessor " + subprocessor.getClass().getSimpleName() + " invoked for " + id);
                         
                         // note that resource map processing touches all objects
-                        // referenced by the resource ma  p.
+                        // referenced by the resource map.
                         long startFechingFile = System.currentTimeMillis();
                         objectStream = new FileInputStream(objectPath);
                         perfLog.log("Loop "+i+". SolrIndexService.processObject() fetch file for id "+id, System.currentTimeMillis() - startFechingFile);
@@ -227,8 +234,12 @@ public class SolrIndexService {
                             log.error("Could not load OBJECT file for ID,Path=" + id + ", "
                                     + objectPath);
                         } else {
+                            parseList.add("id : " + subprocessor.getClass().getSimpleName());
+                            Date dd = new Date();
+                            parseStartTimeList.add(dd);
                             long scimetaProcStart = System.currentTimeMillis();
-                            docs = subprocessor.processDocument(id, docs, objectStream);
+                            newlyParsedFieldValues = subprocessor.processDocument(id, newlyParsedFieldValues, objectStream);
+                            parseDurationList.add(System.currentTimeMillis() - dd.getTime());
                             perfLog.log(String.format(
                                     "Loop %d. SolrIndexService.processObject() " 
                                             + "%s.processDocument() total subprocessor processing time for id %s with format: %s",
@@ -254,7 +265,7 @@ public class SolrIndexService {
         } else {
             log.warn("The optional objectPath for pid " + id + " is null, so skipping processing with content subprocessors");
         }
-        return docs;
+        return newlyParsedFieldValues;
     }
  
     /**
@@ -271,7 +282,7 @@ public class SolrIndexService {
      * @throws XPathExpressionException
      * @throws EncoderException
      */
-    public SolrElementAdd processObject(String id, InputStream systemMetaDataStream,
+    public List<SolrDoc> processObject(String id, InputStream systemMetaDataStream,
             String objectPath) throws IOException, SAXException, ParserConfigurationException,
             XPathExpressionException, EncoderException { 
 
@@ -294,16 +305,10 @@ public class SolrIndexService {
             index++;
         }
         perfLog.log("Total - SolrIndexService.processObject() merging docs for id "+id, System.currentTimeMillis() - mergeProcStart);
-        
-        SolrElementAdd addCommand = getAddCommand(new ArrayList<SolrDoc>(mergedDocs.values()));
-        if (log.isTraceEnabled()) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            addCommand.serialize(baos, OUTPUT_ENCODING);
-            log.trace(baos.toString());
-        }
-
         perfLog.log("SolrIndexService.processObject() total processing time for id " + id, System.currentTimeMillis() - processObjStart);
-        return addCommand;
+        
+        // the additions
+        return new ArrayList<SolrDoc>(mergedDocs.values());
     }
 
     /**
@@ -327,7 +332,7 @@ public class SolrIndexService {
             XPathExpressionException, EncoderException {
 
         // get the add command for solr
-        SolrElementAdd addCommand = processObject(id, systemMetaDataStream, objectPath);
+        List<SolrDoc> addCommand = processObject(id, systemMetaDataStream, objectPath);
 
         // send it
         long solrAddStart = System.currentTimeMillis();
@@ -339,13 +344,13 @@ public class SolrIndexService {
             throws IOException, SAXException, ParserConfigurationException,
             XPathExpressionException, EncoderException {
      
-        SolrElementAdd batchAddCommand = new SolrElementAdd();
+        List<SolrDoc> batchAddCommand = new ArrayList<SolrDoc>();
         
         for (IndexTask task : tasks) {
             InputStream smdStream = new ByteArrayInputStream(task.getSysMetadata().getBytes());
             
             // get the add command for solr
-            SolrElementAdd addCommand = processObject(task.getPid(), smdStream, task.getObjectPath());
+            List<SolrDoc> addCommand = processObject(task.getPid(), smdStream, task.getObjectPath());
             batchAddCommand = mergeAddCommands(batchAddCommand, addCommand);
         }
         // send batch add command
@@ -354,25 +359,22 @@ public class SolrIndexService {
         perfLog.log("SolrIndexService.sendCommand(SolrElementAdd) batch adding (" + tasks.size() + ") docs into Solr index", System.currentTimeMillis() - solrAddStart);
     }
     
-    private SolrElementAdd mergeAddCommands(SolrElementAdd original, SolrElementAdd addition) {
-        if (original.getDocList() == null)
-            original.setDocList(new ArrayList<SolrDoc>());
-        if (addition.getDocList() == null)
-            addition.setDocList(new ArrayList<SolrDoc>());
+    private List<SolrDoc> mergeAddCommands(List<SolrDoc> original, List<SolrDoc> addition) {
+        if (original == null)
+            original = new ArrayList<SolrDoc>();
+        if (addition == null)
+            addition = new ArrayList<SolrDoc>();
         
-        original.getDocList().addAll(addition.getDocList());
+        original.addAll(addition);
         
         return original;
     }
     
-    private void sendCommand(SolrElementAdd addCommand) throws IOException {
+    private void sendCommand(List<SolrDoc> addCommands) throws IOException {
         D1IndexerSolrClient service = getD1IndexerSolrClient();
-        service.sendUpdate(getSolrindexUri(), addCommand, OUTPUT_ENCODING);
+        service.sendUpdate(getSolrindexUri(), addCommands, OUTPUT_ENCODING);
     }
 
-    private SolrElementAdd getAddCommand(List<SolrDoc> docs) {
-        return new SolrElementAdd(docs);
-    }
 
     private void deleteDocFromIndex(String identifier) {
         d1IndexerSolrClient.sendSolrDelete(identifier);

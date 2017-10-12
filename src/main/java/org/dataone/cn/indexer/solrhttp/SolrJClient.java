@@ -30,8 +30,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -98,10 +102,12 @@ public class SolrJClient implements D1IndexerSolrClient {
     private String SOLR_SCHEMA_PATH;
     private String solrIndexUri;
     private List<String> validSolrFieldNames = new ArrayList<String>();
+    private Set<String> multiValuedSolrFieldNames = new HashSet<String>();
     
     protected List<String> solrCallList = new ArrayList<String>();
     protected List<Date> solrCallStartTimeList = new ArrayList<Date>();
     protected List<Long> solrCallDurationList = new ArrayList<Long>();
+
 
     /**
      * @param SolrClient
@@ -116,7 +122,7 @@ public class SolrJClient implements D1IndexerSolrClient {
      */
 
     @Override
-    public void sendUpdate(String uri, SolrElementAdd data, String encoding) throws IOException {
+    public void sendUpdate(String uri, List<SolrDoc> data, String encoding) throws IOException {
         this.sendUpdate(uri, data, encoding, XML_CONTENT_TYPE);
     }
 
@@ -124,7 +130,7 @@ public class SolrJClient implements D1IndexerSolrClient {
      * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#sendUpdate(java.lang.String, org.dataone.cn.indexer.solrhttp.SolrElementAdd)
      */
     @Override
-    public void sendUpdate(String uri, SolrElementAdd data) throws IOException {
+    public void sendUpdate(String uri, List<SolrDoc> data) throws IOException {
         sendUpdate(uri, data, CHAR_ENCODING, XML_CONTENT_TYPE);
     }
 
@@ -132,16 +138,40 @@ public class SolrJClient implements D1IndexerSolrClient {
      * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#sendUpdate(java.lang.String, org.dataone.cn.indexer.solrhttp.SolrElementAdd, java.lang.String, java.lang.String)
      */
     @Override
-    public void sendUpdate(String uri, SolrElementAdd data, String encoding, String contentType)
+    public void sendUpdate(String uri, List<SolrDoc> data, String encoding, String contentType)
             throws IOException {
 
+        sendUpdate(uri, data, encoding, contentType, false);
+    }
         
+    /**
+     * performs an update 
+     * @param uri
+     * @param data
+     * @param encoding
+     * @param contentType
+     * @param isAtomic - if atomic,
+     * @throws IOException
+     */
+    public void sendUpdate(String uri, List<SolrDoc> data, String encoding, String contentType, boolean isAtomic)
+            throws IOException {
+
         // convert SolrElementAdd to SolrJ's SolrInputDocument
         List<SolrInputDocument> updateDocList = new ArrayList<SolrInputDocument>();
-        for (SolrDoc doc : data.getDocList()) {
+        for (SolrDoc doc : data) {
             SolrInputDocument updateDoc = new SolrInputDocument();
             for (SolrElementField sef : doc.getFieldList()) {
-                updateDoc.addField(sef.getName(), sef.getValue());
+                if (isAtomic && !sef.getName().equals("id") && !sef.getName().equals("_version_")) 
+                {
+                    Map<String,Object> fieldModifier = new HashMap<>(1);
+                    String modifierKeyword = this.multiValuedSolrFieldNames.contains(sef.getName()) ? "add" : "set";
+                    fieldModifier.put(modifierKeyword, sef.getValue());
+                    updateDoc.addField(sef.getName(), fieldModifier);
+                } 
+                else 
+                {
+                    updateDoc.addField(sef.getName(), sef.getValue());
+                }
             }
             updateDocList.add(updateDoc);
         }
@@ -199,18 +229,18 @@ public class SolrJClient implements D1IndexerSolrClient {
         }
      }
     
-    private void logError(Exception ex, SolrElementAdd data, String messageResponse,
+    private void logError(Exception ex, List<SolrDoc> data, String messageResponse,
             String uri) throws IOException {
 
         try {
             if (ex != null) {
                 log.error("Unable to write to stream", ex);
             }
-
+            SolrElementAdd add = new SolrElementAdd(data);
             log.error("URL: " + uri);
             log.error("Post: ");
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            data.serialize(baos, "UTF-8");
+            add.serialize(baos, "UTF-8");
             log.error(new String(baos.toByteArray(), "UTF-8"));
             log.error("\n\n\nResponse: \n");
 
@@ -590,11 +620,18 @@ public class SolrJClient implements D1IndexerSolrClient {
             List<String> fields = new ArrayList<String>();
             for (int i = 0; i < nList.getLength(); i++) {
                 Node node = nList.item(i);
+                
                 String fieldName = node.getAttributes().getNamedItem("name").getNodeValue();
                 fields.add(fieldName);
+                
+                // create a list of multivalued fields to be used for atomic updates
+                if ("true".equals(node.getAttributes().getNamedItem("multiValued").getNodeValue())) {
+                    this.multiValuedSolrFieldNames.add(fieldName);
+                }
+                
             }
             fields.removeAll(copyDestinationFields);
-            validSolrFieldNames = fields;
+            this.validSolrFieldNames = fields;
             fields.remove("_version_");
         }
     }

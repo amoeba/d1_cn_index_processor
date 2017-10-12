@@ -99,7 +99,7 @@ public class HTTPService implements D1IndexerSolrClient {
      */
 
     @Override
-    public void sendUpdate(String uri, SolrElementAdd data, String encoding) throws IOException {
+    public void sendUpdate(String uri, List<SolrDoc> data, String encoding) throws IOException {
         this.sendUpdate(uri, data, encoding, XML_CONTENT_TYPE);
     }
 
@@ -107,7 +107,7 @@ public class HTTPService implements D1IndexerSolrClient {
      * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#sendUpdate(java.lang.String, org.dataone.cn.indexer.solrhttp.SolrElementAdd)
      */
     @Override
-    public void sendUpdate(String uri, SolrElementAdd data) throws IOException {
+    public void sendUpdate(String uri, List<SolrDoc> data) throws IOException {
         sendUpdate(uri, data, CHAR_ENCODING, XML_CONTENT_TYPE);
     }
 
@@ -115,7 +115,7 @@ public class HTTPService implements D1IndexerSolrClient {
      * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#sendUpdate(java.lang.String, org.dataone.cn.indexer.solrhttp.SolrElementAdd, java.lang.String, java.lang.String)
      */
     @Override
-    public void sendUpdate(String uri, SolrElementAdd data, String encoding, String contentType)
+    public void sendUpdate(String uri, List<SolrDoc> data, String encoding, String contentType)
             throws IOException {
         InputStream inputStreamResponse = null;
         HttpPost post = null;
@@ -232,7 +232,7 @@ public class HTTPService implements D1IndexerSolrClient {
         return sb.toString();
     }
 
-    private void writeError(Exception ex, SolrElementAdd data, InputStream inputStreamResonse,
+    private void writeError(Exception ex, List<SolrDoc> data, InputStream inputStreamResonse,
             String uri) throws IOException {
 
         try {
@@ -243,7 +243,7 @@ public class HTTPService implements D1IndexerSolrClient {
             log.error("URL: " + uri);
             log.error("Post: ");
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            data.serialize(baos, "UTF-8");
+            (new SolrElementAdd(data)).serialize(baos, "UTF-8");
             log.error(new String(baos.toByteArray(), "UTF-8"));
             log.error("\n\n\nResponse: \n");
             ByteArrayOutputStream baosResponse = new ByteArrayOutputStream();

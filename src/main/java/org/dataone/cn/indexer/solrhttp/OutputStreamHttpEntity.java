@@ -25,6 +25,7 @@ package org.dataone.cn.indexer.solrhttp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -40,7 +41,7 @@ import org.apache.log4j.Logger;
  *
  */
 
-public class OutputStreamHttpEntity implements HttpEntity {
+class OutputStreamHttpEntity implements HttpEntity {
 
     private static Logger log = Logger.getLogger(OutputStreamHttpEntity.class);
 
@@ -49,8 +50,8 @@ public class OutputStreamHttpEntity implements HttpEntity {
     private SolrElementAdd add = null;
     private String encoding = "UTF-8";
 
-    public OutputStreamHttpEntity(SolrElementAdd add, String encoding) {
-        this.add = add;
+    public OutputStreamHttpEntity(List<SolrDoc> add, String encoding) {
+        this.add = new SolrElementAdd(add);
         this.encoding = encoding;
     }
 

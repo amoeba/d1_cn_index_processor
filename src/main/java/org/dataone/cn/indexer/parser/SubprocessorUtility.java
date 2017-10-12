@@ -44,11 +44,17 @@ public class SubprocessorUtility {
 
         logger.debug("about to merge indexed document with new doc to insert for pid: "
                 + indexDocument.getIdentifier());
-        SolrDoc solrDoc = d1IndexerSolrClient.retrieveDocumentFromSolrServer(indexDocument.getIdentifier(),
+        SolrDoc solrDocFromSolr = d1IndexerSolrClient.retrieveDocumentFromSolrServer(indexDocument.getIdentifier(),
                 solrQueryUri);
-        if (solrDoc != null) {
+
+
+        if (solrDocFromSolr != null) {
             logger.debug("found existing doc to merge for pid: " + indexDocument.getIdentifier());
-            for (SolrElementField field : solrDoc.getFieldList()) {
+
+            // for all of the fields in specified fieldsToMerge list...
+            for (SolrElementField field : solrDocFromSolr.getFieldList()) {
+                
+                // add the value if it isn't already there (avoids duplicates)
                 if (fieldsToMerge.contains(field.getName())
                         && !indexDocument.hasFieldWithValue(field.getName(), field.getValue())) 
                 {
@@ -60,5 +66,56 @@ public class SubprocessorUtility {
             }
         }
         return indexDocument;
+    }
+    
+    /**
+     * Diff the new field values with existing ones in Solr, and return only the fields that are different
+     * (to be used for atomic updates)
+     * If Solr doesn't contain a record, return the newIndexDocument
+     * 
+     * @param newIndexDocument - the new fields to potentially add
+     * @return a SolrDoc with the fields that are different
+     * @throws IOException
+     * @throws EncoderException
+     * @throws XPathExpressionException
+     */
+    public SolrDoc diffWithIndexedDocument(SolrDoc newIndexDocument)
+            throws IOException, EncoderException, XPathExpressionException {
+
+        logger.debug("about to diff indexed document with new doc to insert for pid: "+ newIndexDocument.getIdentifier());
+        
+        SolrDoc solrDocFromSolr = 
+                d1IndexerSolrClient.retrieveDocumentFromSolrServer(newIndexDocument.getIdentifier(), solrQueryUri);
+       
+        
+        if (solrDocFromSolr != null) 
+        { 
+            logger.debug("found existing doc to diff for pid: " + newIndexDocument.getIdentifier());
+           
+            SolrDoc diffDoc = new SolrDoc(); 
+            for (SolrElementField field : newIndexDocument.getFieldList()) 
+            {   
+                if (!solrDocFromSolr.hasFieldWithValue(field.getName(), field.getValue()))
+                {
+                    diffDoc.addField(field);
+                    
+                    logger.debug("diffing field: " + field.getName() + " with value: " + field.getValue());
+                }
+            }
+            if (solrDocFromSolr.getField("_version_") != null) {
+                SolrElementField versionField = new SolrElementField();
+                versionField.setName("_version_");
+                versionField.setValue(solrDocFromSolr.getFirstFieldValue(("_version_")));
+                diffDoc.addField(versionField);
+            }
+            return diffDoc;
+        } 
+        else 
+        {
+            SolrElementField versionField = new SolrElementField();
+            versionField.setName("_version_");
+            versionField.setValue("-1");  // this value ensures that update will only happen if the document is new
+            return newIndexDocument;
+        }
     }
 }

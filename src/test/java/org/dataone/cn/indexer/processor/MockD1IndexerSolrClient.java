@@ -10,25 +10,25 @@ import org.apache.commons.codec.EncoderException;
 import org.apache.http.client.HttpClient;
 import org.dataone.cn.indexer.D1IndexerSolrClient;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
-import org.dataone.cn.indexer.solrhttp.SolrElementAdd;
+
 
 public class MockD1IndexerSolrClient implements D1IndexerSolrClient {
 
     @Override
-    public void sendUpdate(String uri, SolrElementAdd data, String encoding)
+    public void sendUpdate(String uri, List<SolrDoc> data, String encoding)
             throws IOException {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void sendUpdate(String uri, SolrElementAdd data) throws IOException {
+    public void sendUpdate(String uri, List<SolrDoc> data) throws IOException {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void sendUpdate(String uri, SolrElementAdd data, String encoding,
+    public void sendUpdate(String uri, List<SolrDoc> data, String encoding,
             String contentType) throws IOException {
         // TODO Auto-generated method stub
 

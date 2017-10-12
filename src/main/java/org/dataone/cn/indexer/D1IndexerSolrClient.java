@@ -8,7 +8,6 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.codec.EncoderException;
 import org.apache.http.client.HttpClient;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
-import org.dataone.cn.indexer.solrhttp.SolrElementAdd;
 
 public interface D1IndexerSolrClient {
 
@@ -25,12 +24,12 @@ public interface D1IndexerSolrClient {
      * @throws IOException
      */
 
-    public void sendUpdate(String uri, SolrElementAdd data, String encoding)
+    public void sendUpdate(String uri, List<SolrDoc> data, String encoding)
             throws IOException;
 
-    public void sendUpdate(String uri, SolrElementAdd data) throws IOException;
+    public void sendUpdate(String uri, List<SolrDoc> data) throws IOException;
 
-    public void sendUpdate(String uri, SolrElementAdd data, String encoding,
+    public void sendUpdate(String uri, List<SolrDoc> data, String encoding,
             String contentType) throws IOException;
 
     public void sendSolrDelete(String pid);

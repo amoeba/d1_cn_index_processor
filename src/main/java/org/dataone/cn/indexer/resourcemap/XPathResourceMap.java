@@ -58,7 +58,13 @@ import org.w3c.dom.NodeList;
 /**
  * ResourceMap parses resource map and generate index information
  * 
+ * @deprecated this implementation holds onto the passed in Document 
+ * as well as creating structures parsed from it.  Instances are potential
+ * memory hogs.  
+ * @since  Oct. 10, 2017
+ * @see ForesiteResourceMap as replacement
  */
+@Deprecated 
 public class XPathResourceMap implements ResourceMap {
     private Set<ResourceEntry> mappedReferences;
     private Set<String> contains = null;

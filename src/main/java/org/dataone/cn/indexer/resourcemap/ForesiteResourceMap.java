@@ -66,6 +66,20 @@ public class ForesiteResourceMap implements ResourceMap {
 
     private IndexVisibilityDelegate indexVisibilityDelegate = new IndexVisibilityDelegateHazelcastImpl();
 
+ 
+    public ForesiteResourceMap(InputStream is) throws OREParserException {
+
+        try {
+            _init(is);
+        } catch (UnsupportedEncodingException | OREException
+                | URISyntaxException e) {
+            // TODO Auto-generated catch block
+            throw new OREParserException(e);
+        }
+        
+        
+    }
+    
     public ForesiteResourceMap(String fileObjectPath) throws OREParserException {
         FileInputStream fileInputStream = null;
         try {
@@ -179,7 +193,7 @@ public class ForesiteResourceMap implements ResourceMap {
 
             if (documentsResourceEntry == null) {
                 documentsResourceEntry = new ForesiteResourceEntry(entry.getKey().getValue(), this);
-                resourceMap.put(entry.getKey().getValue(), documentsResourceEntry);
+                this.resourceMap.put(entry.getKey().getValue(), documentsResourceEntry);
             }
 
             for (Identifier documentedByIdentifier : entry.getValue()) {
@@ -197,7 +211,7 @@ public class ForesiteResourceMap implements ResourceMap {
                     documentedByResourceEntry = new ForesiteResourceEntry(
                             documentedByIdentifier.getValue(), this);
 
-                    resourceMap.put(documentedByIdentifier.getValue(), documentedByResourceEntry);
+                    this.resourceMap.put(documentedByIdentifier.getValue(), documentedByResourceEntry);
                 }
 
                 pid = new Identifier();
@@ -304,6 +318,10 @@ public class ForesiteResourceMap implements ResourceMap {
         return mergeDocument;
     }
 
+    /**
+     * returns a filtered set of ResourcEntries of named entities in the resource map
+     * items not visible in the index 
+     */
     public Set<ResourceEntry> getMappedReferences() {
         /* Builds a set for references that are visible in solr doc index and
          * are not the resource map id */
@@ -341,6 +359,9 @@ public class ForesiteResourceMap implements ResourceMap {
         return contains;
     }
 
+    /**
+     * returns a list of all
+     */
     @Override
     public List<String> getAllDocumentIDs() {
         List<String> docIds = new LinkedList<String>();

@@ -22,6 +22,8 @@
 
 package org.dataone.cn.indexer.resourcemap;
 
+import java.io.InputStream;
+
 import org.dspace.foresite.OREParserException;
 import org.w3c.dom.Document;
 
@@ -48,5 +50,10 @@ public class ResourceMapFactory {
     public static ResourceMap buildResourceMap(String objectFilePath, IndexVisibilityDelegate ivd)
             throws OREParserException {
         return new ForesiteResourceMap(objectFilePath, ivd);
+    }
+    
+    public static ResourceMap buildResourceMap(InputStream is)
+            throws OREParserException {
+        return new ForesiteResourceMap(is);
     }
 }

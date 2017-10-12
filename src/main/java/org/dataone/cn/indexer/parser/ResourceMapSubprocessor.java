@@ -38,17 +38,15 @@ import org.dataone.cn.index.processor.IndexTaskDeleteProcessor;
 import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.index.util.PerformanceLogger;
 import org.dataone.cn.indexer.D1IndexerSolrClient;
-import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.cn.indexer.parser.utility.SeriesIdResolver;
 import org.dataone.cn.indexer.resourcemap.ResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMapFactory;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.service.types.v1.Identifier;
+import org.dataone.service.types.v1.TypeFactory;
 import org.dataone.service.types.v2.SystemMetadata;
 import org.dspace.foresite.OREParserException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /**
  * Resource Map Document processor.  Operates on ORE/RDF objects.  Maps 
@@ -95,6 +93,7 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
      * @throws EncoderException
      * @throws XPathExpressionException
      */
+    @Override
     public SolrDoc mergeWithIndexedDocument(SolrDoc indexDocument) throws IOException,
             EncoderException, XPathExpressionException {
         return processorUtility.mergeWithIndexedDocument(indexDocument, fieldsToMerge);
@@ -112,18 +111,11 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
             InputStream is) throws XPathExpressionException, IOException, EncoderException {
         SolrDoc resourceMapSolrDoc = docs.get(identifier);
         List<SolrDoc> processedDocs = new ArrayList<SolrDoc>();
-        try {
-            long fetchXmlStart = System.currentTimeMillis();
-            Document doc = XmlDocumentUtility.generateXmlDocument(is);
-            perfLog.log("ResourceMapSubprocessor.processDocument() XmlDocumentUtility.generateXmlDocument() for id "+identifier, System.currentTimeMillis() - fetchXmlStart);
-            
+        try {            
             long procResMapStart = System.currentTimeMillis();
-            processedDocs = processResourceMap(resourceMapSolrDoc, doc);
-            perfLog.log("ResourceMapSubprocessor.processResourceMap() for id "+identifier, System.currentTimeMillis() - procResMapStart);
+            processedDocs = processResourceMap(resourceMapSolrDoc, is);
+            perfLog.log("ResourceMapSubprocessor.processDocument() for id "+identifier, System.currentTimeMillis() - procResMapStart);
         } catch (OREParserException oreException) {
-            logger.error("Unable to parse resource map: " + identifier
-                    + ".  Unrecoverable parse exception:  task will not be re-tried.");
-        } catch (SAXException e) {
             logger.error("Unable to parse resource map: " + identifier
                     + ".  Unrecoverable parse exception:  task will not be re-tried.");
         }
@@ -138,20 +130,20 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
      * Given the starting SolrDoc for the resourcemap (from upstream processors), and parsed XML,
      * get all the members,  
      */
-    private List<SolrDoc> processResourceMap(SolrDoc indexDocument, Document resourceMapDocument)
+    private List<SolrDoc> processResourceMap(SolrDoc indexDocument, InputStream resourceMapStream)
             throws OREParserException, XPathExpressionException, IOException, EncoderException {
 
         long buildResMapStart = System.currentTimeMillis();
-        ResourceMap resourceMap = ResourceMapFactory.buildResourceMap(resourceMapDocument);
-        perfLog.log("ResourceMapFactory.buildResourceMap() create ResourceMap from Document", System.currentTimeMillis() - buildResMapStart);
+        ResourceMap resourceMap = ResourceMapFactory.buildResourceMap(resourceMapStream);
+        perfLog.log("ResourceMapFactory.buildResourceMap() create ResourceMap from InputStream", System.currentTimeMillis() - buildResMapStart);
         
         long getReferencedStart = System.currentTimeMillis();
-        List<String> memberIds = resourceMap.getAllDocumentIDs();     // all pids referenced in ResourceMap
+        List<String> memberIds = resourceMap.getAllDocumentIDs();     // all members of the package, including the resource map
         perfLog.log("ResourceMap.getAllDocumentIDs() referenced in ResourceMap", System.currentTimeMillis() - getReferencedStart);
         
-        long clearSidChainStart = System.currentTimeMillis();
-        this.clearSidChain(indexDocument.getIdentifier(), memberIds);
-        perfLog.log("ResourceMapSubprocessor.clearSidChain() removing obsoletes chain from Solr index", System.currentTimeMillis() - clearSidChainStart);
+        long clearObsoletesChainStart = System.currentTimeMillis();
+        this.clearObsoletesChain(indexDocument.getIdentifier(), memberIds);
+        perfLog.log("ResourceMapSubprocessor.clearObosoletesChain() removing obsoletes chain from Solr index", System.currentTimeMillis() - clearObsoletesChainStart);
         
         long getSolrDocsStart = System.currentTimeMillis();
         List<SolrDoc> memberUpdateDocuments = d1IndexerSolrClient.getDocumentsByD1Identifier(solrQueryUri, memberIds);
@@ -163,28 +155,28 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
     }
 
     /**
-     * Removes the documents for resourceMapIdentifier and its obsoletes chain 
-     * (meaning anything BEFORE it) from the search index
-     * (if any ids referenced in resource doc are a sid).
+     * Deletes the resourceMap and its obsoletes chain from the search index
+     * if any of the package members was identified by seriesId.
+     * (why?)
      */
-    private void clearSidChain(String resourceMapIdentifier, List<String> relatedDocs) {
+    private void clearObsoletesChain(String resourceMapIdentifier, List<String> memberIds) {
 
         // check that we are, indeed, dealing with a SID-identified ORE
-        Identifier identifier = new Identifier();
-        identifier.setValue(resourceMapIdentifier);
 
-        boolean containsSeriesId = false;
-        for (String relatedDoc : relatedDocs) {
+        boolean memberListContainsSeriesId = false;
+        for (String memberId : memberIds) {
             Identifier relatedPid = new Identifier();
-            relatedPid.setValue(relatedDoc);
+            relatedPid.setValue(memberId);
             if (SeriesIdResolver.isSeriesId(relatedPid)) {
-                containsSeriesId = true;
+                memberListContainsSeriesId = true;
                 break;
             }
         }
         // if this package contains a SID, then we need to clear out old info
-        if (containsSeriesId) {
-            Identifier pidToProcess = identifier;
+        // (I believe this means that if there's a SID in the member list, we should remove
+        // the resourceMap 
+        if (memberListContainsSeriesId) {
+            Identifier pidToProcess = TypeFactory.buildIdentifier(resourceMapIdentifier);
             while (pidToProcess != null) {
                 // queue a delete processing of all versions in the obsoletes chain
                 SystemMetadata sysmeta = HazelcastClientFactory.getSystemMetadataMap().get(
@@ -194,7 +186,7 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
                     logger.debug("Removing pidToProcess===" + pidToProcess.getValue());
                     logger.debug("Removing objectPath===" + objectPath);
 
-
+                    
                     IndexTask task = new IndexTask(sysmeta, objectPath);
                     try {
                         deleteProcessor.process(task);
@@ -208,9 +200,7 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
                     pidToProcess = null;
                 }
             }
-
         }
-
     }
 
     public List<String> getMatchDocuments() {

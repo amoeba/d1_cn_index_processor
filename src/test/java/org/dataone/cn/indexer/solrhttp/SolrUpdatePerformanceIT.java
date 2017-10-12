@@ -27,6 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
+import org.dataone.client.v2.formats.ObjectFormatCache;
 import org.dataone.cn.hazelcast.HazelcastConfigLocationFactory;
 import org.dataone.cn.indexer.D1IndexerSolrClient;
 import org.dataone.cn.indexer.SolrIndexService;
@@ -127,7 +128,7 @@ public class SolrUpdatePerformanceIT {
         int iterations = 10;
         int elapsedTime = 0;
         for (int i = 0;i<iterations; i++) {
-            SolrElementAdd data = new SolrElementAdd();
+            
 
             Identifier id = TypeFactory.buildIdentifier(idSeries + "-" + i);
 
@@ -151,10 +152,10 @@ public class SolrUpdatePerformanceIT {
                     System.out.println("== adding: " + e.getKey());
                     docList.add(e.getValue());
                 }
-                data.setDocList(docList);
+             
                 
                 long t0 = System.currentTimeMillis();
-                client.sendUpdate(client.getSolrIndexUri()+"/update/?commit=true", data);
+                client.sendUpdate(client.getSolrIndexUri()+"/update/?commit=true", docList);
 //                client.getSolrClient().commit();
                 elapsedTime += (System.currentTimeMillis() - t0);
                 
@@ -231,7 +232,7 @@ public class SolrUpdatePerformanceIT {
         ((SolrJClient)d1IndexerSolrClient).COMMIT_WITHIN_MS = 10;
        
        // this parameter slows down the data object update rates - I could be swamping local network (comcast)
-        long safeFollowingDistance = 10; 
+        long safeFollowingDistance = 1; 
        
         int dataMemberCount = 10;
        
@@ -240,6 +241,7 @@ public class SolrUpdatePerformanceIT {
         String resMapPid = "IndexerIT.resMap." + System.currentTimeMillis();
         
         System.out.println(String.format("Identifiers: %s,  %s,   %s", mdPid, dataPid, resMapPid));
+
         
         String mdPidPattern = new String("tao.13243.1");
         String dataPidPattern = new String("tao.13242.1");
@@ -250,6 +252,8 @@ public class SolrUpdatePerformanceIT {
         
         System.out.println(dataPid);
         InputStream stream = replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13242.1-0.xml"), originals, replacements);
+        
+        long testStart = System.currentTimeMillis();
         
         // submit the data object
         try {
@@ -407,7 +411,15 @@ public class SolrUpdatePerformanceIT {
                     replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/resourceMap_tao.13243.1-2.xml"), originals, replacements),
                     file.getAbsolutePath());
 
-
+            
+            
+            long testComplete = System.currentTimeMillis();
+            
+            System.out.println("==============================================================================");
+            System.out.println("      Total Update time: " + (testComplete - testStart));
+            System.out.println("==============================================================================");
+            
+            
             if (d1IndexerSolrClient instanceof SolrJClient) {
                 SolrJClient cl = (SolrJClient) d1IndexerSolrClient;
                 int i = 0;
@@ -478,7 +490,7 @@ public class SolrUpdatePerformanceIT {
 
         String path = objectPath != null ? objectPath : null;
  //       Map<String,SolrDoc> docs = indexService.parseTaskObject(id, sysMeta, path);
-        SolrElementAdd updates = indexService.processObject(id, sysMeta, path);
+        List<SolrDoc> updates = indexService.processObject(id, sysMeta, path);
 
 //        List<SolrElementAdd> updates = new ArrayList<SolrElementAdd>();
 //
@@ -575,4 +587,137 @@ public class SolrUpdatePerformanceIT {
       return file;
     }
    
+    
+    
+    @Test
+    public void measureOREParsePerformance() throws IOException, XPathExpressionException, SAXException, ParserConfigurationException, EncoderException {
+        
+        String mdPid = "IndexerIT.md." + System.currentTimeMillis();
+        String dataPid = "IndexerIT.data." + System.currentTimeMillis();
+        String resMapPid = "IndexerIT.resMap." + System.currentTimeMillis();
+        
+        System.out.println(String.format("Identifiers: %s,  %s,   %s", mdPid, dataPid, resMapPid));
+
+        
+        String mdPidPattern = new String("tao.13243.1");
+        String dataPidPattern = new String("tao.13242.1");
+        String resMapPattern = new String("resourceMap_tao.13243.1");
+        // since the MD document is a substring of the resourceMap, we need to put the resourceMap at the front of the list!
+        String[] replacements = new String[]{resMapPid,mdPid,dataPid};
+        String[] originals = new String[]{resMapPattern,mdPidPattern,dataPidPattern};
+        
+        File file = null;
+        LineNumberReader lr = null;
+        LineNumberReader lr2 = null;
+        
+        int dataMemberCount = 100;
+        List<String> dataIdList = new ArrayList<>();
+        // create the original data records in the index
+        for (int d=1; d<=dataMemberCount; d++) {
+            System.out.println("==============================================================================");
+            String id = dataPid + "." + d;
+            dataIdList.add(id);    
+        }
+
+    
+        try
+        {
+            // build the head            
+            InputStream resMap = replaceIdentifiers(this.getClass().getResourceAsStream("./resourceMap_tao.13243.1-head.rdf"), originals, replacements);
+            file = File.createTempFile("SolrUpdatePerformanceIT.", "rdf");
+            FileOutputStream fos = new FileOutputStream(file);
+            IOUtils.copy(resMap, fos);
+
+            // add data statements
+            for (String id : dataIdList) {
+                InputStream dataStatements = replaceIdentifiers(this.getClass().getResourceAsStream("./resourceMap_tao.13243.1-dataDesc.rdf"),
+                        new String[]{resMapPattern, mdPidPattern, dataPidPattern}, new String[]{resMapPid,mdPid,id});
+                IOUtils.copy(dataStatements, fos);
+            }
+            
+            // such a hack...
+            // add the metadata descriptions, but need to duplicate the 4th line for every data object in the package
+            lr = new LineNumberReader(new InputStreamReader(replaceIdentifiers(this.getClass().getResourceAsStream("./resourceMap_tao.13243.1-mdDesc.rdf"),
+                        new String[]{resMapPattern, mdPidPattern, dataPidPattern}, new String[]{resMapPid,mdPid,dataPid})));
+            String line = lr.readLine();
+            while (!line.contains("documents")) {
+                IOUtils.write(line, fos);
+                fos.write("\n".getBytes());
+                line = lr.readLine();
+            }
+            for (String id : dataIdList) {
+                String l = line.replaceAll(dataPid, id);
+                IOUtils.write(l, fos);
+                fos.write("\n".getBytes());
+            }
+            while (line != null) {
+                line = lr.readLine();
+                IOUtils.write(line, fos);
+                fos.write("\n".getBytes());
+            }
+
+            // same such hack...
+            // add the aggregation descriptions, but need to duplicate the 5th line for every data object in the package
+            lr2 = new LineNumberReader(new InputStreamReader(replaceIdentifiers(this.getClass().getResourceAsStream("./resourceMap_tao.13243.1-aggDesc.rdf"),
+                        new String[]{resMapPattern, mdPidPattern, dataPidPattern}, new String[]{resMapPid,mdPid,dataPid})));
+            line = lr2.readLine();
+            while (!line.contains(dataPid)) {
+                IOUtils.write(line, fos);
+                fos.write("\n".getBytes());
+                line = lr2.readLine();
+            }
+            for (String id : dataIdList) {
+                String l = line.replaceAll(dataPid, id);
+                IOUtils.write(l, fos);
+                fos.write("\n".getBytes());
+            }
+            while (line != null) {
+                line = lr2.readLine();
+                IOUtils.write(line, fos);
+                fos.write("\n".getBytes());
+            }
+            
+            
+            // add the tail    
+            InputStream tail = replaceIdentifiers(this.getClass().getResourceAsStream("./resourceMap_tao.13243.1-tail.rdf"), originals, replacements);
+            IOUtils.copy(tail, fos);
+            
+            fos.flush();
+            fos.close();
+        }
+        finally {
+            IOUtils.closeQuietly(lr);
+            IOUtils.closeQuietly(lr2);
+        }
+        
+        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+//        System.out.println("ResourceMap: " + file.getAbsolutePath());
+//        System.out.println(IOUtils.toString(new FileInputStream(file), "UTF-8"));
+//        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        
+        ObjectFormatCache.getInstance();
+        System.out.println("**?**************************************************************");
+        
+        indexService.parseTaskObject(resMapPid,
+                replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/resourceMap_tao.13243.1-0.xml"), originals, replacements),
+                file.getAbsolutePath());
+        
+        System.out.println("****************************************************************");
+        int i = 0;
+        try {
+            while(true) {
+                String line = String.format("%s\t%d\t%s",
+                        indexService.parseList.get(i),
+                        indexService.parseDurationList.get(i),
+                        indexService.parseStartTimeList.get(i++)
+                        );
+                System.out.println(line);
+                System.out.println("****************************************************************");
+            } 
+        }
+        catch (IndexOutOfBoundsException e) {
+            ;
+        }        
+    }
+    
 }
