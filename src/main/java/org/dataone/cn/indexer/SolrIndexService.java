@@ -198,7 +198,7 @@ public class SolrIndexService {
      */
     public SolrElementAdd processObject(String id, InputStream systemMetaDataStream,
             String objectPath) throws IOException, SAXException, ParserConfigurationException,
-            XPathExpressionException, EncoderException {
+            XPathExpressionException, EncoderException, Exception {
 
         long processObjStart = System.currentTimeMillis();
         
@@ -208,8 +208,7 @@ public class SolrIndexService {
             docs = systemMetadataProcessor.processDocument(id, docs, systemMetaDataStream);
             perfLog.log(systemMetadataProcessor.getClass().getSimpleName() + ".processDocument() processing sysmeta for id "+id, System.currentTimeMillis() - sysmetaProcStart);
         } catch (Exception e) {
-            log.error("Error parsing system metadata for id: " + id + e.getMessage());
-            e.printStackTrace();
+            log.error("Error parsing system metadata for id: " + id + e.getMessage(), e);
         }
 
         if (objectPath != null) {
@@ -298,7 +297,7 @@ public class SolrIndexService {
      */
     public void insertIntoIndex(String id, InputStream systemMetaDataStream, String objectPath)
             throws IOException, SAXException, ParserConfigurationException,
-            XPathExpressionException, EncoderException {
+            XPathExpressionException, EncoderException, Exception {
 
         // get the add command for solr
         SolrElementAdd addCommand = processObject(id, systemMetaDataStream, objectPath);
@@ -311,7 +310,7 @@ public class SolrIndexService {
 
     public void insertIntoIndex(List<IndexTask> tasks) 
             throws IOException, SAXException, ParserConfigurationException,
-            XPathExpressionException, EncoderException {
+            XPathExpressionException, EncoderException, Exception {
      
         SolrElementAdd batchAddCommand = new SolrElementAdd();
         
