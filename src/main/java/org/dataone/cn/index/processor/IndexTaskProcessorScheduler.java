@@ -115,7 +115,11 @@ public class IndexTaskProcessorScheduler {
                     for (JobExecutionContext j : jobs) {
                         if (j.getJobInstance() instanceof InterruptableJob) {
                             logger.warn("interrupting processing job [" + j.getJobInstance() + "] ...");
-                            ((InterruptableJob)j.getJobInstance()).interrupt();
+                            try {
+                                ((InterruptableJob)j.getJobInstance()).interrupt();
+                            } catch (Exception e) {
+                                logger.warn("There was an issue to interrupt processing job [" + j.getJobInstance() + "] ...", e);
+                            }
                         } else {
                             logger.warn("processing job [" + j.getJobInstance() + "] not interruptable...");
                         }
