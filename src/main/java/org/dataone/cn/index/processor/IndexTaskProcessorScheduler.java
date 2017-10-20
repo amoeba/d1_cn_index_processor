@@ -100,12 +100,18 @@ public class IndexTaskProcessorScheduler {
         try {
             
             if (scheduler.isStarted()) {
+                List<JobExecutionContext> jobs = scheduler.getCurrentlyExecutingJobs();
+                logger.info("IndexTaskProcessorScheduler - before the standby the currently executing job context list is "+jobs);
                 scheduler.standby();  // this stops execution and triggering
                                       // keeping backlogged triggers from executing
                 
                 // signal interrupt to the executing jobs
-                List<JobExecutionContext> jobs = scheduler.getCurrentlyExecutingJobs();
+                jobs = scheduler.getCurrentlyExecutingJobs();
+                logger.info("IndexTaskProcessorScheduler - the currently executing job context list is "+jobs);
                 if (jobs != null)
+                    if(jobs.isEmpty()) {
+                        logger.info("IndexTaskProcessorScheduler - the currently executing job context list is empty.");
+                    }
                     for (JobExecutionContext j : jobs) {
                         if (j.getJobInstance() instanceof InterruptableJob) {
                             logger.warn("interrupting processing job [" + j.getJobInstance() + "] ...");
