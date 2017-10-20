@@ -221,7 +221,7 @@ public class SolrUpdatePerformanceIT {
 
     @Ignore ("scale up the package size ")
     @Test
-    public void testTypicalPackageSynchronization() throws IOException, XPathExpressionException, SAXException, ParserConfigurationException, EncoderException, InterruptedException {
+    public void testTypicalPackageSynchronization() throws Exception {
   
 //       String solrCoreName = "search_core";
 //       SolrClient sc = new HttpSolrClient("http://localhost:8983/solr/" + solrCoreName);
@@ -230,31 +230,31 @@ public class SolrUpdatePerformanceIT {
 //       d1IndexerSolrClient.setSolrSchemaPath(Settings.getConfiguration().getString("solr.schema.path"));
 //       
         ((SolrJClient)d1IndexerSolrClient).COMMIT_WITHIN_MS = 10;
-       
-       // this parameter slows down the data object update rates - I could be swamping local network (comcast)
+
+        // this parameter slows down the data object update rates - I could be swamping local network (comcast)
         long safeFollowingDistance = 1; 
-       
-        int dataMemberCount = 10;
-       
+
+        int dataMemberCount = 1;
+
         String mdPid = "IndexerIT.md." + System.currentTimeMillis();
         String dataPid = "IndexerIT.data." + System.currentTimeMillis();
         String resMapPid = "IndexerIT.resMap." + System.currentTimeMillis();
-        
+
         System.out.println(String.format("Identifiers: %s,  %s,   %s", mdPid, dataPid, resMapPid));
 
-        
+
         String mdPidPattern = new String("tao.13243.1");
         String dataPidPattern = new String("tao.13242.1");
         String resMapPattern = new String("resourceMap_tao.13243.1");
         // since the MD document is a substring of the resourceMap, we need to put the resourceMap at the front of the list!
         String[] replacements = new String[]{resMapPid,mdPid,dataPid};
         String[] originals = new String[]{resMapPattern,mdPidPattern,dataPidPattern};
-        
+
         System.out.println(dataPid);
         InputStream stream = replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13242.1-0.xml"), originals, replacements);
-        
+
         long testStart = System.currentTimeMillis();
-        
+
         // submit the data object
         try {
             List<String> dataIdList = new ArrayList<>();
@@ -270,13 +270,8 @@ public class SolrUpdatePerformanceIT {
                 Thread.sleep(safeFollowingDistance);
             }
 
-            
-            // create the original metadata object in the index
-            System.out.println("==============================================================================");
 
-            submitUpdate(new String(mdPid),
-                    replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13243.1-0.xml"), originals, replacements), 
-                    this.getClass().getResource("./tao.13243.1.object.xml").getFile());
+
 
 
             // update the data objects with new replica information     
@@ -284,41 +279,30 @@ public class SolrUpdatePerformanceIT {
                 System.out.println("==============================================================================");
                 String id = dataPid + "." + d;
                 submitUpdate(new String(id),
-                    replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13242.1-1.xml"), 
-                            new String[]{dataPidPattern}, new String[]{id}), 
-                            null);
+                        replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13242.1-1.xml"), 
+                                new String[]{dataPidPattern}, new String[]{id}), 
+                                null);
                 Thread.sleep(safeFollowingDistance);
             }
 
-            // update the metadata object with new replica information
-            System.out.println("==============================================================================");   
-            submitUpdate(new String(mdPid),
-                    replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13243.1-1.xml"), originals, replacements),
-                    this.getClass().getResource("./tao.13243.1.object.xml").getFile());
 
-
-            
             // update the data objects with more new replica information     
             for (int d=1; d<=dataMemberCount; d++) {
                 System.out.println("==============================================================================");
                 String id = dataPid + "." + d;
                 submitUpdate(new String(id),
-                    replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13242.1-2.xml"), 
-                            new String[]{dataPidPattern}, new String[]{id}), 
-                            null);
+                        replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13242.1-2.xml"), 
+                                new String[]{dataPidPattern}, new String[]{id}), 
+                                null);
                 Thread.sleep(safeFollowingDistance);
             }
 
-            // update the metadata object with new replica information
-            System.out.println("==============================================================================");  
-            submitUpdate(new String(mdPid),
-                    replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13243.1-2.xml"), originals, replacements),
-                    this.getClass().getResource("./tao.13243.1.object.xml").getFile());
+
 
 
             System.out.println("==============================================================================");
             System.out.println("==============================================================================");
-           
+
             File file = null;
             LineNumberReader lr = null;
             LineNumberReader lr2 = null;
@@ -336,11 +320,11 @@ public class SolrUpdatePerformanceIT {
                             new String[]{resMapPattern, mdPidPattern, dataPidPattern}, new String[]{resMapPid,mdPid,id});
                     IOUtils.copy(dataStatements, fos);
                 }
-                
+
                 // such a hack...
                 // add the metadata descriptions, but need to duplicate the 4th line for every data object in the package
                 lr = new LineNumberReader(new InputStreamReader(replaceIdentifiers(this.getClass().getResourceAsStream("./resourceMap_tao.13243.1-mdDesc.rdf"),
-                            new String[]{resMapPattern, mdPidPattern, dataPidPattern}, new String[]{resMapPid,mdPid,dataPid})));
+                        new String[]{resMapPattern, mdPidPattern, dataPidPattern}, new String[]{resMapPid,mdPid,dataPid})));
                 String line = lr.readLine();
                 while (!line.contains("documents")) {
                     IOUtils.write(line, fos);
@@ -361,7 +345,7 @@ public class SolrUpdatePerformanceIT {
                 // same such hack...
                 // add the aggregation descriptions, but need to duplicate the 5th line for every data object in the package
                 lr2 = new LineNumberReader(new InputStreamReader(replaceIdentifiers(this.getClass().getResourceAsStream("./resourceMap_tao.13243.1-aggDesc.rdf"),
-                            new String[]{resMapPattern, mdPidPattern, dataPidPattern}, new String[]{resMapPid,mdPid,dataPid})));
+                        new String[]{resMapPattern, mdPidPattern, dataPidPattern}, new String[]{resMapPid,mdPid,dataPid})));
                 line = lr2.readLine();
                 while (!line.contains(dataPid)) {
                     IOUtils.write(line, fos);
@@ -378,12 +362,12 @@ public class SolrUpdatePerformanceIT {
                     IOUtils.write(line, fos);
                     fos.write("\n".getBytes());
                 }
-                
-                
+
+
                 // add the tail    
                 InputStream tail = replaceIdentifiers(this.getClass().getResourceAsStream("./resourceMap_tao.13243.1-tail.rdf"), originals, replacements);
                 IOUtils.copy(tail, fos);
-                
+
                 fos.flush();
                 fos.close();
             }
@@ -391,12 +375,12 @@ public class SolrUpdatePerformanceIT {
                 IOUtils.closeQuietly(lr);
                 IOUtils.closeQuietly(lr2);
             }
-            
+
             System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
             System.out.println("ResourceMap: " + file.getAbsolutePath());
             System.out.println(IOUtils.toString(new FileInputStream(file), "UTF-8"));
             System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-            
+
             submitUpdate(new String(resMapPid),
                     replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/resourceMap_tao.13243.1-0.xml"), originals, replacements), 
                     file.getAbsolutePath());
@@ -411,15 +395,66 @@ public class SolrUpdatePerformanceIT {
                     replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/resourceMap_tao.13243.1-2.xml"), originals, replacements),
                     file.getAbsolutePath());
 
+
             
-            
+            // create the original metadata object in the index
+            System.out.println("==============================================================================");
+
+            submitUpdate(new String(mdPid),
+                    replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13243.1-0.xml"), originals, replacements), 
+                    this.getClass().getResource("./tao.13243.1.object.xml").getFile());
+
+            // update the metadata object with new replica information
+            System.out.println("==============================================================================");   
+            submitUpdate(new String(mdPid),
+                    replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13243.1-1.xml"), originals, replacements),
+                    this.getClass().getResource("./tao.13243.1.object.xml").getFile());
+
+
+
+            // update the metadata object with new replica information
+            System.out.println("==============================================================================");  
+            submitUpdate(new String(mdPid),
+                    replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/tao.13243.1-2.xml"), originals, replacements),
+                    this.getClass().getResource("./tao.13243.1.object.xml").getFile());
+
+
             long testComplete = System.currentTimeMillis();
-            
+
             System.out.println("==============================================================================");
             System.out.println("      Total Update time: " + (testComplete - testStart));
             System.out.println("==============================================================================");
+
+
             
+            // submit a new resource map that obsoletes the previous
+            // the previous one should be archived, too, but for this test, we will just send a delete task, or SolarIndexService.removeFromIndex
+            String nextResMapPid = resMapPid + ".2";
+            String[] replacements2 = new String[]{nextResMapPid,mdPid,dataPid};
+
+            // create a copy of the resource with the new res map pid instead
+            FileInputStream fis = new FileInputStream(file);
+            FileOutputStream fos = null;
+            try {
+                InputStream nextResMap = replaceIdentifiers(fis, new String[]{resMapPid}, new String[]{nextResMapPid});
+                File nextRMfile = File.createTempFile("SolrUpdatePerformanceIT.", "rdf");
+                fos = new FileOutputStream(nextRMfile);
+                IOUtils.copy(nextResMap, fos);
+            } finally {
+                fis.close();
+                fos.close();
+            }
             
+            // submit the new resourceMap
+            submitUpdate(new String(nextResMapPid),
+                    replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/resourceMap_tao.13243.1-0.xml"), originals, replacements2), 
+                    file.getAbsolutePath());
+
+            // now remove the older one, as would happen with a delete task (object archive = true)
+            indexService.removeFromIndex(resMapPid);
+
+            
+
             if (d1IndexerSolrClient instanceof SolrJClient) {
                 SolrJClient cl = (SolrJClient) d1IndexerSolrClient;
                 int i = 0;
@@ -437,9 +472,9 @@ public class SolrUpdatePerformanceIT {
                             queryTtot += cl.solrCallDurationList.get(i);
                         }
                         System.out.println(String.format("%s\t%s\t%s",
-                            cl.solrCallList.get(i),
-                            cl.solrCallDurationList.get(i),
-                            cl.solrCallStartTimeList.get(i++)));
+                                cl.solrCallList.get(i),
+                                cl.solrCallDurationList.get(i),
+                                cl.solrCallStartTimeList.get(i++)));
                     } 
                 }
                 catch (IndexOutOfBoundsException e) {
@@ -456,19 +491,25 @@ public class SolrUpdatePerformanceIT {
                 System.out.println("   Avg time: " + (updateN == 0 ? 0 : updateTtot / updateN));
                 System.out.println("   commit within (ms): " + cl.COMMIT_WITHIN_MS);
                 System.out.println();
-                
+
             }
 
             Thread.sleep(15);
-            
+
             List<SolrDoc> md = this.d1IndexerSolrClient.getDocumentBySolrId(null, mdPid);
             List<SolrDoc> rm = this.d1IndexerSolrClient.getDocumentBySolrId(null, resMapPid);
-            
+            List<SolrDoc> rm2 = this.d1IndexerSolrClient.getDocumentBySolrId(null, nextResMapPid);
+            System.out.println("metadata solr doc for pid '" + mdPid +"': "+ md.get(0));
+            System.out.println("metadata solr doc 'resourceMap' value: '" + md.get(0).getFirstFieldValue("resourceMap") + "'");
+            System.out.println("metadata solr doc 'id' value: '" + md.get(0).getFirstFieldValue("id") + "'");
+
+
+            assertTrue("ResourceMap 1 index doc should not be found", rm == null || rm.size() == 0);
             assertNotNull("Metadata index doc should have a resourceMap field", md.get(0).getFirstFieldValue("resourceMap"));
             assertNotNull("Metadata index doc should have a documents field", md.get(0).getFirstFieldValue("documents"));
             assertTrue("Metadata index doc should have many values in documents field", md.get(0).getAllFieldValues("documents").size() == dataMemberCount);
-            assertNotNull("ResourceMap index doc should exist", rm);
-            assertTrue("ResourceMap index doc should exist", rm.size() == 1 );
+            assertNotNull("ResourceMap index doc should exist", rm2);
+            assertTrue("ResourceMap index doc should exist", rm2.size() == 1 );
 
             for (String id : dataIdList) {
                 List<SolrDoc> d = this.d1IndexerSolrClient.getDocumentBySolrId(null, id);
@@ -481,9 +522,9 @@ public class SolrUpdatePerformanceIT {
             e.printStackTrace();
             throw e;
         }
+    }
         
-        
-   }
+
     
     private void submitUpdate(String id, InputStream sysMeta, String objectPath) 
             throws XPathExpressionException, IOException, SAXException, ParserConfigurationException, EncoderException, InterruptedException {
@@ -589,7 +630,7 @@ public class SolrUpdatePerformanceIT {
    
     
     
-    @Test
+ //   @Test
     public void measureOREParsePerformance() throws IOException, XPathExpressionException, SAXException, ParserConfigurationException, EncoderException {
         
         String mdPid = "IndexerIT.md." + System.currentTimeMillis();

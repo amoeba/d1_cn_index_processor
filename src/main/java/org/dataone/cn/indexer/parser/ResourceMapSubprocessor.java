@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -42,11 +43,13 @@ import org.dataone.cn.indexer.parser.utility.SeriesIdResolver;
 import org.dataone.cn.indexer.resourcemap.ResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMapFactory;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
+import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.TypeFactory;
 import org.dataone.service.types.v2.SystemMetadata;
 import org.dspace.foresite.OREParserException;
 import org.springframework.beans.factory.annotation.Autowired;
+
 
 /**
  * Resource Map Document processor.  Operates on ORE/RDF objects.  Maps 
@@ -134,24 +137,70 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
             throws OREParserException, XPathExpressionException, IOException, EncoderException {
 
         long buildResMapStart = System.currentTimeMillis();
-        ResourceMap resourceMap = ResourceMapFactory.buildResourceMap(resourceMapStream);
+        
+        
+        // this new way of building the solr records doesn't yet deal with seriesId in the relationship fields, 
+        // or calling clearObsoletesChain to do whatever it is that it's supposed to do...
+        
+        
+        Map<Identifier, Map<Identifier, List<Identifier>>> tmpResourceMap = null;
+
+        try {
+            tmpResourceMap = org.dataone.ore.ResourceMapFactory.getInstance().parseResourceMap(resourceMapStream);
+
+        } catch (Throwable e) {
+            logger.error("Unable to parse ORE document:", e);
+            throw new OREParserException(e);
+        }
         perfLog.log("ResourceMapFactory.buildResourceMap() create ResourceMap from InputStream", System.currentTimeMillis() - buildResMapStart);
         
-        long getReferencedStart = System.currentTimeMillis();
-        List<String> memberIds = resourceMap.getAllDocumentIDs();     // all members of the package, including the resource map
-        perfLog.log("ResourceMap.getAllDocumentIDs() referenced in ResourceMap", System.currentTimeMillis() - getReferencedStart);
+        Map<Identifier,SolrDoc> memberDocs = new HashMap<>();
+        Entry<Identifier, Map<Identifier, List<Identifier>>> resMapHierarchy = tmpResourceMap.entrySet().iterator().next();
+        String resourceMapId = resMapHierarchy.getKey().getValue();
+        Map<Identifier,List<Identifier>> metadataMap = resMapHierarchy.getValue();
+        for (Identifier mdId : metadataMap.keySet()) {
+            if (!memberDocs.containsKey(mdId)) {
+                memberDocs.put(mdId,new SolrDoc());
+                memberDocs.get(mdId).addField(new SolrElementField("id",mdId.getValue()));
+                memberDocs.get(mdId).addField(new SolrElementField("resourceMap",resourceMapId));
+            }
+            for (Identifier dataId : metadataMap.get(mdId)) {
+                if (!memberDocs.containsKey(dataId)) {
+                    memberDocs.put(dataId, new SolrDoc());
+                    memberDocs.get(dataId).addField(new SolrElementField("id",dataId.getValue()));
+                    memberDocs.get(dataId).addField(new SolrElementField("resourceMap",resourceMapId));
+                }
+                memberDocs.get(dataId).addField(new SolrElementField("isDocumentedBy",mdId.getValue()));
+                memberDocs.get(mdId).addField(new SolrElementField("documents",dataId.getValue()));
+
+            }
+        }
+        List<SolrDoc> allMembers = new ArrayList<>();
+        allMembers.add(indexDocument);
+        allMembers.addAll(memberDocs.values());
+        return allMembers;
         
-        long clearObsoletesChainStart = System.currentTimeMillis();
-        this.clearObsoletesChain(indexDocument.getIdentifier(), memberIds);
-        perfLog.log("ResourceMapSubprocessor.clearObosoletesChain() removing obsoletes chain from Solr index", System.currentTimeMillis() - clearObsoletesChainStart);
         
-        long getSolrDocsStart = System.currentTimeMillis();
-        List<SolrDoc> memberUpdateDocuments = d1IndexerSolrClient.getDocumentsByD1Identifier(solrQueryUri, memberIds);
-        perfLog.log("d1IndexerSolrClient.getDocumentsById() get existing referenced ids' Solr docs", System.currentTimeMillis() - getSolrDocsStart);
-        
-        List<SolrDoc> mergedDocuments = resourceMap.mergeIndexedDocuments(memberUpdateDocuments);
-        mergedDocuments.add(indexDocument);
-        return mergedDocuments;
+//        ResourceMap resourceMap = ResourceMapFactory.buildResourceMap(resourceMapStream);
+//        perfLog.log("ResourceMapFactory.buildResourceMap() create ResourceMap from InputStream", System.currentTimeMillis() - buildResMapStart);
+//        
+//        long getReferencedStart = System.currentTimeMillis();
+//        List<String> memberIds = resourceMap.getAllDocumentIDs();     // all members of the package, including the resource map
+//        perfLog.log("ResourceMap.getAllDocumentIDs() referenced in ResourceMap", System.currentTimeMillis() - getReferencedStart);
+//        
+//        long clearObsoletesChainStart = System.currentTimeMillis();
+//        this.clearObsoletesChain(indexDocument.getIdentifier(), memberIds);
+//        perfLog.log("ResourceMapSubprocessor.clearObosoletesChain() removing obsoletes chain from Solr index", System.currentTimeMillis() - clearObsoletesChainStart);
+//        
+//        // create solrDocs for data members
+//        // flesh-out the member solr documents from solr
+//        long getSolrDocsStart = System.currentTimeMillis();
+//        List<SolrDoc> memberUpdateDocuments = d1IndexerSolrClient.getDocumentsByD1Identifier(solrQueryUri, memberIds);
+//        perfLog.log("d1IndexerSolrClient.getDocumentsById() get existing referenced ids' Solr docs", System.currentTimeMillis() - getSolrDocsStart);
+//        
+//        List<SolrDoc> mergedDocuments = resourceMap.mergeIndexedDocuments(memberUpdateDocuments);
+//        mergedDocuments.add(indexDocument);
+//        return mergedDocuments;
     }
 
     /**

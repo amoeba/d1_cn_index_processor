@@ -29,9 +29,9 @@ public class MockD1IndexerSolrClient implements D1IndexerSolrClient {
 
     @Override
     public void sendUpdate(String uri, List<SolrDoc> data, String encoding,
-            String contentType) throws IOException {
+            boolean isPartialUpdate) throws IOException {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
@@ -122,5 +122,7 @@ public class MockD1IndexerSolrClient implements D1IndexerSolrClient {
         // TODO Auto-generated method stub
         return null;
     }
+
+
 
 }

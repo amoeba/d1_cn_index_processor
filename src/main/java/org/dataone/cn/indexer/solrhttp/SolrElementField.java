@@ -79,6 +79,7 @@ public class SolrElementField {
     private String name = null;
     private String value = null;
     private boolean escapeXML = true;
+    private Modifier modifier;
 
     public SolrElementField() {
     }
@@ -102,6 +103,27 @@ public class SolrElementField {
 
     public void setValue(String value) {
         this.value = value;
+    }
+    
+    public void setModifier(SolrElementField.Modifier modifier) {
+        this.modifier = modifier;
+    }
+    
+    public Modifier getModifier() {
+        return this.modifier;
+    }
+   
+    
+    public enum Modifier {
+        ADD,
+        SET,
+        REMOVE,
+        REMOVEREGEX,
+        INC;
+        
+        public String toString() {
+            return super.toString().toLowerCase();
+        }
     }
 
     /**

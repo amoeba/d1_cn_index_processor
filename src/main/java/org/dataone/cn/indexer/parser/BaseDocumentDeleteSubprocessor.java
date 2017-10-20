@@ -51,10 +51,13 @@ public class BaseDocumentDeleteSubprocessor implements IDocumentDeleteSubprocess
     private String relationSourceField;
     private List<String> biDirectionalRelationFields;
     private List<String> uniDirectionalRelationFields;
+    
+    boolean usingAtomicUpdates = true;
 
     public BaseDocumentDeleteSubprocessor() {
     }
 
+    
     public Map<String, SolrDoc> processDocForDelete(String identifier, Map<String, SolrDoc> docs)
             throws Exception {
 
@@ -70,15 +73,27 @@ public class BaseDocumentDeleteSubprocessor implements IDocumentDeleteSubprocess
         return docs;
     }
 
+
+    private boolean isRelationshipSource(SolrDoc indexedDoc) throws Exception {
+        String formatId = indexedDoc.getFirstFieldValue(SolrElementField.FIELD_OBJECTFORMAT);
+        return relationSourceFormatId.equals(formatId);
+    }
+
+    /* 
+     * removes relationship fields from the solr documents that have them
+     *  
+     */
     private Map<String, SolrDoc> removeRelationsBySourceDoc(String relationSourceId,
             SolrDoc indexedDoc, Map<String, SolrDoc> docs) throws Exception {
 
-        // gather all docs with relations from self source
+        // gather all docs with relations from self in the relation source field  (for example: 'resourceMap' field)
         List<SolrDoc> relatedDocs = d1IndexerSolrClient.getDocumentsByField(solrQueryUri,
                 Collections.singletonList(relationSourceId), relationSourceField, true);
 
         Set<String> otherSourceDocs = new HashSet<String>();
-
+        
+        // removes the relationship fields from the related documents
+        // regardless of source. hmm....
         for (SolrDoc relatedDoc : relatedDocs) {
 
             // gather other relation source docs from modified list
@@ -86,20 +101,51 @@ public class BaseDocumentDeleteSubprocessor implements IDocumentDeleteSubprocess
 
             // remove relation fields (uni and bi-directional)
             // add modified docs to update list
-            String docId = relatedDoc.getFirstFieldValue(SolrElementField.FIELD_ID);
-            if (docs.get(docId) != null) {
-                relatedDoc = docs.get(docId);
+            String relatedDocId = relatedDoc.getFirstFieldValue(SolrElementField.FIELD_ID);
+            if (docs.get(relatedDocId) != null) {
+                // replace the relatedDoc that's being worked on with the one passed into the method
+                relatedDoc = docs.get(relatedDocId);
             }
-            relatedDoc.removeAllFields(relationSourceField);
-            for (String relationField : getBiDirectionalRelationFields()) {
-                relatedDoc.removeAllFields(relationField);
-            }
-            for (String relationField : getUniDirectionalRelationFields()) {
-                relatedDoc.removeAllFields(relationField);
-            }
-            docs.put(docId, relatedDoc);
-        }
 
+
+            if (usingAtomicUpdates) {
+                // build a diffDoc that instructs solr to delete these fields from the record
+                List<SolrElementField> fields = new ArrayList<>();
+                fields.add(relatedDoc.getField(SolrElementField.FIELD_ID));
+
+                SolrElementField sef = new SolrElementField(relationSourceField, null);
+                sef.setModifier(SolrElementField.Modifier.SET);
+                fields.add(sef);
+                for (String relationField : getBiDirectionalRelationFields()) {
+                    SolrElementField s = new SolrElementField(relationField,null);
+                    s.setModifier(SolrElementField.Modifier.SET); // setting to null is how to remove all
+                    fields.add(s);
+                }
+
+                for (String relationField : getUniDirectionalRelationFields()) {
+                    SolrElementField s = new SolrElementField(relationField,null);
+                    s.setModifier(SolrElementField.Modifier.SET); // setting to null is how to remove all
+                    fields.add(s);
+                }
+                SolrDoc sd = new SolrDoc();
+                sd.setFieldList(fields);
+                docs.put(relatedDocId, sd);
+
+            }
+            else {
+                relatedDoc.removeAllFields(relationSourceField);
+
+                for (String relationField : getBiDirectionalRelationFields()) {
+                    relatedDoc.removeAllFields(relationField);
+                }
+                for (String relationField : getUniDirectionalRelationFields()) {
+                    relatedDoc.removeAllFields(relationField);
+                }
+                docs.put(relatedDocId, relatedDoc);
+            }
+
+        }
+        // signals the caller that these other documents need to be reindexed
         for (String otherRelatedDoc : otherSourceDocs) {
             if (!otherRelatedDoc.equals(relationSourceId)) {
                 docs.put(otherRelatedDoc, null);
@@ -107,12 +153,12 @@ public class BaseDocumentDeleteSubprocessor implements IDocumentDeleteSubprocess
         }
         return docs;
     }
+    
 
-    private boolean isRelationshipSource(SolrDoc indexedDoc) throws Exception {
-        String formatId = indexedDoc.getFirstFieldValue(SolrElementField.FIELD_OBJECTFORMAT);
-        return relationSourceFormatId.equals(formatId);
-    }
+ 
 
+    
+    
     private boolean hasRelationsBySource(SolrDoc indexedDoc) throws XPathExpressionException,
             IOException, EncoderException {
         String relationSourceId = indexedDoc.getFirstFieldValue(relationSourceField);
@@ -137,6 +183,9 @@ public class BaseDocumentDeleteSubprocessor implements IDocumentDeleteSubprocess
         }
         return docs;
     }
+    
+    
+    
 
     private List<String> getBiDirectionalRelationFields() {
         if (biDirectionalRelationFields == null) {

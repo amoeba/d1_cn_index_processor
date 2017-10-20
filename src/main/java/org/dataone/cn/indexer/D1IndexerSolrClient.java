@@ -11,27 +11,35 @@ import org.dataone.cn.indexer.solrhttp.SolrDoc;
 
 public interface D1IndexerSolrClient {
 
+
+
+    public void sendUpdate(String uri, List<SolrDoc> data) 
+            throws IOException;
+    
+    
+    public void sendUpdate(String uri, List<SolrDoc> data, String encoding)
+            throws IOException;
+
+   
     /**
      * Posts document data to Solr indexer.
      * 
      * @param uri
      *            Solr index url example:
-     *            http://localhost:8080/solr/update?commit=true
+     *            http://localhost:8983/solr/update?commit=true
      * @param data
      *            documents to index
      * @param encoding
      *            use "UTF-8"
+     * @param isPartialUpdate
+     *            use atomic/partial update semantics  (field modifiers)
+     *            
      * @throws IOException
      */
-
-    public void sendUpdate(String uri, List<SolrDoc> data, String encoding)
+    public void sendUpdate(String uri, List<SolrDoc> data, String encoding, boolean isPartialUpdate) 
             throws IOException;
 
-    public void sendUpdate(String uri, List<SolrDoc> data) throws IOException;
-
-    public void sendUpdate(String uri, List<SolrDoc> data, String encoding,
-            String contentType) throws IOException;
-
+    
     public void sendSolrDelete(String pid);
 
     public void sendSolrDeletes(List<String> pids);

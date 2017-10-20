@@ -1,0 +1,5 @@
+  <rdf:Description rdf:about="https://cn-sandbox.test.dataone.org/cn/v1/resolve/tao.13242.1">
+    <ore:isAggregatedBy>https://cn-sandbox.test.dataone.org/cn/v1/resolve/resourceMap_tao.13243.1#aggregation</ore:isAggregatedBy>
+    <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">tao.13242.1</dcterms:identifier>
+    <j.0:isDocumentedBy rdf:resource="https://cn-sandbox.test.dataone.org/cn/v1/resolve/tao.13243.1"/>
+  </rdf:Description>

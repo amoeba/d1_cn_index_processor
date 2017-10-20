@@ -21,6 +21,8 @@ public class SubprocessorUtility {
 
     @Autowired
     private String solrQueryUri = null;
+    
+    private boolean usePartialUpdate = true;
 
     public SubprocessorUtility() {
     }
@@ -42,6 +44,9 @@ public class SubprocessorUtility {
     public SolrDoc mergeWithIndexedDocument(SolrDoc indexDocument, List<String> fieldsToMerge)
             throws IOException, EncoderException, XPathExpressionException {
 
+        if (usePartialUpdate)
+                return diffWithIndexedDocument(indexDocument);
+        
         logger.debug("about to merge indexed document with new doc to insert for pid: "
                 + indexDocument.getIdentifier());
         SolrDoc solrDocFromSolr = d1IndexerSolrClient.retrieveDocumentFromSolrServer(indexDocument.getIdentifier(),
@@ -68,6 +73,8 @@ public class SubprocessorUtility {
         return indexDocument;
     }
     
+   
+    
     /**
      * Diff the new field values with existing ones in Solr, and return only the fields that are different
      * (to be used for atomic updates)
@@ -83,7 +90,7 @@ public class SubprocessorUtility {
             throws IOException, EncoderException, XPathExpressionException {
 
         logger.debug("about to diff indexed document with new doc to insert for pid: "+ newIndexDocument.getIdentifier());
-        
+        logger.debug("...  new doc has " + newIndexDocument.getFieldList().size() + " fields to diff...");
         SolrDoc solrDocFromSolr = 
                 d1IndexerSolrClient.retrieveDocumentFromSolrServer(newIndexDocument.getIdentifier(), solrQueryUri);
        
@@ -95,7 +102,7 @@ public class SubprocessorUtility {
             SolrDoc diffDoc = new SolrDoc(); 
             for (SolrElementField field : newIndexDocument.getFieldList()) 
             {   
-                if (!solrDocFromSolr.hasFieldWithValue(field.getName(), field.getValue()))
+                if (field.getName().equals("id") || !solrDocFromSolr.hasFieldWithValue(field.getName(), field.getValue()))
                 {
                     diffDoc.addField(field);
                     
@@ -108,6 +115,7 @@ public class SubprocessorUtility {
                 versionField.setValue(solrDocFromSolr.getFirstFieldValue(("_version_")));
                 diffDoc.addField(versionField);
             }
+            logger.debug("...  diff doc has " + diffDoc.getFieldList().size() + " remaining fields");
             return diffDoc;
         } 
         else 
@@ -115,7 +123,10 @@ public class SubprocessorUtility {
             SolrElementField versionField = new SolrElementField();
             versionField.setName("_version_");
             versionField.setValue("-1");  // this value ensures that update will only happen if the document is new
+            newIndexDocument.addField(versionField);
+            logger.debug("....  diff doc has " + newIndexDocument.getFieldList().size() + " remaining fields");
             return newIndexDocument;
+            
         }
     }
 }

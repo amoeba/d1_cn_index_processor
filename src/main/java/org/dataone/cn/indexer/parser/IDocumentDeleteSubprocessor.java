@@ -28,6 +28,14 @@ import org.dataone.cn.indexer.solrhttp.SolrDoc;
 
 public interface IDocumentDeleteSubprocessor {
 
+    /**
+     * returns a map of documents that need to be processed as updates.  Entries with null values (key with null value)
+     * should be processed as a new task (reindexed)
+     * @param identifier
+     * @param docs
+     * @return
+     * @throws Exception
+     */
     public Map<String, SolrDoc> processDocForDelete(String identifier, Map<String, SolrDoc> docs)
             throws Exception;
 }

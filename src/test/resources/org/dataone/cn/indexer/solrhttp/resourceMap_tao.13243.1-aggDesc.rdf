@@ -1,0 +1,8 @@
+  <rdf:Description rdf:about="https://cn-sandbox.test.dataone.org/cn/v1/resolve/resourceMap_tao.13243.1#aggregation">
+    <rdf:type rdf:resource="http://www.openarchives.org/ore/terms/Aggregation"/>
+    <ore:isDescribedBy rdf:resource="https://cn-sandbox.test.dataone.org/cn/v1/resolve/resourceMap_tao.13243.1"/>
+    <dc:title>DataONE Aggregation</dc:title>
+    <ore:aggregates rdf:resource="https://cn-sandbox.test.dataone.org/cn/v1/resolve/tao.13243.1"/>
+    <ore:aggregates rdf:resource="https://cn-sandbox.test.dataone.org/cn/v1/resolve/tao.13242.1"/>
+  </rdf:Description>
+

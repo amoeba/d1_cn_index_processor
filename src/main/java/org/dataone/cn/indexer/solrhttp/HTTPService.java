@@ -94,35 +94,34 @@ public class HTTPService implements D1IndexerSolrClient {
         httpRequestFactory = requestFactory;
     }
 
-    /* (non-Javadoc)
-     * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#sendUpdate(java.lang.String, org.dataone.cn.indexer.solrhttp.SolrElementAdd, java.lang.String)
+
+    @Override
+    public void sendUpdate(String uri, List<SolrDoc> data) throws IOException {
+        sendUpdate(uri, data, CHAR_ENCODING);
+    }
+    
+    
+    /**
+     * Not really implemented...Throws RuntimeException if usePartialUpdate is true
      */
+    @Override
+    public void sendUpdate(String uri, List<SolrDoc> data, String encoding, boolean usePartialUpdate) throws IOException {
+        if (usePartialUpdate) 
+            throw new RuntimeException("Partial Updates not supported by HTTPService");
+        
+        sendUpdate(uri, data, encoding, false);
+    }
+
 
     @Override
     public void sendUpdate(String uri, List<SolrDoc> data, String encoding) throws IOException {
-        this.sendUpdate(uri, data, encoding, XML_CONTENT_TYPE);
-    }
-
-    /* (non-Javadoc)
-     * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#sendUpdate(java.lang.String, org.dataone.cn.indexer.solrhttp.SolrElementAdd)
-     */
-    @Override
-    public void sendUpdate(String uri, List<SolrDoc> data) throws IOException {
-        sendUpdate(uri, data, CHAR_ENCODING, XML_CONTENT_TYPE);
-    }
-
-    /* (non-Javadoc)
-     * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#sendUpdate(java.lang.String, org.dataone.cn.indexer.solrhttp.SolrElementAdd, java.lang.String, java.lang.String)
-     */
-    @Override
-    public void sendUpdate(String uri, List<SolrDoc> data, String encoding, String contentType)
-            throws IOException {
+        
         InputStream inputStreamResponse = null;
         HttpPost post = null;
         HttpResponse response = null;
         try {
             post = new HttpPost(uri);
-            post.setHeader("Content-Type", contentType);
+            post.setHeader("Content-Type", XML_CONTENT_TYPE);
             post.setEntity(new OutputStreamHttpEntity(data, encoding));
             response = getHttpClient().execute(post);
             HttpEntity responseEntity = response.getEntity();
