@@ -1038,7 +1038,7 @@ public class IndexTaskProcessor {
                     logger.error("....... Exception thrown trying to return task to NEW status for pid: " + t.getPid(),e);
                 }
             }
-            logger.warn("...7.) DONE with shutdown.");
+            logger.warn("............7.) DONE with shutting down IndexTaskProcessor.");
         }
     }
 }
