@@ -969,7 +969,7 @@ public class IndexTaskProcessor {
                     IndexTask t = futureMap.get(f);
                     if (t != null) {
                         try {
-                            t.markNew();
+                            t.setStatus(IndexTask.STATUS_NEW);
                             repo.save(t);
                             marked++; 
                         } catch (Exception e) {
@@ -1003,7 +1003,7 @@ public class IndexTaskProcessor {
                         if (t != null) {
                             if (IndexTask.STATUS_IN_PROCESS.equals(t.getStatus())) {
                                 try {
-                                    t.markNew();
+                                    t.setStatus(IndexTask.STATUS_NEW);
                                     repo.save(t);
                                     logger.warn("...active future for pid " + t.getPid() 
                                         + " not done.  Resetting to NEW, to allow reprocessing next time...");
