@@ -105,10 +105,12 @@ public class IndexTaskProcessorScheduler {
                 scheduler.standby();  // this stops execution and triggering
                                       // keeping backlogged triggers from executing
                 
-                // signal interrupt to the executing jobs
-                List<JobExecutionContext> jobs = scheduler.getCurrentlyExecutingJobs();
+                //interrupt the IndexTaskProcessorJob
+                scheduler.interrupt(jobKey(QUARTZ_PROCESSOR_JOB, QUARTZ_PROCESSOR_GROUP));
+                
+                /*List<JobExecutionContext> jobs = scheduler.getCurrentlyExecutingJobs();
                 logger.info("IndexTaskProcessorScheduler - the currently executing job context list is "+jobs);
-                if (jobs != null)
+                if (jobs != null) 
                     if(jobs.isEmpty()) {
                         logger.info("IndexTaskProcessorScheduler - the currently executing job context list is empty.");
                     }
@@ -123,7 +125,7 @@ public class IndexTaskProcessorScheduler {
                         } else {
                             logger.warn("processing job [" + j.getJobInstance() + "] not interruptable...");
                         }
-                    }
+                    }*/
                 // wait for concurrently executing Jobs to finish
                 while (!(scheduler.getCurrentlyExecutingJobs().isEmpty())) {
                     logger.warn(String.format("%d jobs executing,  waiting for them to complete...", 
@@ -135,10 +137,10 @@ public class IndexTaskProcessorScheduler {
                         logger.warn("Sleep interrupted while waiting for executing jobs to finish. check again!");
                     }
                 }
-                logger.warn("Job scheduler [" + this + "] finished executing all jobs.");
+                logger.warn("Job scheduler [" + this + "] finished executing all jobs. The d1-index-processor shut down sucessfully.======");
                 scheduler.deleteJob(jobKey(QUARTZ_PROCESSOR_JOB, QUARTZ_PROCESSOR_GROUP));
             }
-        } catch (SchedulerException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
     }
