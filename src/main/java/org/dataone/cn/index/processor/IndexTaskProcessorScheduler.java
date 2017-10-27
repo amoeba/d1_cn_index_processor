@@ -107,7 +107,7 @@ public class IndexTaskProcessorScheduler {
                 
                 //interrupt the IndexTaskProcessorJob
                 boolean success = scheduler.interrupt(jobKey(QUARTZ_PROCESSOR_JOB, QUARTZ_PROCESSOR_GROUP));
-                if(!success)
+                if(!success) {
                     logger.info("Scheuler.interrupt method can't succeed to interrupt the d1 index job and the static method IndexTaskProcessorJob.interruptCurrent() will be called.");
                     IndexTaskProcessorJob.interruptCurrent();
                 }
