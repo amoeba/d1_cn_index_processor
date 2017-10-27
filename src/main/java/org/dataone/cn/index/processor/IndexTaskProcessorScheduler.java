@@ -106,26 +106,18 @@ public class IndexTaskProcessorScheduler {
                                       // keeping backlogged triggers from executing
                 
                 //interrupt the IndexTaskProcessorJob
-                scheduler.interrupt(jobKey(QUARTZ_PROCESSOR_JOB, QUARTZ_PROCESSOR_GROUP));
+                //scheduler.interrupt(jobKey(QUARTZ_PROCESSOR_JOB, QUARTZ_PROCESSOR_GROUP));
+                JobDetail indexProcessorJobDetail =scheduler.getJobDetail(JobKey.jobKey(QUARTZ_PROCESSOR_JOB, QUARTZ_PROCESSOR_GROUP));
+                Class jobClass = indexProcessorJobDetail.getJobClass();
+                if(jobClass.isInstance(jobClass)) {
+                    logger.info("The jobClass is an object of the IndexProcessorJob class. The class method interrupt will be called.");
+                    IndexTaskProcessorJob indexTaskProcessJob = IndexTaskProcessorJob.class.cast(jobClass);
+                    indexTaskProcessJob.interrupt();
+                } else {
+                    logger.info("The jobClass is NOT an object of the IndexProcessorJob class. The static method interruptCurrent will be called.");
+                    IndexTaskProcessorJob.interruptCurrent();
+                }
                 
-                /*List<JobExecutionContext> jobs = scheduler.getCurrentlyExecutingJobs();
-                logger.info("IndexTaskProcessorScheduler - the currently executing job context list is "+jobs);
-                if (jobs != null) 
-                    if(jobs.isEmpty()) {
-                        logger.info("IndexTaskProcessorScheduler - the currently executing job context list is empty.");
-                    }
-                    for (JobExecutionContext j : jobs) {
-                        if (j.getJobInstance() instanceof InterruptableJob) {
-                            logger.warn("interrupting processing job [" + j.getJobInstance() + "] ...");
-                            try {
-                                ((InterruptableJob)j.getJobInstance()).interrupt();
-                            } catch (Exception e) {
-                                logger.warn("There was an issue to interrupt processing job [" + j.getJobInstance() + "] ...", e);
-                            }
-                        } else {
-                            logger.warn("processing job [" + j.getJobInstance() + "] not interruptable...");
-                        }
-                    }*/
                 // wait for concurrently executing Jobs to finish
                 while (!(scheduler.getCurrentlyExecutingJobs().isEmpty())) {
                     logger.warn(String.format("%d jobs executing,  waiting for them to complete...", 
