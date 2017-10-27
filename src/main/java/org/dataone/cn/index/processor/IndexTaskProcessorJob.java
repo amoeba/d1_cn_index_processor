@@ -75,19 +75,8 @@ public class IndexTaskProcessorJob implements InterruptableJob {
      */  
     @Override
     public void interrupt() throws UnableToInterruptJobException {
-        try {
-            logger.warn("IndexTaskProcessorJob [" + this + "] interrupted, shutting down processor [" + processor + "]");
-            processor.shutdownExecutor();
-        } catch (Throwable t) {
-            logger.warn("There is an issue to shut down the index process since "+t.getMessage(), t);
-            UnableToInterruptJobException e = new UnableToInterruptJobException(
-                    "Unable to shutdown the executorService that is processing index tasks."
-                    );
-            e.initCause(t);
-            throw e;
-        }
-        
-        
+        logger.warn("IndexTaskProcessorJob [" + this + "] interrupted, shutting down processor [" + processor + "]");
+        interruptCurrent();
     }
     
     /**
