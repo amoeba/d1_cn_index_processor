@@ -141,7 +141,7 @@ public class IndexTaskProcessorScheduler {
                 logger.warn("Job scheduler [" + this + "] finished executing all jobs. The d1-index-processor shut down sucessfully.============================================");
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            logger.error("There was an issue to shut down d1-index-processor "+e.getMessage(), e);
         }
     }
 }
