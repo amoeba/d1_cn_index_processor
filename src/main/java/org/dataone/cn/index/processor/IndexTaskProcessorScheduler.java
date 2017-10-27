@@ -137,8 +137,8 @@ public class IndexTaskProcessorScheduler {
                         logger.warn("Sleep interrupted while waiting for executing jobs to finish. check again!");
                     }
                 }
-                logger.warn("Job scheduler [" + this + "] finished executing all jobs. The d1-index-processor shut down sucessfully.======");
                 scheduler.deleteJob(jobKey(QUARTZ_PROCESSOR_JOB, QUARTZ_PROCESSOR_GROUP));
+                logger.warn("Job scheduler [" + this + "] finished executing all jobs. The d1-index-processor shut down sucessfully.============================================");
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
