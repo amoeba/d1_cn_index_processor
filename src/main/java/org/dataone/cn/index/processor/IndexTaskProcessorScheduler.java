@@ -110,6 +110,7 @@ public class IndexTaskProcessorScheduler {
                 if(!success) {
                     logger.info("Scheuler.interrupt method can't succeed to interrupt the d1 index job and the static method IndexTaskProcessorJob.interruptCurrent() will be called.");
                     IndexTaskProcessorJob.interruptCurrent();
+                    logger.info("The scheuler.interrupt method seems not interrupt the d1 index job and the static method IndexTaskProcessorJob.interruptCurrent() was called.");
                 }
                 
                 // wait for concurrently executing Jobs to finish
