@@ -106,15 +106,9 @@ public class IndexTaskProcessorScheduler {
                                       // keeping backlogged triggers from executing
                 
                 //interrupt the IndexTaskProcessorJob
-                //scheduler.interrupt(jobKey(QUARTZ_PROCESSOR_JOB, QUARTZ_PROCESSOR_GROUP));
-                JobDetail indexProcessorJobDetail =scheduler.getJobDetail(JobKey.jobKey(QUARTZ_PROCESSOR_JOB, QUARTZ_PROCESSOR_GROUP));
-                Class jobClass = indexProcessorJobDetail.getJobClass();
-                if(jobClass.isInstance(jobClass)) {
-                    logger.info("The jobClass is an object of the IndexProcessorJob class. The class method interrupt will be called.");
-                    IndexTaskProcessorJob indexTaskProcessJob = IndexTaskProcessorJob.class.cast(jobClass);
-                    indexTaskProcessJob.interrupt();
-                } else {
-                    logger.info("The jobClass is NOT an object of the IndexProcessorJob class. The static method interruptCurrent will be called.");
+                boolean success = scheduler.interrupt(jobKey(QUARTZ_PROCESSOR_JOB, QUARTZ_PROCESSOR_GROUP));
+                if(!success)
+                    logger.info("Scheuler.interrupt method can't succeed to interrupt the d1 index job and the static method IndexTaskProcessorJob.interruptCurrent() will be called.");
                     IndexTaskProcessorJob.interruptCurrent();
                 }
                 
