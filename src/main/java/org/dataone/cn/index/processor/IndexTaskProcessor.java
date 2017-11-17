@@ -971,9 +971,13 @@ public class IndexTaskProcessor {
                     // cancellable, so try to mark new
                     IndexTask t = futureMap.get(f);
                     if (t != null) {
-                        t.markNew();
-                        repo.save(t);
-                        marked++; 
+                        try {
+                            t.setStatus(IndexTask.STATUS_NEW);
+                            repo.save(t);
+                            marked++; 
+                        } catch (Exception e) {
+                            logger.warn("IndexTaskProcessor.shutdownExecutor - can't reset the status to new and save the index task for the object "+t.getPid()+ " since "+e.getMessage(), e);
+                        }
                     } else {
                         noTaskMapping++;
                     }
@@ -1001,10 +1005,14 @@ public class IndexTaskProcessor {
                         IndexTask t = futureMap.get(f);
                         if (t != null) {
                             if (IndexTask.STATUS_IN_PROCESS.equals(t.getStatus())) {
-                                t.markNew();
-                                repo.save(t);
-                                logger.warn("...active future for pid " + t.getPid() 
+                                try {
+                                    t.setStatus(IndexTask.STATUS_NEW);
+                                    repo.save(t);
+                                    logger.warn("...active future for pid " + t.getPid() 
                                         + " not done.  Resetting to NEW, to allow reprocessing next time...");
+                                } catch (Exception e) {
+                                    logger.warn("IndexTaskProcessor.shutdownExecutor - can't reset the status to new and save the index task for the object "+t.getPid()+ " since "+e.getMessage(), e);
+                                }
                             } else {
                                 logger.warn("...active future for pid " + t.getPid() + 
                                         "completed during wait period with status " + t.getStatus());
@@ -1033,7 +1041,7 @@ public class IndexTaskProcessor {
                     logger.error("....... Exception thrown trying to return task to NEW status for pid: " + t.getPid(),e);
                 }
             }
-            logger.warn("...7.) DONE with shutdown.");
+            logger.warn("............7.) DONE with shutting down IndexTaskProcessor.");
         }
     }
 }

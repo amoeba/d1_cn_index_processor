@@ -91,6 +91,8 @@ public class IndexingMessageProcessor {
         } catch (NullPointerException npe) {
             logger.error("Failed to index "+pid, npe);
             npe.printStackTrace();
+        } catch(Exception e) {
+            logger.error("Failed to index "+pid, e);
         }
         finally {}
 

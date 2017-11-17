@@ -221,7 +221,7 @@ public class SolrIndexService {
      */
     public Map<String, SolrDoc> parseTaskObject(String id, InputStream systemMetaDataStream,
             String objectPath) throws IOException, SAXException, ParserConfigurationException,
-            XPathExpressionException, EncoderException {
+            XPathExpressionException, EncoderException, Exception {
 
         
         Map<String, SolrDoc> accumulatedParsedFieldValues = new HashMap<String, SolrDoc>();
@@ -236,8 +236,7 @@ public class SolrIndexService {
                 log.debug("...subprocessor SystemMetadataProcessor invoked for " + id);
             perfLog.log(systemMetadataProcessor.getClass().getSimpleName() + ".processDocument() processing sysmeta for id "+id, System.currentTimeMillis() - sysmetaProcStart);
         } catch (Exception e) {
-            log.error("Error parsing system metadata for id: " + id + e.getMessage());
-            e.printStackTrace();
+            log.error("Error parsing system metadata for id: " + id + e.getMessage(), e);
         }
 
         if (objectPath != null) {
@@ -310,7 +309,7 @@ public class SolrIndexService {
      */
     public List<SolrDoc> processObject(String id, InputStream systemMetaDataStream,
             String objectPath) throws IOException, SAXException, ParserConfigurationException,
-            XPathExpressionException, EncoderException { 
+            XPathExpressionException, EncoderException, Exception { 
 
         long processObjStart = System.currentTimeMillis();
         
@@ -366,7 +365,7 @@ public class SolrIndexService {
      */
     public void insertIntoIndex(String id, InputStream systemMetaDataStream, String objectPath)
             throws IOException, SAXException, ParserConfigurationException,
-            XPathExpressionException, EncoderException {
+            XPathExpressionException, EncoderException, Exception {
 
         
         // get the add command for solr
@@ -380,7 +379,7 @@ public class SolrIndexService {
 
     public void insertIntoIndex(List<IndexTask> tasks) 
             throws IOException, SAXException, ParserConfigurationException,
-            XPathExpressionException, EncoderException {
+            XPathExpressionException, EncoderException, Exception {
      
         List<SolrDoc> batchAddCommands = new ArrayList<SolrDoc>();
         

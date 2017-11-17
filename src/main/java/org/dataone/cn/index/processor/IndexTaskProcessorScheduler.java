@@ -100,20 +100,19 @@ public class IndexTaskProcessorScheduler {
         try {
             
             if (scheduler.isStarted()) {
+                //jobs = scheduler.getCurrentlyExecutingJobs();
+                //logger.info("IndexTaskProcessorScheduler - before the standby the currently executing job context list is "+jobs);
                 scheduler.standby();  // this stops execution and triggering
                                       // keeping backlogged triggers from executing
                 
-                // signal interrupt to the executing jobs
-                List<JobExecutionContext> jobs = scheduler.getCurrentlyExecutingJobs();
-                if (jobs != null)
-                    for (JobExecutionContext j : jobs) {
-                        if (j.getJobInstance() instanceof InterruptableJob) {
-                            logger.warn("interrupting processing job [" + j.getJobInstance() + "] ...");
-                            ((InterruptableJob)j.getJobInstance()).interrupt();
-                        } else {
-                            logger.warn("processing job [" + j.getJobInstance() + "] not interruptable...");
-                        }
-                    }
+                //interrupt the IndexTaskProcessorJob
+                boolean success = scheduler.interrupt(jobKey(QUARTZ_PROCESSOR_JOB, QUARTZ_PROCESSOR_GROUP));
+                if(!success) {
+                    logger.info("Scheuler.interrupt method can't succeed to interrupt the d1 index job and the static method IndexTaskProcessorJob.interruptCurrent() will be called.");
+                    IndexTaskProcessorJob.interruptCurrent();
+                    logger.info("The scheuler.interrupt method seems not interrupt the d1 index job and the static method IndexTaskProcessorJob.interruptCurrent() was called.");
+                }
+                
                 // wait for concurrently executing Jobs to finish
                 while (!(scheduler.getCurrentlyExecutingJobs().isEmpty())) {
                     logger.warn(String.format("%d jobs executing,  waiting for them to complete...", 
@@ -125,11 +124,11 @@ public class IndexTaskProcessorScheduler {
                         logger.warn("Sleep interrupted while waiting for executing jobs to finish. check again!");
                     }
                 }
-                logger.warn("Job scheduler [" + this + "] finished executing all jobs.");
                 scheduler.deleteJob(jobKey(QUARTZ_PROCESSOR_JOB, QUARTZ_PROCESSOR_GROUP));
+                logger.warn("Job scheduler [" + this + "] finished executing all jobs. The d1-index-processor shut down sucessfully.============================================");
             }
-        } catch (SchedulerException e) {
-            logger.error(e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("There was an issue to shut down d1-index-processor "+e.getMessage(), e);
         }
     }
 }
