@@ -221,7 +221,7 @@ public class SolrIndexService {
      */
     public Map<String, SolrDoc> parseTaskObject(String id, InputStream systemMetaDataStream,
             String objectPath) throws IOException, SAXException, ParserConfigurationException,
-            XPathExpressionException, EncoderException, Exception {
+            XPathExpressionException, EncoderException {
 
         
         Map<String, SolrDoc> accumulatedParsedFieldValues = new HashMap<String, SolrDoc>();
@@ -309,7 +309,7 @@ public class SolrIndexService {
      */
     public List<SolrDoc> processObject(String id, InputStream systemMetaDataStream,
             String objectPath) throws IOException, SAXException, ParserConfigurationException,
-            XPathExpressionException, EncoderException, Exception { 
+            XPathExpressionException, EncoderException { 
 
         long processObjStart = System.currentTimeMillis();
         
