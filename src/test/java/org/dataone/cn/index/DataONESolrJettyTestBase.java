@@ -30,6 +30,8 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.solr.SolrJettyTestBase;
 import org.apache.solr.SolrTestCaseJ4.SuppressSSL;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -41,6 +43,7 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.params.ModifiableSolrParams;
 import org.dataone.cn.indexer.SolrIndexService;
+import org.dataone.cn.indexer.parser.BaseReprocessSubprocessor;
 import org.dataone.cn.indexer.parser.ISolrField;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.service.types.v2.SystemMetadata;
@@ -64,6 +67,8 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
 
     protected ApplicationContext context;
     private SolrIndexService solrIndexService;
+    
+    protected static Log __logger = LogFactory.getLog(DataONESolrJettyTestBase.class);
 
     protected void addEmlToSolrIndex(Resource sysMetaFile) throws Exception {
         SolrIndexService indexService = solrIndexService;
@@ -87,13 +92,12 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
     protected SolrDocument assertPresentInSolrIndex(String pid) throws SolrServerException,
             IOException {
         ModifiableSolrParams solrParams = new ModifiableSolrParams();
-        solrParams.set("q", "id:" + ClientUtils.escapeQueryChars(pid));
-        solrParams.set("fl", "*");
-        QueryResponse qr = getSolrClient().query(solrParams);
-        Assert.assertFalse(qr.getResults().isEmpty());
-        SolrDocument result = qr.getResults().get(0);
+        // use a real-time get to avoid commit issues
+        SolrDocument result = getSolrClient().getById(pid);
+        Assert.assertFalse("Solr response should not be empty for id query for " + pid , result.isEmpty());
+
         String id = (String) result.getFieldValue("id");
-        Assert.assertEquals(pid, id);
+        Assert.assertEquals("Solr response should be for the pid", pid, id);
         return result;
     }
 
@@ -112,6 +116,8 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
 
     public void sendSolrDeleteAll() throws SolrServerException, IOException {
         getSolrClient().deleteByQuery("*:*");
+        __logger.info("Deleted All...");
+        
     }
 
     protected void assertNotPresentInSolrIndex(String pid) throws SolrServerException, IOException {
@@ -199,7 +205,9 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
     public void setUp() throws Exception {
         super.setUp();
         loadSpringContext();
+        __logger.info("LoadedSpringContext...");
         startJettyAndSolr();
+       
     }
 
     public void tearDown() throws Exception {
@@ -220,6 +228,9 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
             String localPath = f.getAbsolutePath();
             createJettyWithPort(localPath
                     + "/src/test/resources/org/dataone/cn/index/resources/solr5home", jconfig);
+            __logger.info("Started Jetty and Solr...");
+        } else {
+            __logger.warn("Jetty already started...");
         }
     }
 

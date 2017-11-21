@@ -38,6 +38,8 @@ import org.dataone.cn.indexer.parser.ISolrField;
 import org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.configuration.Settings;
+import org.hamcrest.collection.IsIterableContainingInAnyOrder;
+import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,14 +139,11 @@ public abstract class BaseSolrFieldXPathTest {
                 expectedValues.add(expectedForField);
             else
                 CollectionUtils.addAll(expectedValues, StringUtils.split(expectedForField, "##"));
-            
-            System.out.println("Compared fields for: " + thisFieldName);
-            System.out.println("Expected values: " + expectedValues);
-            System.out.println("Actual values:   " + actualValues);
-            System.out.println("");
-            
-            Assert.assertTrue("Comparing values for field " + thisFieldName,
-                    CollectionUtils.isEqualCollection(expectedValues, actualValues));
+           
+            Assert.assertThat("For field: " + thisFieldName, actualValues, 
+ //                   IsIterableContainingInOrder.contains(expectedValues.toArray()));
+                      IsIterableContainingInAnyOrder.containsInAnyOrder(expectedValues.toArray()));
+
         }
      
         return actualValuesByFieldName.keySet();

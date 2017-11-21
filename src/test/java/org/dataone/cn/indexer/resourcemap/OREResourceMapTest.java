@@ -52,7 +52,7 @@ import com.carrotsearch.randomizedtesting.annotations.ThreadLeakScope;
 
 @ThreadLeakScope(ThreadLeakScope.Scope.NONE)
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "test-context.xml" })
+@ContextConfiguration(locations = { "test-context-resourceMap.xml" })
 public class OREResourceMapTest {
 
     @Autowired

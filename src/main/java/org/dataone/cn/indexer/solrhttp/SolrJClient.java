@@ -89,7 +89,7 @@ public class SolrJClient implements D1IndexerSolrClient {
      * 0 value is an immediate soft commit
      * -1 value switches client behavior to add a hard commit from the client
      */
-    public int COMMIT_WITHIN_MS = 0; // for solr updates.
+    public int COMMIT_WITHIN_MS = -1; // for solr updates.
     
     public static final boolean USE_REAL_TIME_GETS = false;
 

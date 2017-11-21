@@ -55,7 +55,7 @@ import com.hazelcast.core.HazelcastInstance;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "../../index/test-context.xml"})
+@ContextConfiguration(locations = { "it-test-context.xml"})
 public class SolrJClientIT {
 
     public static final Log logger = LogFactory.getLog(SolrJClientIT.class);

@@ -214,12 +214,23 @@
     	<constructor-arg ref="httpClient" />
     </bean>
 		
-	<bean id="d1IndexerSolrClient" class="org.dataone.cn.indexer.solrhttp.SolrJClient">
-		<constructor-arg ref="httpClientFactory" />
-		<property name="solrSchemaPath" value="${solr.schema.path}" />
-		<property name="solrIndexUri" value="${solr.index.uri}" />
-	</bean>
+<!-- 	<bean id="d1IndexerSolrClient" class="org.dataone.cn.indexer.solrhttp.SolrJClient"> -->
+<!-- 		<constructor-arg ref="httpClientFactory" /> -->
+<!-- 		<property name="solrSchemaPath" value="${solr.schema.path}" /> -->
+<!-- 		<property name="solrIndexUri" value="${solr.index.uri}" /> -->
+<!-- 	</bean> -->
 	
+    <bean id="solrClient" class="org.apache.solr.client.solrj.impl.HttpSolrClient">
+        <constructor-arg type = "java.lang.String" value = "${solr.index.uri}"/>
+    </bean>
+    
+    <bean id="d1IndexerSolrClient" class="org.dataone.cn.indexer.solrhttp.SolrJClient">
+        <constructor-arg ref="solrClient" />
+        <property name="solrSchemaPath" value="${solr.schema.path}" />
+        <property name="solrIndexUri" value="${solr.index.uri}" />
+    </bean>
+    
+    
 	<bean id="mnServiceRegistrationTypeDocumentService" class="org.dataone.cn.indexer.convert.MemberNodeServiceRegistrationTypeDocumentService"/>
 	
 	<bean id="mnServiceRegistrationTypeCacheService" class="org.dataone.cn.indexer.parser.utility.MemberNodeServiceRegistrationTypeCache"/>
