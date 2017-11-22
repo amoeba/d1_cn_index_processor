@@ -38,6 +38,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.embedded.JettyConfig;
 import org.apache.solr.client.solrj.embedded.JettySolrRunner;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -96,6 +97,12 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
         SolrDocument result = getSolrClient().getById(pid);
         Assert.assertFalse("Solr response should not be empty for id query for " + pid , result.isEmpty());
 
+//        solrParams.set("q", "id:" + ClientUtils.escapeQueryChars(pid));
+//        solrParams.set("fl", "*");
+//        QueryResponse qr = getSolrClient().query(solrParams);
+//        Assert.assertFalse(qr.getResults().isEmpty());
+//        SolrDocument result = qr.getResults().get(0);
+        
         String id = (String) result.getFieldValue("id");
         Assert.assertEquals("Solr response should be for the pid", pid, id);
         return result;
@@ -115,8 +122,13 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
     }
 
     public void sendSolrDeleteAll() throws SolrServerException, IOException {
-        getSolrClient().deleteByQuery("*:*");
-        __logger.info("Deleted All...");
+        UpdateResponse response = getSolrClient().deleteByQuery("*:*");
+        getSolrClient().commit();
+        __logger.warn("Request URI: " + response.getRequestUrl());
+        __logger.warn("Response size: " + response.getResponse().size());
+        __logger.warn("First response result: " + response.getResponse().getName(0) + " = " +  response.getResponse().getVal(0).toString());
+        __logger.warn("Response status code: " + response.getStatus());
+        __logger.warn("Deleted All...");
         
     }
 

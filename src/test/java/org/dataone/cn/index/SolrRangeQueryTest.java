@@ -25,6 +25,7 @@ package org.dataone.cn.index;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrDocumentList;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.Resource;
 
@@ -34,28 +35,40 @@ import com.carrotsearch.randomizedtesting.annotations.ThreadLeakScope;
 public class SolrRangeQueryTest extends DataONESolrJettyTestBase {
 
     private Resource peggym1304Sys;
+    
+    @Before
+    public void setup() throws Exception
+    {
+        System.out.println("***** before delete *********************************");
+        sendSolrDeleteAll();
+        System.out.println("***** between **********************************");
+        loadTestResource();
+        System.out.println("***** after load *********************************");
+    }
 
     @Test
     public void testSimpleRangeQuery() throws Exception {
-        sendSolrDeleteAll();
-        loadTestResource();
+
+        System.out.println("***** simpleRangeQuery ");
+        Thread.sleep(2000L);
         SolrDocumentList sdl = findByField("westBoundCoord", "[\\-130 TO 0 ]");
         Assert.assertEquals(1, sdl.size());
     }
 
     @Test
     public void testTwoFieldRangeQuery() throws Exception {
-        sendSolrDeleteAll();
-        loadTestResource();
+        
+        System.out.println("***** two field range query ");
+        Thread.sleep(2000L);
         SolrDocumentList sdl = findByQueryString("westBoundCoord:[\\-130 TO 0] AND northBoundCoord:[0 TO 30]");
         Assert.assertEquals(1, sdl.size());
     }
 
     @Test
     public void testFourFieldRangeQuery() throws Exception {
-        sendSolrDeleteAll();
-        loadTestResource();
-
+        
+        System.out.println("***** four field range query");
+        Thread.sleep(2000L);
         SolrDocumentList sdl = findByQueryString("westBoundCoord:[\\-130 TO 0] " //
                 + "AND southBoundCoord:[0 TO 30] " //
                 + "AND eastBoundCoord:[\\-150 TO 20] " //
