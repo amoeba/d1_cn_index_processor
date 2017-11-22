@@ -77,28 +77,28 @@ public class IndexProcessingPrioritizationIT {
             Settings.getConfiguration().getString("dataone.hazelcast.systemMetadata");
 
     
-    @After
-    public void tearDown() throws Exception {
-        Hazelcast.shutdownAll();
-    }
-
-    @Before
-    public void setUpContext() throws ClientSideException, NotImplemented, ServiceFailure {
-
-        Config hzConfig = new ClasspathXmlConfig("org/dataone/configuration/hazelcast.xml");
-
-        System.out.println("Hazelcast Group Config:\n" + hzConfig.getGroupConfig());
-        System.out.print("Hazelcast Maps: ");
-        for (String mapName : hzConfig.getMapConfigs().keySet()) {
-            System.out.print(mapName + " ");
-        }
-
-        System.out.println();
-        hzMember = Hazelcast.newHazelcastInstance(hzConfig);
-//        hzMember = HazelcastClientFactory.getStorageClient();
-        System.out.println("Hazelcast member hzMember name: " + hzMember.getName());
-
-    }
+//    @After
+//    public void tearDown() throws Exception {
+//        Hazelcast.shutdownAll();
+//    }
+//
+//    @Before
+//    public void setUpContext() throws ClientSideException, NotImplemented, ServiceFailure {
+//
+//        Config hzConfig = new ClasspathXmlConfig("org/dataone/configuration/hazelcast.xml");
+//
+//        System.out.println("Hazelcast Group Config:\n" + hzConfig.getGroupConfig());
+//        System.out.print("Hazelcast Maps: ");
+//        for (String mapName : hzConfig.getMapConfigs().keySet()) {
+//            System.out.print(mapName + " ");
+//        }
+//
+//        System.out.println();
+//        hzMember = Hazelcast.newHazelcastInstance(hzConfig);
+////        hzMember = HazelcastClientFactory.getStorageClient();
+//        System.out.println("Hazelcast member hzMember name: " + hzMember.getName());
+//
+//    }
     
     
     
@@ -248,6 +248,7 @@ public class IndexProcessingPrioritizationIT {
      * @throws NotImplemented
      * @throws InterruptedException
      */
+    @Ignore
     @Test
     public void consumerContainerSetup_IT() throws ServiceFailure, InvalidRequest, InvalidToken, NotAuthorized, NotImplemented, InterruptedException {
   
