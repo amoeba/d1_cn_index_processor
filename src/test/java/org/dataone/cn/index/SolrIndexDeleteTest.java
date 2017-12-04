@@ -172,7 +172,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
      * 
      * @throws Exception
      */
-    @Ignore
+//    @Ignore
     @Test
     public void testArchiveScienceMetadataInPackage() throws Exception {
         System.out.println("++++++++++++++++++++++++++ start of testArchiveScienceMetadataInPackage");

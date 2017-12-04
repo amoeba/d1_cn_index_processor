@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrDocument;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.generator.IndexTaskGenerator;
@@ -90,7 +91,7 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
     @Test
     public void testReprocessDataPackage() throws Exception {
         // create/index data package
-        deleteAll();
+        sendSolrDeleteAll();
         indexTestDataPackage();
         //verify in index correct
         verifyTestDataPackageIndexed();
@@ -115,16 +116,16 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
         verifyDataPackageNewDataRevision();
     }
 
-    private void deleteAll() {
-        D1IndexerSolrClient httpService = (D1IndexerSolrClient) context.getBean("httpService");
-        httpService.sendSolrDelete("peggym.130.4");
-        httpService.sendSolrDelete("peggym.130.5");
-        httpService.sendSolrDelete("peggym.127.1");
-        httpService.sendSolrDelete("peggym.128.1");
-        httpService.sendSolrDelete("peggym.128.2");
-        httpService.sendSolrDelete("peggym.129.1");
-        httpService.sendSolrDelete("peggym.resourcemap.series");
-    }
+// //        sendSolrDeleteAll();
+//        D1IndexerSolrClient httpService = (D1IndexerSolrClient) context.getBean("httpService");
+//        httpService.sendSolrDelete("peggym.130.4");
+//        httpService.sendSolrDelete("peggym.130.5");
+//        httpService.sendSolrDelete("peggym.127.1");
+//        httpService.sendSolrDelete("peggym.128.1");
+//        httpService.sendSolrDelete("peggym.128.2");
+//        httpService.sendSolrDelete("peggym.129.1");
+//        httpService.sendSolrDelete("peggym.resourcemap.series");
+//    }
 
     private void indexTestDataPackage() throws Exception {
         addSystemMetadata(peggym1271Sys);
@@ -274,8 +275,15 @@ public class SolrIndexReprocessTest extends DataONESolrJettyTestBase {
         SolrDocument scienceMetadata = assertPresentInSolrIndex("peggym.130.4");
         Assert.assertEquals("peggym.130",
                 scienceMetadata.getFieldValue(SolrElementField.FIELD_SERIES_ID));
-        Assert.assertEquals(1,
-                ((List) scienceMetadata.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
+        
+        Collection<Object> resMapValues = scienceMetadata.getFieldValues(SolrElementField.FIELD_RESOURCEMAP);
+        if (resMapValues != null) {
+            Assert.assertEquals(1,
+                    ((List) scienceMetadata.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
+        } else {
+            Assert.fail("resourceMap field is null");
+        }
+        
         Assert.assertEquals("peggym.resourcemap.series",
                 ((List) scienceMetadata.getFieldValue(SolrElementField.FIELD_RESOURCEMAP)).get(0));
 
