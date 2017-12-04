@@ -58,8 +58,10 @@ import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {MockMessagingClientConfiguration.class})
+
+// Uncomment to run the integration tests.  Tests require a running rabbitMQ broker
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = {MockMessagingClientConfiguration.class})
 public class IndexProcessingPrioritizationIT {
 
 
@@ -101,7 +103,17 @@ public class IndexProcessingPrioritizationIT {
 //    }
     
     
-    
+    /**
+     * A trivial test to make sure messageListener information are available.
+     */
+    @Test
+    public void testQueueProperties() {
+        Properties props = Settings.getConfiguration().getProperties("dataone.index.queue");
+        for (Object key: props.keySet()) {
+            System.out.println(key + ": " + props.getProperty((String) key));
+            
+        }
+    } 
     
     
     
@@ -223,17 +235,7 @@ public class IndexProcessingPrioritizationIT {
 //        }
 //    }
     
-    /**
-     * A trivial test to make sure messageListener information are available.
-     */
-    @Test
-    public void testQueueProperties() {
-        Properties props = Settings.getConfiguration().getProperties("dataone.index.queue");
-        for (Object key: props.keySet()) {
-            System.out.println(key + ": " + props.getProperty((String) key));
-            
-        }
-    }
+
     
     /**
      * The most sophisticated test so far (July 20, 2017)...
