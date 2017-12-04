@@ -72,7 +72,7 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
 
     public static Log log = LogFactory.getLog(BaseReprocessSubprocessor.class);
 
-    private static boolean bypass = true;
+    private static boolean bypass = false;
     
     public BaseReprocessSubprocessor() {
     }
