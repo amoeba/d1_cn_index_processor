@@ -29,13 +29,22 @@ import org.dataone.cn.indexer.solrhttp.SolrDoc;
 public interface IDocumentDeleteSubprocessor {
 
     /**
-     * returns a map of documents that need to be processed as updates.  Entries with null values (key with null value)
-     * should be processed as a new task (reindexed)
-     * @param identifier
-     * @param docs
-     * @return
+     * This method does not delete the rereturns a map of documents that need to be processed as updates.  Entries with null values (key with null value)
+     * should be processed as a new task (reindexed).
+     * 
+     * @param identifier - id of the item to be deleted
+     * @param relatedDocMap - the map of related documents that will need to be updated as a result of the delete
+     * @return - a modified relatedDocMap that may or may not be the same instance as what was passed in as a param.
      * @throws Exception
      */
-    public Map<String, SolrDoc> processDocForDelete(String identifier, Map<String, SolrDoc> docs)
+    public Map<String, SolrDoc> processDocForDelete(String identifier, Map<String, SolrDoc> relatedDocMap)
             throws Exception;
+    
+    
+    /**
+     * A unique name for the instance of the implementing class is very helpful for clear logging
+     * when there are more than one instances of the same class of subprocessors.
+     * @return
+     */
+    public String getInstanceLabel();
 }

@@ -78,7 +78,7 @@ public class SubprocessorUtility {
     /**
      * Diff the new field values with existing ones in Solr, and return only the fields that are different
      * (to be used for atomic updates)
-     * If Solr doesn't contain a record, return the newIndexDocument
+     * If Solr doesn't contain a record, return the original newIndexDocument, with _version_ = -1 (which allows update only if still new)
      * 
      * @param newIndexDocument - the new fields to potentially add
      * @return a SolrDoc with the fields that are different

@@ -34,19 +34,26 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.dataone.cn.indexer.D1IndexerSolrClient;
+import org.dataone.cn.indexer.SolrIndexService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class BaseDocumentDeleteSubprocessor implements IDocumentDeleteSubprocessor {
 
+    private static Logger log = Logger.getLogger(BaseDocumentDeleteSubprocessor.class);
+    private String instanceLabel;
+    
     @Autowired
     private D1IndexerSolrClient d1IndexerSolrClient;
 
     @Autowired
     private String solrQueryUri;
 
+    
+    
     private String relationSourceFormatId;
     private String relationSourceField;
     private List<String> biDirectionalRelationFields;
@@ -57,23 +64,41 @@ public class BaseDocumentDeleteSubprocessor implements IDocumentDeleteSubprocess
     public BaseDocumentDeleteSubprocessor() {
     }
 
-    
-    public Map<String, SolrDoc> processDocForDelete(String identifier, Map<String, SolrDoc> docs)
+    /*
+     * (non-Javadoc)
+     * @see org.dataone.cn.indexer.parser.IDocumentDeleteSubprocessor#processDocForDelete(java.lang.String, java.util.Map)
+     */
+    public Map<String, SolrDoc> processDocForDelete(String identifier, Map<String, SolrDoc> docMap)
             throws Exception {
 
         SolrDoc indexedDoc = d1IndexerSolrClient.retrieveDocumentFromSolrServer(identifier, solrQueryUri);
         if (indexedDoc != null) {
             if (hasRelationsBySource(indexedDoc)) {
-                docs.putAll(removeBiDirectionalRelationsForDoc(identifier, indexedDoc, docs));
+                // it's an object that has related fields in it from the source object
+                docMap.putAll(removeBiDirectionalRelationsForDoc(identifier, indexedDoc, docMap));
             }
             if (isRelationshipSource(indexedDoc)) {
-                docs.putAll(removeRelationsBySourceDoc(identifier, indexedDoc, docs));
+                // it's a source object that contributes field values to other documents
+                docMap.putAll(removeRelationsBySourceDoc(identifier, indexedDoc, docMap));
             }
         }
-        return docs;
+        if (log.isDebugEnabled()) {
+            if (docMap != null) {
+                log.debug("... docs returned for [" + StringUtils.join(docMap.keySet(),", ") + "]");
+            } else {
+                log.debug("... docs returned for [null]");
+            }
+        }
+        return docMap;
     }
 
 
+    /**
+     * returns true if the indexedDoc's object format field value matches the format of the subprocessor's relationSourceFormatId field
+     * @param indexedDoc
+     * @return
+     * @throws Exception
+     */
     private boolean isRelationshipSource(SolrDoc indexedDoc) throws Exception {
         String formatId = indexedDoc.getFirstFieldValue(SolrElementField.FIELD_OBJECTFORMAT);
         return relationSourceFormatId.equals(formatId);
@@ -109,6 +134,7 @@ public class BaseDocumentDeleteSubprocessor implements IDocumentDeleteSubprocess
 
 
             if (usingAtomicUpdates) {
+                log.debug("...processing using atomic updates");
                 // build a diffDoc that instructs solr to delete these fields from the record
                 List<SolrElementField> fields = new ArrayList<>();
                 fields.add(relatedDoc.getField(SolrElementField.FIELD_ID));
@@ -133,6 +159,7 @@ public class BaseDocumentDeleteSubprocessor implements IDocumentDeleteSubprocess
 
             }
             else {
+                log.debug("...processing using non-atomic updates");
                 relatedDoc.removeAllFields(relationSourceField);
 
                 for (String relationField : getBiDirectionalRelationFields()) {
@@ -142,10 +169,12 @@ public class BaseDocumentDeleteSubprocessor implements IDocumentDeleteSubprocess
                     relatedDoc.removeAllFields(relationField);
                 }
                 docs.put(relatedDocId, relatedDoc);
+                log.debug("... ... putting doc in map " + relatedDocId);
             }
 
         }
-        // signals the caller that these other documents need to be reindexed
+        // the null value for the netry signals the caller that these other documents need to be reindexed
+        // (as per the interface)
         for (String otherRelatedDoc : otherSourceDocs) {
             if (!otherRelatedDoc.equals(relationSourceId)) {
                 docs.put(otherRelatedDoc, null);
@@ -158,30 +187,72 @@ public class BaseDocumentDeleteSubprocessor implements IDocumentDeleteSubprocess
  
 
     
-    
+    /**
+     * The prototypical situation for this method is when a solr field is defined that contains the source
+     * of other relationship statements in the solr document.  For example, the 'resourceMap' field.
+     * 
+     * @param indexedDoc - the solr document being examined
+     * @return - returns true if the subprocessor instance defines a relationSourceField value, and that field value in the indexedDoc is not null
+     * @throws XPathExpressionException
+     * @throws IOException
+     * @throws EncoderException
+     */
     private boolean hasRelationsBySource(SolrDoc indexedDoc) throws XPathExpressionException,
             IOException, EncoderException {
         String relationSourceId = indexedDoc.getFirstFieldValue(relationSourceField);
         return StringUtils.isNotEmpty(relationSourceId);
     }
-
+    
+    
+    
+    
     private Map<String, SolrDoc> removeBiDirectionalRelationsForDoc(String identifier,
-            SolrDoc indexedDoc, Map<String, SolrDoc> docs) throws Exception {
+            SolrDoc indexedDoc, Map<String, SolrDoc> docMap) throws Exception {
 
+        // related docs are those whose ids are the values of the relationship fields used in the search query
+        
         for (String relationField : getBiDirectionalRelationFields()) {
-            List<SolrDoc> inverseDocs = d1IndexerSolrClient.getDocumentsByField(solrQueryUri,
+            List<SolrDoc> relatedDocs = d1IndexerSolrClient.getDocumentsByField(solrQueryUri,
                     Collections.singletonList(identifier), relationField, true);
-            for (SolrDoc inverseDoc : inverseDocs) {
-                String inverseDocId = inverseDoc.getFirstFieldValue(SolrElementField.FIELD_ID);
-                if (docs.get(inverseDocId) != null) {
-                    inverseDoc = docs.get(inverseDocId);
+            for (SolrDoc retrievedRelatedDoc : relatedDocs) {
+                String relatedDocId = retrievedRelatedDoc.getFirstFieldValue(SolrElementField.FIELD_ID);
+                
+                // always work with the relatedDoc from the map if it exists there
+                SolrDoc chosenRelatedDoc = docMap.get(relatedDocId) != null ? docMap.get(relatedDocId) : retrievedRelatedDoc;
+
+                if (usingAtomicUpdates) {
+                    log.debug("...processing using atomic updates");
+                    
+                    // build a diffDoc that instructs solr to delete these fields from the record
+                    List<SolrElementField> fields = new ArrayList<>();
+ 
+                    // 1. make sure we have the id field               
+                    fields.add(chosenRelatedDoc.getField(SolrElementField.FIELD_ID));
+                    
+                    
+                    // 2. remove the identifier from the related field if it's there
+                    SolrElementField sef = new SolrElementField(relationField, identifier);
+                    sef.setModifier(SolrElementField.Modifier.REMOVE);
+                    fields.add(sef);
+                    
+                    
+                    SolrDoc sd = new SolrDoc();
+                    sd.setFieldList(fields);
+                    docMap.put(relatedDocId, sd);
+                    log.debug("... ... putting doc in map " + relatedDocId);
+                    
+                } else {
+                    log.debug("...processing using non-atomic updates");
+                    
+                    
+                    chosenRelatedDoc.removeFieldsWithValue(relationField, identifier);
+                    docMap.put(relatedDocId, chosenRelatedDoc);
+                    log.debug("... ... putting doc in map " + relatedDocId);
                 }
-                inverseDoc.removeFieldsWithValue(relationField, identifier);
-                docs.put(inverseDocId, inverseDoc);
             }
 
         }
-        return docs;
+        return docMap;
     }
     
     
@@ -223,5 +294,14 @@ public class BaseDocumentDeleteSubprocessor implements IDocumentDeleteSubprocess
 
     public void setUniDirectionalRelationFields(List<String> uniDirectionalRelationFields) {
         this.uniDirectionalRelationFields = uniDirectionalRelationFields;
+    }
+
+    public void setInstanceLabel(String instanceLabel) {
+        this.instanceLabel = instanceLabel;
+    }
+    
+    @Override
+    public String getInstanceLabel() {
+        return instanceLabel;
     }
 }

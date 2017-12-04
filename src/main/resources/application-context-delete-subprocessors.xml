@@ -22,6 +22,7 @@
 		</property>	
 		<property name="relationSourceFormatId" value="http://www.openarchives.org/ore/terms"></property>
 		<property name="relationSourceField" value="resourceMap"></property>
+        <property name="instanceLabel" value="resourceMapDeleteSubprocessor"></property>
 	</bean>
 	
 	<!--  for removing annotations about other documents in the index -->
@@ -34,6 +35,7 @@
 		</property>
 		<property name="relationSourceFormatId" value="http://docs.annotatorjs.org/en/v1.2.x/annotation-format.html"></property>
 		<property name="relationSourceField" value="sem_annotated_by"></property>
+        <property name="instanceLabel" value="annotationDeleteSubprocessor"></property>
 	</bean>
  
  </beans>

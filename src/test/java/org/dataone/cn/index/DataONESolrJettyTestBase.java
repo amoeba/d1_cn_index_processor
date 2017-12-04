@@ -104,7 +104,7 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
 //        SolrDocument result = qr.getResults().get(0);
         
         String id = (String) result.getFieldValue("id");
-        Assert.assertEquals("Solr response should be for the pid", pid, id);
+        Assert.assertEquals("Solr response should have the pid in the 'id' field", pid, id);
         return result;
     }
 
@@ -136,7 +136,12 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
         ModifiableSolrParams solrParams = new ModifiableSolrParams();
         solrParams.set("q", "id:" + pid);
         QueryResponse qr = getSolrClient().query(solrParams);
-        Assert.assertTrue(qr.getResults().isEmpty());
+//        Assert.assertEquals(pid + " should return 0 results on an identity query", 0, qr.getResults().size());
+        if (qr.getResults().size() > 0) {
+            SolrDocument sd = qr.getResults().get(0);
+            Assert.assertNull("a fully formed record for the identifier " + pid + " should not be retrievable", sd.getFieldValue("dateUploaded"));
+//            Assert.assertEquals(pid + " should not be retrievable from the index.", null, StringUtils.join(sd.keySet(),", "));
+        }
     }
 
     protected SolrDocumentList getAllSolrDocuments() throws SolrServerException, IOException {

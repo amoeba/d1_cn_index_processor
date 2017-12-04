@@ -72,6 +72,8 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
 
     public static Log log = LogFactory.getLog(BaseReprocessSubprocessor.class);
 
+    private static boolean bypass = true;
+    
     public BaseReprocessSubprocessor() {
     }
 
@@ -79,14 +81,20 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
     /**
      * If the item has a seriesId, and is not the only one, create IndexTasks for
      * the others in the series, so they ick up the relationship fields, too.
+     * @throws EncoderException 
+     * @throws IOException 
+     * @throws XPathExpressionException 
      * 
      */
     @Override
     public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs,
-            InputStream is) throws Exception {
+            InputStream is) throws XPathExpressionException, IOException, EncoderException { //throws Exception {
 
         
         ////////     do nothing if can't find the systemMetadata or it has no seriesId
+     
+        if (bypass)
+            return docs;
         
         long getSysMetaStart = System.currentTimeMillis();
         
@@ -177,8 +185,14 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
         perfLog.log("BaseReprocessSubprocessor.processDocument() reprocessing all docs earlier in sid chain for id "+identifier, System.currentTimeMillis() - getIdsInSeriesStart);
 
         return docs;
+        
     }
 
+    
+    /**
+     * returns true if formatId is in the matchDocuments list
+     * OR if the matchDocuments list is null and the formatId is not that of type 'RESOURCE'
+     */
     @Override
     public boolean canProcess(String formatId) {
         // if we are given match formats, use them
@@ -187,20 +201,21 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
         }
 
         // otherwise just make sure it's not a RESOURCE type
-        ObjectFormatIdentifier ofi = new ObjectFormatIdentifier();
-        ofi.setValue(formatId);
-        ObjectFormat objectFormat = null;
-        try {
-            objectFormat = ObjectFormatCache.getInstance().getFormat(ofi);
-        } catch (BaseException e) {
-            e.printStackTrace();
-        }
-        if (objectFormat != null) {
-            return !objectFormat.getFormatType().equalsIgnoreCase("RESOURCE");
-        }
 
-        // no real harm processing again
-        return true;
+        try {
+            ObjectFormat objectFormat = ObjectFormatCache.getInstance().getFormat(TypeFactory.buildFormatIdentifier(formatId));
+            if (objectFormat != null) {
+                return !objectFormat.getFormatType().equalsIgnoreCase("RESOURCE");
+            } 
+            else  {
+                // no real harm processing again
+                return true;
+            }
+        } catch (BaseException e) {
+            log.warn("No format found in ObjectFormatCache for format '" + formatId + "'",e);
+            return true;
+        }
+        
     }
 
     @Override

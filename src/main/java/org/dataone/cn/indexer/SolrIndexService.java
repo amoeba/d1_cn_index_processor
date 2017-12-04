@@ -113,7 +113,10 @@ public class SolrIndexService {
         Map<String, SolrDoc> docs = new HashMap<String, SolrDoc>();
 
         for (IDocumentDeleteSubprocessor deleteSubprocessor : getDeleteSubprocessors()) {
-            log.debug("... invoking processDocForDelete for identifier " + identifier + "[" + deleteSubprocessor.getClass().getSimpleName() + "]");
+            if (log.isDebugEnabled()) {
+                log.debug("... invoking processDocForDelete for identifier " + identifier + "[" + deleteSubprocessor.getClass().getSimpleName() + "/"
+                        + deleteSubprocessor.getInstanceLabel() + "]");
+            }
             docs.putAll(deleteSubprocessor.processDocForDelete(identifier, docs));
         }
         List<SolrDoc> docsToUpdate = new ArrayList<SolrDoc>();
@@ -121,9 +124,11 @@ public class SolrIndexService {
         for (String idToUpdate : docs.keySet()) {
             if (docs.get(idToUpdate) != null) {
                 docsToUpdate.add(docs.get(idToUpdate));
+                log.debug("...updating doc with id " + idToUpdate);
             } else {
                 // update via reindex, as per IDocumentDeleteSubprocessor
                 idsToIndex.add(idToUpdate);
+                
             }
         }
 
@@ -139,7 +144,9 @@ public class SolrIndexService {
                 String objectPath = HazelcastClientFactory.getObjectPathMap().get(pid);
                 ByteArrayOutputStream os = new ByteArrayOutputStream();
                 TypeMarshaller.marshalTypeToOutputStream(sysMeta, os);
+                
                 insertIntoIndex(idToIndex, new ByteArrayInputStream(os.toByteArray()), objectPath);
+                log.debug("...reindexing doc with id " + idToIndex);
             }
         }
     }

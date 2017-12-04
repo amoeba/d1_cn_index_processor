@@ -198,6 +198,14 @@ public class SolrDoc {
         fieldList.removeAll(fieldsToRemove);
     }
 
+    /**
+     * removes the SolrElementField matching the name and value parameters from the SolrDoc.  Note that
+     * multivalued fields are represented as multiple SolrElementFields, so this operation effectively
+     * removes only the one item from the list of values when transcribed into a SolrDocument via update. 
+     * 
+     * @param name
+     * @param value
+     */
     public void removeFieldsWithValue(String name, String value) {
         List<SolrElementField> fieldsToRemove = new ArrayList<SolrElementField>();
         for (SolrElementField field : fieldList) {

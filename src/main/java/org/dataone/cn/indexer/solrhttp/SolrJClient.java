@@ -481,7 +481,7 @@ public class SolrJClient implements D1IndexerSolrClient {
     {
         String solrQ = sb.toString();// ClientUtils.escapeQueryChars(sb.toString());
         
-        log.info(solrQ);
+        log.info("Query string: " + solrQ);
         if (log.isTraceEnabled()) {
             log.trace(this);
             log.trace(Thread.currentThread().getStackTrace()[3].getMethodName());
