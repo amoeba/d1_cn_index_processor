@@ -188,22 +188,26 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
                 // queue a delete processing of all versions in the SID chain
                 SystemMetadata sysmeta = HazelcastClientFactory.getSystemMetadataMap().get(
                         pidToProcess);
-                String objectPath = HazelcastClientFactory.getObjectPathMap().get(pidToProcess);
-                logger.debug("Removing pidToProcess===" + pidToProcess.getValue());
-                logger.debug("Removing objectPath===" + objectPath);
+                if (sysmeta != null) {
+                    String objectPath = HazelcastClientFactory.getObjectPathMap().get(pidToProcess);
+                    logger.debug("Removing pidToProcess===" + pidToProcess.getValue());
+                    logger.debug("Removing objectPath===" + objectPath);
 
-                IndexTask task = new IndexTask(sysmeta, objectPath);
-                try {
-                    deleteProcessor.process(task);
-                } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
+                    
+                    IndexTask task = new IndexTask(sysmeta, objectPath);
+                    try {
+                        deleteProcessor.process(task);
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                    // go to the next one
+                    pidToProcess = sysmeta.getObsoletes();
                 }
-                // go to the next one
-                pidToProcess = sysmeta.getObsoletes();
+                else {
+                    pidToProcess = null;
+                }
             }
-
         }
-
     }
 
     public List<String> getMatchDocuments() {
