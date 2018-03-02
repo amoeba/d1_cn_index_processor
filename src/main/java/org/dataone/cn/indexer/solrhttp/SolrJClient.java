@@ -239,7 +239,7 @@ public class SolrJClient implements D1IndexerSolrClient {
     public void sendSolrDeletes(List<String> pids) {
              
         try {
-            log.info("Deleting records in Solr with id: " + String.join(",  ",pids));
+            log.info("Deleting records in Solr with id: " + StringUtils.join(pids,", "));
             if (COMMIT_WITHIN_MS == -1) {
                 getSolrClient().deleteById(pids);
                 getSolrClient().commit();
@@ -352,7 +352,7 @@ public class SolrJClient implements D1IndexerSolrClient {
     {
         if (USE_REAL_TIME_GETS) {
             try {
-                log.info("Ids for solrId get: " + String.join(", ",ids));
+                log.info("Ids for solrId get: " + StringUtils.join(ids,", "));
                 if (log.isTraceEnabled()) {
                     log.trace(Thread.currentThread().getStackTrace()[1].getMethodName());
                     log.trace(Thread.currentThread().getStackTrace()[2].getMethodName());
