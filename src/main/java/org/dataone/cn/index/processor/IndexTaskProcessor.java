@@ -87,7 +87,8 @@ public class IndexTaskProcessor {
     private static int MAXATTEMPTS = Settings.getConfiguration().getInt("dataone.indexing.multiThreads.resourceMapWait.maxAttempt", 10);
 //    private static int FUTUREQUEUESIZE = Settings.getConfiguration().getInt("dataone.indexing.multiThreads.futureQueueSize", 100);
     private static ExecutorService executor = Executors.newFixedThreadPool(NUMOFPROCESSOR);
-    private static final Lock lock = new ReentrantLock();
+
+    private static final Lock LOCK = new ReentrantLock();
     
     /* a map used to aid in quick executor shutdown */
     private static Map<Future<Void>, IndexTask> futureMap = new HashMap<>();
@@ -258,6 +259,7 @@ public class IndexTaskProcessor {
      */
     private void processTaskOnThread(final IndexTask task) {
         logger.info("using multiple threads to process index and the size of the thread pool is "+NUMOFPROCESSOR);
+        
         Runnable newThreadTask = new Runnable() {
             public void run() {
                 processTask(task);
@@ -271,6 +273,12 @@ public class IndexTaskProcessor {
     }
     
     private void processTask(IndexTask task) {
+        
+        if (task == null) {
+            logger.debug("sent a null task...ignoring");
+            return;
+        }
+        
         long start = System.currentTimeMillis();
         try {
             checkReadinessProcessResourceMap(task);
@@ -289,23 +297,20 @@ public class IndexTaskProcessor {
             }
         } catch (InterruptedException interruptedE) {
             logger.warn("Task Interrupted before processing started. Resetting to NEW, for pid: " + task.getPid());
-            if (task != null) {
-                task.markNew();
-                repo.save(task);
-            }
+            task.markNew();
+            repo.save(task);
+            
         } catch (Exception e) {
-            logger.error("Unable to process task for pid: " + task.getPid(), e);
-            if(task != null) {
-                repo.delete(task.getId());
-            }
+            logger.error("Unable to process task for pid: " + task.getPid(), e);            
+            repo.delete(task.getId());        
             handleFailedTask(task);
             return;
-        } finally {
+        } 
+        finally {
             removeIdsFromResourceMapReferencedSetAndSeriesIdsSet(task);
         }
-        if(task != null) {
-            repo.delete(task.getId());
-        }
+        repo.delete(task.getId());
+   
         /*if(task != null && task instanceof ResourceMapIndexTask) {
             repo.delete(task.getId());//the ReousrceMapIndexTask is not the original object. repo.delete(IndexTask) wouldn't work.
         } else {
@@ -323,10 +328,16 @@ public class IndexTaskProcessor {
      * Before we start to process a new resource map object on a thread, we need to check the set.
      */
     private void checkReadinessProcessResourceMap(IndexTask task) throws InterruptedException, Exception{
+        
+        if (task == null) return;  // should be weeded out already...
+        
         //only handle resourceMap index task
-        if(task != null && task instanceof ResourceMapIndexTask ) {
-            logger.debug("$$$$$$$$$$$$$$$$$ the index task "+task.getPid()+" is a resource map task in the the thread "+ Thread.currentThread().getId());
-            lock.lock();
+        if(task instanceof ResourceMapIndexTask ) {
+            
+            if (logger.isDebugEnabled())
+                logger.debug("$$$$$$$$$$$$$$$$$ the index task "+task.getPid()+" is a resource map task in the the thread "+ Thread.currentThread().getId());
+            
+            LOCK.lock();
             try {
                 ResourceMapIndexTask resourceMapTask = (ResourceMapIndexTask) task;
                 List<String> referencedIds = resourceMapTask.getReferencedIds();
@@ -391,7 +402,7 @@ public class IndexTaskProcessor {
             } catch (Exception e) {
                 throw e;
             } finally {
-                lock.unlock();
+                LOCK.unlock();
             }
         } else {
             if (logger.isDebugEnabled())
@@ -404,7 +415,7 @@ public class IndexTaskProcessor {
             if(smd != null) {
                 Identifier sid = smd.getSeriesId();
                 if(sid != null && sid.getValue() != null && !sid.getValue().trim().equals("")) {
-                    lock.lock();
+                    LOCK.lock();
                     try {
                         if (logger.isDebugEnabled())
                             logger.debug("xxxxxxxxxxxxxxxxxxxx the index task "+task.getPid()
@@ -433,7 +444,7 @@ public class IndexTaskProcessor {
                     } catch (Exception e) {
                         throw e;
                     } finally {
-                        lock.unlock();
+                        LOCK.unlock();
                     }
                 }
                 
@@ -550,7 +561,7 @@ public class IndexTaskProcessor {
     }*/
     
     private void batchCheckReadinessProcessResourceMap(List<IndexTask> tasks) throws Exception{
-        lock.lock();
+        LOCK.lock();
         try {
             if(tasks != null) {
                 for (IndexTask task : tasks) {
@@ -559,7 +570,7 @@ public class IndexTaskProcessor {
             }
             
         } finally {
-            lock.unlock();
+            LOCK.unlock();
         }
     }
     
