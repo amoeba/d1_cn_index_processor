@@ -634,6 +634,17 @@ public class IndexTaskProcessor {
                     while(found) {
                         found = referencedIds.remove(task.getPid());
                     }
+                    
+                    // if the resourceMap uses its SeriesId for the references, we need to remove it as well for this check.
+                    // otherwise, it will never index.
+                    SystemMetadata resMapSMD =  HazelcastClientFactory.getSystemMetadataMap().get(TypeFactory.buildIdentifier(task.getPid()));
+                    if (resMapSMD.getSeriesId() != null) {
+                    	found = referencedIds.remove(resMapSMD.getSeriesId().getValue());
+                    	while(found) {
+                    		found = referencedIds.remove(resMapSMD.getSeriesId().getValue()); 
+                    	}
+                    }
+                    
 
                     if (areAllReferencedDocsIndexed(referencedIds) == false) {
                         logger.info("****************Not all map resource references indexed for map: " + task.getPid()
@@ -741,14 +752,12 @@ public class IndexTaskProcessor {
                     }
                 }
                 if (foundId == false) {
-                    Identifier pid = new Identifier();
-                    pid.setValue(id);
                     logger.info("Identifier " + id
                             + " was not found in the referenced id list in the Solr search index.");
-                    SystemMetadata smd = HazelcastClientFactory.getSystemMetadataMap().get(pid);
+                    SystemMetadata smd = HazelcastClientFactory.getSystemMetadataMap().get(TypeFactory.buildIdentifier(id));
                     if (smd != null && notVisibleInIndex(smd)) {
                         numberOfIndexedOrRemovedReferences++;
-                    }
+                    } 
                 }
             }
         } catch (Exception e) {
