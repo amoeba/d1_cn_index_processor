@@ -313,7 +313,8 @@ public class IndexTaskProcessor {
         }*/
         
         logger.info("Indexing complete for pid: " + task.getPid());
-        perfLog.log("IndexTaskProcessor.processTasks process pid "+task.getPid(), System.currentTimeMillis()-start);
+        if (perfLog.isLogEnabled())
+        	perfLog.log("IndexTaskProcessor.processTasks process pid "+task.getPid(), System.currentTimeMillis()-start);
     }
     
     /*
@@ -324,10 +325,14 @@ public class IndexTaskProcessor {
      */
     private void checkReadinessProcessResourceMap(IndexTask task) throws InterruptedException, Exception{
         //only handle resourceMap index task
-        if(task != null && task instanceof ResourceMapIndexTask ) {
+        long startTiming = System.currentTimeMillis();
+    	if(task != null && task instanceof ResourceMapIndexTask ) {
             logger.debug("$$$$$$$$$$$$$$$$$ the index task "+task.getPid()+" is a resource map task in the the thread "+ Thread.currentThread().getId());
             lock.lock();
             try {
+            	if (perfLog.isLogEnabled())
+            		perfLog.log("IndexTaskProcessor.checkReadiness/resMap/lock "+task.getPid(), System.currentTimeMillis()-startTiming);
+            
                 ResourceMapIndexTask resourceMapTask = (ResourceMapIndexTask) task;
                 List<String> referencedIds = resourceMapTask.getReferencedIds();
                 if(referencedIds != null) {
@@ -392,6 +397,8 @@ public class IndexTaskProcessor {
                 throw e;
             } finally {
                 lock.unlock();
+                if (perfLog.isLogEnabled())
+                	perfLog.log("IndexTaskProcessor.checkReadiness/resMap process pid "+task.getPid(), System.currentTimeMillis()-startTiming);
             }
         } else {
             if (logger.isDebugEnabled())
@@ -404,8 +411,11 @@ public class IndexTaskProcessor {
             if(smd != null) {
                 Identifier sid = smd.getSeriesId();
                 if(sid != null && sid.getValue() != null && !sid.getValue().trim().equals("")) {
-                    lock.lock();
+                    long lockStart = System.currentTimeMillis();
+                	lock.lock();               	      
                     try {
+                    	if (perfLog.isLogEnabled()) 
+                    		perfLog.log("IndexTaskProcessor.checkReadiness/other/lock "+task.getPid(), System.currentTimeMillis()-lockStart);
                         if (logger.isDebugEnabled())
                             logger.debug("xxxxxxxxxxxxxxxxxxxx the index task "+task.getPid()
                                     +" has a sid "+sid.getValue()+" in the the thread "+ Thread.currentThread().getId());
@@ -431,14 +441,16 @@ public class IndexTaskProcessor {
                             throw new Exception(message);
                         }
                     } catch (Exception e) {
-                        throw e;
+                    	if (perfLog.isLogEnabled())
+                    		perfLog.log("IndexTaskProcessor.checkReadiness/other/execption process pid "+task.getPid(), System.currentTimeMillis()-startTiming);
+                    	throw e;  
                     } finally {
                         lock.unlock();
                     }
-                }
-                
+                }               
             }
-            
+            if (perfLog.isLogEnabled())
+            	perfLog.log("IndexTaskProcessor.checkReadiness/other process pid "+task.getPid(), System.currentTimeMillis()-startTiming);
         }
     }
     
@@ -856,7 +868,8 @@ public class IndexTaskProcessor {
     private List<IndexTask> getIndexTaskQueue() {
         long getIndexTasksStart = System.currentTimeMillis();
         List<IndexTask> indexTasks = repo.findByStatusOrderByPriorityAscTaskModifiedDateAsc(IndexTask.STATUS_NEW);
-        perfLog.log("IndexTaskProcessor.getIndexTaskQueue() fetching NEW IndexTasks from repo", System.currentTimeMillis() - getIndexTasksStart);
+        if (perfLog.isLogEnabled())
+        	perfLog.log("IndexTaskProcessor.getIndexTaskQueue() fetching NEW IndexTasks from repo", System.currentTimeMillis() - getIndexTasksStart);
         return indexTasks;
     }
 
