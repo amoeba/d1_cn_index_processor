@@ -21,7 +21,7 @@ public class HazelcastClientFactoryTest {
     private static HazelcastInstance hzMember;
     private static Logger logger = Logger.getLogger(HazelcastClientFactoryTest.class.getName());
 
-    private static void startHazelcast() {
+    static void startHazelcast() {
 
         if (hzMember == null) {
 

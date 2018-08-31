@@ -76,16 +76,16 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
         Resource scienceMetadataResource = (Resource) context.getBean("fgdc_scan_Sci");
         Document scienceMetadataDoc = XmlDocumentUtility
                 .generateXmlDocument(scienceMetadataResource.getInputStream());
-        for (ISolrField field : fgdcSubProcessor.getFieldList()) {
-            compareFields(result, scienceMetadataDoc, field, pid);
+        for (Object field : fgdcSubProcessor.getFieldList()) {
+            compareFields(result, scienceMetadataDoc, (ISolrField)field, pid);
         }
 
         // test system metadata fields in system metadata config match those
         // in solr index document
         Document systemMetadataDoc = XmlDocumentUtility.generateXmlDocument(scienceMetadataResource
                 .getInputStream());
-        for (ISolrField field : systemMetadata200Subprocessor.getFieldList()) {
-            compareFields(result, systemMetadataDoc, field, pid);
+        for (Object field : systemMetadata200Subprocessor.getFieldList()) {
+            compareFields(result, systemMetadataDoc, (ISolrField)field, pid);
         }
     }
 
@@ -111,16 +111,16 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
         Resource scienceMetadataResource = (Resource) context.getBean("peggym1304Sci");
         Document scienceMetadataDoc = XmlDocumentUtility
                 .generateXmlDocument(scienceMetadataResource.getInputStream());
-        for (ISolrField field : eml210.getFieldList()) {
-            compareFields(result, scienceMetadataDoc, field, pid);
+        for (Object field : eml210.getFieldList()) {
+            compareFields(result, scienceMetadataDoc, (ISolrField)field, pid);
         }
 
         // test system metadata fields in system metadata config match those
         // in solr index document
         Document systemMetadataDoc = XmlDocumentUtility.generateXmlDocument(systemMetadataResource
                 .getInputStream());
-        for (ISolrField field : systemMetadata200Subprocessor.getFieldList()) {
-            compareFields(result, systemMetadataDoc, field, pid);
+        for (Object field : systemMetadata200Subprocessor.getFieldList()) {
+            compareFields(result, systemMetadataDoc, (ISolrField)field, pid);
         }
     }
 
@@ -139,16 +139,16 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
         Resource scienceMetadataResource = (Resource) context.getBean("fdgc01111999SciMeta");
         Document scienceMetadataDoc = XmlDocumentUtility
                 .generateXmlDocument(scienceMetadataResource.getInputStream());
-        for (ISolrField field : fgdcSubProcessor.getFieldList()) {
-            compareFields(result, scienceMetadataDoc, field, pid);
+        for (Object field : fgdcSubProcessor.getFieldList()) {
+            compareFields(result, scienceMetadataDoc, (ISolrField)field, pid);
         }
 
         // test system metadata fields in system metadata config match those
         // in solr index document
         Document systemMetadataDoc = XmlDocumentUtility.generateXmlDocument(systemMetadataResource
                 .getInputStream());
-        for (ISolrField field : systemMetadata200Subprocessor.getFieldList()) {
-            compareFields(result, systemMetadataDoc, field, pid);
+        for (Object field : systemMetadata200Subprocessor.getFieldList()) {
+            compareFields(result, systemMetadataDoc, (ISolrField)field, pid);
         }
     }
 

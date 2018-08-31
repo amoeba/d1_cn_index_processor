@@ -133,7 +133,7 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
      * Given the starting SolrDoc for the resourcemap (from upstream processors), and parsed XML,
      * get all the members,  
      */
-    private List<SolrDoc> processResourceMap(SolrDoc indexDocument, InputStream resourceMapStream)
+     protected List<SolrDoc> processResourceMap(SolrDoc indexDocument, InputStream resourceMapStream)
             throws OREParserException, XPathExpressionException, IOException, EncoderException {
 
         long buildResMapStart = System.currentTimeMillis();

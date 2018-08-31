@@ -93,26 +93,32 @@ public class SubprocessorUtility {
         logger.debug("...  new doc has " + newIndexDocument.getFieldList().size() + " fields to diff...");
         SolrDoc solrDocFromSolr = 
                 d1IndexerSolrClient.retrieveDocumentFromSolrServer(newIndexDocument.getIdentifier(), solrQueryUri);
-       
+ 
+        return diffWithIndexedDocument(newIndexDocument, solrDocFromSolr);
+    } 
+    
+    
         
-        if (solrDocFromSolr != null) 
+    public SolrDoc diffWithIndexedDocument(SolrDoc newIndexDocument, SolrDoc oldIndexDocument) {    
+        
+        if (oldIndexDocument != null) 
         { 
             logger.debug("found existing doc to diff for pid: " + newIndexDocument.getIdentifier());
            
             SolrDoc diffDoc = new SolrDoc(); 
             for (SolrElementField field : newIndexDocument.getFieldList()) 
             {   
-                if (field.getName().equals("id") || !solrDocFromSolr.hasFieldWithValue(field.getName(), field.getValue()))
+                if (field.getName().equals("id") || !oldIndexDocument.hasFieldWithValue(field.getName(), field.getValue()))
                 {
                     diffDoc.addField(field);
                     
                     logger.debug("diffing field: " + field.getName() + " with value: " + field.getValue());
                 }
             }
-            if (solrDocFromSolr.getField("_version_") != null) {
+            if (oldIndexDocument.getField("_version_") != null) {
                 SolrElementField versionField = new SolrElementField();
                 versionField.setName("_version_");
-                versionField.setValue(solrDocFromSolr.getFirstFieldValue(("_version_")));
+                versionField.setValue(oldIndexDocument.getFirstFieldValue(("_version_")));
                 diffDoc.addField(versionField);
             }
             logger.debug("...  diff doc has " + diffDoc.getFieldList().size() + " remaining fields");

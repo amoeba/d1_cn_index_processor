@@ -8,11 +8,13 @@ import java.nio.file.attribute.FileAttribute;
 import java.util.Hashtable;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.tdb.TDBFactory;
 import org.apache.log4j.Logger;
 import org.dataone.configuration.Settings;
 
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.tdb.TDBFactory;
+//import com.hp.hpl.jena.query.Dataset;
+//import com.hp.hpl.jena.tdb.TDBFactory;
 
 public class TripleStoreService {
     private static Logger log = Logger.getLogger(TripleStoreService.class);

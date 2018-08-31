@@ -72,16 +72,16 @@ public class SolrIndexAnnotatorTest extends DataONESolrJettyTestBase {
         Resource scienceMetadataResource = (Resource) context.getBean("peggym1304Sci");
         Document scienceMetadataDoc = XmlDocumentUtility
                 .generateXmlDocument(scienceMetadataResource.getInputStream());
-        for (ISolrField field : eml210.getFieldList()) {
-            compareFields(result, scienceMetadataDoc, field, pid);
+        for (Object field : eml210.getFieldList()) {
+            compareFields(result, scienceMetadataDoc, (ISolrField) field, pid);
         }
 
         // test system metadata fields in system metadata config match those
         // in solr index document
         Document systemMetadataDoc = XmlDocumentUtility.generateXmlDocument(systemMetadataResource
                 .getInputStream());
-        for (ISolrField field : systemMetadata200Subprocessor.getFieldList()) {
-            compareFields(result, systemMetadataDoc, field, pid);
+        for (Object field : systemMetadata200Subprocessor.getFieldList()) {
+            compareFields(result, systemMetadataDoc, (ISolrField) field, pid);
         }
 
         //test the annotator fields
@@ -112,8 +112,8 @@ public class SolrIndexAnnotatorTest extends DataONESolrJettyTestBase {
         assertTrue("sem_annotation should have multiple values", !annotationValues.isEmpty());
 
         // check the fields in the science metadata again to make sure we did not overwrite them
-        for (ISolrField field : eml210.getFieldList()) {
-            compareFields(result, scienceMetadataDoc, field, pid);
+        for (Object field : eml210.getFieldList()) {
+            compareFields(result, scienceMetadataDoc, (ISolrField)field, pid);
         }
 
     }

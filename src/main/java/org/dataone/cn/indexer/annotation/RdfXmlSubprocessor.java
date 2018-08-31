@@ -33,6 +33,19 @@ import org.apache.commons.codec.EncoderException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.shared.PrefixMapping;
 import org.dataone.cn.index.util.PerformanceLogger;
 import org.dataone.cn.indexer.D1IndexerSolrClient;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
@@ -42,15 +55,6 @@ import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 /**
  * A solr index parser for an RDF/XML file.
@@ -166,6 +170,8 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
         log.trace(documents.toString());
     }
 
+    
+    
     private List<SolrDoc> process(SolrDoc indexDocument, InputStream is) throws Exception {
         
         // get the triplestore dataset
@@ -174,7 +180,7 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
         Dataset dataset = TripleStoreService.getInstance().getDataset();
         try {
             
-            
+
             perfLog.log("RdfXmlSubprocess.process gets a dataset from tripe store service ", System.currentTimeMillis() - start);
             
             // read the annotation
@@ -220,13 +226,13 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
                     q = ((SparqlField) field).getQuery();
                     q = q.replaceAll("\\$GRAPH_NAME", name);
                     Query query = QueryFactory.create(q);
-                    log.trace("Executing SPARQL query:\n" + query.toString());
+                    if (log.isTraceEnabled()) log.trace("Executing SPARQL query:\n" + query.toString());
                     QueryExecution qexec = QueryExecutionFactory.create(query, dataset);
                     ResultSet results = qexec.execSelect();
                     while (results.hasNext()) {
                         SolrDoc solrDoc = null;
                         QuerySolution solution = results.next();
-                        log.trace(solution.toString());
+                        if (log.isTraceEnabled()) log.trace(solution.toString());
     
                         // find the index document we are trying to augment with the annotation
                         if (solution.contains("pid")) {

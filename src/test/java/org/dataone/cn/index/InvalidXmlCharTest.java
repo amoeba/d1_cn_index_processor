@@ -119,8 +119,8 @@ public class InvalidXmlCharTest {
     private void testXMLParsing(InputStream in, String pid) throws Exception {
         Document sysMeta = XmlDocumentUtility.generateXmlDocument(in);
         System.out.println(" ");
-        for (ISolrField field : systemMetadata200Subprocessor.getFieldList()) {
-            List<SolrElementField> fields = field.getFields(sysMeta, pid);
+        for (Object field : systemMetadata200Subprocessor.getFieldList()) {
+            List<SolrElementField> fields = ((ISolrField)field).getFields(sysMeta, pid);
             if (fields.isEmpty() == false) {
                 for (SolrElementField docField : fields) {
                     System.out.println("field value: " + docField.getValue());
