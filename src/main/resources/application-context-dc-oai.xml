@@ -34,8 +34,10 @@
 	  	</property>
 	</bean>
 	
-	<!--  Put the value of the relation element into fileID  -->
-	<bean id="dc:relation" class="org.dataone.cn.indexer.parser.DublinCoreOAIRelationSolrField">
+	<!--  Put the value of the relation element into serviceEndpoint  -->
+	<bean id="dc:relation" class="org.dataone.cn.indexer.parser.SolrField">
+	    <constructor-arg name="name" value="serviceEndpoint" />
         <constructor-arg name="xpath" value="//*[local-name() = 'relation']/text()" />
+        <property name="multivalue" value="true" />
     </bean>
 </beans>
