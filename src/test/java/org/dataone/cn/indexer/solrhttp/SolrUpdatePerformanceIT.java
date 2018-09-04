@@ -117,7 +117,7 @@ public class SolrUpdatePerformanceIT {
         // of course, you will need ssh access to the host to forward to
         // for example: ssh -L 8983:localhost:8983 cn-stage-ucsb-1.test.dataone
         String solrCoreName = "search_core";
-        SolrClient sc = new HttpSolrClient("http://localhost:8983/solr/" + solrCoreName);
+        SolrClient sc = new HttpSolrClient.Builder("http://localhost:8983/solr/" + solrCoreName).build();
         D1IndexerSolrClient client = new SolrJClient(sc);
  //       client = d1IndexerSolrClient;      
         
