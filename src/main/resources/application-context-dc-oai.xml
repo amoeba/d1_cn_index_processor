@@ -12,22 +12,18 @@
 		</property>
 	  	<property name="fieldList">
 		   	<list>
-		    	<ref bean="dc.abstract" />
+		    	<ref bean="dc.description" />
+		    	<ref bean="dc.publisher" />
+		    	<ref bean="dc.date" />
+		    	<ref bean="dc.contributor" />
 		    	<ref bean="dc.author" />
 		    	<ref bean="dc.authorSurName" />
 		    	<ref bean="dc.authorSurNameSort" />
 		    	<ref bean="dc.contactOrganization" />
 		    	<ref bean="dc.investigator" />
 		    	<ref bean="dc.origin" />
-		    	<ref bean="dc.pubDate"/>
 		    	<ref bean="dc.title" />
 		    	<ref bean="dc.keywords" />
-		    	<ref bean="dc.beginDate" />
-		    	<ref bean="dc.endDate" />
-		    <!--  <ref bean="dc.datePeriod" /> -->
-		    	<ref bean="dc.site" />
-		    <!-- <ref bean="dc.boxSpatialBoundCoordinates" />
-		    	<ref bean="dc.boxSpatialGeohash" /> -->
 		    	<ref bean="dc:relation" />
 		    	<ref bean="dc.fullText" />
 		   	</list>
@@ -39,5 +35,30 @@
 	    <constructor-arg name="name" value="serviceEndpoint" />
         <constructor-arg name="xpath" value="//*[local-name() = 'relation']/text()" />
         <property name="multivalue" value="true" />
+    </bean>
+    
+    <bean id="dc.description" class="org.dataone.cn.indexer.parser.SolrField">
+        <constructor-arg name="name" value="abstract" />
+        <constructor-arg name="xpath" value="//*[local-name() = 'description'][1]/text()" />
+    </bean>
+    
+    <bean id="dc.publisher" class="org.dataone.cn.indexer.parser.SolrField">
+        <constructor-arg name="name" value="originator" />
+        <constructor-arg name="xpath" value="//*[local-name() = 'publisher']/text()" />
+        <property name="multivalue" value="true" />
+        <property name="dedupe" value="true" />
+    </bean>
+    
+    <bean id="dc.date" class="org.dataone.cn.indexer.parser.SolrField">
+        <constructor-arg name="name" value="pubDate" />
+        <constructor-arg name="xpath" value="//*[local-name() = 'date']/text()" />
+        <property name="converter" ref="dateConverter" />
+    </bean>
+    
+    <bean id="dc.contributor" class="org.dataone.cn.indexer.parser.SolrField">
+        <constructor-arg name="name" value="investigator" />
+        <constructor-arg name="xpath" value="//*[local-name() = 'contributor']/text()" />
+        <property name="multivalue" value="true" />
+        <property name="dedupe" value="true" />
     </bean>
 </beans>

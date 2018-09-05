@@ -67,16 +67,17 @@ public class SolrFieldDublinCoreOAITest extends BaseSolrFieldXPathTest {
         dcxExpected.put("investigator", "figshare admin Cary Institute (1246804)#Jen Nieves (1725067)");
         dcxExpected.put("contactOrganization", "figshare admin Cary Institute (1246804)#Jen Nieves (1725067)");
         dcxExpected.put("origin", "figshare admin Cary Institute (1246804)#Jen Nieves (1725067)");
-        dcxExpected.put("beginDate", "");
-        dcxExpected.put("endDate", "");
-        dcxExpected.put("pubDate", "");
-        dcxExpected.put("site", "");
+        dcxExpected.put("originator", "");
+        //dcxExpected.put("beginDate", "");
+        //dcxExpected.put("endDate", "");
+        dcxExpected.put("pubDate", "2018-04-19T19:54:04.000Z");
+        //dcxExpected.put("site", "");
         //dcxExpected.put("serviceCoupling", "mixed");
         //dcxExpected.put("serviceDescription", "Landing page for resource access");
         dcxExpected.put("serviceEndpoint", "https://figsh.com/articles/Chestnut_Oak_Quercus_Prinus_Response_to_Browsing_by_White_Tailed_Deer_Implications_for_Carbon_and_Nitrogen_Allocation/5853507");
         //dcxExpected.put("serviceTitle", "Resource Landing Page");
         //dcxExpected.put("serviceType", "HTTP");
-        dcxExpected.put("abstract", "");
+        dcxExpected.put("abstract", "Fileset contains data file, including dataset metadata, as well as R scripts.<br>");
         //dcxExpected.put("fileID", "https://figsh.com/articles/Chestnut_Oak_Quercus_Prinus_Response_to_Browsing_by_White_Tailed_Deer_Implications_for_Carbon_and_Nitrogen_Allocation/5853507");
         dcxExpected
                 .put("text",
