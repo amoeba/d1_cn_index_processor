@@ -51,7 +51,7 @@
     
     <bean id="dc.date" class="org.dataone.cn.indexer.parser.SolrField">
         <constructor-arg name="name" value="pubDate" />
-        <constructor-arg name="xpath" value="//*[local-name() = 'date']/text()" />
+        <constructor-arg name="xpath" value="//*[local-name() = 'date'][1]/text()" />
         <property name="converter" ref="dateConverter" />
     </bean>
     

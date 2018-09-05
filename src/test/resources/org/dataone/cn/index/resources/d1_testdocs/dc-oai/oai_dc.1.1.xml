@@ -6,7 +6,12 @@
           <dc:subject>White tailed deer</dc:subject>
           <dc:subject>chestnut oak</dc:subject>
           <dc:description>Fileset contains data file, including dataset metadata, as well as R scripts.&lt;br&gt;</dc:description>
+          <dc:publisher>e-journal</dc:publisher>
+          <dc:publisher>e-journal-2</dc:publisher>
+          <dc:contributor>John Smith</dc:contributor>
+          <dc:contributor>Mary Alex</dc:contributor>
           <dc:date>2018-04-19T19:54:04Z</dc:date>
+          <dc:date>2017-05-19T19:54:04Z</dc:date>
           <dc:type>Dataset</dc:type>
           <dc:type>Fileset</dc:type>
           <dc:identifier>10.5072/fk2.stagefigshare.5853507.v1</dc:identifier>

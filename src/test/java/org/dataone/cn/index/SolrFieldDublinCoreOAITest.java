@@ -64,10 +64,10 @@ public class SolrFieldDublinCoreOAITest extends BaseSolrFieldXPathTest {
         dcxExpected.put("author", "figshare admin Cary Institute (1246804)");
         dcxExpected.put("authorSurName", "figshare admin Cary Institute (1246804)");
         dcxExpected.put("authorSurNameSort", "figshare admin Cary Institute (1246804)");
-        dcxExpected.put("investigator", "figshare admin Cary Institute (1246804)#Jen Nieves (1725067)");
+        dcxExpected.put("investigator", "John Smith#Mary Alex#figshare admin Cary Institute (1246804)#Jen Nieves (1725067)");
         dcxExpected.put("contactOrganization", "figshare admin Cary Institute (1246804)#Jen Nieves (1725067)");
         dcxExpected.put("origin", "figshare admin Cary Institute (1246804)#Jen Nieves (1725067)");
-        dcxExpected.put("originator", "");
+        dcxExpected.put("originator", "e-journal#e-journal-2");
         //dcxExpected.put("beginDate", "");
         //dcxExpected.put("endDate", "");
         dcxExpected.put("pubDate", "2018-04-19T19:54:04.000Z");
@@ -81,7 +81,7 @@ public class SolrFieldDublinCoreOAITest extends BaseSolrFieldXPathTest {
         //dcxExpected.put("fileID", "https://figsh.com/articles/Chestnut_Oak_Quercus_Prinus_Response_to_Browsing_by_White_Tailed_Deer_Implications_for_Carbon_and_Nitrogen_Allocation/5853507");
         dcxExpected
                 .put("text",
-                        "Chestnut Oak (Quercus Prinus) Response to Browsing by White Tailed Deer: Implications for Carbon and Nitrogen Allocation  figshare admin Cary Institute (1246804)  Jen Nieves (1725067)  Ecology  White tailed deer  chestnut oak  Fileset contains data file, including dataset metadata, as well as R scripts.<br>  2018-04-19T19:54:04Z  Dataset  Fileset  10.5072/fk2.stagefigshare.5853507.v1  https://figsh.com/articles/Chestnut_Oak_Quercus_Prinus_Response_to_Browsing_by_White_Tailed_Deer_Implications_for_Carbon_and_Nitrogen_Allocation/5853507  CC BY oai_dc.1.1.xml");
+                        "Chestnut Oak (Quercus Prinus) Response to Browsing by White Tailed Deer: Implications for Carbon and Nitrogen Allocation  figshare admin Cary Institute (1246804)  Jen Nieves (1725067)  Ecology  White tailed deer  chestnut oak  Fileset contains data file, including dataset metadata, as well as R scripts.<br>  e-journal  e-journal-2  John Smith  Mary Alex  2018-04-19T19:54:04Z  2017-05-19T19:54:04Z  Dataset  Fileset  10.5072/fk2.stagefigshare.5853507.v1  https://figsh.com/articles/Chestnut_Oak_Quercus_Prinus_Response_to_Browsing_by_White_Tailed_Deer_Implications_for_Carbon_and_Nitrogen_Allocation/5853507  CC BY oai_dc.1.1.xml");
 
         // system metadata
         dcxExpected.put("id", "oai_dc.1.1.xml");
@@ -92,8 +92,8 @@ public class SolrFieldDublinCoreOAITest extends BaseSolrFieldXPathTest {
         dcxExpected.put("formatId", "http://www.openarchives.org/OAI/2.0/oai_dc/");
         //dcxExpected.put("formatType", "METADATA");
         dcxExpected.put("formatType", "");
-        dcxExpected.put("size", "1305");
-        dcxExpected.put("checksum", "bc397ba5610812732b5380c864fbba58");
+        dcxExpected.put("size", "1567");
+        dcxExpected.put("checksum", "f79af9b5feaed3ed6b8583fd5c3cf9bd");
         dcxExpected.put("checksumAlgorithm", "MD5");
         dcxExpected.put("submitter", "CN=urn:node:mnTestMPC,DC=dataone,DC=org");
         dcxExpected.put("rightsHolder",
