@@ -25,7 +25,6 @@ package org.dataone.cn.index.processor;
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
 import org.apache.log4j.Logger;
-import org.dataone.cn.index.messaging.IndexProcessingPipelineManager;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -41,9 +40,9 @@ public class IndexTaskProcessorDaemon implements Daemon {
         context = new ClassPathXmlApplicationContext("processor-daemon-context.xml");
         logger.info("IndexTaskProcessorDaemon.start - after creating the context." );
 
-//        scheduler = (IndexTaskProcessorScheduler) context.getBean("indexTaskProcessorScheduler");
-//        scheduler.start();
-        new IndexProcessingPipelineManager(context);
+        scheduler = (IndexTaskProcessorScheduler) context.getBean("indexTaskProcessorScheduler");
+        scheduler.start();
+
     }
 
     @Override
