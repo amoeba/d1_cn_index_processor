@@ -64,7 +64,7 @@ import org.dataone.service.types.v2.ObjectFormat;
 import org.dataone.service.types.v2.SystemMetadata;
 import org.dspace.foresite.OREParserException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.w3c.dom.Document;
 
 /**
@@ -877,7 +877,7 @@ public class IndexTaskProcessor {
         try {
             task = repo.save(task);
             logger.info("IndexTaskProcess.saveTask save the index task "+task.getPid());
-        } catch (HibernateOptimisticLockingFailureException e) {
+        } catch (ObjectOptimisticLockingFailureException e) {
             logger.error("Unable to update index task for pid: " + task.getPid() + ".");
             task = null;
         }
