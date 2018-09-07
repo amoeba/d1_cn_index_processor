@@ -59,7 +59,7 @@ public class BaseDocumentDeleteSubprocessor implements IDocumentDeleteSubprocess
     private List<String> biDirectionalRelationFields;
     private List<String> uniDirectionalRelationFields;
     
-    boolean usingAtomicUpdates = true;
+    boolean usingAtomicUpdates = false;
 
     public BaseDocumentDeleteSubprocessor() {
     }

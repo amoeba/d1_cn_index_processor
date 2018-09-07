@@ -89,7 +89,7 @@ public class SolrIndexService {
     private SubprocessorUtility processorUtility;
 
  //   @Autowired
-    private boolean usePartialUpdate = true;
+    private boolean usePartialUpdate = false;
     
     private PerformanceLogger perfLog = PerformanceLogger.getInstance();
     

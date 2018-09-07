@@ -22,7 +22,7 @@ public class SubprocessorUtility {
     @Autowired
     private String solrQueryUri = null;
     
-    private boolean usePartialUpdate = true;
+    private boolean usePartialUpdate = false;
 
     public SubprocessorUtility() {
     }
