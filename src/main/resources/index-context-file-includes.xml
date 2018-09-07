@@ -38,6 +38,7 @@
     <import resource="file:/etc/dataone/index/index-generation-context/application-context-isotc211-base.xml" />
     <import resource="file:/etc/dataone/index/index-generation-context/application-context-isotc211.xml" />
     <import resource="file:/etc/dataone/index/index-generation-context/application-context-isotc211-noaa.xml" />
+    <import resource="file:/etc/dataone/index/index-generation-context/application-context-isotc211-pangaea.xml" />
 
     <import resource="file:/etc/dataone/index/index-generation-context/application-context-prov-base.xml" />
     <import resource="file:/etc/dataone/index/index-generation-context/application-context-provone20150115.xml" />

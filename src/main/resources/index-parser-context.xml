@@ -31,6 +31,7 @@
 			 	<ref bean="annotatorSubprocessor" />
 				<ref bean="isotc211Subprocessor" />
 				<ref bean="isotc211NoaaSubprocessor" />
+        <ref bean="isotc211PangaeaSubprocessor" />
   				<ref bean="reprocessResourceMapSubprocessor" /> 
 			</list>
      	</property>
