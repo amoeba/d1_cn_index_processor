@@ -31,7 +31,7 @@
 			 	<ref bean="annotatorSubprocessor" />
 				<ref bean="isotc211Subprocessor" />
 				<ref bean="isotc211NoaaSubprocessor" />
-        <ref bean="isotc211PangaeaSubprocessor" />
+                <ref bean="isotc211PangaeaSubprocessor" />
   				<ref bean="reprocessResourceMapSubprocessor" /> 
 			</list>
      	</property>
@@ -221,12 +221,14 @@
 <!-- 		<property name="solrIndexUri" value="${solr.index.uri}" /> -->
 <!-- 	</bean> -->
 	
-    <bean id="solrClient" class="org.apache.solr.client.solrj.impl.HttpSolrClient">
+    
+    <bean id="solrClientBuilder" class="org.apache.solr.client.solrj.impl.HttpSolrClient.Builder">
         <constructor-arg type = "java.lang.String" value = "${solr.index.uri}"/>
     </bean>
     
+    
     <bean id="d1IndexerSolrClient" class="org.dataone.cn.indexer.solrhttp.SolrJClient">
-        <constructor-arg ref="solrClient" />
+        <constructor-arg ref="solrClientBuilder" />
         <property name="solrSchemaPath" value="${solr.schema.path}" />
         <property name="solrIndexUri" value="${solr.index.uri}" />
     </bean>

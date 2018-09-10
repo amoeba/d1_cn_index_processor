@@ -48,6 +48,7 @@ import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
@@ -114,6 +115,13 @@ public class SolrJClient implements D1IndexerSolrClient {
      */
     public SolrJClient(SolrClient client) {
         solrClient = client;
+    }
+    
+    /**
+     * @param SolrClient
+     */
+    public SolrJClient(HttpSolrClient.Builder clientBuilder) {
+        solrClient = clientBuilder.build();
     }
     
 

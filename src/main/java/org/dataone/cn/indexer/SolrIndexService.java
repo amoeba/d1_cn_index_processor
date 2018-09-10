@@ -67,7 +67,7 @@ import org.xml.sax.SAXException;
  * get messy.
  * 
  */
-//@Component
+
 public class SolrIndexService {
 
     private static Logger log = Logger.getLogger(SolrIndexService.class);
