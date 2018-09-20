@@ -220,6 +220,7 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
     }
 
     public void setUp() throws Exception {
+        __logger.info("Starting setUp...");
         super.setUp();
         loadSpringContext();
         __logger.info("LoadedSpringContext...");

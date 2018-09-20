@@ -110,8 +110,9 @@ public class SolrJClientIT {
     @Test
     public void parseResponse() throws XPathExpressionException, IOException, EncoderException, SolrServerException {
         
-        
-        SolrClient bareClient = new HttpSolrClient.Builder("http://localhost:8983/solr/search_core").build();
+//      builder used in HttpClient 4.5.3, needed for later SolrJ client versions (7x)
+//      SolrClient sc = new HttpSolrClient.Builder("http://localhost:8983/solr/" + solrCoreName).build();
+        SolrClient bareClient = new HttpSolrClient("http://localhost:8983/solr/searchCore");
         // this is a known object in cn-stage
         QueryResponse qr = bareClient.query(new SolrQuery("id:14651b180c80823137427714ec2168035c953f61"));
         
@@ -154,7 +155,11 @@ public class SolrJClientIT {
         // of course, you will need ssh access to the host to forward to
         // for example: ssh -L 8983:localhost:8983 cn-stage-ucsb-1.test.dataone
         String solrCoreName = "search_core";
-        SolrClient sc = new HttpSolrClient.Builder("http://localhost:8983/solr/" + solrCoreName).build();
+
+//      builder used in HttpClient 4.5.3, needed for later SolrJ client versions (7x)
+//      SolrClient sc = new HttpSolrClient.Builder("http://localhost:8983/solr/" + solrCoreName).build();
+        SolrClient sc = new HttpSolrClient("http://localhost:8983/solr/" + solrCoreName);
+        
         SolrJClient client = new SolrJClient(sc);
         client.setSolrSchemaPath(Settings.getConfiguration().getString("solr.schema.path"));
        

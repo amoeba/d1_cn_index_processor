@@ -205,33 +205,38 @@
     <!--<bean id="httpConnectionManager" class="org.apache.http.impl.conn.SingleClientConnManager"/> -->
     <bean id="httpConnectionManager" class="org.apache.http.impl.conn.PoolingClientConnectionManager"  p:defaultMaxPerRoute="12" />
     
-    
-    <bean id="httpClient" class="org.apache.http.impl.client.DefaultHttpClient">
-    	<constructor-arg ref="httpConnectionManager"/>
-    </bean>
 
     <bean id="httpClientFactory" class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory"
     	p:connectTimeout="5000" >
     	<constructor-arg ref="httpClient" />
     </bean>
 		
-<!-- 	<bean id="d1IndexerSolrClient" class="org.dataone.cn.indexer.solrhttp.SolrJClient"> -->
-<!-- 		<constructor-arg ref="httpClientFactory" /> -->
-<!-- 		<property name="solrSchemaPath" value="${solr.schema.path}" /> -->
-<!-- 		<property name="solrIndexUri" value="${solr.index.uri}" /> -->
-<!-- 	</bean> -->
-	
-    
-    <bean id="solrClientBuilder" class="org.apache.solr.client.solrj.impl.HttpSolrClient.Builder">
+     <bean id="httpClient" class="org.apache.http.impl.client.DefaultHttpClient">
+        <constructor-arg ref="httpConnectionManager"/>
+    </bean>    
+ 
+ 
+     <bean id="solrClient" class="org.apache.solr.client.solrj.impl.HttpSolrClient">
         <constructor-arg type = "java.lang.String" value = "${solr.index.uri}"/>
     </bean>
+       
+	<bean id="d1IndexerSolrClient" class="org.dataone.cn.indexer.solrhttp.SolrJClient">
+		<constructor-arg ref="solrClient" />
+		<property name="solrSchemaPath" value="${solr.schema.path}" />
+		<property name="solrIndexUri" value="${solr.index.uri}" />
+	</bean>
+	
+    
+<!--     <bean id="solrClientBuilder" class="org.apache.solr.client.solrj.impl.HttpSolrClient.Builder"> -->
+<!--         <constructor-arg type = "java.lang.String" value = "${solr.index.uri}"/> -->
+<!--     </bean> -->
     
     
-    <bean id="d1IndexerSolrClient" class="org.dataone.cn.indexer.solrhttp.SolrJClient">
-        <constructor-arg ref="solrClientBuilder" />
-        <property name="solrSchemaPath" value="${solr.schema.path}" />
-        <property name="solrIndexUri" value="${solr.index.uri}" />
-    </bean>
+<!--     <bean id="d1IndexerSolrClient" class="org.dataone.cn.indexer.solrhttp.SolrJClient"> -->
+<!--         <constructor-arg ref="solrClientBuilder" /> -->
+<!--         <property name="solrSchemaPath" value="${solr.schema.path}" /> -->
+<!--         <property name="solrIndexUri" value="${solr.index.uri}" /> -->
+<!--     </bean> -->
     
     
 	<bean id="mnServiceRegistrationTypeDocumentService" class="org.dataone.cn.indexer.convert.MemberNodeServiceRegistrationTypeDocumentService"/>

@@ -116,10 +116,11 @@ public class ResourceMapSubprocessorTest {
       
 //        HTTPService client = new HTTPService(new HttpComponentsClientHttpRequestFactory());
         
-        SolrClient client = new ConcurrentUpdateSolrClient
-                                            .Builder("http://localhost:8983/solr")
-                                            .build();
-        
+//        SolrClient client = new ConcurrentUpdateSolrClient
+//                                            .Builder("http://localhost:8983/solr")
+//                                            .build();
+        SolrClient client = new ConcurrentUpdateSolrClient("http://localhost:8983/solr",20,5);
+
         UpdateResponse resp = client.add("d1-cn-relationships", solrDocs);
         
         System.out.println(resp.toString());

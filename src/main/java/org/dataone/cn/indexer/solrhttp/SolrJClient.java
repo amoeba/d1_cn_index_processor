@@ -117,12 +117,12 @@ public class SolrJClient implements D1IndexerSolrClient {
         solrClient = client;
     }
     
-    /**
-     * @param SolrClient
-     */
-    public SolrJClient(HttpSolrClient.Builder clientBuilder) {
-        solrClient = clientBuilder.build();
-    }
+//    /**
+//     * @param SolrClient
+//     */
+//    public SolrJClient(HttpSolrClient.Builder clientBuilder) {
+//        solrClient = clientBuilder.build();
+//    }
     
 
 

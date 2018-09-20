@@ -43,7 +43,7 @@ import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.service.types.v2.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
-import org.hamcrest.collection.IsIterableContainingInOrder;
+//import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -445,9 +445,9 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         expected.add("peggym.resourcemap");
 //        @SuppressWarnings("rawtypes")
         Collection<Object> actual = data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP);
-        Assert.assertThat("should only have one resmap value", 
-                actual, 
-                IsIterableContainingInOrder.contains(expected.toArray()));
+//        Assert.assertThat("should only have one resmap value", 
+//                actual, 
+//                IsIterableContainingInOrder.contains(expected.toArray()));
         
         Assert.assertEquals(1,
                 ((List) data.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
@@ -469,10 +469,10 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         expected.add("peggym.resourcemap");
         actual = scienceMetadata.getFieldValues(SolrElementField.FIELD_RESOURCEMAP);
         System.out.println("************** metadata resmap field values: " + StringUtils.join(actual,", "));
-        Assert.assertThat("sci metadata object record should only have one resmap value", 
-                actual, 
-                IsIterableContainingInOrder.contains(expected.toArray()));
-        
+//        Assert.assertThat("sci metadata object record should only have one resmap value", 
+//                actual, 
+//                IsIterableContainingInOrder.contains(expected.toArray()));
+//        
         Assert.assertEquals(1,
                 ((List) scienceMetadata.getFieldValues(SolrElementField.FIELD_RESOURCEMAP)).size());
         Assert.assertEquals("peggym.resourcemap",
