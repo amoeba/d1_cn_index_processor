@@ -229,15 +229,26 @@
 <!--         <property name="defaultCollection" value="solr/search_core"/> -->
 <!--     </bean> -->
     
-     <bean id="solrClientBuilder" class="org.apache.solr.client.solrj.impl.HttpSolrClient.Builder">
+<!--      <bean id="solrClientBuilder" class="org.apache.solr.client.solrj.impl.HttpSolrClient.Builder"> -->
+<!--         <constructor-arg type = "java.lang.String" value = "${solr.index.uri}"/> -->
+<!--     </bean> -->
+	
+<!-- 	<bean id="d1IndexerSolrClient" class="org.dataone.cn.indexer.solrhttp.SolrJClient"> -->
+<!-- 		<constructor-arg ref="solrClientBuilder" /> -->
+<!-- 		<property name="solrSchemaPath" value="${solr.schema.path}" /> -->
+<!-- 		<property name="solrIndexUri" value="${solr.index.uri}" /> -->
+<!-- 	</bean> -->
+
+ 
+    <bean id="solrClient" class="org.apache.solr.client.solrj.impl.HttpSolrClient">
         <constructor-arg type = "java.lang.String" value = "${solr.index.uri}"/>
     </bean>
-	
-	<bean id="d1IndexerSolrClient" class="org.dataone.cn.indexer.solrhttp.SolrJClient">
-		<constructor-arg ref="solrClientBuilder" />
-		<property name="solrSchemaPath" value="${solr.schema.path}" />
-		<property name="solrIndexUri" value="${solr.index.uri}" />
-	</bean>
+       
+    <bean id="d1IndexerSolrClient" class="org.dataone.cn.indexer.solrhttp.SolrJClient">
+        <constructor-arg ref="solrClient" />
+        <property name="solrSchemaPath" value="${solr.schema.path}" />
+        <property name="solrIndexUri" value="${solr.index.uri}" />
+    </bean>
 	
 	<bean id="mnServiceRegistrationTypeDocumentService" class="org.dataone.cn.indexer.convert.MemberNodeServiceRegistrationTypeDocumentService"/>
 	
