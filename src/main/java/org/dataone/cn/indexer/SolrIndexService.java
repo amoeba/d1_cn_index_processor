@@ -86,7 +86,7 @@ public class SolrIndexService {
     private String solrQueryUri = null;
     
     @Autowired
-    private SubprocessorUtility processorUtility;
+    private SubprocessorUtility subprocessorUtility;
 
  //   @Autowired
     private boolean usePartialUpdate = false;
@@ -331,7 +331,7 @@ public class SolrIndexService {
             if (this.usePartialUpdate) {
                 log.debug("...SubprocessorUtility.diffWithIndexedDocument(...) to be invoked for " + mergeDoc.getIdentifier());
                 long before = System.currentTimeMillis();
-                mergeDoc = this.processorUtility.diffWithIndexedDocument(mergeDoc);
+                mergeDoc = this.subprocessorUtility.diffWithIndexedDocument(mergeDoc);
                 perfLog.log("Outer loop "+index+", inner loop"+innerIndex+" SolrIndexService.processObject() merging (by diff) docs for id "+id, System.currentTimeMillis() - before);
                 mergedDocs.put(mergeDoc.getIdentifier(), mergeDoc); 
             }
