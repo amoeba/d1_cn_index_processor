@@ -120,7 +120,7 @@ public class IndexTaskProcessor {
 
     private PerformanceLogger perfLog = PerformanceLogger.getInstance();
     
-    private static int maxTryCount = 10;
+    private static int maxTryCount = 8;
     
     public IndexTaskProcessor() {
     }
@@ -181,7 +181,7 @@ public class IndexTaskProcessor {
      */
     public void processIndexTaskQueue() {
         logProcessorLoad();
-        maxTryCount = Settings.getConfiguration().getInt("dataone.indexing.processing.max.tryCount", 10);
+        maxTryCount = Settings.getConfiguration().getInt("dataone.indexing.processing.max.tryCount", 8);
         List<IndexTask> queue = getIndexTaskQueue();
         IndexTask task = getNextIndexTask(queue);
         while (task != null) {
@@ -869,7 +869,7 @@ public class IndexTaskProcessor {
 
     private List<IndexTask> getIndexTaskQueue() {
         long getIndexTasksStart = System.currentTimeMillis();
-        if (logger.isDebugEnabled()) logger.info("New index tasks with less than "+maxTryCount+" try-count (resource maps sometimes will be set the status new even though the indexing failed) in the index queue will be processed.");
+        logger.info("New index tasks with less than "+maxTryCount+" try-count (resource maps sometimes will be set the status new even though the indexing failed) in the index queue will be processed.");
         //List<IndexTask> indexTasks = repo.findByStatusOrderByPriorityAscTaskModifiedDateAsc(IndexTask.STATUS_NEW);
         List<IndexTask> indexTasks = repo.findByStatusAndTryCountLessThanOrderByPriorityAscTaskModifiedDateAsc(IndexTask.STATUS_NEW, maxTryCount);
         if (perfLog.isLogEnabled())
@@ -879,7 +879,7 @@ public class IndexTaskProcessor {
 
     private List<IndexTask> getIndexTaskRetryQueue() {
         //return repo.findByStatusAndNextExecutionLessThan(IndexTask.STATUS_FAILED, System.currentTimeMillis());
-        if (logger.isDebugEnabled()) logger.info("Failed index tasks with less than "+maxTryCount+" try-count in the index queue will be processed.");
+        logger.info("Failed index tasks with less than "+maxTryCount+" try-count in the index queue will be processed.");
         return repo.findByStatusAndNextExecutionLessThanAndTryCountLessThan(IndexTask.STATUS_FAILED, System.currentTimeMillis(), maxTryCount);
     }
 
