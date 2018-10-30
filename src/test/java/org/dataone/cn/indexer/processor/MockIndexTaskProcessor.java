@@ -53,6 +53,7 @@ import org.dataone.cn.indexer.resourcemap.ResourceMap;
 import org.dataone.cn.indexer.resourcemap.ResourceMapFactory;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.configuration.Settings;
+import org.dataone.exceptions.MarshallingException;
 import org.dataone.service.exceptions.BaseException;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.ObjectFormatIdentifier;
@@ -609,8 +610,16 @@ public class MockIndexTaskProcessor {
 
             logger.info("Start of indexing pid: " + task.getPid());
 
-            if (task.isDeleteTask()) {
-                return task;
+            try {
+                if (task.isDeleteTask()) 
+                    return task;
+           
+            } catch (MarshallingException e ) {
+                task.markFailed();
+                saveTaskWithoutDuplication(task);
+                logger.error(e.getMessage(),e);
+                task = null;
+                continue;
             }
 
             if (!isObjectPathReady(task)) {
