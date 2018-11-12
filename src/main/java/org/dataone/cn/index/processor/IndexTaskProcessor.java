@@ -40,6 +40,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.collections4.queue.CircularFifoQueue;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.log4j.Logger;
 import org.dataone.client.v2.formats.ObjectFormatCache;
@@ -58,6 +60,7 @@ import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.configuration.Settings;
 import org.dataone.exceptions.MarshallingException;
 import org.dataone.service.exceptions.BaseException;
+import org.dataone.service.exceptions.NotFound;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.ObjectFormatIdentifier;
 import org.dataone.service.types.v1.TypeFactory;
@@ -796,59 +799,51 @@ public class IndexTaskProcessor {
     }
 
     /**
-     * returns true if the task is for a data object, Otherwise, verify that the 
-     * object path stored in the task, or the one in the Hazelcast object path map
-     * exists on the file system.
+     * returns true if the task is for a data object, (the CN doesn't store these).
+     * Otherwise, verify that the object path stored in the task, or the one in 
+     * the Hazelcast object path map exists on the file system.
      * Updates the task with the one from Hazelcast if the Hazelcast one is valid,
      * and the one in the task is wrong or previously not set.
 
      * @return false if a valid path cannot be found
      */
     private boolean isObjectPathReady(IndexTask task) {
-        
+
         if (isDataObject(task)) 
             return true;
 
-        boolean ready = false;
-        
-        String hzObjectPath = null;
-        if (task.getObjectPath() != null) {
-            if (new File(task.getObjectPath()).exists()) {
-                ready = true;
-            } else {
-                hzObjectPath = retrieveHzObjectPath(task.getPid());
-                if (hzObjectPath != null && new File(hzObjectPath).exists()) {
-                    task.setObjectPath(hzObjectPath);
-                    ready = true;
-                }
-            }
-        } else {
-            hzObjectPath = retrieveHzObjectPath(task.getPid());
-            if (hzObjectPath != null && new File(hzObjectPath).exists()) {
-                task.setObjectPath(hzObjectPath);
-                ready = true;
-            }
+
+        if (  !StringUtils.isBlank(task.getObjectPath())   
+                && new File(task.getObjectPath()).exists() )
+            return true;
+
+
+        String hzObjectPath = retrieveHzObjectPath(task.getPid());
+        if (hzObjectPath != null && new File(hzObjectPath).exists()) 
+        {
+            task.setObjectPath(hzObjectPath);
+            return true;
         }
-        
-        if (!ready) {
-            logger.info("Valid Object Path could not be found for pid: " + task.getPid()
-                    + "  Checked path strings in the task [" + task.getObjectPath() + 
-                    "] and Hazelcast [" + hzObjectPath + 
-                    "]");
-        }
-        
-        return ready;
+
+        // not ready if make it to here
+
+        logger.info("Valid Object Path could not be found for pid: " + task.getPid()
+                + "  Checked path strings in the task [" + task.getObjectPath() + 
+                "] and Hazelcast objectPathMap [" + hzObjectPath + 
+                "]");
+
+        return false;
     }
     
 
     private boolean isDataObject(IndexTask task) {
         ObjectFormat format = null;
         try {
-            ObjectFormatIdentifier formatId = new ObjectFormatIdentifier();
-            formatId.setValue(task.getFormatId());
-            format = ObjectFormatCache.getInstance().getFormat(formatId);
-        } catch (BaseException e) {
-            logger.error(e.getMessage(), e);
+            format = ObjectFormatCache.getInstance().getFormat(TypeFactory.buildFormatIdentifier(task.getFormatId()));
+        } catch (NotFound e) {
+            logger.warn(String.format("object format for '%s' with formatid '%s' could not be found!!",
+                    task.getPid(), 
+                    task.getFormatId()));
             return false;
         }
         return FORMAT_TYPE_DATA.equals(format.getFormatType());
@@ -977,56 +972,64 @@ public class IndexTaskProcessor {
         		"return any remaining task not yet submitted to NEW status....");
         logger.warn("...1.) closing ExecutorService to new tasks...");
         getExecutorService().shutdown();
-        logger.warn("...2.) cancelling cancellable futures...");
+        
+        // now, no tasks can be added to the ExecutorService's internal queue
+        // some tasks are active and can't be canceled, some are waiting in this
+        // internal queue and can be canceled (in theory)
+        logger.warn("...2.) canceling cancelable futures...");
         logger.warn(String.format("...number of futures: %d", futureQueue.size()));
         logger.warn("... number of tasks in futures map: " + futureMap.size());
         int marked = 0;
         int noTaskMapping = 0;
-        List<Future> uncancellable = new LinkedList<>();
-        // cycle through list of futures to see which are cancellable
+        List<Future> uncancelable = new LinkedList<>();
+        // cycle through list of futures to see which are cancelable
         if (!futureQueue.isEmpty()) {
             for (int i=futureQueue.size()-1; i > -1; i--) {
                 Future f = futureQueue.get(i);
                 if (f.cancel(/* interrupt while running? */ false)) {
-                    // cancellable, so try to mark new
+                    // cancelable, so try to mark new
                     IndexTask t = futureMap.get(f);
                     if (t != null) {
                         try {
                             t.setStatus(IndexTask.STATUS_NEW);
                             repo.save(t);
                             marked++; 
+                            logger.warn("IndexTaskProcessor.shutdownExecutor - task returned to NEW status for object " + t.getPid());
                         } catch (Exception e) {
-                            logger.warn("IndexTaskProcessor.shutdownExecutor - can't reset the status to new and save the index task for the object "+t.getPid()+ " since "+e.getMessage(), e);
+                            logger.error("IndexTaskProcessor.shutdownExecutor - task canceled for object " + t.getPid() + " but could not be returned to NEW status. Exception raised: "
+                                    + e.getClass().getCanonicalName() + ": " + e.getMessage(), e);
                         }
                     } else {
                         noTaskMapping++;
                     }
                 } else {
-                    uncancellable.add(f);
-                    // uncancellables includes completed, previously cancelled tasks, 
+                    uncancelable.add(f);
+                    // uncancelables includes completed, previously cancelled tasks, 
                     // and "others" that for some reason could not be cancelled.
-                    
                 }
             }
-            logger.warn(String.format("...number of (cancellable) runnables/tasks reset to new: %d", marked));
-            logger.warn(String.format("...number of (cancellable) runnables not mapped to tasks: %d", noTaskMapping));
-            logger.warn(String.format("...number of uncancellable runnables: %d (completed or in process)", uncancellable.size()));
+            logger.warn(String.format("...number of (cancelable) runnables/tasks reset to new: %d", marked));
+            logger.warn(String.format("...number of (cancelable) runnables not mapped to tasks: %d", noTaskMapping));
+            logger.warn(String.format("...number of uncancelable runnables: %d (completed or in process)", uncancelable.size()));
         } 
         try {
             logger.warn("...3.) waiting (with timeout) for active futures to finish...");
             // the typical time for the longest type of task is 2 minutes (for ResourceMaps)
             // so wait a little longer then give up
             getExecutorService().awaitTermination(3, TimeUnit.MINUTES);
+            
             // we should probably report on the in-process threads
             logger.warn("...4.) Reviewing remaining uncancellables to check for completion, returning incomplete ones to NEW status...");
-            if (!uncancellable.isEmpty()) {
-                for (Future f : uncancellable) {
+            if (!uncancelable.isEmpty()) {
+                for (Future f : uncancelable) {
+                    // TODO: this block is never executed because after calling f.cancel(), 
+                    // f.isDone() is always true, according to f.cancel() documentation
                     if (!f.isDone()) {
                         IndexTask t = futureMap.get(f);
                         if (t != null) {
                             if (IndexTask.STATUS_IN_PROCESS.equals(t.getStatus())) {
                                 try {
-                                    t.setStatus(IndexTask.STATUS_NEW);
+                                    t.markNew();
                                     repo.save(t);
                                     logger.warn("...active future for pid " + t.getPid() 
                                         + " not done.  Resetting to NEW, to allow reprocessing next time...");
