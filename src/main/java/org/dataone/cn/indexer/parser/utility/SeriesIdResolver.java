@@ -47,8 +47,13 @@ public class SeriesIdResolver {
         SystemMetadata fetchedSysmeta = null;
         if((nodeType == null || !nodeType.equalsIgnoreCase("cn")) && mnBaseURL != null && !mnBaseURL.trim().equals("")) {
             log.info("SeriesIdReolver.getPid - get the system metadata from the mn base url"+mnBaseURL+" for the object "+identifier.getValue());
-            MultipartMNode mnode = new MultipartMNode(new DefaultHttpMultipartRestClient(), mnBaseURL);
-            fetchedSysmeta = mnode.getSystemMetadata(null, identifier);
+            try {
+                MultipartMNode mnode = new MultipartMNode(new DefaultHttpMultipartRestClient(), mnBaseURL);
+                fetchedSysmeta = mnode.getSystemMetadata(null, identifier);
+            } catch (Exception e) {
+                log.warn("SeriesIdReolver.getPid - can't get the system metadata from the mn "+mnBaseURL+ " for the object "+pid.getValue()+
+                        " since "+e.getMessage()+". We will try to get it from cn.");
+            }
         }
         if( fetchedSysmeta == null) {
             log.info("SeriesIdReolver.getPid - get the system metadata for the object "+identifier.getValue()+" from the cn since the current node is cn or the systemmetadata is not available on a mn with baseurl "+mnBaseURL);
