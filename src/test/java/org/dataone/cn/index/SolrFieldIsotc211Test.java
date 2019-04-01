@@ -253,7 +253,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         nodc2Expected
                 .put("title",
                         "GHRSST Level 2P North Atlantic Regional Bulk Sea Surface Temperature from the Advanced Very High Resolution Radiometer (AVHRR) on the NOAA-17 satellite produced by NEODAAS (GDS version 1)");
-        nodc2Expected.put("pubDate", dateConverter.convert("2015-02-04T21:33:10"));
+        nodc2Expected.put("pubDate", dateConverter.convert("2014-10-02"));
         nodc2Expected.put("beginDate", dateConverter.convert("2008-09-02"));
         nodc2Expected.put("endDate", dateConverter.convert("2010-05-18"));
         nodc2Expected
@@ -356,7 +356,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         iarc1Expected
                 .put("title",
                         "Volume, heat and salt transport in the North-Eastern Bering Sea during 2007-2010 derived through the 4dvar data assimilation of in-situ and satellite observations");
-        iarc1Expected.put("pubDate", dateConverter.convert("2014-03-04T10:48:09"));
+        iarc1Expected.put("pubDate", dateConverter.convert("2014-02-21T10:40:00"));
         iarc1Expected.put("beginDate", dateConverter.convert("2007-01-01T10:43:00"));
         iarc1Expected.put("endDate", dateConverter.convert("2010-12-31T10:44:00"));
         iarc1Expected.put("keywords", "BEST#Bering sea#BSIERP");
@@ -438,7 +438,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         iarc2Expected
                 .put("title",
                         "National Ocean Service Aerial Photographs: Seward Peninsula Coastline - Flight Line 29");
-        iarc2Expected.put("pubDate", dateConverter.convert("2011-12-08T15:38:44"));
+        iarc2Expected.put("pubDate", dateConverter.convert("1976-07-23T00:00:00"));
         iarc2Expected.put("beginDate", dateConverter.convert("1976-07-23T00:00:00"));
         iarc2Expected.put("endDate", dateConverter.convert("1976-07-23T00:00:00"));
         iarc2Expected
@@ -637,7 +637,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         looselyCoupledServiceExpected.put("investigator", "Bob");
         looselyCoupledServiceExpected.put("abstract", "");
         looselyCoupledServiceExpected.put("title", "");
-        looselyCoupledServiceExpected.put("pubDate", dateConverter.convert("20151214-01-01T00:00:00Z"));
+        looselyCoupledServiceExpected.put("pubDate", dateConverter.convert("2007-12-29T12:00:00"));
         looselyCoupledServiceExpected.put("beginDate", "");
         looselyCoupledServiceExpected.put("endDate", "");
         looselyCoupledServiceExpected.put("keywords", "");
@@ -713,7 +713,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         distributionInfoExpected.put("abstract", "The Geostationary Operational Environmental Satellites (GOES) operated by the United States National Oceanographic and Atmospheric Administration (NOAA) support weather forecasting, severe storm tracking, meteorology and oceanography research. Generally there are several GOES satellites in geosynchronous orbit at any one time viewing different earth locations including the GOES-13 launched 24 May 2006. The radiometer aboard the satellite, The GOES N-P Imager, is a five channel (one visible, four infrared) imaging radiometer designed to sense radiant and solar reflected energy from sampled areas of the earth. The multi-element spectral channels simultaneously sweep east-west and west-east along a north-to-south path by means of a two-axis mirror scan system retuning telemetry in 10-bit precision. For this Group for High Resolution Sea Surface Temperature (GHRSST) dataset, skin sea surface temperature (SST) measurements are calculated from the far IR channels of GOES-13 at full resolution on a half hourly basis. In native satellite projection, vertically adjacent pixels are averaged and read out at every pixel. L2P datasets including Single Sensor Error Statistics (SSES) are then derived following the GHRSST Data Processing Specification (GDS) version 2.0. The full disk image is subsetted into granules representing distinct northern and southern regions.");
         distributionInfoExpected.put("title", "GHRSST Level 2P Western Atlantic Regional Skin Sea Surface Temperature from the Geostationary Operational Environmental Satellites (GOES) Imager on the GOES-13 satellite (GDS versions 1 and 2)");
         //distributionInfoExpected.put("pubDate", dateConverter.convert("2016-01-24T12:44:41.000Z"));
-        distributionInfoExpected.put("pubDate", dateConverter.convert("2016-01-24T05:44:41"));
+        distributionInfoExpected.put("pubDate", dateConverter.convert("2011-09-07"));
         //distributionInfoExpected.put("beginDate", "2010-06-21T06:00:00.000Z");
         distributionInfoExpected.put("beginDate", dateConverter.convert("2010-06-21"));
         distributionInfoExpected.put("endDate", "");
@@ -812,7 +812,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         geoserverExpected.put("abstract", "");
         geoserverExpected.put("title", "");
         //geoserverExpected.put("pubDate", dateConverter.convert("2016-02-10T20:44:24.000Z"));
-        geoserverExpected.put("pubDate", dateConverter.convert("2016-02-10T13:44:24"));
+        geoserverExpected.put("pubDate", dateConverter.convert("2007-12-29T12:00:00"));
         geoserverExpected.put("beginDate", "");
         geoserverExpected.put("endDate", "");
         geoserverExpected.put("keywords", "");
@@ -901,7 +901,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         looselyCoupledServiceSrvAndDistribExpected.put("investigator", "Bob" + "#" + "Steven Baum");
         looselyCoupledServiceSrvAndDistribExpected.put("abstract", "");
         looselyCoupledServiceSrvAndDistribExpected.put("title", "");
-        looselyCoupledServiceSrvAndDistribExpected.put("pubDate", dateConverter.convert("20151214-01-01T00:00:00Z"));
+        looselyCoupledServiceSrvAndDistribExpected.put("pubDate", dateConverter.convert("2007-12-29T12:00:00"));
         looselyCoupledServiceSrvAndDistribExpected.put("beginDate", "");
         looselyCoupledServiceSrvAndDistribExpected.put("endDate", "");
         looselyCoupledServiceSrvAndDistribExpected.put("keywords", "");
@@ -977,7 +977,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         tightlyCoupledServiceSrvOnlyExpected.put("investigator", "");
         tightlyCoupledServiceSrvOnlyExpected.put("abstract", "");
         tightlyCoupledServiceSrvOnlyExpected.put("title", "");
-        tightlyCoupledServiceSrvOnlyExpected.put("pubDate", dateConverter.convert("20151214-01-01T00:00:00Z"));
+        tightlyCoupledServiceSrvOnlyExpected.put("pubDate", dateConverter.convert("2007-12-29T12:00:00"));
         tightlyCoupledServiceSrvOnlyExpected.put("beginDate", "");
         tightlyCoupledServiceSrvOnlyExpected.put("endDate", "");
         tightlyCoupledServiceSrvOnlyExpected.put("keywords", "");
@@ -1019,7 +1019,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         noaaExpected.put("abstract", "");
         noaaExpected.put("title",
                         "DEPTH - OBSERVATION and Other Data from UNKNOWN PLATFORMS and Other Platforms from 19980101 to 19981212 (NODC Accession 9900233)");
-        noaaExpected.put("pubDate", dateConverter.convert("2014-01-23T14:00:11"));
+        noaaExpected.put("pubDate", dateConverter.convert("2010-12-19"));
         noaaExpected.put("beginDate", dateConverter.convert("1998-01-01"));
         noaaExpected.put("endDate", dateConverter.convert("1998-12-12"));
         noaaExpected.put("keywords",
