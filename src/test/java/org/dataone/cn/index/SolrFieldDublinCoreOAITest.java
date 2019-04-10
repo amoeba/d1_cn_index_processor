@@ -108,9 +108,9 @@ public class SolrFieldDublinCoreOAITest extends BaseSolrFieldXPathTest {
         dcxExpected.put("dateModified", dateConverter.convert("2014-08-28T20:55:19.034555Z"));
         dcxExpected.put("datasource", "urn:node:mnTestMPC");
         dcxExpected.put("authoritativeMN", "urn:node:mnTestMPC");
-        dcxExpected.put("replicaMN", "");
-        dcxExpected.put("replicationStatus", "");
-        dcxExpected.put("replicaVerifiedDate", "");
+        dcxExpected.put("replicaMN", "urn:node:CN");
+        dcxExpected.put("replicationStatus", "completed");
+        dcxExpected.put("replicaVerifiedDate", dateConverter.convert("2014-08-29T20:55:19.003582"));
         dcxExpected.put("readPermission", "public");
         dcxExpected.put("writePermission", "");
         dcxExpected.put("changePermission", "");

@@ -12,5 +12,10 @@
 	<dateSysMetadataModified>2014-08-28T20:55:19.034555Z</dateSysMetadataModified>
 	<originMemberNode>urn:node:mnTestMPC</originMemberNode>
 	<authoritativeMemberNode>urn:node:mnTestMPC</authoritativeMemberNode>
+	<replica>
+        <replicaMemberNode>urn:node:CN</replicaMemberNode>
+        <replicationStatus>completed</replicationStatus>
+        <replicaVerified>2014-08-29T20:55:19.003582</replicaVerified>
+    </replica>
 </ns1:systemMetadata>
 	
