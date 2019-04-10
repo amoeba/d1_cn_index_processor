@@ -91,7 +91,7 @@ public class SolrFieldDublinCoreOAITest extends BaseSolrFieldXPathTest {
         dcxExpected.put("mediaTypeProperty", "");
         dcxExpected.put("formatId", "http://www.openarchives.org/OAI/2.0/oai_dc/");
         //dcxExpected.put("formatType", "METADATA");
-        dcxExpected.put("formatType", "");
+        dcxExpected.put("formatType", "METADATA");
         dcxExpected.put("size", "1567");
         dcxExpected.put("checksum", "f79af9b5feaed3ed6b8583fd5c3cf9bd");
         dcxExpected.put("checksumAlgorithm", "MD5");
@@ -109,6 +109,7 @@ public class SolrFieldDublinCoreOAITest extends BaseSolrFieldXPathTest {
         dcxExpected.put("datasource", "urn:node:mnTestMPC");
         dcxExpected.put("authoritativeMN", "urn:node:mnTestMPC");
         dcxExpected.put("replicaMN", "");
+        dcxExpected.put("replicationStatus", "");
         dcxExpected.put("replicaVerifiedDate", "");
         dcxExpected.put("readPermission", "public");
         dcxExpected.put("writePermission", "");

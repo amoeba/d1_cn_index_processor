@@ -131,6 +131,7 @@ public class SolrFieldDublinCoreTest extends BaseSolrFieldXPathTest {
         dcxExpected.put("datasource", "urn:node:mnTestMPC");
         dcxExpected.put("authoritativeMN", "urn:node:mnTestMPC");
         dcxExpected.put("replicaMN", "");
+        dcxExpected.put("replicationStatus", "");
         dcxExpected.put("replicaVerifiedDate", "");
         dcxExpected.put("readPermission", "public");
         dcxExpected.put("writePermission", "");
@@ -205,6 +206,7 @@ public class SolrFieldDublinCoreTest extends BaseSolrFieldXPathTest {
         dc_spatial_Expected.put("datasource", "urn:node:mnTestMPC");
         dc_spatial_Expected.put("authoritativeMN", "urn:node:mnTestMPC");
         dc_spatial_Expected.put("replicaMN", "");
+        dc_spatial_Expected.put("replicationStatus", "");
         dc_spatial_Expected.put("replicaVerifiedDate", "");
         dc_spatial_Expected.put("readPermission", "public");
         dc_spatial_Expected.put("writePermission", "");

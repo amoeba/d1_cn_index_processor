@@ -168,6 +168,7 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
         eml210Expected.put("datasource", "test_documents");
         eml210Expected.put("authoritativeMN", "test_documents");
         eml210Expected.put("replicaMN", "");
+        eml210Expected.put("replicationStatus", "");
         eml210Expected.put("replicaVerifiedDate", "");
         eml210Expected.put("readPermission", "public#dataone_test_user##dataone_public_user");
         eml210Expected.put("writePermission", "dataone_integration_test_user");
@@ -329,6 +330,7 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
         emlServiceExpected.put("datasource", "test_documents");
         emlServiceExpected.put("authoritativeMN", "test_documents");
         emlServiceExpected.put("replicaMN", "");
+        emlServiceExpected.put("replicationStatus", "");
         emlServiceExpected.put("replicaVerifiedDate", "");
         emlServiceExpected.put("readPermission", "public#dataone_test_user##dataone_public_user");
         emlServiceExpected.put("writePermission", "dataone_integration_test_user");

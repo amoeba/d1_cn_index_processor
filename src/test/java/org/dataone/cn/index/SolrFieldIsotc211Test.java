@@ -219,6 +219,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         nodc1Expected.put("datasource", "urn:node:NODC");
         nodc1Expected.put("authoritativeMN", "urn:node:NODC");
         nodc1Expected.put("replicaMN", "");
+        nodc1Expected.put("replicationStatus", "");
         nodc1Expected.put("replicaVerifiedDate", "");
         nodc1Expected.put("readPermission", "public");
         nodc1Expected.put("writePermission", "");
@@ -305,6 +306,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         nodc2Expected.put("datasource", "urn:node:NODC");
         nodc2Expected.put("authoritativeMN", "urn:node:NODC");
         nodc2Expected.put("replicaMN", "");
+        nodc2Expected.put("replicationStatus", "");
         nodc2Expected.put("replicaVerifiedDate", "");
         nodc2Expected.put("readPermission", "public");
         nodc2Expected.put("writePermission", "");
@@ -407,6 +409,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         iarc1Expected.put("datasource", "urn:node:IARC");
         iarc1Expected.put("authoritativeMN", "urn:node:IARC");
         iarc1Expected.put("replicaMN", "");
+        iarc1Expected.put("replicationStatus", "");
         iarc1Expected.put("replicaVerifiedDate", "");
         iarc1Expected.put("readPermission", "public");
         iarc1Expected.put("writePermission", "");
@@ -491,6 +494,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         iarc2Expected.put("datasource", "urn:node:IARC");
         iarc2Expected.put("authoritativeMN", "urn:node:IARC");
         iarc2Expected.put("replicaMN", "");
+        iarc2Expected.put("replicationStatus", "");
         iarc2Expected.put("replicaVerifiedDate", "");
         iarc2Expected.put("readPermission", "public");
         iarc2Expected.put("writePermission", "");
@@ -534,6 +538,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         tightlyCoupledServiceExpected.put("datasource", "urn:node:mnDemo6");
         tightlyCoupledServiceExpected.put("authoritativeMN", "urn:node:mnDemo6");
         tightlyCoupledServiceExpected.put("replicaMN", "");
+        tightlyCoupledServiceExpected.put("replicationStatus", "");
         tightlyCoupledServiceExpected.put("replicaVerifiedDate", "");
         tightlyCoupledServiceExpected.put("readPermission", "public");
         tightlyCoupledServiceExpected.put("writePermission", "");
@@ -621,6 +626,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         looselyCoupledServiceExpected.put("datasource", "urn:node:mnDemo6");
         looselyCoupledServiceExpected.put("authoritativeMN", "urn:node:mnDemo6");
         looselyCoupledServiceExpected.put("replicaMN", "");
+        looselyCoupledServiceExpected.put("replicationStatus", "");
         looselyCoupledServiceExpected.put("replicaVerifiedDate", "");
         looselyCoupledServiceExpected.put("readPermission", "public");
         looselyCoupledServiceExpected.put("writePermission", "");
@@ -694,6 +700,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         distributionInfoExpected.put("datasource", "urn:node:mnDemo6");
         distributionInfoExpected.put("authoritativeMN", "urn:node:mnDemo6");
         distributionInfoExpected.put("replicaMN", "");
+        distributionInfoExpected.put("replicationStatus", "");
         distributionInfoExpected.put("replicaVerifiedDate", "");
         distributionInfoExpected.put("readPermission", "public");
         distributionInfoExpected.put("writePermission", "");
@@ -795,6 +802,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         geoserverExpected.put("datasource", "urn:node:mnDemo6");
         geoserverExpected.put("authoritativeMN", "urn:node:mnDemo6");
         geoserverExpected.put("replicaMN", "");
+        geoserverExpected.put("replicationStatus", "");
         geoserverExpected.put("replicaVerifiedDate", "");
         geoserverExpected.put("readPermission", "public");
         geoserverExpected.put("writePermission", "");
@@ -885,6 +893,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         looselyCoupledServiceSrvAndDistribExpected.put("datasource", "urn:node:mnDemo6");
         looselyCoupledServiceSrvAndDistribExpected.put("authoritativeMN", "urn:node:mnDemo6");
         looselyCoupledServiceSrvAndDistribExpected.put("replicaMN", "");
+        looselyCoupledServiceSrvAndDistribExpected.put("replicationStatus", "");
         looselyCoupledServiceSrvAndDistribExpected.put("replicaVerifiedDate", "");
         looselyCoupledServiceSrvAndDistribExpected.put("readPermission", "public");
         looselyCoupledServiceSrvAndDistribExpected.put("writePermission", "");
@@ -961,6 +970,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         tightlyCoupledServiceSrvOnlyExpected.put("datasource", "urn:node:mnDemo6");
         tightlyCoupledServiceSrvOnlyExpected.put("authoritativeMN", "urn:node:mnDemo6");
         tightlyCoupledServiceSrvOnlyExpected.put("replicaMN", "");
+        tightlyCoupledServiceSrvOnlyExpected.put("replicationStatus", "");
         tightlyCoupledServiceSrvOnlyExpected.put("replicaVerifiedDate", "");
         tightlyCoupledServiceSrvOnlyExpected.put("readPermission", "public");
         tightlyCoupledServiceSrvOnlyExpected.put("writePermission", "");
@@ -1068,6 +1078,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         noaaExpected.put("datasource", "urn:node:NODC");
         noaaExpected.put("authoritativeMN", "urn:node:NODC");
         noaaExpected.put("replicaMN", "");
+        noaaExpected.put("replicationStatus", "");
         noaaExpected.put("replicaVerifiedDate", "");
         noaaExpected.put("readPermission", "public");
         noaaExpected.put("writePermission", "");

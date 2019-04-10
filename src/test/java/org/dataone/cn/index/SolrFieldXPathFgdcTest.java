@@ -187,6 +187,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         csiroExpected.put("datasource", "test_documents");
         csiroExpected.put("authoritativeMN", "test_documents");
         csiroExpected.put("replicaMN", "");
+        csiroExpected.put("replicationStatus", "");
         csiroExpected.put("replicaVerifiedDate", "");
         csiroExpected.put("readPermission", "public");
         csiroExpected.put("writePermission",
@@ -313,6 +314,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         fgdcNasaExpected.put("datasource", "test_documents");
         fgdcNasaExpected.put("authoritativeMN", "test_documents");
         fgdcNasaExpected.put("replicaMN", "");
+        fgdcNasaExpected.put("replicationStatus", "");
         fgdcNasaExpected.put("replicaVerifiedDate", "");
         fgdcNasaExpected.put("readPermission", "public");
         fgdcNasaExpected.put("writePermission",
@@ -412,6 +414,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         esriExpected.put("datasource", "urn:node:SANPARKS");
         esriExpected.put("authoritativeMN", "urn:node:SANPARKS");
         esriExpected.put("replicaMN", "");
+        esriExpected.put("replicationStatus", "");
         esriExpected.put("replicaVerifiedDate", "");
         esriExpected.put("readPermission", "public");
         esriExpected.put("writePermission", "");
@@ -509,6 +512,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
         ornlMercuryExpected.put("datasource", "urn:node:mnEDORA");
         ornlMercuryExpected.put("authoritativeMN", "urn:node:mnEDORA");
         ornlMercuryExpected.put("replicaMN", "");
+        ornlMercuryExpected.put("replicationStatus", "");
         ornlMercuryExpected.put("replicaVerifiedDate", "");
         ornlMercuryExpected.put("readPermission", "public");
         ornlMercuryExpected.put("writePermission", "");
