@@ -35,6 +35,11 @@
         value="org/dataone/cn/indexer/resourcemap/resources/incomplete_transitive_resourcemap.rdf"/>
     </bean>
     
+    <bean id="large1000MemberResourceMap" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/indexer/resourcemap/resources/resource_map_urn_uuid_d1fd444f-10ec-42c1-a29a-1bed05648c50.xml"/>
+    </bean>
+    
     <bean id="oreResourceMapTest" class="org.dataone.cn.indexer.resourcemap.OREResourceMapTest"/>
       
 </beans>

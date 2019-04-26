@@ -171,7 +171,13 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
     }
 
     
-    
+    /**
+     * Collects solrDocs from SOLR for each of the 
+     * @param indexDocument
+     * @param is
+     * @return
+     * @throws Exception
+     */
     private List<SolrDoc> process(SolrDoc indexDocument, InputStream is) throws Exception {
         
         // get the triplestore dataset

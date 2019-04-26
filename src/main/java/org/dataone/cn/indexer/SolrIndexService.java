@@ -47,6 +47,7 @@ import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
 import org.dataone.cn.indexer.parser.SubprocessorUtility;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
+import org.dataone.configuration.Settings;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v2.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
@@ -89,7 +90,7 @@ public class SolrIndexService {
     private SubprocessorUtility subprocessorUtility;
 
  //   @Autowired
-    private boolean usePartialUpdate = false;
+    private boolean usePartialUpdate = Settings.getConfiguration().getBoolean("dataone.indexing.usePartialUpdate", false);
     
     private PerformanceLogger perfLog = PerformanceLogger.getInstance();
     

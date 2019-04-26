@@ -103,7 +103,7 @@ public class IndexTaskProcessor {
     private static Set<IndexTask> preSubmittedTasks = new HashSet<>();
     private static boolean inShutdownMode = false;
     
-    //a concurrent map to main the information about current processing resource map objects and their referenced ids
+    //a concurrent map to maintain the information about current processing resource map objects and their referenced ids
     //the key is a referenced id and value is the id of resource map.
     private static ConcurrentHashMap <String, String> referencedIdsMap = new ConcurrentHashMap<String, String>(); 
     private static ConcurrentSkipListSet<String> seriesIdsSet = new ConcurrentSkipListSet<String>();
@@ -276,7 +276,7 @@ public class IndexTaskProcessor {
         futureMap.put(future, task);
     }
     
-    private void processTask(IndexTask task) {
+    public void processTask(IndexTask task) {
         
         if (task == null) {
             logger.debug("sent a null task...ignoring");
@@ -862,7 +862,7 @@ public class IndexTaskProcessor {
         return path;
     }
 
-    private List<IndexTask> getIndexTaskQueue() {
+    public List<IndexTask> getIndexTaskQueue() {
         long getIndexTasksStart = System.currentTimeMillis();
         List<IndexTask> indexTasks = repo.findByStatusOrderByPriorityAscTaskModifiedDateAsc(IndexTask.STATUS_NEW);
         perfLog.log("IndexTaskProcessor.getIndexTaskQueue() fetching NEW IndexTasks from repo", System.currentTimeMillis() - getIndexTasksStart);

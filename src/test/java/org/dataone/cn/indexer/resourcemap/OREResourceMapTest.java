@@ -69,7 +69,32 @@ public class OREResourceMapTest {
 
     @Autowired
     private Resource incompleteTransitiveRelationshipsDoc;
+    
+    @Autowired
+    private Resource large1000MemberResourceMap;
 
+    
+    @Test
+    public void testLarge1000MemberResourceMapParseTiming() throws OREParserException, IOException {
+        
+        long start = System.currentTimeMillis();
+        ResourceMap resourceMap = ResourceMapFactory.buildResourceMap(large1000MemberResourceMap.getFile()
+                .getAbsolutePath(), new IndexVisibilityDelegateTestImpl());
+        System.out.println("The large resource map with 1000 members took " + (System.currentTimeMillis() - start) + " milliseconds to parse");
+        
+        
+        List<String> referencedIds = resourceMap.getAllDocumentIDs();
+        System.out.println("Number of dcoumet IDs: " + referencedIds.size());
+        boolean found = referencedIds.remove("resource_map_urn:uuid:d1fd444f-10ec-42c1-a29a-1bed05648c50");
+        // list.remove removes only the first occurrence found, so keep going until none left.
+        while(found) {
+            found = referencedIds.remove("resource_map_urn:uuid:d1fd444f-10ec-42c1-a29a-1bed05648c50");
+        }
+        System.out.println("Number of dcoumet IDs: " + referencedIds.size());
+        
+    }
+    
+    
     /**
      * Tests the foresite based resource map with transitive resource maps.
      * 

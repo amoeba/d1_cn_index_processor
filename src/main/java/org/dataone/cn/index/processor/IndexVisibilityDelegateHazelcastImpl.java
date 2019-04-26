@@ -16,6 +16,7 @@ public class IndexVisibilityDelegateHazelcastImpl implements IndexVisibilityDele
     }
     
     /**
+     * Checks the archived attribute of the system metadata
      * @param id - if sid, it will always return true
      */
     public boolean isDocumentVisible(Identifier id) {

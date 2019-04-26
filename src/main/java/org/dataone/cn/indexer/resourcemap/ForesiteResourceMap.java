@@ -168,6 +168,7 @@ public class ForesiteResourceMap implements ResourceMap {
     private void _init(InputStream is) throws OREException, URISyntaxException,
             UnsupportedEncodingException, OREParserException {
         /* Creates the identifier map from the doc */
+        // Map<packageID, Map<metadataID,List<dataID>>>
         Map<Identifier, Map<Identifier, List<Identifier>>> tmpResourceMap = null;
 
         try {
