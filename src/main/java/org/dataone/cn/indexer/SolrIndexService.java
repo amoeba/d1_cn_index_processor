@@ -417,6 +417,7 @@ public class SolrIndexService {
     
     private void sendCommand(List<SolrDoc> addCommands) throws IOException {
         D1IndexerSolrClient service = getD1IndexerSolrClient();
+        log.info("sendCommand using partial update: " + this.usePartialUpdate);
         service.sendUpdate(getSolrindexUri(), addCommands, OUTPUT_ENCODING, this.usePartialUpdate);
     }
 

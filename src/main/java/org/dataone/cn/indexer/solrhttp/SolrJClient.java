@@ -155,7 +155,7 @@ public class SolrJClient implements D1IndexerSolrClient {
     public void sendUpdate(String uri, List<SolrDoc> data, String encoding, boolean isAtomic)
             throws IOException {
 
-        log.debug("isAtomic: " + isAtomic);
+        log.info("is Atomic / Partial Update: " + isAtomic);
         // convert SolrElementAdd to SolrJ's SolrInputDocument
         List<SolrInputDocument> updateDocList = new ArrayList<SolrInputDocument>();
         for (SolrDoc doc : data) {
