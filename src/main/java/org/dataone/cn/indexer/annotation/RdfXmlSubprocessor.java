@@ -179,15 +179,16 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
      * @throws Exception
      */
     private List<SolrDoc> process(SolrDoc indexDocument, InputStream is) throws Exception {
-        
+        log.debug("process(..): entering method...");
         // get the triplestore dataset
         long start = System.currentTimeMillis();
         Map<String, SolrDoc> mergedDocuments;
         Dataset dataset = TripleStoreService.getInstance().getDataset();
+        log.debug("process(..): Got dataset from TripleStoreService");
         try {
             
 
-            perfLog.log("RdfXmlSubprocess.process gets a dataset from tripe store service ", System.currentTimeMillis() - start);
+            perfLog.log("RdfXmlSubprocess.process gets a dataset from triple store service ", System.currentTimeMillis() - start);
             
             // read the annotation
             String indexDocId = indexDocument.getIdentifier();
@@ -221,7 +222,7 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
             }
             perfLog.log("RdfXmlSubprocess.process adds ont-model ", System.currentTimeMillis() - startOntModel);
             //dataset.getDefaultModel().add(ontModel);
-    
+            log.debug("process(..): added ont-model...");
             // process each field query
             Map<String, SolrDoc> documentsToIndex = new HashMap<String, SolrDoc>();
             long startField = System.currentTimeMillis();
@@ -294,6 +295,7 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
     }
 
     private Map<String, SolrDoc> getSolrDocs(Set<String> ids) throws Exception {
+        log.debug("getSolrDocs(..): entered method...");
         Map<String, SolrDoc> list = new HashMap<String, SolrDoc>();
         if (ids != null) {
             for (String id : ids) {
