@@ -74,7 +74,7 @@ public class OREResourceMapTest {
     private Resource large1000MemberResourceMap;
 
     
-    @Test
+   // @Test
     public void testLarge1000MemberResourceMapParseTiming() throws OREParserException, IOException {
         
         long start = System.currentTimeMillis();

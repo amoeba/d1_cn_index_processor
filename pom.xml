@@ -122,10 +122,6 @@
         	<version>${d1_libclient_java.version}</version>
         	<type>jar</type>
         	<exclusions>
-       	    <exclusion>
-               <groupId>org.apache.jena</groupId>
-               <artifactId>jena</artifactId>
-            </exclusion>
 <!--         		<exclusion> -->
 <!-- 					<groupId>com.hp.hpl.jena</groupId> -->
 <!-- 					<artifactId>jena</artifactId> -->
@@ -387,6 +383,7 @@
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>buildInfo/buildInfo.properties</resource>
                                 </transformer>
+
                             </transformers>
                         </configuration>
                     </execution>
