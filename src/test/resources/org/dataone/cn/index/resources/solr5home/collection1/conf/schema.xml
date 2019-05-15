@@ -134,19 +134,20 @@ This schema is copied into the dataone-cn-index buildout for deployment on cn no
         <field name="formatId"    		type="string"   indexed="true" stored="true" multiValued="false"/>
 		<field name="formatType"		type="string"	indexed="true"	stored="true"	multiValued="false"/>
         <field name="size"            	type="tlong"     indexed="true" stored="true" multiValued="false"/>
-        <field name="checksum"        	type="string"   indexed="false" stored="true" multiValued="false"/>
-        <field name="checksumAlgorithm" type="string" indexed="false" stored="true"/>
+        <field name="checksum"        	type="string"   indexed="true" stored="true" multiValued="false"/>
+        <field name="checksumAlgorithm" type="string" indexed="true" stored="true"/>
         <field name="dateUploaded"    type="tdate"     indexed="true" stored="true" multiValued="false"/>
         <field name="dateModified"    type="tdate"     indexed="true" stored="true" multiValued="false"/>
         <field name="submitter"       type="string"   indexed="true" stored="true" multiValued="false"/>
         <field name="rightsHolder"    type="string"   indexed="true" stored="true" multiValued="false"/>
         <field name="authoritativeMN"       	type="string"   indexed="true" stored="true" multiValued="false"/>
-        <field name="replicationAllowed"     	type="boolean"  indexed="false" stored="true" multiValued="false"/>
-        <field name="numberReplicas"      		type="int"  indexed="false" stored="true" multiValued="false"/>
-        <field name="preferredReplicationMN"   	type="string"   indexed="false" stored="true" multiValued="true"/>
-        <field name="blockedReplicationMN"  	type="string"   indexed="false" stored="true" multiValued="true"/>
+        <field name="replicationAllowed"     	type="boolean"  indexed="true" stored="true" multiValued="false"/>
+        <field name="numberReplicas"      		type="int"  indexed="true" stored="true" multiValued="false"/>
+        <field name="preferredReplicationMN"   	type="string"   indexed="true" stored="true" multiValued="true"/>
+        <field name="blockedReplicationMN"  	type="string"   indexed="true" stored="true" multiValued="true"/>
         <field name="replicaMN"      		type="string"   indexed="true" stored="true" multiValued="true"/>
-        <field name="replicaVerifiedDate" 	type="tdate"    indexed="false" stored="true" multiValued="true"/>
+        <field name="replicationStatus"     type="string"   indexed="true" stored="true" multiValued="true"/>
+        <field name="replicaVerifiedDate" 	type="tdate"    indexed="true" stored="true" multiValued="true"/>
         <field name="datasource"       		type="string"  indexed="true" stored="true" multiValued="false"/>
         <field name="obsoletes"       		type="string"   indexed="true" stored="true" multiValued="false"/>
         <field name="obsoletedBy"      		type="string"   indexed="true" stored="true" multiValued="false"/>

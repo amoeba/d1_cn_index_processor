@@ -125,6 +125,8 @@ public class IndexTaskProcessor {
 
     private PerformanceLogger perfLog = PerformanceLogger.getInstance();
     
+    private static int maxTryCount = 8;
+    
     public IndexTaskProcessor() {
     }
 
@@ -184,7 +186,7 @@ public class IndexTaskProcessor {
      */
     public void processIndexTaskQueue() {
         logProcessorLoad();
-        
+        maxTryCount = Settings.getConfiguration().getInt("dataone.indexing.processing.max.tryCount", 8);
         List<IndexTask> queue = getIndexTaskQueue();
         IndexTask task = getNextIndexTask(queue);
         while (task != null) {
@@ -322,7 +324,8 @@ public class IndexTaskProcessor {
         }*/
         
         logger.info("Indexing complete for pid: " + task.getPid());
-        perfLog.log("IndexTaskProcessor.processTasks process pid "+task.getPid(), System.currentTimeMillis()-start);
+        if (perfLog.isLogEnabled())
+        	perfLog.log("IndexTaskProcessor.processTasks process pid "+task.getPid(), System.currentTimeMillis()-start);
     }
     
     /*
@@ -336,13 +339,17 @@ public class IndexTaskProcessor {
         if (task == null) return;  // should be weeded out already...
         
         //only handle resourceMap index task
-        if(task instanceof ResourceMapIndexTask ) {
+        long startTiming = System.currentTimeMillis();
+        if(task != null && task instanceof ResourceMapIndexTask ) {
             
             if (logger.isDebugEnabled())
                 logger.debug("$$$$$$$$$$$$$$$$$ the index task "+task.getPid()+" is a resource map task in the the thread "+ Thread.currentThread().getId());
             
             LOCK.lock();
             try {
+            	if (perfLog.isLogEnabled())
+            		perfLog.log("IndexTaskProcessor.checkReadiness/resMap/lock "+task.getPid(), System.currentTimeMillis()-startTiming);
+            
                 ResourceMapIndexTask resourceMapTask = (ResourceMapIndexTask) task;
                 List<String> referencedIds = resourceMapTask.getReferencedIds();
                 if(referencedIds != null) {
@@ -407,6 +414,9 @@ public class IndexTaskProcessor {
                 throw e;
             } finally {
                 LOCK.unlock();
+                if (perfLog.isLogEnabled()) {
+                		perfLog.log("IndexTaskProcessor.checkReadiness/resMap process pid "+task.getPid(), System.currentTimeMillis()-startTiming);
+            		}
             }
         } else {
             if (logger.isDebugEnabled())
@@ -420,7 +430,12 @@ public class IndexTaskProcessor {
                 Identifier sid = smd.getSeriesId();
                 if(sid != null && sid.getValue() != null && !sid.getValue().trim().equals("")) {
                     LOCK.lock();
+
+                    long lockStart = System.currentTimeMillis();
+              	      
                     try {
+                    	if (perfLog.isLogEnabled()) 
+                    		perfLog.log("IndexTaskProcessor.checkReadiness/other/lock "+task.getPid(), System.currentTimeMillis()-lockStart);
                         if (logger.isDebugEnabled())
                             logger.debug("xxxxxxxxxxxxxxxxxxxx the index task "+task.getPid()
                                     +" has a sid "+sid.getValue()+" in the the thread "+ Thread.currentThread().getId());
@@ -446,14 +461,16 @@ public class IndexTaskProcessor {
                             throw new Exception(message);
                         }
                     } catch (Exception e) {
-                        throw e;
+                    	if (perfLog.isLogEnabled())
+                    		perfLog.log("IndexTaskProcessor.checkReadiness/other/execption process pid "+task.getPid(), System.currentTimeMillis()-startTiming);
+                    	throw e;  
                     } finally {
                         LOCK.unlock();
                     }
-                }
-                
+                }               
             }
-            
+            if (perfLog.isLogEnabled())
+            	perfLog.log("IndexTaskProcessor.checkReadiness/other process pid "+task.getPid(), System.currentTimeMillis()-startTiming);
         }
     }
     
@@ -657,6 +674,17 @@ public class IndexTaskProcessor {
                     while(found) {
                         found = referencedIds.remove(task.getPid());
                     }
+                    
+                    // if the resourceMap uses its SeriesId for the references, we need to remove it as well for this check.
+                    // otherwise, it will never index.
+                    SystemMetadata resMapSMD =  HazelcastClientFactory.getSystemMetadataMap().get(TypeFactory.buildIdentifier(task.getPid()));
+                    if (resMapSMD.getSeriesId() != null) {
+                    	found = referencedIds.remove(resMapSMD.getSeriesId().getValue());
+                    	while(found) {
+                    		found = referencedIds.remove(resMapSMD.getSeriesId().getValue()); 
+                    	}
+                    }
+                    
 
                     if (areAllReferencedDocsIndexed(referencedIds) == false) {
                         logger.info("****************Not all map resource references indexed for map: " + task.getPid()
@@ -771,7 +799,7 @@ public class IndexTaskProcessor {
                     pid.setValue(id);
                     logger.info("Identifier " + id
                             + " was not found in the referenced id list in the Solr search index.");
-                    SystemMetadata smd = HazelcastClientFactory.getSystemMetadataMap().get(pid);
+                    SystemMetadata smd = HazelcastClientFactory.getSystemMetadataMap().get(TypeFactory.buildIdentifier(id));
                     if (smd != null && notVisibleInIndex(smd)) {
                         numberOfIndexedOrRemovedReferences++;
                     }
@@ -864,14 +892,18 @@ public class IndexTaskProcessor {
 
     public List<IndexTask> getIndexTaskQueue() {
         long getIndexTasksStart = System.currentTimeMillis();
-        List<IndexTask> indexTasks = repo.findByStatusOrderByPriorityAscTaskModifiedDateAsc(IndexTask.STATUS_NEW);
-        perfLog.log("IndexTaskProcessor.getIndexTaskQueue() fetching NEW IndexTasks from repo", System.currentTimeMillis() - getIndexTasksStart);
+        logger.info("New index tasks with less than "+maxTryCount+" try-count (resource maps sometimes will be set the status new even though the indexing failed) in the index queue will be processed.");
+        //List<IndexTask> indexTasks = repo.findByStatusOrderByPriorityAscTaskModifiedDateAsc(IndexTask.STATUS_NEW);
+        List<IndexTask> indexTasks = repo.findByStatusAndTryCountLessThanOrderByPriorityAscTaskModifiedDateAsc(IndexTask.STATUS_NEW, maxTryCount);
+        if (perfLog.isLogEnabled())
+        	perfLog.log("IndexTaskProcessor.getIndexTaskQueue() fetching NEW IndexTasks from repo", System.currentTimeMillis() - getIndexTasksStart);
         return indexTasks;
     }
 
     private List<IndexTask> getIndexTaskRetryQueue() {
-        return repo.findByStatusAndNextExecutionLessThan(IndexTask.STATUS_FAILED,
-                System.currentTimeMillis());
+        //return repo.findByStatusAndNextExecutionLessThan(IndexTask.STATUS_FAILED, System.currentTimeMillis());
+        logger.info("Failed index tasks with less than "+maxTryCount+" try-count in the index queue will be processed.");
+        return repo.findByStatusAndNextExecutionLessThanAndTryCountLessThan(IndexTask.STATUS_FAILED, System.currentTimeMillis(), maxTryCount);
     }
 
     /*

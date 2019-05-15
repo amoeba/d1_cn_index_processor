@@ -106,6 +106,7 @@ public class SolrFieldXPathDryad31Test extends BaseSolrFieldXPathTest {
         dryadDataPackage1Expected.put("datasource", "urn:node:DRYAD");
         dryadDataPackage1Expected.put("authoritativeMN", "urn:node:DRYAD");
         dryadDataPackage1Expected.put("replicaMN", "");
+        dryadDataPackage1Expected.put("replicationStatus", "");
         dryadDataPackage1Expected.put("replicaVerifiedDate", "");
         dryadDataPackage1Expected.put("readPermission", "public");
         dryadDataPackage1Expected.put("writePermission", "");
@@ -166,6 +167,7 @@ public class SolrFieldXPathDryad31Test extends BaseSolrFieldXPathTest {
         dryadDataFile1Expected.put("datasource", "urn:node:DRYAD");
         dryadDataFile1Expected.put("authoritativeMN", "urn:node:DRYAD");
         dryadDataFile1Expected.put("replicaMN", "");
+        dryadDataFile1Expected.put("replicationStatus", "");
         dryadDataFile1Expected.put("replicaVerifiedDate", "");
         dryadDataFile1Expected.put("readPermission", "public");
         dryadDataFile1Expected.put("writePermission", "");

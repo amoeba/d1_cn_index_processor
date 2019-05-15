@@ -33,6 +33,7 @@
 				<ref bean="isotc211NoaaSubprocessor" />
                 <ref bean="isotc211PangaeaSubprocessor" />
   				<ref bean="reprocessResourceMapSubprocessor" /> 
+  				<ref bean="dublinCoreOAISubprocessor" />
 			</list>
      	</property>
      	<property name="deleteSubprocessors">

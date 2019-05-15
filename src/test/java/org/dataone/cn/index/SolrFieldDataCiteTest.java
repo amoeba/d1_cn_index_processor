@@ -113,6 +113,7 @@ public class SolrFieldDataCiteTest extends BaseSolrFieldXPathTest {
         datacite1Expected.put("datasource", "urn:node:mnTestDASH");
         datacite1Expected.put("authoritativeMN", "urn:node:mnTestDASH");
         datacite1Expected.put("replicaMN", "");
+        datacite1Expected.put("replicationStatus", "");
         datacite1Expected.put("replicaVerifiedDate", "");
         datacite1Expected.put("readPermission", "public");
         datacite1Expected.put("writePermission", "");

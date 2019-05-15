@@ -80,6 +80,8 @@ public class HTTPService implements D1IndexerSolrClient {
     final static String VALUE_INDENT_ON = "on";
     final static String VALUE_INDENT_OFF = "off";
     final static String PARAM_QUERY = "q";
+    final static String PARAM_RETURN = "fl";
+    final static String VALUE_WILDCARD = "*";
 
     private static final String MAX_ROWS = "5000";
 
@@ -397,6 +399,7 @@ public class HTTPService implements D1IndexerSolrClient {
         params.add(new BasicNameValuePair(PARAM_START, "0"));
         params.add(new BasicNameValuePair(PARAM_ROWS, rows));
         params.add(new BasicNameValuePair(PARAM_INDENT, VALUE_INDENT_ON));
+        params.add(new BasicNameValuePair(PARAM_RETURN, VALUE_WILDCARD));
         String paramString = URLEncodedUtils.format(params, "UTF-8");
 
         String requestURI = uir + "?" + paramString;

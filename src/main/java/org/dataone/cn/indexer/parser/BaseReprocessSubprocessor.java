@@ -36,6 +36,7 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dataone.client.exception.ClientSideException;
 import org.dataone.client.v2.formats.ObjectFormatCache;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.generator.IndexTaskGenerator;
@@ -174,8 +175,8 @@ public class BaseReprocessSubprocessor implements IDocumentSubprocessor {
                             indexTaskGenerator.processSystemMetaDataUpdate(relatedSysMeta, objectPath);
                         }
                     }
-                    catch (BaseException be) {
-                        log.error("Could not locate PID for given identifier: " + relatedId.getValue(), be);
+                    catch (BaseException | ClientSideException e) {
+                        log.error("Could not locate PID for given identifier: " + relatedId.getValue(), e);
                         // nothing we can do but continue
                         continue;
                     }
