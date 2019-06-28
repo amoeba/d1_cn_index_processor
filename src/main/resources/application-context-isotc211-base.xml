@@ -287,11 +287,11 @@
 	<bean id="isotc.serviceCoupling" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="serviceCoupling" />
 		<constructor-arg name="xpath" 
-			value="concat(	substring('loose',	1 div boolean(	//srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue = 'loose')),
-							substring('tight',	1 div boolean(	//srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue = 'tight')),
-							substring('tight',	1 div boolean(	//gmd:distributionInfo/gmd:MD_Distribution and not(//srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue))),
-							substring('',		1 div boolean(	not(   //srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue) 
-																and not(   //gmd:distributionInfo/gmd:MD_Distribution))))"/>
+			value="concat(	substring('loose',	1 div number(boolean(	//srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue = 'loose'))),
+							substring('tight',	1 div number(boolean(	//srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue = 'tight'))),
+							substring('tight',	1 div number(boolean(	//gmd:distributionInfo/gmd:MD_Distribution and not(//srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue)))),
+							substring('',		1 div number(boolean(	not(   //srv:SV_ServiceIdentification/srv:couplingType/srv:SV_CouplingType/@codeListValue) 
+																and not(   //gmd:distributionInfo/gmd:MD_Distribution)))))"/>
 	</bean>
 	
 	<!-- below fields are multivalue, so will just be added to existing service fields extracted above -->
