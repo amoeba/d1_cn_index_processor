@@ -31,13 +31,17 @@ import java.util.Map;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import javax.xml.xpath.XPathFactoryConfigurationException;
 
 import org.apache.commons.codec.EncoderException;
+import org.apache.log4j.Logger;
 import org.dataone.cn.index.util.PerformanceLogger;
 import org.dataone.cn.indexer.XMLNamespaceConfig;
 import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.w3c.dom.Document;
+
+import net.sf.saxon.lib.NamespaceConstant;
 
 /**
  * Base functionality for document processors. A document processor represents
@@ -76,9 +80,17 @@ public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
     private List<ISolrField> fieldList = new ArrayList<ISolrField>();
 
     static {
-        xpathFactory = XPathFactory.newInstance();
+        System.setProperty("javax.xml.xpath.XPathFactory:"+NamespaceConstant.OBJECT_MODEL_SAXON,
+                "net.sf.saxon.xpath.XPathFactoryImpl");
+        try {
+            xpathFactory = XPathFactory.newInstance(NamespaceConstant.OBJECT_MODEL_SAXON);
+        } catch (XPathFactoryConfigurationException e) {
+            e.printStackTrace();
+        }
         xpath = xpathFactory.newXPath();
+        //System.err.println("=======================================Loaded XPath Provider " + xpath.getClass().getName());
     }
+    
 
     public BaseXPathDocumentSubprocessor() {
     }
