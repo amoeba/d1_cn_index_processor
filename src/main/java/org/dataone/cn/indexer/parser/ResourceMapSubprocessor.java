@@ -137,11 +137,9 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
             throws OREParserException, XPathExpressionException, IOException, EncoderException {
 
         long buildResMapStart = System.currentTimeMillis();
-        
-        
+          
         // this new way of building the solr records doesn't yet deal with seriesId in the relationship fields, 
         // or calling clearObsoletesChain to do whatever it is that it's supposed to do...
-        
         
         Map<Identifier, Map<Identifier, List<Identifier>>> tmpResourceMap = null;
 
@@ -180,7 +178,8 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
         allMembers.addAll(memberDocs.values());
         return allMembers;
         
-        
+/////    The old way of parsing resource maps
+//        
 //        ResourceMap resourceMap = ResourceMapFactory.buildResourceMap(resourceMapStream);
 //        perfLog.log("ResourceMapFactory.buildResourceMap() create ResourceMap from InputStream", System.currentTimeMillis() - buildResMapStart);
 //        

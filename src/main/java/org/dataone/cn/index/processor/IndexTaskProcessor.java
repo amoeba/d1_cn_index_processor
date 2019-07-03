@@ -620,8 +620,7 @@ public class IndexTaskProcessor {
 
     /**
      * returns the next ready task from the given queue. Readiness is determined
-     * by availability of the object (unless it's a data object), and the prior
-     * indexing of all Dataone objects referenced by resource maps.
+     * by availability of the object (unless it's a data object) 
      * 
      * @param queue
      * @return the next ready task
@@ -987,8 +986,8 @@ public class IndexTaskProcessor {
      * Get the list of index task futures submitted to the executor service.
      * @return
      */
-    public Queue<Future> getFutureQueue() {
-        return new CircularFifoQueue(futureQueue);
+    public Queue<Future<Void>> getFutureQueue() {
+        return new CircularFifoQueue<Future<Void>>(futureQueue);
     }
     
     /**
@@ -1013,11 +1012,11 @@ public class IndexTaskProcessor {
         logger.warn("... number of tasks in futures map: " + futureMap.size());
         int marked = 0;
         int noTaskMapping = 0;
-        List<Future> uncancelable = new LinkedList<>();
+        List<Future<Void>> uncancelable = new LinkedList<>();
         // cycle through list of futures to see which are cancelable
         if (!futureQueue.isEmpty()) {
             for (int i=futureQueue.size()-1; i > -1; i--) {
-                Future f = futureQueue.get(i);
+                Future<Void> f = futureQueue.get(i);
                 if (f.cancel(/* interrupt while running? */ false)) {
                     // cancelable, so try to mark new
                     IndexTask t = futureMap.get(f);
@@ -1053,7 +1052,7 @@ public class IndexTaskProcessor {
             // we should probably report on the in-process threads
             logger.warn("...4.) Reviewing remaining uncancellables to check for completion, returning incomplete ones to NEW status...");
             if (!uncancelable.isEmpty()) {
-                for (Future f : uncancelable) {
+                for (Future<Void> f : uncancelable) {
                     // TODO: this block is never executed because after calling f.cancel(), 
                     // f.isDone() is always true, according to f.cancel() documentation
                     if (!f.isDone()) {

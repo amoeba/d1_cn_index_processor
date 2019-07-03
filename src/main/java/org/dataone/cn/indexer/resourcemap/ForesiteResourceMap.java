@@ -201,9 +201,9 @@ public class ForesiteResourceMap implements ResourceMap {
 
                 Identifier pid = new Identifier();
                 pid.setValue(documentedByIdentifier.getValue());
-                if (indexVisibilityDelegate.isDocumentVisible(pid)) {
-                    documentsResourceEntry.addDocuments(documentedByIdentifier.getValue());
-                }
+//                if (indexVisibilityDelegate.isDocumentVisible(pid)) {
+                documentsResourceEntry.addDocuments(documentedByIdentifier.getValue());
+//                }
 
                 ForesiteResourceEntry documentedByResourceEntry = resourceMap
                         .get(documentedByIdentifier.getValue());
@@ -218,9 +218,9 @@ public class ForesiteResourceMap implements ResourceMap {
                 pid = new Identifier();
                 pid.setValue(entry.getKey().getValue());
 
-                if (indexVisibilityDelegate.isDocumentVisible(pid)) {
-                    documentedByResourceEntry.addDocumentedBy(entry.getKey().getValue());
-                }
+//                if (indexVisibilityDelegate.isDocumentVisible(pid)) {
+                documentedByResourceEntry.addDocumentedBy(entry.getKey().getValue());
+//                }
             }
         }
     }
@@ -333,12 +333,12 @@ public class ForesiteResourceMap implements ResourceMap {
             pid.setValue(resourceEntry.getIdentifier());
             // if the document does not have system metadata yet, cannot check visibility.  include in list of ids.
             // if document does exist, it must be visible in the index to be included.
-            if (!indexVisibilityDelegate.documentExists(pid)
-                    || indexVisibilityDelegate.isDocumentVisible(pid)) {
+//            if (!indexVisibilityDelegate.documentExists(pid)
+//                    || indexVisibilityDelegate.isDocumentVisible(pid)) {
                 if (resourceEntry.getIdentifier().equals(this.getIdentifier()) == false) {
                     resourceEntries.add(resourceEntry);
                 }
-            }
+//            }
         }
 
         /* Return the set of resource entries */

@@ -163,8 +163,10 @@
 					<property name="converter" ref="booleanPublicConverter" />
 				</bean>
 
-        <bean class="org.dataone.cn.indexer.parser.WebUrlSolrField">
-        <!--  -->
+ <!--  These beans won't find the class they are looking for.  Likely outdated and unneeded.
+      (based on searching for the class in multiple branches of d1 index processor)  
+       <bean class="org.dataone.cn.indexer.parser.WebUrlSolrField">
+        
           <constructor-arg name="name" value="web_url" />
           <constructor-arg name="xpath"
             value="/d064:systemMetadata/identifier/text()" />
@@ -174,7 +176,7 @@
           <property name="multivalue" value="true" />
         </bean>
         <bean class="org.dataone.cn.indexer.parser.WebUrlSolrField">
-        <!--  -->
+      
           <constructor-arg name="name" value="data_url" />
           <constructor-arg name="xpath"
             value="/d064:systemMetadata/identifier/text()" />
@@ -183,7 +185,7 @@
           <property name="onlyReferenceCNs" value="false" />
           <property name="multivalue" value="false" />
         </bean>
-      
+   -->   
 			</list>
 		</constructor-arg>
 	</bean>
