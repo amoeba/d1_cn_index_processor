@@ -26,16 +26,8 @@ import org.dataone.cn.indexer.parser.SubprocessorUtility;
 import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
+import org.dataone.cn.indexer.annotation.OntologyModelService;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 /**
  * The intent of this subprocessor is to fetch annotations about the given 
@@ -67,12 +59,6 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
     
     private List<String> matchDocuments = null;
 
-    private List<String> ontologyList = null;
-
-    private OntModel ontModel = null;
-
-    private boolean initialized = false;
-
     private List<String> fieldsToMerge = new ArrayList<String>();
 
     private List<ISolrDataField> fieldList = new ArrayList<ISolrDataField>();
@@ -83,14 +69,6 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
 
     public void setMatchDocuments(List<String> matchDocuments) {
         this.matchDocuments = matchDocuments;
-    }
-
-    public List<String> getOntologyList() {
-        return ontologyList;
-    }
-
-    public void setOntologyList(List<String> ontologyList) {
-        this.ontologyList = ontologyList;
     }
 
     public List<String> getFieldsToMerge() {
@@ -263,8 +241,8 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
                 for (String tag : annotations.getAllFieldValues(tagKey)) {
                     try {
                         // get the expanded tags
-                        Map<String, Set<String>> expandedConcepts = this
-                                .expandConcepts(tagKey, tag);
+                        Map<String, Set<String>> expandedConcepts = OntologyModelService.getInstance().expandConcepts(tag);
+
                         for (Map.Entry<String, Set<String>> entry : expandedConcepts.entrySet()) {
                             for (String value : entry.getValue()) {
                                 String name = entry.getKey();
@@ -288,85 +266,6 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
         }
 
         return null;
-    }
-
-    protected Map<String, Set<String>> expandConcepts(String fieldName, String uri)
-            throws Exception {
-
-        // return structure allows multi-valued fields
-        Map<String, Set<String>> conceptFields = new HashMap<String, Set<String>>();
-
-        if (uri == null || uri.length() < 1) {
-            return conceptFields;
-        }
-
-        if (!this.initialized) {
-            ontModel = ModelFactory.createOntologyModel();
-
-            // add the ontologies configured
-            if (this.ontologyList != null && ontologyList.size() > 0) {
-                for (String ontologyUri : ontologyList) {
-                    log.warn("loading ontology: " + ontologyUri);
-                    ontModel.read(ontologyUri);
-                }
-            }
-            initialized = true;
-
-        }
-        //load the ontology if needed
-        //        String namespace = uri;
-        //        if (namespace.contains("#")) {
-        //        	namespace = namespace.split("#")[0];
-        //        	boolean loaded = (ontModel.getOntClass(uri) != null);
-        //            if (!loaded) {
-        //                ontModel.read(namespace);
-        //            }
-        //        }
-
-        // process each field query
-        for (ISolrDataField field : fieldList) {
-            String q = null;
-            if (field instanceof SparqlField) {
-                q = ((SparqlField) field).getQuery();
-                q = q.replaceAll("\\$CONCEPT_URI", uri);
-                //q = q.replaceAll("\\$GRAPH_NAME", namespace);
-                Query query = QueryFactory.create(q);
-                QueryExecution qexec = QueryExecutionFactory.create(query, ontModel);
-                ResultSet results = qexec.execSelect();
-
-                // each field might have multiple solution values
-                String name = field.getName();
-                // only expand for the given field name
-                if (!fieldName.equals(name)) {
-                    continue;
-                }
-                Set<String> values = new TreeSet<String>();
-
-                while (results.hasNext()) {
-
-                    QuerySolution solution = results.next();
-                    log.debug(solution.toString());
-
-                    // the value[s] for that field
-                    if (solution.contains(name)) {
-                        boolean anon = solution.get(field.getName()).isAnon();
-
-                        // do not include anonymous nodes
-                        if (!anon) {
-                            String value = solution.get(field.getName()).toString();
-                            values.add(value);
-                            log.debug("Not anonymous, adding: " + value);
-                        }
-
-                    }
-                }
-                conceptFields.put(name, values);
-
-            }
-        }
-
-        return conceptFields;
-
     }
 
     /**
