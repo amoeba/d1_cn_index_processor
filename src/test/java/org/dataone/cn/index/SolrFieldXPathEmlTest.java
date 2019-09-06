@@ -1,6 +1,6 @@
 /**
  * This work was created by participants in the DataONE project, and is
- * jointly copyrighted by participating institutions in DataONE. For 
+ * jointly copyrighted by participating institutions in DataONE. For
  * more information on DataONE, see our web site at http://dataone.org.
  *
  *   Copyright ${year}
@@ -14,9 +14,9 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * $Id$
  */
 
@@ -49,10 +49,10 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
 
     @Autowired
     private Resource emlRefSciMeta;
-    
+
     @Autowired
     private Resource serviceDescriptionEmlSysMeta;
-    
+
     @Autowired
     private Resource serviceDescriptionEmlSciMeta;
 
@@ -69,7 +69,7 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
     private ScienceMetadataDocumentSubprocessor eml220Subprocessor;
 
     private String serviceEmlPid = "serviceEmlPid";
-    
+
     private SolrDateConverter dateConverter = new SolrDateConverter();
 
     // solr/rule field name (from spring context fields) mapped to actual value
@@ -78,14 +78,14 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
     private HashMap<String, String> eml220Expected = new HashMap<String, String>();
     private HashMap<String, String> emlRefExpected = new HashMap<String, String>();
     private HashMap<String, String> emlServiceExpected = new HashMap<String, String>();
-    
+
     @Before
     public void setUp() throws Exception {
         setUpEml210();
         setUpEml220();
         setUpEmlService();
     }
-    
+
     public void setUpEml210() throws Exception {
         // science metadata
         eml210Expected
@@ -191,7 +191,7 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
         eml210Expected.put("serviceTitle", "");
         eml210Expected.put("serviceDescription", "");
         eml210Expected.put("serviceEndpoint", "");
-        
+
         emlRefExpected
                 .put("abstract",
                         "National Oceanic and Atmospheric Administration treatment effects studies from 1989 through 1997 suggested that bivalve assemblages on beaches in Prince William Sound treated with high-pressure washing were severely injured in terms of abundance, species composition, and function. Restoration Project 040574 assessed the generality and persistence of this apparent injury to this assemblage. We found that the initial conclusions were accurate, indicating that a considerable proportion of mixed-soft beaches in treated areas of the sound remained extremely disturbed and that these beaches are functionally impaired in terms of their ability to support foraging by humans and damaged nearshore vertebrate predators such as sea otters 13 years after the spill. Large, long-lived hard-shell clams remained 66% less abundant at Treated sites than at Reference sites. We also found that standard sediment properties did not appear implicated in lagging recovery. But, based on several lines of evidence, we deduced that a major cause for the delay was the disruption of surface armoring (a stratified organization of mixed-soft shoreline sediments common in southcentral Alaska), an effect of beach washing. Based on the apparent recovery trajectory, we predict that recovery to pre-spill status will take several more decades. We also found that sedimentary components and the biota in the armored mixed-soft sediments in Prince William Sound do not respond according to traditionally described paradigms for homogeneous sediments.Citation: Lees, D. C., and W. B. Driskell.  2007.  Assessment of Bivalve Recovery on Treated Mixed-Soft Beaches in Prince William Sound, Alaska.  Exxon Valdez Oil Spill Restoration Project Final Report (Restoration Project 040574).  National Oceanic & Atmospheric Administration National Marine Fisheries Service, Office of Oil Spill Damage & Restoration, Auke Bay, Alaska.");
@@ -267,7 +267,7 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
         eml220Expected.put("keywords", "");
 
         eml220Expected.put("project", "MY PROJECT");
-        eml220Expected.put("funding", "SOME_RANDOM_FUNDING_INFO");
+        eml220Expected.put("funding", "SOME_RANDOM_FUNDING_INFO#OTHER_RANDOM_FUNDING_INFO");
         eml220Expected.put("funderName", "My Funder");
         eml220Expected.put("funderIdentifier", "MY_FUNDER");
         eml220Expected.put("awardNumber", "AWARD1");
@@ -324,7 +324,7 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
         eml220Expected.put("fileID", "https://" + hostname + "/cn/v2/resolve/eml-test-doc");
         eml220Expected
                 .put("text",
-                        "EML Annotation Example   EML  Annotator     EML  Annotator    MY PROJECT    EML  Annotator   principalInvestigator   SOME_RANDOM_FUNDING_INFO   My Funder  MY_FUNDER  AWARD1  An example award title  https://example.org/someaward eml-test-doc SOME_ATTRIBUTE SOME_ATTRIBUTE's definition");
+                        "EML Annotation Example   EML  Annotator     EML  Annotator    MY PROJECT    EML  Annotator   principalInvestigator   SOME_RANDOM_FUNDING_INFO   OTHER_RANDOM_FUNDING_INFO    My Funder  MY_FUNDER  AWARD1  An example award title  https://example.org/someaward    @article{fegraus_2005,            title = {Maximizing the {Value} of {Ecological} {Data} with {Structured} {Metadata}: {An} {Introduction} to {Ecological} {Metadata} {Language} ({EML}) and {Principles} for {Metadata} {Creation}},            journal = {Bulletin of the Ecological Society of America},            author = {Fegraus, Eric H. and Andelman, Sandy and Jones, Matthew B. and Schildhauer, Mark},            year = {2005},            pages = {158--168}         } eml-test-doc SOME_ATTRIBUTE SOME_ATTRIBUTE's definition");
 
         // system metadata
         eml220Expected.put("id", "eml-test-doc");
@@ -419,7 +419,7 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
         emlServiceExpected.put("serviceEndpoint", "https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-schedule_AW02XX_001CTDXXXXR00_processing.1.m"
                 + "#" + "https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-DataProcessor.1.m"
                 + "#" + "https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-Configure.1.m");
-                
+
         // not checking system metadata
         emlServiceExpected.put("id", serviceEmlPid);
         emlServiceExpected.put("seriesId", "");
@@ -452,12 +452,12 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
         emlServiceExpected.put("isPublic", "true");
         emlServiceExpected.put("dataUrl", "https://" + hostname + "/cn/v2/resolve/" + serviceEmlPid);
     }
-    
+
     /**
      * Testing that the Xpath expressions used by XPathParser and associates are
      * 'mining' the expected data from the science and system metadata
      * documents.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -476,7 +476,7 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
      * Example of an eml document that uses references.
      * Tests that double pipe characters are not indexed when a reference is found
      * OR and empty creator element.
-     * 
+     *
      * Origin element contained the double pipe characters before fix.
      * @throws Exception
      */
@@ -484,7 +484,7 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
     public void testEmlRefScienceMetadataFields() throws Exception {
         testXPathParsing(eml210Subprocessor, null, emlRefSciMeta, emlRefExpected, "df35c.9.14");
     }
-    
+
     /**
      * Example of an eml document that contains service information.
      */

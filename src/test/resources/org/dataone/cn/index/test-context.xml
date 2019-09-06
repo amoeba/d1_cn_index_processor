@@ -21,6 +21,7 @@ xmlns:context="http://www.springframework.org/schema/context"
  	<import resource="classpath:application-context-eml201.xml" />
  	<import resource="classpath:application-context-eml210.xml" />
  	<import resource="classpath:application-context-eml211.xml" />
+ 	<import resource="classpath:application-context-eml220.xml" />
  	
  	<import resource="classpath:application-context-fgdc-base.xml" />
  	<import resource="classpath:application-context-fgdc-std-001-1998.xml" />
@@ -51,7 +52,10 @@ xmlns:context="http://www.springframework.org/schema/context"
 	
     <import resource="classpath:application-context-oa.xml" />
     <import resource="classpath:application-context-annotator.xml" />
-    
+
+    <import resource="classpath:application-context-eml-annotation.xml" />
+    <import resource="classpath:application-context-ontology-model-service.xml" />
+
     <import resource="classpath:org/dataone/cn/indexer/annotation/test-context-annotator.xml"/>
     
     <!-- 
@@ -400,5 +404,25 @@ xmlns:context="http://www.springframework.org/schema/context"
     <bean id="isotc211_noaa_SciMeta" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String" 
         value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_noaa_SciMeta.xml"/>
+    </bean>
+
+    <bean id="emlAnnotationSysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml-annotation/eml_annotation_example_sysmeta.xml"/>
+    </bean>
+    
+    <bean id="emlAnnotationSciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml-annotation/eml_annotation_example_scimeta.xml"/>
+    </bean>
+
+    <bean id="eml220TestDocSysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml220/eml220testdocsysmeta.xml"/>
+    </bean>
+    
+    <bean id="eml220TestDocSciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/eml220/eml220testdocscimeta.xml"/>
     </bean>
 </beans>

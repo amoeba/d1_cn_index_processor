@@ -5,8 +5,6 @@ import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.io.File;
-import java.nio.file.Path;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;

@@ -301,7 +301,14 @@ This schema is copied into the dataone-cn-index buildout for deployment on cn no
 		<field name="serviceEndpoint"	type="string"	indexed="true"  stored="true" multiValued="true" />
 		<field name="serviceInput"		type="string"	indexed="true"  stored="true" multiValued="true" />
 		<field name="serviceOutput"		type="string"	indexed="true"  stored="true" multiValued="true" />
-		
+    
+        <!-- Funding metadata -->
+        <field name="funding" 			    type="string" 	indexed="true" stored="true"  multiValued="true" />
+        <field name="fundingText" 		  type="text_general" 	  indexed="true" stored="false" multiValued="true" />
+        <field name="funderName"        type="string"   indexed="true" stored="true"  multiValued="true" />
+        <field name="funderIdentifier"  type="string"   indexed="true" stored="true"  multiValued="true" />
+        <field name="awardNumber"       type="string"   indexed="true" stored="true"  multiValued="true" />
+        <field name="awardTitle"        type="string"   indexed="true" stored="true"  multiValued="true" />
    <!--
      Some fields such as popularity and manu_exact could be modified to
      leverage doc values:
@@ -412,7 +419,8 @@ This schema is copied into the dataone-cn-index buildout for deployment on cn no
     <copyField source="origin" dest="originatorText"/>
     
     <copyField source="project" dest="projectText"/>
-    
+    <copyField source="funding" dest="fundingText"/>
+
     <copyField source="site" dest="siteText"/>
     <copyField source="parameter" dest="parameterText"/>
     <copyField source="sensor" dest="sensorText"/>
