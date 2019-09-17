@@ -44,7 +44,7 @@ public class SolrIndexEmlAnnotationTest extends DataONESolrJettyTestBase {
 
     @Test
     public void testSystemMetadataEml220AndAnnotation() throws Exception {
-        String pid = "eml_annotation_example";
+        String pid = "eml-test-doc";
         Resource systemMetadataResource = (Resource) context.getBean("eml220TestDocSysMeta");
         Resource scienceMetadataResource = (Resource) context.getBean("eml220TestDocSciMeta");
 
