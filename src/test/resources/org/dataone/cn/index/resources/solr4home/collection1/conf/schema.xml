@@ -230,7 +230,7 @@
 
     		<!-- Funding metadata -->
         <field name="funding" 			type="string" 	indexed="true" stored="true" multiValued="true" />
-        <field name="fundingText" 		type="text" 	indexed="true" stored="false" multiValued="true" />
+        <field name="fundingText" 		type="text_general" 	indexed="true" stored="false" multiValued="true" />
         <field name="funderName"        type="string" indexed="true" stored="true" multiValued="true" />
         <field name="funderIdentifier"  type="string" indexed="true" stored="true" multiValued="true" />
         <field name="awardNumber"       type="string" indexed="true" stored="true" multiValued="true" />
