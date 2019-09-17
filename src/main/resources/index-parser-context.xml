@@ -36,6 +36,7 @@
         <ref bean="isotc211PangaeaSubprocessor" />
   				<ref bean="reprocessResourceMapSubprocessor" /> 
   				<ref bean="dublinCoreOAISubprocessor" />
+                <ref bean="ontologyModelService" />
 			</list>
      	</property>
      	<property name="deleteSubprocessors">
