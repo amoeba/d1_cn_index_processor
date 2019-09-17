@@ -15,97 +15,22 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.carrotsearch.randomizedtesting.annotations.ThreadLeakScope;
 
-
 @ThreadLeakScope(ThreadLeakScope.Scope.NONE)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "../../index/test-context.xml", "test-context-annotator.xml" })
 
+/**
+ * This test is basically empty at the moment. Most of the functionality of the
+ * AnnotatorSubprocessor is handled by the OntologyModelService but it would be
+ * good to test the remaining, untested methods.
+ */
 public class AnnotatorSubprocessorTest {
-	
+
 	@Autowired
 	private AnnotatorSubprocessor annotatorSubprocessor;
-	
-	//@Autowired
-	private String annotationUri = "http://ecoinformatics.org/oboe-ext/sbclter.1.0/oboe-sbclter.owl#WetMass";
-	
-	//@Autowired
-	private String expectedUri = "http://ecoinformatics.org/oboe/oboe.1.0/oboe-characteristics.owl#Mass";
 
-	private String tagKey = AnnotatorSubprocessor.FIELD_ANNOTATION;
-	
-	//@Test
-	public void testConceptExpansion() {
-		
-		try {
-			Map<String, Set<String>> concepts = annotatorSubprocessor.expandConcepts(tagKey, annotationUri);
-			for (Set<String> conceptSet: concepts.values()) {
-				assertTrue(conceptSet.contains(expectedUri));
-				return;
-			}
-			fail("Should have returned expected concept");
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-		
+	@Test
+	public void testCanProcess() {
+		assertTrue(annotatorSubprocessor.canProcess("http://docs.annotatorjs.org/en/v1.2.x/annotation-format.html"));
 	}
-	
-	@Ignore @Test
-	public void testConceptExpansionECSO() {
-		
-		try {
-			String subclassUri = "http://purl.dataone.org/odo/ECSO_00000040";
-			String superclassUri = "http://purl.dataone.org/odo/ECSO_00000039";
-
-			Map<String, Set<String>> concepts = annotatorSubprocessor.expandConcepts(tagKey, subclassUri);
-			for (Set<String> conceptSet: concepts.values()) {
-				assertTrue(conceptSet.contains(superclassUri));
-				return;
-			}
-			fail("Should have returned superclass concept");
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-		
-	}
-	
-	//@Test
-	public void testConceptExpansionCHEBI() {
-		
-		try {
-			String subclassUri = "http://purl.obolibrary.org/obo/CHEBI_15377";
-	        
-			String[] superclasses = {
-					"http://purl.obolibrary.org/obo/CHEBI_33693",
-					"http://purl.obolibrary.org/obo/CHEBI_37176",
-					"http://purl.obolibrary.org/obo/CHEBI_52625"};
-			String junk = "-68e49d03:14f6bc4cd2d:-4725";
-
-			Map<String, Set<String>> concepts = annotatorSubprocessor.expandConcepts(tagKey, subclassUri);
-			for (Set<String> conceptSet: concepts.values()) {
-				System.out.println("CONCEPT: " + concepts);
-			}
-			
-			for (Set<String> conceptSet: concepts.values()) {
-				assertTrue(conceptSet.containsAll(Arrays.asList(superclasses)));
-				
-				assertFalse(conceptSet.contains(junk));
-				
-				return;
-			}
-			fail("Should have returned superclass concepts");
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-		
-	}
-
 }

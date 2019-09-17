@@ -45,8 +45,8 @@ public class SolrIndexEmlAnnotationTest extends DataONESolrJettyTestBase {
     @Test
     public void testSystemMetadataEml220AndAnnotation() throws Exception {
         String pid = "eml_annotation_example";
-        Resource systemMetadataResource = (Resource) context.getBean("emlAnnotationSysMeta");
-        Resource scienceMetadataResource = (Resource) context.getBean("emlAnnotationSciMeta");
+        Resource systemMetadataResource = (Resource) context.getBean("eml220TestDocSysMeta");
+        Resource scienceMetadataResource = (Resource) context.getBean("eml220TestDocSciMeta");
 
         addSysAndSciMetaToSolrIndex(systemMetadataResource, scienceMetadataResource);
         SolrDocument result = assertPresentInSolrIndex(pid);

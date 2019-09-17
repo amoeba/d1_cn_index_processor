@@ -3,9 +3,9 @@
  xmlns:p="http://www.springframework.org/schema/p"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xmlns:context="http://www.springframework.org/schema/context"
- xsi:schemaLocation="http://www.springframework.org/schema/beans 
+ xsi:schemaLocation="http://www.springframework.org/schema/beans
  http://www.springframework.org/schema/beans/spring-beans.xsd
- http://www.springframework.org/schema/context  
+ http://www.springframework.org/schema/context
  http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 	<bean id="solrIndexService" class="org.dataone.cn.indexer.SolrIndexService">
@@ -29,14 +29,13 @@
 				<ref bean="qualifiedDublicCoreSubprocessor" />
 				<ref bean="dublinCoreExtendedSubprocessor" />
                 <ref bean="datacite3Subprocessor" />
- 			  	<ref bean="prov20150115RdfXmlSubprocessor" /> 
+ 			  	<ref bean="prov20150115RdfXmlSubprocessor" />
 			 	<ref bean="annotatorSubprocessor" />
 				<ref bean="isotc211Subprocessor" />
 				<ref bean="isotc211NoaaSubprocessor" />
         <ref bean="isotc211PangaeaSubprocessor" />
-  				<ref bean="reprocessResourceMapSubprocessor" /> 
+  				<ref bean="reprocessResourceMapSubprocessor" />
   				<ref bean="dublinCoreOAISubprocessor" />
-                <ref bean="ontologyModelService" />
 			</list>
      	</property>
      	<property name="deleteSubprocessors">
@@ -46,7 +45,7 @@
      		</list>
      	</property>
 	</bean>
-	
+
 	<bean id="subprocessorUtility" class="org.dataone.cn.indexer.parser.SubprocessorUtility" />
 	<bean id="dateConverter" class="org.dataone.cn.indexer.convert.SolrDateConverter" />
 	<bean id="fgdcDateConverter" class="org.dataone.cn.indexer.convert.FgdcDateConverter"/>
@@ -57,43 +56,43 @@
 	</bean>
 	<bean id="formatIdToFormatTypeConverter" class="org.dataone.cn.indexer.convert.FormatIdToFormatTypeConverter" />
 	<bean id="serviceTypesConverter" class="org.dataone.cn.indexer.convert.MemberNodeServiceRegistrationTypeConverter" />
-	
+
 	<bean id="geohashConverter_1" class="org.dataone.cn.indexer.convert.GeohashConverter">
 		<property name="length" value="1"/>
 	</bean>
-	
+
 	<bean id="geohashConverter_2" class="org.dataone.cn.indexer.convert.GeohashConverter">
 		<property name="length" value="2"/>
 	</bean>
-	
+
 	 <bean id="geohashConverter_3" class="org.dataone.cn.indexer.convert.GeohashConverter">
 		<property name="length" value="3"/>
 	</bean>
-	
+
 	 <bean id="geohashConverter_4" class="org.dataone.cn.indexer.convert.GeohashConverter">
 		<property name="length" value="4"/>
 	</bean>
-	
+
 	 <bean id="geohashConverter_5" class="org.dataone.cn.indexer.convert.GeohashConverter">
 		<property name="length" value="5"/>
 	</bean>
-	
+
 	 <bean id="geohashConverter_6" class="org.dataone.cn.indexer.convert.GeohashConverter">
 		<property name="length" value="6"/>
 	</bean>
-	
+
 	 <bean id="geohashConverter_7" class="org.dataone.cn.indexer.convert.GeohashConverter">
 		<property name="length" value="7"/>
 	</bean>
-	
+
 	 <bean id="geohashConverter_8" class="org.dataone.cn.indexer.convert.GeohashConverter">
 		<property name="length" value="8"/>
 	</bean>
-	
+
 	 <bean id="geohashConverter_9" class="org.dataone.cn.indexer.convert.GeohashConverter">
 		<property name="length" value="9"/>
 	 </bean>
- 
+
 	<bean id="xmlNamespaceConfig" class="org.dataone.cn.indexer.XMLNamespaceConfig">
 	 	<constructor-arg name="namespaceList">
 	  	<list>
@@ -173,31 +172,31 @@
 	   	   		<constructor-arg name="prefix" value="gmd" />
 	   	   		<constructor-arg name="namespace" value="http://www.isotc211.org/2005/gmd" />
 	   	   </bean>
-	   	   
+
 		    <bean class="org.dataone.cn.indexer.XMLNamespace">
 		 		<constructor-arg name="prefix" value="gco" />
 		 	   	<constructor-arg name="namespace" value="http://www.isotc211.org/2005/gco" />
 			</bean>
-			
+
 		    <bean class="org.dataone.cn.indexer.XMLNamespace">
 		 		<constructor-arg name="prefix" value="gmx" />
 		 	   	<constructor-arg name="namespace" value="http://www.isotc211.org/2005/gmx" />
 			</bean>
-		
+
 		    <bean class="org.dataone.cn.indexer.XMLNamespace">
 		 		<constructor-arg name="prefix" value="gml" />
 		 	   	<constructor-arg name="namespace" value="http://www.opengis.net/gml/3.2" />
-			</bean> 
+			</bean>
 
 			<bean class="org.dataone.cn.indexer.XMLNamespace">
 		 		<constructor-arg name="prefix" value="srv" />
 		 	   	<constructor-arg name="namespace" value="http://www.isotc211.org/2005/srv" />
-			</bean> 
-			
+			</bean>
+
 			<bean class="org.dataone.cn.indexer.XMLNamespace">
 		 		<constructor-arg name="prefix" value="xlink" />
 		 	   	<constructor-arg name="namespace" value="http://www.w3.org/1999/xlink" />
-			</bean> 
+			</bean>
 		</list>
 	 	</constructor-arg>
 	</bean>
@@ -205,15 +204,15 @@
 	<bean id="solrQueryUri" class="java.lang.String">
 		<constructor-arg value="${solr.query.uri}"/>
 	</bean>
-	
+
 	<bean id="solrIndexUri" class="java.lang.String">
 		<constructor-arg value="${solr.index.uri}"/>
 	</bean>
-	
+
     <!--<bean id="httpConnectionManager" class="org.apache.http.impl.conn.SingleClientConnManager"/> -->
     <bean id="httpConnectionManager" class="org.apache.http.impl.conn.PoolingClientConnectionManager"  p:defaultMaxPerRoute="12" />
-    
-    
+
+
     <bean id="httpClient" class="org.apache.http.impl.client.DefaultHttpClient">
     	<constructor-arg ref="httpConnectionManager"/>
     </bean>
@@ -222,15 +221,15 @@
     	p:connectTimeout="5000" >
     	<constructor-arg ref="httpClient" />
     </bean>
-		
+
 	<bean id="httpService" class="org.dataone.cn.indexer.solrhttp.HTTPService">
 		<constructor-arg ref="httpClientFactory" />
 		<property name="solrSchemaPath" value="${solr.schema.path}" />
 		<property name="solrIndexUri" value="${solr.index.uri}" />
 	</bean>
-	
+
 	<bean id="mnServiceRegistrationTypeDocumentService" class="org.dataone.cn.indexer.convert.MemberNodeServiceRegistrationTypeDocumentService"/>
-	
+
 	<bean id="mnServiceRegistrationTypeCacheService" class="org.dataone.cn.indexer.parser.utility.MemberNodeServiceRegistrationTypeCache"/>
 
 </beans>

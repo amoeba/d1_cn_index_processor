@@ -228,6 +228,25 @@
         <field name="project" 			type="string" 	indexed="true" stored="true"/>
         <field name="projectText" 		type="text_general" 	indexed="true" stored="false"/>
 
+    		<!-- Funding metadata -->
+        <field name="funding" 			type="string" 	indexed="true" stored="true" multiValued="true" />
+        <field name="fundingText" 		type="text" 	indexed="true" stored="false" multiValued="true" />
+        <field name="funderName"        type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="funderIdentifier"  type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="awardNumber"       type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="awardTitle"        type="string" indexed="true" stored="true" multiValued="true" />
+            
+	<bean id="eml.funderName" class="org.dataone.cn.indexer.parser.SolrField">
+
+	
+	<bean id="eml.funderIdentifier" class="org.dataone.cn.indexer.parser.SolrField">
+
+	<bean id="eml.awardNumber" class="org.dataone.cn.indexer.parser.SolrField">
+
+	
+	<bean id="eml.awardTitle" class="org.dataone.cn.indexer.parser.SolrField">
+
+
         <field name="site" 				type="string" 	indexed="true" stored="true" multiValued="true"/>
         <field name="siteText" 			type="text_general" 	indexed="true" stored="false" multiValued="true"/>
 
@@ -380,6 +399,7 @@
     <copyField source="origin" dest="originatorText"/>
     
     <copyField source="project" dest="projectText"/>
+    <copyField source="funding" dest="fundingText"/>
     
     <copyField source="site" dest="siteText"/>
     <copyField source="parameter" dest="parameterText"/>

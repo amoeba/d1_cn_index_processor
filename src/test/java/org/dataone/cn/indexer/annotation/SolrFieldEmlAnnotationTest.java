@@ -1,6 +1,6 @@
 /**
  * This work was created by participants in the DataONE project, and is
- * jointly copyrighted by participating institutions in DataONE. For 
+ * jointly copyrighted by participating institutions in DataONE. For
  * more information on DataONE, see our web site at http://dataone.org.
  *
  *   Copyright ${year}
@@ -14,9 +14,9 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  */
 
 package org.dataone.cn.indexer.annotation;
@@ -51,10 +51,7 @@ import com.carrotsearch.randomizedtesting.annotations.ThreadLeakScope;
 public class SolrFieldEmlAnnotationTest extends BaseSolrFieldXPathTest {
 
     @Autowired
-    private Resource emlAnnotationSysMeta;
-
-    @Autowired
-    private Resource emlAnnotationSciMeta;
+    private Resource eml220TestDocSciMeta;
 
     @Autowired
     private EmlAnnotationSubprocessor emlAnnotationSubprocessor;
@@ -67,61 +64,51 @@ public class SolrFieldEmlAnnotationTest extends BaseSolrFieldXPathTest {
     @Before
     public void setUp() throws Exception {
         // annotations should include the superclass[es]
-    	annotationExpected
-                .put("sem_annotation", 
-                		"http://purl.dataone.org/odo/ECSO_00000512" +
-                		"||" +
-                		"http://ecoinformatics.org/oboe/oboe.1.2/oboe-core.owl#MeasurementType" +
-                		"||" +
-                		"http://purl.dataone.org/odo/ECSO_00001243" +
-                		"||" +
-                        "http://purl.dataone.org/odo/ECSO_00000518" +
-                        "||" +
-                        "http://www.w3.org/2000/01/rdf-schema#Resource" +
-                        "||" + 
-                        "http://purl.dataone.org/odo/ECSO_00000516" +
-                        "||" + 
-                        "http://purl.obolibrary.org/obo/UO_0000301");
+        annotationExpected.put("sem_annotation", "http://purl.dataone.org/odo/ECSO_00000512" + "||"
+                + "http://ecoinformatics.org/oboe/oboe.1.2/oboe-core.owl#MeasurementType" + "||"
+                + "http://purl.dataone.org/odo/ECSO_00001243" + "||" + "http://purl.dataone.org/odo/ECSO_00000518"
+                + "||" + "http://www.w3.org/2000/01/rdf-schema#Resource" + "||"
+                + "http://purl.dataone.org/odo/ECSO_00000516" + "||" + "http://purl.obolibrary.org/obo/UO_0000301");
 
-        
     }
-    
+
     protected boolean compareFields(HashMap<String, String> expected, InputStream document,
-    EmlAnnotationSubprocessor subProcessor, String identifier) throws Exception {
+            EmlAnnotationSubprocessor subProcessor, String identifier) throws Exception {
 
         Map<String, SolrDoc> docs = new TreeMap<String, SolrDoc>();
         Map<String, SolrDoc> solrDocs = subProcessor.processDocument(identifier, docs, document);
         List<SolrElementField> fields = solrDocs.get(identifier).getFieldList();
-        
+
         // make sure our expected fields have the expected values
         for (SolrElementField docField : fields) {
             String name = docField.getName();
             String value = docField.getValue();
-            
+
             String expectedValue = expected.get(name);
             if (expectedValue != null) {
-				List<String> expectedValues = Arrays.asList(StringUtils.split(expectedValue , "||"));
-	            if (expectedValues != null && !expectedValues.isEmpty()) {
-	            	System.out.println("Checking value: " + value);
-	            	System.out.println("in expected: " + expectedValues);
-	            	Assert.assertTrue(expectedValues.contains(value));  
-	            }
+                List<String> expectedValues = Arrays.asList(StringUtils.split(expectedValue, "||"));
+                if (expectedValues != null && !expectedValues.isEmpty()) {
+                    System.out.println("Checking value: " + value);
+                    System.out.println("in expected: " + expectedValues);
+                    Assert.assertTrue(expectedValues.contains(value));
+                }
             }
         }
-        		
+
         return true;
     }
 
     /**
      * Testing that the annotation is parsed correctly
-     * 
+     *
      * @throws Exception
      */
     @Test
     public void testAnnotationFields() throws Exception {
-        System.out.println("annotation: " + IOUtils.toString(emlAnnotationSciMeta.getInputStream()));
+        System.out.println("annotation: " + IOUtils.toString(eml220TestDocSciMeta.getInputStream()));
 
-        compareFields(annotationExpected, emlAnnotationSciMeta.getInputStream(), emlAnnotationSubprocessor, "eml_annotation_example");
+        compareFields(annotationExpected, eml220TestDocSciMeta.getInputStream(), emlAnnotationSubprocessor,
+                "eml_annotation_example");
     }
 
 }

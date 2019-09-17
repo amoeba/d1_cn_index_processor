@@ -31,7 +31,7 @@ public class EmlAnnotationSubprocessorTest {
     private EmlAnnotationSubprocessor emlAnnotationSubprocessor;
     
     @Autowired
-    private Resource emlAnnotationSciMeta;
+    private Resource eml220TestDocSciMeta;
 
     @Test
     public void canProcessEml220Docs() {
@@ -48,7 +48,7 @@ public class EmlAnnotationSubprocessorTest {
             SolrDoc solrDoc = new SolrDoc();
             docs.put(identifier, solrDoc);
     
-            Map<String, SolrDoc> solrDocs = emlAnnotationSubprocessor.processDocument(identifier, docs, emlAnnotationSciMeta.getInputStream());
+            Map<String, SolrDoc> solrDocs = emlAnnotationSubprocessor.processDocument(identifier, docs, eml220TestDocSciMeta.getInputStream());
 
             // Pull out the expanded concepts for asserting on
             List<String> expandedConcepts = new ArrayList<String>();
