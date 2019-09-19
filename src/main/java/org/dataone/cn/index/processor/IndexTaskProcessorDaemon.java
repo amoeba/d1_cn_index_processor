@@ -26,16 +26,25 @@ import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 public class IndexTaskProcessorDaemon implements Daemon {
 
     private ApplicationContext context;
     private IndexTaskProcessorScheduler scheduler;
+    private final static String CONTEXTPATH = "/etc/dataone/index/index-generation-context/processor-daemon-context.xml";
 
     @Override
     public void start() throws Exception {
         System.out.println("starting index task processor daemon [" + this + "] ..." );
-        context = new ClassPathXmlApplicationContext("processor-daemon-context.xml");
+        try {
+            context = new FileSystemXmlApplicationContext(CONTEXTPATH);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("IndexTaskProcessorDaemon.start - Falling back to configuration included in jar file.");
+            context = new ClassPathXmlApplicationContext("processor-daemon-context.xml");
+        }
+        
         scheduler = (IndexTaskProcessorScheduler) context.getBean("indexTaskProcessorScheduler");
         scheduler.start();
     }
