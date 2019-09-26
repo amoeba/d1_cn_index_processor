@@ -57,7 +57,16 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
     private Resource serviceDescriptionEmlSciMeta;
 
     @Autowired
+    private Resource eml220TestDocSysMeta;
+
+    @Autowired
+    private Resource eml220TestDocSciMeta;
+
+    @Autowired
     private ScienceMetadataDocumentSubprocessor eml210Subprocessor;
+
+    @Autowired
+    private ScienceMetadataDocumentSubprocessor eml220Subprocessor;
 
     private String serviceEmlPid = "serviceEmlPid";
     
@@ -66,12 +75,14 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
     // solr/rule field name (from spring context fields) mapped to actual value
     // from xml documents (system and science metadata docs)
     private HashMap<String, String> eml210Expected = new HashMap<String, String>();
+    private HashMap<String, String> eml220Expected = new HashMap<String, String>();
     private HashMap<String, String> emlRefExpected = new HashMap<String, String>();
     private HashMap<String, String> emlServiceExpected = new HashMap<String, String>();
     
     @Before
     public void setUp() throws Exception {
         setUpEml210();
+        setUpEml220();
         setUpEmlService();
     }
     
@@ -250,6 +261,109 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
         emlRefExpected.put("serviceEndpoint", "");
     }
 
+    public void setUpEml220() throws Exception {
+        eml220Expected.put("title", "EML Annotation Example");
+        eml220Expected.put("abstract", "");
+        eml220Expected.put("keywords", "");
+
+        eml220Expected.put("project", "MY PROJECT");
+        eml220Expected.put("funding", "SOME_RANDOM_FUNDING_INFO");
+        eml220Expected.put("funderName", "My Funder");
+        eml220Expected.put("funderIdentifier", "MY_FUNDER");
+        eml220Expected.put("awardNumber", "AWARD1");
+        eml220Expected.put("awardTitle", "An example award title");
+
+        eml220Expected.put("southBoundCoord", "");
+        eml220Expected.put("northBoundCoord", "");
+        eml220Expected.put("westBoundCoord", "");
+        eml220Expected.put("eastBoundCoord", "");
+        eml220Expected.put("geohash_1", "");
+        eml220Expected.put("geohash_2", "");
+        eml220Expected.put("geohash_3", "");
+        eml220Expected.put("geohash_4", "");
+        eml220Expected.put("geohash_5", "");
+        eml220Expected.put("geohash_6", "");
+        eml220Expected.put("geohash_7", "");
+        eml220Expected.put("geohash_8", "");
+        eml220Expected.put("geohash_9", "");
+        eml220Expected.put("site", "");
+        eml220Expected.put("beginDate", "");
+        eml220Expected.put("endDate", "");
+        eml220Expected.put("pubDate", "");
+        eml220Expected.put("author", "EML Annotator");
+        eml220Expected.put("authorGivenName", "EML");
+        eml220Expected.put("authorSurName", "Annotator");
+        eml220Expected.put("authorGivenNameSort", "EML");
+        eml220Expected.put("authorSurNameSort", "Annotator");
+        eml220Expected.put("authorLastName", "Annotator");
+        eml220Expected.put("investigator", "Annotator");
+        eml220Expected.put("contactOrganization", "");
+        eml220Expected.put("genus","");
+        eml220Expected.put("species","");
+        eml220Expected.put("kingdom", "");
+        eml220Expected.put("order", "");
+        eml220Expected.put("phylum", "");
+        eml220Expected.put("family", "");
+        eml220Expected.put("class", "");
+        eml220Expected.put("scientificName", "");
+        eml220Expected.put("origin", "EML Annotator");
+        eml220Expected
+                .put("attributeName",
+                        "SOME_ATTRIBUTE");
+        eml220Expected.put("attributeLabel", "");
+        eml220Expected
+                .put("attributeDescription",
+                        "SOME_ATTRIBUTE's definition");
+        eml220Expected
+                .put("attributeUnit",
+                        "");
+        eml220Expected
+                .put("attribute",
+                        "SOME_ATTRIBUTE  SOME_ATTRIBUTE's definition");
+
+        eml220Expected.put("fileID", "https://" + hostname + "/cn/v2/resolve/eml-test-doc");
+        eml220Expected
+                .put("text",
+                        "EML Annotation Example   EML  Annotator     EML  Annotator    MY PROJECT    EML  Annotator   principalInvestigator   SOME_RANDOM_FUNDING_INFO   My Funder  MY_FUNDER  AWARD1  An example award title  https://example.org/someaward eml-test-doc SOME_ATTRIBUTE SOME_ATTRIBUTE's definition");
+
+        // system metadata
+        eml220Expected.put("id", "eml-test-doc");
+        eml220Expected.put("seriesId", "");
+        eml220Expected.put("fileName", "");
+        eml220Expected.put("mediaType", "");
+        eml220Expected.put("mediaTypeProperty", "");
+        eml220Expected.put("formatId", "https://eml.ecoinformatics.org/eml-2.2.0");
+        eml220Expected.put("formatType", "METADATA");
+        eml220Expected.put("size", "0");
+        eml220Expected.put("checksum", "12345");
+        eml220Expected.put("checksumAlgorithm", "MD5");
+        eml220Expected.put("submitter", "dataone_integration_test_user");
+        eml220Expected.put("rightsHolder", "dataone_integration_test_user");
+        eml220Expected.put("replicationAllowed", "true");
+        eml220Expected.put("numberReplicas", "");
+        eml220Expected.put("preferredReplicationMN", "");
+        eml220Expected.put("blockedReplicationMN", "");
+        eml220Expected.put("obsoletes", "");
+        eml220Expected.put("obsoletedBy", "");
+        eml220Expected.put("dateUploaded", dateConverter.convert("2019-07-31T15:59:47.000"));
+        eml220Expected.put("dateModified", dateConverter.convert("2019-07-31T15:59:47.000"));
+        eml220Expected.put("datasource", "test_documents");
+        eml220Expected.put("authoritativeMN", "test_documents");
+        eml220Expected.put("replicaMN", "");
+        eml220Expected.put("replicationStatus", "");
+        eml220Expected.put("replicaVerifiedDate", "");
+        eml220Expected.put("readPermission", "public#dataone_public_user");
+        eml220Expected.put("writePermission", "dataone_integration_test_user");
+        eml220Expected.put("changePermission", "");
+        eml220Expected.put("isPublic", "true");
+        eml220Expected.put("dataUrl", "https://" + hostname + "/cn/v2/resolve/eml-test-doc");
+
+        eml220Expected.put("isService", "false");
+        eml220Expected.put("serviceTitle", "");
+        eml220Expected.put("serviceDescription", "");
+        eml220Expected.put("serviceEndpoint", "");
+    }
+
     public void setUpEmlService() throws Exception {
         // science metadata
         emlServiceExpected.put("abstract", "");
@@ -350,6 +464,12 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
     public void testEml210ScienceMetadataFields() throws Exception {
         testXPathParsing(eml210Subprocessor, peggym1304SysObsoletedBy, peggym1304Sci,
                 eml210Expected, "peggym.130.4");
+    }
+
+    @Test
+    public void testEml220ScienceMetadataFields() throws Exception {
+        testXPathParsing(eml220Subprocessor, eml220TestDocSysMeta, eml220TestDocSciMeta,
+                eml220Expected, "eml-test-doc");
     }
 
     /**

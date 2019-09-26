@@ -27,17 +27,26 @@ import org.apache.commons.daemon.DaemonContext;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 public class IndexTaskProcessorDaemon implements Daemon {
 
     private ApplicationContext context;
     private IndexTaskProcessorScheduler scheduler;
     private static Logger logger = Logger.getLogger(IndexTaskProcessorDaemon.class);
+    private final static String CONTEXTPATH = "/etc/dataone/index/index-generation-context/processor-daemon-context.xml";
 
     @Override
     public void start() throws Exception {
         logger.info("IndexTaskProcessorDaemon.start - starting index task processor daemon..." );
-        context = new ClassPathXmlApplicationContext("processor-daemon-context.xml");
+        try {
+            context = new FileSystemXmlApplicationContext(CONTEXTPATH);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("IndexTaskProcessorDaemon.start - Falling back to configuration included in jar file.");
+            context = new ClassPathXmlApplicationContext("processor-daemon-context.xml");
+        }
+        
         logger.info("IndexTaskProcessorDaemon.start - after creating the context." );
 
         scheduler = (IndexTaskProcessorScheduler) context.getBean("indexTaskProcessorScheduler");
