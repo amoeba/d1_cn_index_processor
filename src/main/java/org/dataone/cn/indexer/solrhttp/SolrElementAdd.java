@@ -50,7 +50,7 @@ import org.apache.commons.io.IOUtils;
  * 
  */
 
-class SolrElementAdd {
+public class SolrElementAdd {
 
     private static final char[] ELEMENT_ADD_OPEN = "<add>".toCharArray();
     private static final char[] ELEMENT_ADD_CLOSE = "</add>".toCharArray();
