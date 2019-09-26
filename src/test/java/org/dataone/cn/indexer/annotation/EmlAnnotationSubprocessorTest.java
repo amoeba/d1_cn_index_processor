@@ -29,7 +29,7 @@ public class EmlAnnotationSubprocessorTest {
 
     @Autowired
     private EmlAnnotationSubprocessor emlAnnotationSubprocessor;
-    
+
     @Autowired
     private Resource eml220TestDocSciMeta;
 
@@ -47,7 +47,7 @@ public class EmlAnnotationSubprocessorTest {
 
             SolrDoc solrDoc = new SolrDoc();
             docs.put(identifier, solrDoc);
-    
+
             Map<String, SolrDoc> solrDocs = emlAnnotationSubprocessor.processDocument(identifier, docs, eml220TestDocSciMeta.getInputStream());
 
             // Pull out the expanded concepts for asserting on
@@ -56,19 +56,22 @@ public class EmlAnnotationSubprocessorTest {
             for (SolrElementField field : solrDocs.get(identifier).getFieldList()) {
                 expandedConcepts.add(field.getValue());
             }
-            
+
             // Set up expected concepts and assert
             List<String> expectedConcepts = new ArrayList<String>();
+
             expectedConcepts.add("http://purl.dataone.org/odo/ECSO_00000512");
             expectedConcepts.add("http://ecoinformatics.org/oboe/oboe.1.2/oboe-core.owl#MeasurementType");
+            expectedConcepts.add("http://purl.dataone.org/odo/ECSO_00001102");
             expectedConcepts.add("http://purl.dataone.org/odo/ECSO_00001243");
+            expectedConcepts.add("http://purl.dataone.org/odo/ECSO_00000629");
             expectedConcepts.add("http://purl.dataone.org/odo/ECSO_00000518");
             expectedConcepts.add("http://www.w3.org/2000/01/rdf-schema#Resource");
             expectedConcepts.add("http://purl.dataone.org/odo/ECSO_00000516");
             expectedConcepts.add("http://purl.obolibrary.org/obo/UO_0000301");
 
             assertEquals(1, solrDocs.size());
-            assertEquals(expandedConcepts, expectedConcepts);
+            assertEquals(expectedConcepts, expandedConcepts);
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());

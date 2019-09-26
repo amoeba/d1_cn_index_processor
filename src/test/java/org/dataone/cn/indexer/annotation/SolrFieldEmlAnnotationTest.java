@@ -64,12 +64,16 @@ public class SolrFieldEmlAnnotationTest extends BaseSolrFieldXPathTest {
     @Before
     public void setUp() throws Exception {
         // annotations should include the superclass[es]
-        annotationExpected.put("sem_annotation", "http://purl.dataone.org/odo/ECSO_00000512" + "||"
-                + "http://ecoinformatics.org/oboe/oboe.1.2/oboe-core.owl#MeasurementType" + "||"
-                + "http://purl.dataone.org/odo/ECSO_00001243" + "||" + "http://purl.dataone.org/odo/ECSO_00000518"
-                + "||" + "http://www.w3.org/2000/01/rdf-schema#Resource" + "||"
-                + "http://purl.dataone.org/odo/ECSO_00000516" + "||" + "http://purl.obolibrary.org/obo/UO_0000301");
-
+        annotationExpected.put("sem_annotation",
+            "http://purl.dataone.org/odo/ECSO_00000512" + "||" +
+            "http://ecoinformatics.org/oboe/oboe.1.2/oboe-core.owl#MeasurementType" + "||" +
+            "http://purl.dataone.org/odo/ECSO_00001102" + "||" +
+            "http://purl.dataone.org/odo/ECSO_00001243" + "||" +
+            "http://purl.dataone.org/odo/ECSO_00000629" + "||" +
+            "http://purl.dataone.org/odo/ECSO_00000518" + "||" +
+            "http://www.w3.org/2000/01/rdf-schema#Resource" + "||" +
+            "http://purl.dataone.org/odo/ECSO_00000516" + "||" +
+            "http://purl.obolibrary.org/obo/UO_0000301");
     }
 
     protected boolean compareFields(HashMap<String, String> expected, InputStream document,
@@ -80,19 +84,16 @@ public class SolrFieldEmlAnnotationTest extends BaseSolrFieldXPathTest {
         List<SolrElementField> fields = solrDocs.get(identifier).getFieldList();
 
         // make sure our expected fields have the expected values
-        for (SolrElementField docField : fields) {
-            String name = docField.getName();
-            String value = docField.getValue();
+        for (SolrElementField field : fields) {
+            String name = field.getName();
 
-            String expectedValue = expected.get(name);
-            if (expectedValue != null) {
-                List<String> expectedValues = Arrays.asList(StringUtils.split(expectedValue, "||"));
-                if (expectedValues != null && !expectedValues.isEmpty()) {
-                    System.out.println("Checking value: " + value);
-                    System.out.println("in expected: " + expectedValues);
-                    Assert.assertTrue(expectedValues.contains(value));
-                }
-            }
+            // Assert we expected this field
+            Assert.assertTrue(annotationExpected.containsKey(name));
+
+            // Check the values
+            String value = field.getValue();
+            List<String> expectedValues = Arrays.asList(StringUtils.split(expected.get(name), "||"));
+            Assert.assertTrue(expectedValues.contains(value));
         }
 
         return true;
@@ -105,8 +106,6 @@ public class SolrFieldEmlAnnotationTest extends BaseSolrFieldXPathTest {
      */
     @Test
     public void testAnnotationFields() throws Exception {
-        System.out.println("annotation: " + IOUtils.toString(eml220TestDocSciMeta.getInputStream()));
-
         compareFields(annotationExpected, eml220TestDocSciMeta.getInputStream(), emlAnnotationSubprocessor,
                 "eml_annotation_example");
     }
