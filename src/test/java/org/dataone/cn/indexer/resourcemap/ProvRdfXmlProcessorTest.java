@@ -370,6 +370,7 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
         assertPresentInSolrIndex(emlDoc);
         assertPresentInSolrIndex(jpgImage);
         assertPresentInSolrIndex(ctdData);
+        Thread.sleep(SLEEPTIME);
         assertPresentInSolrIndex(resourceMap);
 
     }
