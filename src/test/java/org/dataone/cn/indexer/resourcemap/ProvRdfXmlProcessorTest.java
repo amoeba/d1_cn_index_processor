@@ -371,6 +371,7 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
         assertPresentInSolrIndex(jpgImage);
         assertPresentInSolrIndex(ctdData);
         Thread.sleep(SLEEPTIME);
+        Thread.sleep(SLEEPTIME);
         assertPresentInSolrIndex(resourceMap);
 
     }
