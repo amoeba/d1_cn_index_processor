@@ -9,7 +9,7 @@
  
 	<properties>
 	  	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <compiler.target.version>1.7</compiler.target.version>
+      <compiler.target.version>1.8</compiler.target.version>
 	  	<spring.version>3.1.4.RELEASE</spring.version>
 	  	<hazelcast.version>2.4.1</hazelcast.version>
 	  	<solr.version>5.2.1</solr.version>
@@ -287,6 +287,13 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.5</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/log4j/apache-log4j-extras -->
+        <dependency>
+           <groupId>log4j</groupId>
+           <artifactId>apache-log4j-extras</artifactId>
+           <version>1.2.17</version>
+        </dependency>
+        
         
         <dependency>
 			<groupId>net.minidev</groupId>

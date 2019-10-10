@@ -34,7 +34,7 @@ import org.dataone.cn.indexer.solrhttp.SolrDoc;
  * Time: 1:41 PM
  */
 public class ScienceMetadataDocumentSubprocessor extends BaseXPathDocumentSubprocessor implements
-        IDocumentSubprocessor {
+        IDocumentSubprocessor, IDocumentSubprocessorV2 {
 
     @Override
     public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs,
@@ -42,4 +42,11 @@ public class ScienceMetadataDocumentSubprocessor extends BaseXPathDocumentSubpro
         return super.processDocument(identifier, docs, is);
     }
 
+    
+    @Override
+    public void processDocument(String identifier, UpdateAssembler docs,
+            InputStream is) throws Exception {
+        super.processDocument(identifier, docs, is);
+    }
+    
 }

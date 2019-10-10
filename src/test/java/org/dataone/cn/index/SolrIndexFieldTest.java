@@ -32,6 +32,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.core.io.Resource;
 import org.w3c.dom.Document;
@@ -52,6 +53,7 @@ public class SolrIndexFieldTest extends DataONESolrJettyTestBase {
 
     protected BaseXPathDocumentSubprocessor systemMetadata200Subprocessor;
 
+    @Ignore("not a good test - not very specific or sensitive")
     @Test
     public void testLooping() throws Exception {
         testComplexSystemMetadataAndFgdcScienceData();

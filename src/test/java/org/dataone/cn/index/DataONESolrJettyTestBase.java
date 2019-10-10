@@ -44,6 +44,7 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.params.ModifiableSolrParams;
 import org.dataone.cn.indexer.SolrIndexService;
+import org.dataone.cn.indexer.SolrIndexServiceV2;
 import org.dataone.cn.indexer.parser.BaseReprocessSubprocessor;
 import org.dataone.cn.indexer.parser.ISolrField;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
@@ -68,21 +69,23 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
 
     protected ApplicationContext context;
     private SolrIndexService solrIndexService;
+    private SolrIndexServiceV2 solrIndexServiceV2;
     
     protected static Log __logger = LogFactory.getLog(DataONESolrJettyTestBase.class);
 
     protected void addEmlToSolrIndex(Resource sysMetaFile) throws Exception {
-        SolrIndexService indexService = solrIndexService;
+        SolrIndexServiceV2 indexService = solrIndexServiceV2;
         SystemMetadata smd = TypeMarshaller.unmarshalTypeFromStream(SystemMetadata.class,
                 sysMetaFile.getInputStream());
         // path to actual science metadata document
         String path = StringUtils.remove(sysMetaFile.getFile().getPath(), File.separator + "SystemMetadata");
         indexService.insertIntoIndex(smd.getIdentifier().getValue(), sysMetaFile.getInputStream(),
                 path);
+        if (client != null) client.commit();
     }
 
     protected void addSysAndSciMetaToSolrIndex(Resource sysMeta, Resource sciMeta) throws Exception {
-        SolrIndexService indexService = solrIndexService;
+        SolrIndexServiceV2 indexService = solrIndexServiceV2;
         SystemMetadata smd = TypeMarshaller.unmarshalTypeFromStream(SystemMetadata.class,
                 sysMeta.getInputStream());
         String path = sciMeta.getFile().getAbsolutePath();
@@ -95,7 +98,7 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
         ModifiableSolrParams solrParams = new ModifiableSolrParams();
         // use a real-time get to avoid commit issues
         SolrDocument result = getSolrClient().getById(pid);
-        Assert.assertFalse("Solr response should not be empty for id query for " + pid , result.isEmpty());
+        Assert.assertFalse("Solr response should not be empty for id query for " + pid , result == null || result.isEmpty());
 
 //        solrParams.set("q", "id:" + ClientUtils.escapeQueryChars(pid));
 //        solrParams.set("fl", "*");
@@ -161,8 +164,8 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
             System.out.println("Comparing value for field " + docField.getName());
             if (solrValueObject == null) {
                 if (!"text".equals(docField.getName())) {
-                    System.out.println("Null result value for field name:  " + docField.getName()
-                            + ", actual: " + docField.getValue());
+                    System.out.println("Doc Value: " + docField.getValue());
+                    System.out.println("Solr Value: <evaluated to null for this test>"); 
                     Assert.assertTrue(docField.getValue() == null || "".equals(docField.getValue()));
                 }
             } else if (solrValueObject instanceof String) {
@@ -237,6 +240,7 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
             context = new ClassPathXmlApplicationContext("/org/dataone/cn/index/test-context.xml");
         }
         solrIndexService = (SolrIndexService) context.getBean("solrIndexService");
+        solrIndexServiceV2 = (SolrIndexServiceV2) context.getBean("solrIndexServiceV2");
     }
 
     protected void startJettyAndSolr() throws Exception {

@@ -22,9 +22,6 @@
 
 package org.dataone.cn.indexer.solrhttp;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,10 +33,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
@@ -54,11 +49,9 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.dataone.cn.indexer.D1IndexerSolrClient;
+import org.dataone.cn.indexer.parser.UpdateAssembler;
+import org.dataone.configuration.Settings;
 import org.dataone.service.util.DateTimeMarshaller;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * Adaptation of HttpService class to use the SolrJClient.
@@ -85,35 +78,49 @@ public class SolrJClient implements D1IndexerSolrClient {
     
     private static final String DYNAMIC_FIELD_SUFFIX = "_sm";
     
+    private static final Pattern VERSION_MISMATCH_PATTERN = Pattern.compile("version conflict for (.+) expected=(\\d+)");
+
+    
     /** >0 value ensures a soft commit after that number of millis
      * 0 value is an immediate soft commit
      * -1 value switches client behavior to add a hard commit from the client
      */
-    public int COMMIT_WITHIN_MS = -1; // for solr updates.
+    public int COMMIT_WITHIN_MS = Settings.getConfiguration().getInt("dataone.indexer.solrClient.commit.within.ms", 250); // for solr updates.
     
-    public static final boolean USE_REAL_TIME_GETS = false;
+    public static final boolean USE_REAL_TIME_GETS = true;
+    public static final boolean UPDATES_USE_JAVABIN = Settings.getConfiguration().getBoolean("dataone.indexer.solrClient.updates.use.javabin", false);
 
     private static Logger log = Logger.getLogger(SolrJClient.class.getName());
 
+    private SolrSchema solrSchema;
     private HttpClient httpClient;
-    private SolrClient solrClient;
+    private SolrClient queryClient;
+    private SolrClient updateClient;
 
-
-    private String SOLR_SCHEMA_PATH;
+//    private String SOLR_SCHEMA_PATH;
     private String solrIndexUri;
-    private List<String> validSolrFieldNames = new ArrayList<String>();
+ //   private List<String> validSolrFieldNames = new ArrayList<String>();
     private Set<String> multiValuedSolrFieldNames = new HashSet<String>();
     
+
+    /* only set to true in development */
+    protected static boolean AUDIT_CALL_MODE = false;
     protected List<String> solrCallList = new ArrayList<String>();
     protected List<Date> solrCallStartTimeList = new ArrayList<Date>();
     protected List<Long> solrCallDurationList = new ArrayList<Long>();
 
 
     /**
-     * @param SolrClient
+     * Used to interact with the solr server. Construction details are
+     * delegated to the parameters, configured by Sprint, currently
+     * 
+     * @param updateClient - the client to be used for updates and deletes
+     * @param queryClient - the client to be used for querying
      */
-    public SolrJClient(SolrClient client) {
-        solrClient = client;
+    public SolrJClient(SolrSchema schema, SolrClient updateClient, SolrClient queryClient) {
+        this.solrSchema = schema;
+        this.updateClient = updateClient;
+        this.queryClient = queryClient;
     }
     
 //    /**
@@ -149,73 +156,248 @@ public class SolrJClient implements D1IndexerSolrClient {
      * @param data
      * @param encoding
      * @param isAtomic - if atomic, add in field modifiers
-     * @throws IOException
+     * @throws IOException 
      */
     @Override
     public void sendUpdate(String uri, List<SolrDoc> data, String encoding, boolean isAtomic)
+           throws IOException {
+        
+        sendUpdateWithRedo(uri, data, isAtomic);
+        
+    }
+    
+    /**
+     * sends an update and handle potential version mismatches by detecting the
+     * problem item in the list, re-fetching the existing document and submitting
+     * the remainder of the list.
+     * @param uri
+     * @param assembler - the UpdateAssembler with the material to update
+     * @param encoding 
+     * @param isAtomic 
+     * @throws IOException
+     */
+    public void sendUpdate(String uri, UpdateAssembler assembler, boolean isAtomic) 
+            throws IOException {
+        
+
+        List<SolrDoc> remaining = assembler.assembleUpdate(0);
+        log.info("... update size = " + remaining.size());
+        int attempts = 0;
+        while (remaining.size() > 0 && attempts++ <= 50) {
+            
+            Integer numberProcessed = sendUpdateWithRedo(uri, remaining, isAtomic);
+            log.info("... number processed = " + numberProcessed);
+            if (numberProcessed == null) {
+                log.warn("Exception caught during update, but not sure it's a conflict.  Reprocessing as if it was");
+                numberProcessed = 0;
+            }
+            if (numberProcessed == -1) {
+                // conflict found but can't tell which item, so will update the existing for all
+                for (SolrDoc sd : remaining) {
+                    String id = sd.getFirstFieldValue("id");
+                    log.debug("fetching solr record due to conflict for id: " + id);
+                    try {
+                        SolrDocument newExisting = this.queryClient.getById(id);
+                        if (newExisting != null) {
+                            log.trace("...found existing solr document");
+                            assembler.addToUpdate(id, parseResponse(newExisting), null);
+                        } else {
+                            log.trace("...did not find existing solr document");
+//                            assembler.addToUpdate(id, UpdateAssembler.getNotInSolrSolrDoc(), null);
+                        }
+                        
+                    } catch (SolrServerException e) {
+                        IOException ioe = new IOException("unable to fetch the current solr record with ID: " + id);
+                        ioe.initCause(e);
+                        throw ioe;
+                    }
+                }
+                remaining = assembler.assembleUpdate(0);
+            }
+            else if (numberProcessed < remaining.size()) {
+                ////// not everything succeeded, so figure out which failed,
+                ////// re-fetch the existing solr record, and try again.
+                log.warn("Not all updates succeeded. [" + numberProcessed  + "/" + remaining.size()+"] attempt:" + attempts);
+                
+                // (the numberProcessed happens to equal the index of the one that failed)
+                String id = remaining.get(numberProcessed).getFirstFieldValue("id");
+                log.debug("fetching solr record due to conflict for conflicted id: " + id);
+                SolrDocument sd;
+                try {
+                    sd = this.queryClient.getById(id);
+                    if (sd != null) {
+                        log.trace("...found an existing solr document");
+                        assembler.addToUpdate(id, parseResponse(sd), null);
+                    } else {
+                        log.trace("...did not find an existing solr document");
+//                        assembler.addToUpdate(id, UpdateAssembler.getNotInSolrSolrDoc(), null);
+                    }
+                    remaining = assembler.assembleUpdate(numberProcessed);
+                                      
+                } catch (SolrServerException e) {
+                    IOException ioe = new IOException("unable to fetch the current solr record with ID: " + id);
+                    ioe.initCause(e);
+                    throw ioe;
+                }
+            } else {
+                break;
+            }
+        }
+    }
+    
+    
+    /**
+     * Converts a SolrDoc to a solrj SolrInputDocument
+     * @param doc - the SolrDoc (with modifiers already determined) to convert
+     * @param isAtomic
+     * @return - a SolrInputDocument or null if the partial update doesn't have any statements
+     */
+    private SolrInputDocument convertSolrDoc(SolrDoc doc, boolean isAtomic) {
+        SolrInputDocument updateDoc = new SolrInputDocument();
+        boolean hasAtomicUpdates = false;
+        for (SolrElementField sef : doc.getFieldList()) {
+            Object value = UPDATES_USE_JAVABIN ? solrSchema.convertToSolrType(sef.getName(),sef.getValue())
+                    : sef.getValue();
+            if (sef.getModifier() != null) 
+            {
+                // explicitly set
+                hasAtomicUpdates = true;
+                Map<String, Object> fieldModifier = new HashMap<>(1);
+                
+                fieldModifier.put(sef.getModifier().toString(), value);
+                updateDoc.addField(sef.getName(), fieldModifier);
+                log.trace(String.format("update field '%s' using modifier '%s' with value '%s' [type: %s]", 
+                        sef.getName(), sef.getModifier(), sef.getValue(), value.getClass().getSimpleName()
+                        ));
+            } 
+            else if (isAtomic && !sef.getName().equals("id") && !sef.getName().equals("_version_")) 
+            {
+                // making it an atomic update by the flag
+                // (this option probably outdated at this point)
+                hasAtomicUpdates = true;
+                Map<String,Object> fieldModifier = new HashMap<>(1);
+                String modifierKeyword = this.multiValuedSolrFieldNames.contains(sef.getName()) ? "add" : "set";
+                
+                fieldModifier.put(modifierKeyword, value);
+                updateDoc.addField(sef.getName(), fieldModifier);
+                log.trace(String.format("update field '%s' using midifier '%s' with value '%s' [type: %s]", 
+                        sef.getName(), modifierKeyword, sef.getValue(), value.getClass().getSimpleName()
+                        ));
+            } 
+            else 
+            {
+                updateDoc.addField(sef.getName(), value);
+                log.trace(String.format("update field '%s' with value '%s' [type: %s]", 
+                        sef.getName(), sef.getValue(), value.getClass().getSimpleName()));
+                
+            }
+        }
+        
+        // XXX: why is this conditional here?
+        if (!isAtomic || hasAtomicUpdates) {
+            return updateDoc;
+        } else {
+            // filters out the generated atomic updates 
+            return null;
+        }
+        
+    }
+    
+    
+    public Integer sendUpdateWithRedo(String uri, List<SolrDoc> data, boolean isAtomic)
             throws IOException {
 
-        log.info("is Atomic / Partial Update: " + isAtomic);
+        log.debug("is Atomic Update: " + isAtomic);
+        
+        
         // convert SolrElementAdd to SolrJ's SolrInputDocument
         List<SolrInputDocument> updateDocList = new ArrayList<SolrInputDocument>();
         for (SolrDoc doc : data) {
-            SolrInputDocument updateDoc = new SolrInputDocument();
-            log.debug("new doc to update...");
-            boolean hasAtomicUpdates = false;
-            for (SolrElementField sef : doc.getFieldList()) {
-                
-                if (sef.getModifier() != null) 
-                {
-                    hasAtomicUpdates = true;
-                    Map<String, Object> fieldModifier = new HashMap<>(1);
-                    fieldModifier.put(sef.getModifier().toString(), sef.getValue());
-                    updateDoc.addField(sef.getName(), fieldModifier);
-                    log.debug(String.format("update field '%s' as '%s' with value '%s'", sef.getName(), sef.getModifier(), sef.getValue()));
-                } 
-                else if (isAtomic && !sef.getName().equals("id") && !sef.getName().equals("_version_")) 
-                {
-                    hasAtomicUpdates = true;
-                    Map<String,Object> fieldModifier = new HashMap<>(1);
-                    String modifierKeyword = this.multiValuedSolrFieldNames.contains(sef.getName()) ? "add" : "set";
-                    fieldModifier.put(modifierKeyword, sef.getValue());
-                    updateDoc.addField(sef.getName(), fieldModifier);
-                    log.debug(String.format("update field '%s' as '%s' with value '%s'", sef.getName(), modifierKeyword, sef.getValue()));
-                } 
-                else 
-                {
-                    updateDoc.addField(sef.getName(), sef.getValue());
-                    log.debug(String.format("update field '%s' with value '%s'", sef.getName(), sef.getValue()));
-                    
-                }
+            String id = doc.getFirstFieldValue("id");
+            log.debug("SolrDoc to update: " + id);
+            SolrInputDocument updateDoc = convertSolrDoc(doc,isAtomic);
+            if (updateDoc != null) {
+                log.debug("...successfully converted to SolrInputDocument - added to list: " + id);
+                updateDocList.add(updateDoc);
             }
-            if (!isAtomic || hasAtomicUpdates) {
-                updateDocList.add(updateDoc);                
-            } 
-        }
-
-        if (updateDocList.size() > 0) {
-            Date callStart = null;
+        } 
+               
+        Integer processed = null; 
+        
+        if (updateDocList.size() == 0) {
+            log.info("submitting no update documents!!");
+         
+        } else {
+            log.info("submitting update for " + updateDocList.size() + " documents.");
+            
+            // a couple performance metric variables
+            Date callStart = new Date();
             long callEnd = 0;
+                                 
             try {
-                log.info("submitting update for " + updateDocList.size() + " documents.");
-                callStart = new Date();
+                log.debug("COMMIT_WITHIN_MS = " + COMMIT_WITHIN_MS);
                 if (COMMIT_WITHIN_MS == -1) {
-                    getSolrClient().add(updateDocList);
-                    getSolrClient().commit();
+                    updateClient.add(updateDocList);
+                    updateClient.commit();
                 } else {
-                    getSolrClient().add(updateDocList,COMMIT_WITHIN_MS);
+                    updateClient.add(updateDocList,COMMIT_WITHIN_MS);
                 }
+                
+                
                 callEnd = System.currentTimeMillis();
                 log.info(".... update submitted");
-            } catch (SolrServerException e) {
-                logError(e,data,e.getMessage(),"Using zkHost");
-                throw new IOException("Unable to update solr (see cause)",e);
+                processed = updateDocList.size();
+                
+            } catch (Exception e) {
+                log.warn("not all objects processed...");
+                processed = determineNumberProcessed(e, updateDocList, data);
+
+                if (processed == null) {
+                    log.error("exception updating solr from SolrClient",e);
+                    IOException ioe = new IOException("Unexpected exception from solr update!", e);
+                    throw ioe;
+                }
+            
             } finally {
-                this.solrCallList.add("update:" + updateDocList.size());
-                this.solrCallDurationList.add(callEnd - callStart.getTime());
-                this.solrCallStartTimeList.add(callStart);
+                if (AUDIT_CALL_MODE) {
+                    this.solrCallList.add("update:" + updateDocList.size());
+                    this.solrCallDurationList.add(callEnd - callStart.getTime());
+                    this.solrCallStartTimeList.add(callStart);
+                }
             }
         }
+        return processed;
+    }
+    
+    private Integer determineNumberProcessed(Throwable e, List<SolrInputDocument> updateDocList, List<SolrDoc> data) throws IOException {
+        
+        log.debug("exception in update: " + e.getClass().getCanonicalName() + ": " + e.getMessage());
+        Integer processed = null;
+
+        Matcher m = VERSION_MISMATCH_PATTERN.matcher(e.getMessage());
+        String problemId = null;
+        SolrInputDocument head = null;  
+        
+        int i = 0;
+        if (m.find()) {
+            problemId = m.group(1);
+            boolean found = false;
+            while(!found) {
+                head = updateDocList.get(i);
+                if (problemId.equals(head.getFieldValue("id"))) {
+                    found = true;
+                    log.debug("Found conflict id: " + head.getFieldValue("id"));
+                } else {
+                    i++;
+                }
+            }
+            processed = i;
+            log.info("processed " + (i) + " updates.");
+            log.info("remaining " + (updateDocList.size() - i));
+        } else if (e.getMessage().toLowerCase().contains("conflict")) {
+            processed = -1;
+        }
+        return processed;
     }
 
 
@@ -228,10 +410,10 @@ public class SolrJClient implements D1IndexerSolrClient {
         try {
             log.info("Deleting record in Solr with id: " + pid);
             if (COMMIT_WITHIN_MS == -1) {
-                getSolrClient().deleteById(pid);
-                getSolrClient().commit();
+                updateClient.deleteById(pid);
+                updateClient.commit();
             } else {
-                getSolrClient().deleteById(pid,COMMIT_WITHIN_MS);
+                updateClient.deleteById(pid,COMMIT_WITHIN_MS);
             }
         } catch (SolrServerException | IOException e1) {
             logError(e1,pid, e1.getMessage(),"zkHost");
@@ -248,10 +430,10 @@ public class SolrJClient implements D1IndexerSolrClient {
         try {
             log.info("Deleting records in Solr with id: " + StringUtils.join(pids,", "));
             if (COMMIT_WITHIN_MS == -1) {
-                getSolrClient().deleteById(pids);
-                getSolrClient().commit();
+                updateClient.deleteById(pids);
+                updateClient.commit();
             } else {
-                getSolrClient().deleteById(pids,COMMIT_WITHIN_MS);
+                updateClient.deleteById(pids,COMMIT_WITHIN_MS);
             }
 
         } catch (SolrServerException | IOException e1) {
@@ -261,7 +443,7 @@ public class SolrJClient implements D1IndexerSolrClient {
         }
      }
     
-    private void logError(Exception ex, List<SolrDoc> data, String messageResponse,
+    private void logError(Throwable ex, List<SolrDoc> data, String messageResponse,
             String uri) throws IOException {
 
         try {
@@ -271,12 +453,13 @@ public class SolrJClient implements D1IndexerSolrClient {
             SolrElementAdd add = new SolrElementAdd(data);
             log.error("URL: " + uri);
             log.error("Post: ");
+            log.error("message response: " + messageResponse);
+            log.error("Attempting to serialize the request...");
+            
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             add.serialize(baos, "UTF-8");
             log.error(new String(baos.toByteArray(), "UTF-8"));
-            log.error("\n\n\nResponse: \n");
-
-            log.error(messageResponse);
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -327,7 +510,7 @@ public class SolrJClient implements D1IndexerSolrClient {
     {
         if (USE_REAL_TIME_GETS) {
             try {
-                log.info("Id for solrId get: " + id);
+                log.info("Id for solrId get: " + id + " from " + uir);
                 if (log.isTraceEnabled()) {
                     log.trace(Thread.currentThread().getStackTrace()[1].getMethodName());
                     log.trace(Thread.currentThread().getStackTrace()[2].getMethodName());
@@ -335,10 +518,13 @@ public class SolrJClient implements D1IndexerSolrClient {
                     log.trace(Thread.currentThread().getStackTrace()[4].getClassName() + ":"+ Thread.currentThread().getStackTrace()[6].getMethodName());            
                 }
 
-                SolrDocument d = this.getSolrClient().getById(id);
+                SolrDocument d = this.queryClient.getById(id);
 
-                List<SolrDoc> docs = new ArrayList<SolrDoc>();
-                docs.add(parseResponse(d));
+                List<SolrDoc> docs = new ArrayList<>();
+                SolrDoc dd = parseResponse(d);
+                if (dd != null) {
+                    docs.add(dd);
+                }
                 return docs;
 
             } catch (SolrServerException e) {
@@ -366,7 +552,7 @@ public class SolrJClient implements D1IndexerSolrClient {
                     log.trace(Thread.currentThread().getStackTrace()[3].getClassName() + ":"+ Thread.currentThread().getStackTrace()[5].getMethodName());
                     log.trace(Thread.currentThread().getStackTrace()[4].getClassName() + ":"+ Thread.currentThread().getStackTrace()[6].getMethodName());       
                 }
-                SolrDocumentList d = this.getSolrClient().getById(ids);
+                SolrDocumentList d = this.queryClient.getById(ids);
                 List<SolrDoc> docs = new ArrayList<SolrDoc>();
                 docs.addAll(parseResponse(d));
                 return docs;
@@ -401,7 +587,7 @@ public class SolrJClient implements D1IndexerSolrClient {
             return null;
         }
 
-        loadSolrSchemaFields();
+ //       loadSolrSchemaFields();
 
         List<SolrDoc> docs = new ArrayList<SolrDoc>();
 
@@ -464,7 +650,7 @@ public class SolrJClient implements D1IndexerSolrClient {
     private List<SolrDoc> getDocumentsByTwoFields(String uir, String field1, String field1Value,
             String field2, String field2Value) throws IOException {
 
-        loadSolrSchemaFields();
+//        loadSolrSchemaFields();
         List<SolrDoc> docs = new ArrayList<SolrDoc>();
         StringBuilder sb = new StringBuilder();
         sb.append(field1 + ":").append(ClientUtils.escapeQueryChars(field1Value));
@@ -508,7 +694,7 @@ public class SolrJClient implements D1IndexerSolrClient {
         Date callStart = new Date();
         long callEnd = 0;
         try {
-            QueryResponse qr = getSolrClient().query(sq);
+            QueryResponse qr = queryClient.query(sq);
 
             List<SolrDoc> response =  parseResponse(qr.getResults());
             callEnd = System.currentTimeMillis();
@@ -517,9 +703,11 @@ public class SolrJClient implements D1IndexerSolrClient {
         } catch (SolrServerException e1) {
             throw new IOException(e1);
         } finally {
-            this.solrCallList.add(solrQ);
-            this.solrCallDurationList.add(callEnd - callStart.getTime());
-            this.solrCallStartTimeList.add(callStart);
+            if (AUDIT_CALL_MODE) {
+                this.solrCallList.add(solrQ);
+                this.solrCallDurationList.add(callEnd - callStart.getTime());
+                this.solrCallStartTimeList.add(callStart);
+            }
         }
     }
     
@@ -541,25 +729,27 @@ public class SolrJClient implements D1IndexerSolrClient {
     
     protected SolrDoc parseResponse(SolrDocument sd) {
                        
-        loadSolrSchemaFields();
-
+//        loadSolrSchemaFields();
+        
         SolrDoc solrDoc = new SolrDoc();
         
         if (sd == null) {
             return null;
         }
+        log.debug("version for the returned record: " + sd.getFieldValue("_version_"));
         if (sd.hasChildDocuments()) {
             log.info("ChildDocCount = " + sd.getChildDocumentCount());
         }
         int fieldCount = 0;
         StringBuffer sb = new StringBuffer();
         for (String fieldName : sd.getFieldNames()) {
+            log.trace(" field name: " + fieldName);
             fieldCount++;
             sb.append(" [" + fieldName + ": ");
 
             // ensure valid field, or a dynamic field matching the pattern
             // NOTE: there are many kinds of dynamic fields, only handling one for now.
-            if (this.validSolrFieldNames.contains(fieldName) || fieldName.endsWith(DYNAMIC_FIELD_SUFFIX)) {
+            if (this.solrSchema.getValidFields().contains(fieldName) || fieldName.equals("_version_") || fieldName.endsWith(DYNAMIC_FIELD_SUFFIX)) {
                 sb.append("valid: ");
                 Object v = sd.getFieldValue(fieldName);
 
@@ -583,10 +773,9 @@ public class SolrJClient implements D1IndexerSolrClient {
                 sb.append("NOT valid");
             }
             sb.append("]");
-            if (log.isTraceEnabled()) {
-                log.trace(sb.toString());
-                
-            }
+        }
+        if (log.isTraceEnabled()) {
+            log.trace(sb.toString());
         }
         log.info("FieldCount = " + fieldCount);
         return solrDoc;
@@ -637,75 +826,75 @@ public class SolrJClient implements D1IndexerSolrClient {
      */
     @Override
     public void setSolrSchemaPath(String path) {
-        SOLR_SCHEMA_PATH = path;
+//        SOLR_SCHEMA_PATH = path;
     }
 
-    private void loadSolrSchemaFields() {
-        if (SOLR_SCHEMA_PATH != null && validSolrFieldNames.isEmpty()) {
-            Document doc = loadSolrSchemaDocument();
-            NodeList nList = doc.getElementsByTagName("copyField");
-            List<String> copyDestinationFields = new ArrayList<String>();
-            for (int i = 0; i < nList.getLength(); i++) {
-                Node node = nList.item(i);
-                String destinationField = node.getAttributes().getNamedItem("dest").getNodeValue();
-                copyDestinationFields.add(destinationField);
-            }
-            nList = doc.getElementsByTagName("field");
-            List<String> fields = new ArrayList<String>();
-            for (int i = 0; i < nList.getLength(); i++) {
-                Node node = nList.item(i);
-                
-                String fieldName = node.getAttributes().getNamedItem("name").getNodeValue();
-                fields.add(fieldName);
-                
-                // create a list of multivalued fields to be used for atomic updates
-                Node n = node.getAttributes().getNamedItem("multiValued");
-                if (n != null && "true".equals(n.getNodeValue())) {
-                    this.multiValuedSolrFieldNames.add(fieldName);
-                }
-                
-            }
-            fields.removeAll(copyDestinationFields);
-            this.validSolrFieldNames = fields;
-            fields.remove("_version_");
-        }
-    }
+//    private void loadSolrSchemaFields() {
+//        if (SOLR_SCHEMA_PATH != null && validSolrFieldNames.isEmpty()) {
+//            Document doc = loadSolrSchemaDocument();
+//            NodeList nList = doc.getElementsByTagName("copyField");
+//            List<String> copyDestinationFields = new ArrayList<String>();
+//            for (int i = 0; i < nList.getLength(); i++) {
+//                Node node = nList.item(i);
+//                String destinationField = node.getAttributes().getNamedItem("dest").getNodeValue();
+//                copyDestinationFields.add(destinationField);
+//            }
+//            nList = doc.getElementsByTagName("field");
+//            List<String> fields = new ArrayList<String>();
+//            for (int i = 0; i < nList.getLength(); i++) {
+//                Node node = nList.item(i);
+//                
+//                String fieldName = node.getAttributes().getNamedItem("name").getNodeValue();
+//                fields.add(fieldName);
+//                
+//                // create a list of multivalued fields to be used for atomic updates
+//                Node n = node.getAttributes().getNamedItem("multiValued");
+//                if (n != null && "true".equals(n.getNodeValue())) {
+//                    this.multiValuedSolrFieldNames.add(fieldName);
+//                }
+//                
+//            }
+//            fields.removeAll(copyDestinationFields);
+//            this.validSolrFieldNames = fields;
+//            fields.remove("_version_");
+//        }
+//    }
 
-    private Document loadSolrSchemaDocument() {
-
-        Document doc = null;
-        File schemaFile = new File(SOLR_SCHEMA_PATH);
-        if (schemaFile != null) {
-            FileInputStream fis = null;
-            try {
-                fis = new FileInputStream(schemaFile);
-            } catch (FileNotFoundException e) {
-                log.error(e.getMessage(), e);
-            }
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = null;
-            try {
-                dBuilder = dbFactory.newDocumentBuilder();
-            } catch (ParserConfigurationException e) {
-                log.error(e.getMessage(), e);
-            }
-            try {
-                doc = dBuilder.parse(fis);
-            } catch (SAXException e) {
-                log.error(e.getMessage(), e);
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-            }
-            try {
-                if (fis != null) {
-                    fis.close();
-                }
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-            }
-        }
-        return doc;
-    }
+//    private Document loadSolrSchemaDocument() {
+//
+//        Document doc = null;
+//        File schemaFile = new File(SOLR_SCHEMA_PATH);
+//        if (schemaFile != null) {
+//            FileInputStream fis = null;
+//            try {
+//                fis = new FileInputStream(schemaFile);
+//            } catch (FileNotFoundException e) {
+//                log.error(e.getMessage(), e);
+//            }
+//            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+//            DocumentBuilder dBuilder = null;
+//            try {
+//                dBuilder = dbFactory.newDocumentBuilder();
+//            } catch (ParserConfigurationException e) {
+//                log.error(e.getMessage(), e);
+//            }
+//            try {
+//                doc = dBuilder.parse(fis);
+//            } catch (SAXException e) {
+//                log.error(e.getMessage(), e);
+//            } catch (IOException e) {
+//                log.error(e.getMessage(), e);
+//            }
+//            try {
+//                if (fis != null) {
+//                    fis.close();
+//                }
+//            } catch (IOException e) {
+//                log.error(e.getMessage(), e);
+//            }
+//        }
+//        return doc;
+//    }
 
     /* (non-Javadoc)
      * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#setSolrIndexUri(java.lang.String)
@@ -728,10 +917,10 @@ public class SolrJClient implements D1IndexerSolrClient {
      */
     @Override
     public HttpClient getHttpClient() {
-        return this.httpClient;     }
+        return this.httpClient;     
+    }
     
-    protected SolrClient getSolrClient() {
-        return solrClient;
-
+    protected void commit() throws SolrServerException, IOException {
+        this.updateClient.commit();
     }
 }

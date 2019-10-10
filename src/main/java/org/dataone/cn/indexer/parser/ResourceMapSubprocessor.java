@@ -112,6 +112,7 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
     @Override
     public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs,
             InputStream is) throws XPathExpressionException, IOException, EncoderException {
+        
         SolrDoc resourceMapSolrDoc = docs.get(identifier);
         List<SolrDoc> processedDocs = new ArrayList<SolrDoc>();
         try {            
@@ -126,9 +127,12 @@ public class ResourceMapSubprocessor implements IDocumentSubprocessor {
         for (SolrDoc processedDoc : processedDocs) {
             processedDocsMap.put(processedDoc.getIdentifier(), processedDoc);
         }
-        return processedDocsMap;
+        return processedDocsMap; 
+        
+        
     }
 
+    
     /**
      * Given the starting SolrDoc for the resourcemap (from upstream processors), and parsed XML,
      * get all the members,  

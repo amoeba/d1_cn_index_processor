@@ -22,6 +22,9 @@
 
 package org.dataone.cn.index;
 
+import java.io.IOException;
+
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrDocumentList;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -103,14 +106,27 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
         String pid = "peggym.130.4";
         sendSolrDeleteAll();
         addAllToSolr();
+        client.commit();
         assertPresentInSolrIndex(pid);
         SolrDocumentList sdl = null;
+        sdl = findByField("id", pid);
+        Assert.assertEquals(1, sdl.size());
+        printRetrievedSolrRecord(pid);
+        printRetrievedSolrRecord("tao.12930.1");
         sdl = findByField("text", "double");
         Assert.assertEquals(1, sdl.size());
         sdl = findByField("text", "single");
         Assert.assertEquals(1, sdl.size());
     }
 
+    private void printRetrievedSolrRecord(String id) throws SolrServerException, IOException {
+        SolrDocumentList sdl = findByField("id",id);
+        for (String fieldName : sdl.get(0).getFieldNames()) {
+            System.out.println(fieldName + " = " + sdl.get(0).getFieldValue(fieldName));
+        }
+        System.out.println("==========================================================");
+    }
+    
     @Test
     public void testTokenizingContractionPreserved() throws Exception {
         String pid = "peggym.130.4";
@@ -189,9 +205,9 @@ public class SolrTokenenizerTest extends DataONESolrJettyTestBase {
         peggym1291Sys = (Resource) context.getBean("peggym1291Sys");
         peggym1304Sys = (Resource) context.getBean("peggym1304Sys");
         tao129301Sys = (Resource) context.getBean("tao129301Sys");
-        addEmlToSolrIndex(peggym1271Sys);
-        addEmlToSolrIndex(peggym1281Sys);
-        addEmlToSolrIndex(peggym1291Sys);
+//        addEmlToSolrIndex(peggym1271Sys);
+ //       addEmlToSolrIndex(peggym1281Sys);
+ //       addEmlToSolrIndex(peggym1291Sys);
         addEmlToSolrIndex(peggym1304Sys);
         addEmlToSolrIndex(tao129301Sys);
     }

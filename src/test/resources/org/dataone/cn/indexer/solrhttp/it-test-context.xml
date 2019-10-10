@@ -9,6 +9,7 @@ xmlns:context="http://www.springframework.org/schema/context"
 
     <context:property-placeholder location="classpath:org/dataone/configuration/jdbc.properties, classpath:org/dataone/configuration/solr.properties"/>
 
+    <import resource="classpath:org/dataone/cn/indexer/solrhttp/test-solr-schema.xml"/>
     <import resource="classpath:test-index-processor-context.xml"/>
     
     <import resource="classpath:application-context-systemmeta200.xml" />
@@ -21,6 +22,9 @@ xmlns:context="http://www.springframework.org/schema/context"
  	<import resource="classpath:application-context-eml201.xml" />
  	<import resource="classpath:application-context-eml210.xml" />
  	<import resource="classpath:application-context-eml211.xml" />
+    <import resource="classpath:application-context-eml220.xml" />
+ 	<import resource="classpath:application-context-eml-annotation.xml" />
+ 	<import resource="classpath:application-context-ontology-model-service.xml" />
  	
  	<import resource="classpath:application-context-fgdc-base.xml" />
  	<import resource="classpath:application-context-fgdc-std-001-1998.xml" />
@@ -36,7 +40,8 @@ xmlns:context="http://www.springframework.org/schema/context"
     <import resource="classpath:application-context-dc-base.xml" />
     <import resource="classpath:application-context-qdc.xml" />
     <import resource="classpath:application-context-dcx.xml" />
-
+    <import resource="classpath:application-context-dc-oai.xml" />
+    
     <import resource="classpath:application-context-datacite-base.xml" />
     <import resource="classpath:application-context-datacite-3.xml" />
     
@@ -49,6 +54,7 @@ xmlns:context="http://www.springframework.org/schema/context"
     <import resource="classpath:application-context-provone20150115.xml" />
 	
     <import resource="classpath:application-context-oa.xml" />
+
     <import resource="classpath:application-context-annotator.xml" />
     
     <import resource="classpath:org/dataone/cn/indexer/annotation/test-context-annotator.xml"/>
@@ -249,6 +255,16 @@ xmlns:context="http://www.springframework.org/schema/context"
     <bean id="dcx_ipumsi_SciMeta" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String" 
         value="org/dataone/cn/index/resources/d1_testdocs/dcx/ipumsi_6-3_br_2000_dcx.xml"/>
+    </bean>
+    
+     <bean id="dc_oai_SysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/dc-oai/SystemMetadata-oai_dc.1.1.xml"/>
+    </bean>
+    
+    <bean id="dc_oai_SciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String" 
+        value="org/dataone/cn/index/resources/d1_testdocs/dc-oai/oai_dc.1.1.xml"/>
     </bean>
     
     <bean id="dcterms_spatial_no_namespace_SysMeta" class="org.springframework.core.io.ClassPathResource" >

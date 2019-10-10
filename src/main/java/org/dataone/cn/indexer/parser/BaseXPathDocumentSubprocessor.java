@@ -25,6 +25,7 @@ package org.dataone.cn.indexer.parser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,7 @@ import javax.xml.xpath.XPathFactoryConfigurationException;
 
 import org.apache.commons.codec.EncoderException;
 import org.dataone.cn.index.util.PerformanceLogger;
+import org.dataone.cn.indexer.AbstractStubMergingSubprocessor;
 import org.dataone.cn.indexer.XMLNamespaceConfig;
 import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
@@ -61,7 +63,7 @@ import net.sf.saxon.lib.NamespaceConstant;
  * Date: 9/22/11
  * Time: 3:24 PM
  */
-public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
+public class BaseXPathDocumentSubprocessor extends AbstractStubMergingSubprocessor implements  IDocumentSubprocessor, IDocumentSubprocessorV2 {
 
     private PerformanceLogger perfLog = PerformanceLogger.getInstance();
     
@@ -85,6 +87,11 @@ public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
             xpathFactory = XPathFactory.newInstance(NamespaceConstant.OBJECT_MODEL_SAXON);
         } catch (XPathFactoryConfigurationException e) {
             e.printStackTrace();
+        } catch (NullPointerException npe) {
+            npe.printStackTrace();
+        }
+        if (xpathFactory == null) {
+            Thread.dumpStack();
         }
         xpath = xpathFactory.newXPath();
         //System.err.println("=======================================Loaded XPath Provider " + xpath.getClass().getName());
@@ -93,6 +100,9 @@ public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
     public BaseXPathDocumentSubprocessor() {
     }
 
+   
+    
+    
     /**
      * Default functionality is to process fields like XPathDocumentProcessor
      * and add fields to Solr Document This method maybe overridden to add
@@ -111,14 +121,33 @@ public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
     public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs,
             InputStream is) throws Exception {
 
-        SolrDoc metaDocument = docs.get(identifier);
-        if (metaDocument == null) {
-            metaDocument = new SolrDoc();
-            docs.put(identifier, metaDocument);
-        }
+        return parseDocument(identifier, is, docs);
+    }
+
+    /*
+     * The only necessary implementation for V2 index semantics (stub records) 
+     */
+    @Override
+    protected Map<String, SolrDoc> parseDocument(String identifier, InputStream source)
+        throws Exception {
+
+        return parseDocument(identifier, source, null);
+    }
+    
+    
+    private Map<String, SolrDoc> parseDocument(String identifier, InputStream source, Map<String,SolrDoc> docMap)
+            throws Exception {
         
+        if (docMap == null) {
+            docMap = new HashMap<>();
+        }
+        if (!docMap.containsKey(identifier)) {
+            docMap.put(identifier, new SolrDoc());
+        }  
+        SolrDoc metaDocument = docMap.get(identifier);            
+                
         long fetchXmlStart = System.currentTimeMillis();
-        Document doc = XmlDocumentUtility.generateXmlDocument(is);
+        Document doc = XmlDocumentUtility.generateXmlDocument(source);
         perfLog.log("BaseXPathDocumentSubprocessor.processDocument() XmlDocumentUtility.generateXmlDocument() for id "+identifier, System.currentTimeMillis() - fetchXmlStart);
         
         long addAllFieldsStart = System.currentTimeMillis();
@@ -133,9 +162,21 @@ public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
             perfLog.log("BaseXPathDocumentSubprocessor.processDocument() processing id "+identifier +" of field " + solrField.getClass().getSimpleName() + "(\"" + fieldName +"\").getFields()", System.currentTimeMillis() - getFieldsStart);
         }
         perfLog.log("BaseXPathDocumentSubprocessor.processDocument() processing ALL fields for id "+identifier, System.currentTimeMillis() - addAllFieldsStart);
-        
-        return docs;
+        return docMap;
     }
+    
+//    /**
+//     * Implementation of the IDocumentSubprocessorV2 interface
+//     */
+//    public void processDocument(String identifier, UpdateAssembler collector, InputStream is) throws Exception {
+//        // since this is a pure parser, we can use the original processDocument method (that takes a Map).
+//        
+//        Map<String, SolrDoc> map = new HashMap<String,SolrDoc>();
+//        processDocument(identifier, map, is);
+//        for (Map.Entry<String, SolrDoc> n : map.entrySet()) {
+//           collector.addToUpdate(n.getKey(), null, n.getValue()); 
+//        }
+//    }
 
     /**
      * Returns true if subprocessor should be run against object
@@ -184,4 +225,6 @@ public class BaseXPathDocumentSubprocessor implements IDocumentSubprocessor {
             EncoderException, XPathExpressionException {
         return indexDocument;
     }
+
+  
 }

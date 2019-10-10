@@ -196,6 +196,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
 
         // system metadata
         nodc1Expected.put("id", pid1);
+        nodc1Expected.put("identifier", pid1);
         nodc1Expected.put("seriesId", "");
         nodc1Expected.put("fileName", "");
         nodc1Expected.put("mediaType", "");
@@ -283,6 +284,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
 
         // system metadata
         nodc2Expected.put("id", pid2);
+        nodc2Expected.put("identifier", pid2);
         nodc2Expected.put("seriesId", "");
         nodc2Expected.put("fileName", "");
         nodc2Expected.put("mediaType", "");
@@ -384,6 +386,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
 
         // system metadata
         iarc1Expected.put("id", pid3);
+        iarc1Expected.put("identifier", pid3);
         iarc1Expected.put("seriesId", "");
         iarc1Expected.put("fileName", "");
         iarc1Expected.put("mediaType", "");
@@ -469,6 +472,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
 
         // system metadata
         iarc2Expected.put("id", pid4);
+        iarc2Expected.put("identifier", pid4);
         iarc2Expected.put("seriesId", "");
         iarc2Expected.put("fileName", "");
         iarc2Expected.put("mediaType", "");
@@ -516,6 +520,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     private void setupTightlyCoupledServiceExpected() throws Exception { 
         // system metadata
         tightlyCoupledServiceExpected.put("id", pid5);
+        tightlyCoupledServiceExpected.put("identifier", pid5);
         tightlyCoupledServiceExpected.put("seriesId", "");
         tightlyCoupledServiceExpected.put("fileName", "");
         tightlyCoupledServiceExpected.put("mediaType", "");
@@ -604,6 +609,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     private void setupLooselyCoupledServiceExpected() throws Exception {
         // system metadata
         looselyCoupledServiceExpected.put("id", pid6);
+        looselyCoupledServiceExpected.put("identifier", pid6);
         looselyCoupledServiceExpected.put("seriesId", "");
         looselyCoupledServiceExpected.put("fileName", "");
         looselyCoupledServiceExpected.put("mediaType", "");
@@ -678,6 +684,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     private void setupDistributionInfoExpected() throws Exception {
         // system metadata
         distributionInfoExpected.put("id", pid7);
+        distributionInfoExpected.put("identifier", pid7);
         distributionInfoExpected.put("seriesId", "");
         distributionInfoExpected.put("fileName", "");
         distributionInfoExpected.put("mediaType", "");
@@ -780,6 +787,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     private void setupGeoserverExpected() throws Exception {
         // system metadata
         geoserverExpected.put("id", pid8);
+        geoserverExpected.put("identifier", pid8);
         geoserverExpected.put("seriesId", "");
         geoserverExpected.put("fileName", "");
         geoserverExpected.put("mediaType", "");
@@ -871,6 +879,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     private void setupLooselyCoupledServiceSrvOnlyExpected() throws Exception {
         // system metadata
         looselyCoupledServiceSrvAndDistribExpected.put("id", pid9);
+        looselyCoupledServiceSrvAndDistribExpected.put("identifier", pid9);
         looselyCoupledServiceSrvAndDistribExpected.put("seriesId", "");
         looselyCoupledServiceSrvAndDistribExpected.put("fileName", "");
         looselyCoupledServiceSrvAndDistribExpected.put("mediaType", "");
@@ -948,6 +957,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     private void setupTightlyCoupledServiceSrvOnlyExpected() throws Exception {
         // system metadata
         tightlyCoupledServiceSrvOnlyExpected.put("id", pid10);
+        tightlyCoupledServiceSrvOnlyExpected.put("identifier", pid10);
         tightlyCoupledServiceSrvOnlyExpected.put("seriesId", "");
         tightlyCoupledServiceSrvOnlyExpected.put("fileName", "");
         tightlyCoupledServiceSrvOnlyExpected.put("mediaType", "");
@@ -1055,6 +1065,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
 
         // system metadata
         noaaExpected.put("id", pid11);
+        noaaExpected.put("identifier", pid11);
         noaaExpected.put("seriesId", "");
         noaaExpected.put("fileName", "");
         noaaExpected.put("mediaType", "");

@@ -83,15 +83,46 @@ import org.w3c.dom.Document;
  */
 public class IndexTaskProcessor {
 
+    
+    
     private static Logger logger = Logger.getLogger(IndexTaskProcessor.class.getName());
     private static final String FORMAT_TYPE_DATA = "DATA";
     private static final String LOAD_LOGGER_NAME = "indexProcessorLoad";
-//    private static int BATCH_UPDATE_SIZE = Settings.getConfiguration().getInt("dataone.indexing.batchUpdateSize", 1000);
-    private static int NUMOFPROCESSOR = Settings.getConfiguration().getInt("dataone.indexing.multiThreads.processThreadPoolSize", 10);
-    private static int MAXATTEMPTS = Settings.getConfiguration().getInt("dataone.indexing.multiThreads.resourceMapWait.maxAttempt", 10);
-//    private static int FUTUREQUEUESIZE = Settings.getConfiguration().getInt("dataone.indexing.multiThreads.futureQueueSize", 100);
-    private static ExecutorService executor = Executors.newFixedThreadPool(NUMOFPROCESSOR);
 
+    /* bean configuration causes static variables to be populated prior to Settings configurations
+     * so things set with properties files need to be either refreshed in instance methods
+     * or non-static.
+     */
+
+    private static final String THREADPOOL_SIZE_PROPERTY = "dataone.indexing.multiThreads.processThreadPoolSize";
+    private static final int DEFAULT_THREADPOOL_SIZE = 5;
+    private static final int DEFAULT_MAX_TRYCOUNT = 8;
+    private static final int DEFAULT_MAXATTEMPTS = 10;
+    
+    //    private static int BATCH_UPDATE_SIZE = Settings.getConfiguration().getInt("dataone.indexing.batchUpdateSize", 1000);
+    
+    /* the executor service needs to be static, but static configuration is problematic when wanting to override it */
+    private static int numProcessors = Settings.getConfiguration()
+            .getInt(THREADPOOL_SIZE_PROPERTY, DEFAULT_THREADPOOL_SIZE);
+    private static ExecutorService executor = Executors.newFixedThreadPool(numProcessors);
+
+    private int maxAttempts = Settings.getConfiguration().getInt("dataone.indexing.multiThreads.resourceMapWait.maxAttempt", DEFAULT_MAXATTEMPTS);
+
+    //    private static int FUTUREQUEUESIZE = Settings.getConfiguration().getInt("dataone.indexing.multiThreads.futureQueueSize", 100);
+
+
+    private static final boolean CHECKING_ORE_READINESS = Settings.getConfiguration()
+            .getBoolean("dataone.indexing.multiThreads.checkOreReadiness",false);
+    
+    private static final boolean DO_PRECHECKS_IN_MAIN_THREAD = Settings.getConfiguration()
+                .getBoolean("dataone.indexing.multiThreads.taskPreCheckInMainThread",false);
+    
+    private static final boolean DELETE_OBSOLETED_AND_ARCHIVED = Settings.getConfiguration()
+            .getBoolean("dataone.indexing.multiThreads.deleteObsoletedAndArchived",true);
+
+    private static final boolean MARKING_IN_PROCESS = Settings.getConfiguration()
+            .getBoolean("dataone.indexing.multiThreads.markingInProcess",false);
+    
     private static final Lock LOCK = new ReentrantLock();
     
     /* a map used to aid in quick executor shutdown */
@@ -128,8 +159,12 @@ public class IndexTaskProcessor {
     private static int maxTryCount = 8;
     
     public IndexTaskProcessor() {
+        logger.warn("IndexTaskProcessor initialized with stated number of threads = " + numProcessors);
     }
 
+    
+    // TODO: figure out if this is used by index-build-tool, or if it's
+    //  useful for the future.  It seems to be single-threaded, so out of date.
     /**
      * Processes the index task queue written by the IndexTaskGenerator, 
      * but unlike {@link #processIndexTaskQueue()}, all IndexTasks that 
@@ -186,7 +221,8 @@ public class IndexTaskProcessor {
      */
     public void processIndexTaskQueue() {
         logProcessorLoad();
-        maxTryCount = Settings.getConfiguration().getInt("dataone.indexing.processing.max.tryCount", 8);
+        
+ //       checkExecutorConfig();
         List<IndexTask> queue = getIndexTaskQueue();
         IndexTask task = getNextIndexTask(queue);
         while (task != null) {
@@ -210,6 +246,7 @@ public class IndexTaskProcessor {
      * @param queue
      */
     public void processIndexTaskQueue(List<IndexTask> queue) {
+ //       checkExecutorConfig();
         IndexTask task = null;
         if(queue != null) {
             int size = queue.size();
@@ -264,7 +301,7 @@ public class IndexTaskProcessor {
      * Use multiple threads to process the index task
      */
     private void processTaskOnThread(final IndexTask task) {
-        logger.info("using multiple threads to process index and the size of the thread pool is "+NUMOFPROCESSOR);
+        logger.info("using multiple threads to process index and the size of the thread pool is " + IndexTaskProcessor.numProcessors);
         
         Runnable newThreadTask = new Runnable() {
             public void run() {
@@ -272,7 +309,7 @@ public class IndexTaskProcessor {
             }
         };
         @SuppressWarnings("unchecked")
-        Future<Void> future = (Future<Void>) executor.submit(newThreadTask);
+        Future<Void> future = (Future<Void>) getExecutorService().submit(newThreadTask);
         preSubmittedTasks.remove(task);
         futureQueue.add(future);
         futureMap.put(future, task);
@@ -281,20 +318,28 @@ public class IndexTaskProcessor {
     public void processTask(IndexTask task) {
         
         if (task == null) {
-            logger.debug("sent a null task...ignoring");
+            logger.debug("got sent a null task...ignoring");
             return;
         }
         
         long start = System.currentTimeMillis();
         try {
-            checkReadinessProcessResourceMap(task);
-            if (task.isDeleteTask()) {
+            if (CHECKING_ORE_READINESS) {
+                checkReadinessProcessResourceMap(task);
+            }
+            if (DELETE_OBSOLETED_AND_ARCHIVED && task.isDeleteTask()) {
                 logger.info("+++++++++++++start to process delete index task for "+task.getPid()+" in thread "+Thread.currentThread().getId());
                 //System.out.println("+++++++++++++start to process delete index task for "+task.getPid()+" in thread "+Thread.currentThread().getId());
                 deleteProcessor.process(task);
                 //System.out.println("+++++++++++++end to process delete index task for "+task.getPid()+" in thread "+Thread.currentThread().getId());
                 logger.info("+++++++++++++end to process delete index task for "+task.getPid()+" in thread "+Thread.currentThread().getId());
             } else {
+                if (!DO_PRECHECKS_IN_MAIN_THREAD) {
+                    task = doTaskPreChecks(task);
+                    if (task == null) {
+                        return;
+                    }
+                }
                 logger.info("*********************start to process update index task for "+task.getPid()+" in thread "+Thread.currentThread().getId());
                 //System.out.println("*********************start to process update index task for "+task.getPid()+" in thread "+Thread.currentThread().getId());
                 updateProcessor.process(task);
@@ -356,7 +401,7 @@ public class IndexTaskProcessor {
                     for (String id : referencedIds) {
                         if(SeriesIdResolver.isSeriesId(TypeFactory.buildIdentifier(id))) {
                             boolean isClear = false;
-                            for(int i=0; i<MAXATTEMPTS; i++) {
+                            for(int i=0; i<maxAttempts; i++) {
                                 if(seriesIdsSet.contains(id)) {
                                     System.out.println("###################Another index task is process the object with series id " 
                                             + id + " as well. So the thread to process id "
@@ -379,7 +424,7 @@ public class IndexTaskProcessor {
                         }
                         
                         boolean clear = false;
-                        for(int i=0; i<MAXATTEMPTS; i++) {
+                        for(int i=0; i<maxAttempts; i++) {
                             if(id != null && !id.trim().equals("") && referencedIdsMap.containsKey(id)) {
                                 //another resource map is process the referenced id as well.
                                 if(resourceMapTask.getPid().equals(referencedIdsMap.get(id))) {
@@ -440,7 +485,7 @@ public class IndexTaskProcessor {
                             logger.debug("xxxxxxxxxxxxxxxxxxxx the index task "+task.getPid()
                                     +" has a sid "+sid.getValue()+" in the the thread "+ Thread.currentThread().getId());
                         boolean clear = false;
-                        for(int i=0; i<MAXATTEMPTS; i++) {
+                        for(int i=0; i<maxAttempts; i++) {
                             if(seriesIdsSet.contains(sid.getValue())) {
                                 if (logger.isDebugEnabled())
                                     logger.debug("###################Another index task is process the object with series id "
@@ -631,37 +676,55 @@ public class IndexTaskProcessor {
             task = queue.remove(0);
 
             if (task == null) continue;
-            
+  
+            if (DO_PRECHECKS_IN_MAIN_THREAD) {
+                task = doTaskPreChecks(task);
+            }
+        }
+        return task;
+    }
+          
+    /*
+     * return of null means don't proceed 
+     * return of the task means proceed
+     */
+    private IndexTask doTaskPreChecks(IndexTask task) {
+
+        if (MARKING_IN_PROCESS) {
             task.markInProgress();
             task = saveTask(task);
-            preSubmittedTasks.add(task);
-            
-            if (task == null) continue;  // saveTask can return null
+        }
+        preSubmittedTasks.add(task);
 
-            logger.info("Start of indexing pid: " + task.getPid());
+        if (task == null) return null;  // saveTask can return null
 
-            try {
+        logger.info("Start of indexing pid: " + task.getPid());
+
+        if (DELETE_OBSOLETED_AND_ARCHIVED) {
+            try {       
                 if (task.isDeleteTask()) 
                     return task;
-           
+
             } catch (MarshallingException e ) {
                 task.markFailed();
                 saveTaskWithoutDuplication(task);
                 logger.error(e.getMessage(),e);
-                task = null;
-                continue;
+                return null;
             }
+        }
 
-            if (!isObjectPathReady(task)) {
+        if (!isObjectPathReady(task)) {
+            if (MARKING_IN_PROCESS) {
                 task.markNew();
                 saveTaskWithoutDuplication(task);
-                logger.info("Task for pid: " + task.getPid() + " not processed since the object path is not ready.");
-                task = null;
-                continue;
             }
+            logger.info("Task for pid: " + task.getPid() + " not processed since the object path is not ready.");
+            return null;
+        }
 
+        if (CHECKING_ORE_READINESS) {
             if (representsResourceMap(task)) {
-                boolean ready = true;
+                boolean ready = true;               
                 ResourceMap rm = null;
                 List<String> referencedIds = null;
                 try {
@@ -673,29 +736,29 @@ public class IndexTaskProcessor {
                     while(found) {
                         found = referencedIds.remove(task.getPid());
                     }
-                    
+
                     // if the resourceMap uses its SeriesId for the references, we need to remove it as well for this check.
                     // otherwise, it will never index.
                     SystemMetadata resMapSMD =  HazelcastClientFactory.getSystemMetadataMap().get(TypeFactory.buildIdentifier(task.getPid()));
                     if (resMapSMD.getSeriesId() != null) {
-                    	found = referencedIds.remove(resMapSMD.getSeriesId().getValue());
-                    	while(found) {
-                    		found = referencedIds.remove(resMapSMD.getSeriesId().getValue()); 
-                    	}
+                        found = referencedIds.remove(resMapSMD.getSeriesId().getValue());
+                        while(found) {
+                            found = referencedIds.remove(resMapSMD.getSeriesId().getValue()); 
+                        }
                     }
-                    
+
 
                     if (areAllReferencedDocsIndexed(referencedIds) == false) {
                         logger.info("****************Not all map resource references indexed for map: " + task.getPid()
-                                + ".  Marking new and continuing...");
+                        + ".  Marking new and continuing...");
                         ready = false;
                     }
                 } catch (OREParserException oreException) {
                     ready = false;
                     Throwable cause = oreException.getCause();
                     logger.error("Unable to parse ORE doc: " + task.getPid()
-                            + ".  Unrecoverable parse error: task will not be re-tried.  Cause:: " 
-                            + cause.getClass().getSimpleName() + ": " + cause.getMessage());
+                    + ".  Unrecoverable parse error: task will not be re-tried.  Cause:: " 
+                    + cause.getClass().getSimpleName() + ": " + cause.getMessage());
                     if (logger.isTraceEnabled()) {
                         oreException.printStackTrace();
 
@@ -703,15 +766,14 @@ public class IndexTaskProcessor {
                 } catch (Exception e) {
                     ready = false;
                     logger.error("unable to load resource for pid: " + task.getPid()
-                            + " at object path: " + task.getObjectPath()
-                            + ".  Marking new and continuing...  Cause:: " + e.getClass().getSimpleName() + ": " + e.getMessage() );
+                    + " at object path: " + task.getObjectPath()
+                    + ".  Marking new and continuing...  Cause:: " + e.getClass().getSimpleName() + ": " + e.getMessage() );
                 }
                 if(!ready) {
                     task.markNew();
                     saveTaskWithoutDuplication(task);
                     logger.info("Task for resource map pid: " + task.getPid() + " not processed.");
-                    task = null;
-                    continue;
+                    return null;
                 } else {
                     logger.info("the original index task - "+task.toString());
                     ResourceMapIndexTask resourceMapIndexTask = new ResourceMapIndexTask();
@@ -724,47 +786,12 @@ public class IndexTaskProcessor {
                     } else {
                         logger.error("Something is wrong to change the IndexTask object to the ResourceMapIndexTask object ");
                     }
-                    
                 }
-                
             }
         }
         return task;
     }
 
-    /*private boolean isResourceMapReadyToIndex(IndexTask task, List<IndexTask> queue) {
-        boolean ready = true;
-
-        if (representsResourceMap(task)) {
-            ResourceMap rm = null;
-            try {
-                rm = ResourceMapFactory.buildResourceMap(task.getObjectPath());
-                List<String> referencedIds = rm.getAllDocumentIDs();
-                referencedIds.remove(task.getPid());
-
-                if (areAllReferencedDocsIndexed(referencedIds) == false) {
-                    logger.info("Not all map resource references indexed for map: " + task.getPid()
-                            + ".  Marking new and continuing...");
-                    ready = false;
-                }
-            } catch (OREParserException oreException) {
-                ready = false;
-                logger.error("Unable to parse ORE doc: " + task.getPid()
-                        + ".  Unrecoverable parse error: task will not be re-tried.");
-                if (logger.isTraceEnabled()) {
-                    oreException.printStackTrace();
-
-                }
-            } catch (Exception e) {
-                ready = false;
-                logger.error("unable to load resource for pid: " + task.getPid()
-                        + " at object path: " + task.getObjectPath()
-                        + ".  Marking new and continuing...");
-            }
-        }
-
-        return ready;
-    }*/
 
     /**
      * Referenced documents are PIDs or SIDs that are either archived or not.
@@ -890,6 +917,8 @@ public class IndexTaskProcessor {
     }
 
     public List<IndexTask> getIndexTaskQueue() {
+        
+        maxTryCount = Settings.getConfiguration().getInt("dataone.indexing.processing.max.tryCount", DEFAULT_MAX_TRYCOUNT);
         long getIndexTasksStart = System.currentTimeMillis();
         logger.info("New index tasks with less than "+maxTryCount+" try-count (resource maps sometimes will be set the status new even though the indexing failed) in the index queue will be processed.");
         //List<IndexTask> indexTasks = repo.findByStatusOrderByPriorityAscTaskModifiedDateAsc(IndexTask.STATUS_NEW);
@@ -975,11 +1004,38 @@ public class IndexTaskProcessor {
     }
     
     /**
-     * Not sure if this is/should be used outside the class...
+     * gets and possibly resets the executor service
      * @return
      */
     public ExecutorService getExecutorService() {
-        return executor;
+//        int poolSizeFromConfig = Settings.getConfiguration()
+//                .getInt(THREADPOOL_SIZE_PROPERTY, DEFAULT_THREADPOOL_SIZE);
+//        logger.warn("read number of threads '" + THREADPOOL_SIZE_PROPERTY + "' with value: " + poolSizeFromConfig);
+//        
+//        if (poolSizeFromConfig != numProcessors) {
+//            // the configuration has changed. log and configure new executor
+//                      
+//            // if there was an existing executor, shut it down
+//            if (executor != null) {
+//                shutdownExecutor();
+//                executor = null; // 
+//            }
+//            
+//            logger.warn("!!!!!! A new FixedThreadPool executor created.  Num threads = " + poolSizeFromConfig);
+//            
+//            executor = Executors.newFixedThreadPool(poolSizeFromConfig);
+//            
+//            // remember the (new) current pool size for later
+//            numProcessors = poolSizeFromConfig;
+//            
+//            logger.warn(" -- !! New poolsize set to: " + numProcessors);
+//        }
+//        if (executor == null) {
+//            // will probably only be called once... 
+//            logger.warn("!!!!!! Initial creation of executor: A new FixedThreadPool executor created.  Num threads = " + numProcessors);
+//            executor = Executors.newFixedThreadPool(numProcessors);
+//        }
+       return executor;
     }
     
     /**
@@ -989,6 +1045,28 @@ public class IndexTaskProcessor {
     public Queue<Future<Void>> getFutureQueue() {
         return new CircularFifoQueue<Future<Void>>(futureQueue);
     }
+    
+    
+//    private void checkExecutorConfig() {
+//        int poolSizeFromConfig = Settings.getConfiguration()
+//                .getInt("dataone.indexing.multiThreads.processThreadPoolSize", DEFAULT_THREADPOOL_SIZE);
+//        
+//        // 
+//        if (poolSizeFromConfig != numProcessors) {
+//            // the configuration has changed. log and configure new executor
+//            if (executor != null) {
+//                shutdownExecutor(); 
+//            }       
+//            logger.warn("!!!!!! A new FixedThreadPool executor created.  Num threads = " + poolSizeFromConfig);
+//            
+//            executor = Executors.newFixedThreadPool(poolSizeFromConfig);
+//            
+//            numProcessors = poolSizeFromConfig;
+//            logger.warn(" -- !! New poolsize set to: " + numProcessors);
+//        }
+//        
+//    }
+    
     
     /**
      * Call at the end of processing, when canceled tasks would otherwise be left 

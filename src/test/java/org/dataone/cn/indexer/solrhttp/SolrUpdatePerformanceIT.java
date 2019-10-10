@@ -30,7 +30,7 @@ import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.dataone.client.v2.formats.ObjectFormatCache;
 import org.dataone.cn.hazelcast.HazelcastConfigLocationFactory;
 import org.dataone.cn.indexer.D1IndexerSolrClient;
-import org.dataone.cn.indexer.SolrIndexService;
+import org.dataone.cn.indexer.SolrIndexServiceV2;
 import org.dataone.configuration.Settings;
 import org.dataone.exceptions.MarshallingException;
 import org.dataone.service.types.v1.Checksum;
@@ -65,7 +65,7 @@ public class SolrUpdatePerformanceIT {
     static HazelcastInstance hzInstance; 
     
     @Autowired
-    SolrIndexService indexService;
+    SolrIndexServiceV2 indexService;
     
     @Autowired
     D1IndexerSolrClient d1IndexerSolrClient;
@@ -109,9 +109,9 @@ public class SolrUpdatePerformanceIT {
    
 
     
-    @Ignore ("this is an integration test")
+  //  @Ignore ("this is an integration test")
     @Test
-    public void update() throws IOException { //XPathExpressionException, IOException, EncoderException, SolrServerException {
+    public void update() throws Exception { //XPathExpressionException, IOException, EncoderException, SolrServerException {
         
         // test requires port-forwarding unless you have a populated solr instance running locally 
         // of course, you will need ssh access to the host to forward to
@@ -120,13 +120,13 @@ public class SolrUpdatePerformanceIT {
 
 //      builder used in HttpClient 4.5.3, needed for later SolrJ client versions (7x)
 //      SolrClient sc = new HttpSolrClient.Builder("http://localhost:8983/solr/" + solrCoreName).build();
-        SolrClient sc = new HttpSolrClient("http://localhost:8983/solr/" + solrCoreName);
+//        SolrClient sc = new HttpSolrClient("http://localhost:8983/solr/" + solrCoreName);
         
         
-        D1IndexerSolrClient client = new SolrJClient(sc);
- //       client = d1IndexerSolrClient;      
+//        D1IndexerSolrClient client = new SolrJClient(sc);
+        D1IndexerSolrClient client = d1IndexerSolrClient;      
         
-        client.setSolrSchemaPath(Settings.getConfiguration().getString("solr.schema.path"));
+//        client.setSolrSchemaPath(Settings.getConfiguration().getString("solr.schema.path"));
        
         String idSeries = "solrUpdateTestSeries-" + System.currentTimeMillis();
         
@@ -148,19 +148,20 @@ public class SolrUpdatePerformanceIT {
 //                System.out.println(serializedSmd);
                 InputStream is = IOUtils.toInputStream(serializedSmd);
 
-                Map<String,SolrDoc> docs = indexService.parseTaskObject(id.getValue(), is, null);
+                long t0 = System.currentTimeMillis();
+                indexService.processInsertTask(id.getValue(), is, null);
 
 
-                List<SolrDoc> docList = new ArrayList<SolrDoc>();
-
-                for (Entry<String,SolrDoc> e: docs.entrySet()) {
-                    System.out.println("== adding: " + e.getKey());
-                    docList.add(e.getValue());
-                }
+//                List<SolrDoc> docList = new ArrayList<SolrDoc>();
+//
+//                for (Entry<String,SolrDoc> e: docs.entrySet()) {
+//                    System.out.println("== adding: " + e.getKey());
+//                    docList.add(e.getValue());
+//                }
              
                 
-                long t0 = System.currentTimeMillis();
-                client.sendUpdate(client.getSolrIndexUri()+"/update/?commit=true", docList);
+                
+//                client.sendUpdate(client.getSolrIndexUri()+"/update/?commit=true", docList);
 //                client.getSolrClient().commit();
                 elapsedTime += (System.currentTimeMillis() - t0);
                 
@@ -536,7 +537,7 @@ public class SolrUpdatePerformanceIT {
 
         String path = objectPath != null ? objectPath : null;
  //       Map<String,SolrDoc> docs = indexService.parseTaskObject(id, sysMeta, path);
-        List<SolrDoc> updates = indexService.processObject(id, sysMeta, path);
+        indexService.insertIntoIndex(id, sysMeta, path);
 
 //        List<SolrElementAdd> updates = new ArrayList<SolrElementAdd>();
 //
@@ -545,7 +546,7 @@ public class SolrUpdatePerformanceIT {
 //            System.out.println("   +======> " + e.getValue());
 //            docList.add(e.getValue());
 //        }
-        this.d1IndexerSolrClient.sendUpdate(null,updates);
+//        this.d1IndexerSolrClient.sendUpdate(null,updates);
         Thread.sleep(60);
     }
   
@@ -577,27 +578,27 @@ public class SolrUpdatePerformanceIT {
     
     
     
-    private List<SolrDoc> smdToSolrDocList(SystemMetadata smd) 
-            throws MarshallingException, IOException, XPathExpressionException, SAXException, ParserConfigurationException, EncoderException {
-        
-        
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            TypeMarshaller.marshalTypeToOutputStream(smd, baos);
-            String serializedSmd = baos.toString();
-            InputStream is = IOUtils.toInputStream(serializedSmd);
-
-            Map<String,SolrDoc> docs = indexService.parseTaskObject(smd.getIdentifier().getValue(), is, null);
-
-            
-            List<SolrDoc> docList = new ArrayList<SolrDoc>();
-            
-            for (Entry<String,SolrDoc> e: docs.entrySet()) {
-                System.out.println("== adding: " + e.getKey());
-                docList.add(e.getValue());
-            }
-            return docList;
-
-    }
+//    private List<SolrDoc> smdToSolrDocList(SystemMetadata smd) 
+//            throws MarshallingException, IOException, XPathExpressionException, SAXException, ParserConfigurationException, EncoderException {
+//        
+//        
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            TypeMarshaller.marshalTypeToOutputStream(smd, baos);
+//            String serializedSmd = baos.toString();
+//            InputStream is = IOUtils.toInputStream(serializedSmd);
+//
+//            Map<String,SolrDoc> docs = indexService.parseTaskObject(smd.getIdentifier().getValue(), is, null);
+//
+//            
+//            List<SolrDoc> docList = new ArrayList<SolrDoc>();
+//            
+//            for (Entry<String,SolrDoc> e: docs.entrySet()) {
+//                System.out.println("== adding: " + e.getKey());
+//                docList.add(e.getValue());
+//            }
+//            return docList;
+//
+//    }
     
     
     private InputStream replaceIdentifiers(InputStream is, String[] original, String[] replacement) throws IOException {
@@ -744,26 +745,26 @@ public class SolrUpdatePerformanceIT {
         ObjectFormatCache.getInstance();
         System.out.println("**?**************************************************************");
         
-        indexService.parseTaskObject(resMapPid,
+        indexService.processInsertTask(resMapPid,
                 replaceIdentifiers(this.getClass().getResourceAsStream("sysMeta/resourceMap_tao.13243.1-0.xml"), originals, replacements),
                 file.getAbsolutePath());
         
         System.out.println("****************************************************************");
-        int i = 0;
-        try {
-            while(true) {
-                String line = String.format("%s\t%d\t%s",
-                        indexService.parseList.get(i),
-                        indexService.parseDurationList.get(i),
-                        indexService.parseStartTimeList.get(i++)
-                        );
-                System.out.println(line);
-                System.out.println("****************************************************************");
-            } 
-        }
-        catch (IndexOutOfBoundsException e) {
-            ;
-        }        
+//        int i = 0;
+//        try {
+//            while(true) {
+//                String line = String.format("%s\t%d\t%s",
+//                        indexService.parseList.get(i),
+//                        indexService.parseDurationList.get(i),
+//                        indexService.parseStartTimeList.get(i++)
+//                        );
+//                System.out.println(line);
+//                System.out.println("****************************************************************");
+//            } 
+//        }
+//        catch (IndexOutOfBoundsException e) {
+//            ;
+//        }        
     }
     
 }

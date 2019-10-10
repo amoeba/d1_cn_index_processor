@@ -85,6 +85,7 @@ public class SolrFieldDublinCoreOAITest extends BaseSolrFieldXPathTest {
 
         // system metadata
         dcxExpected.put("id", "oai_dc.1.1.xml");
+        dcxExpected.put("identifier", "oai_dc.1.1.xml");
         dcxExpected.put("seriesId", "");
         dcxExpected.put("fileName", "");
         dcxExpected.put("mediaType", "");

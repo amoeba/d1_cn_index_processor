@@ -17,6 +17,11 @@
 						value="/d200:systemMetadata/identifier/text()" />
 				</bean>
 				<bean class="org.dataone.cn.indexer.parser.SolrField">
+					<constructor-arg name="name" value="identifier" />
+					<constructor-arg name="xpath"
+						value="/d200:systemMetadata/identifier/text()" />
+				</bean>
+				<bean class="org.dataone.cn.indexer.parser.SolrField">
 					<constructor-arg name="name" value="seriesId" />
 					<constructor-arg name="xpath"
 						value="/d200:systemMetadata/seriesId/text()" />

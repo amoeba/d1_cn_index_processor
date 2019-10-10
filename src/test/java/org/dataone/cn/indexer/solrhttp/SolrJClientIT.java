@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.ConcurrentUpdateSolrClient;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.dataone.cn.hazelcast.HazelcastConfigLocationFactory;
@@ -158,9 +159,11 @@ public class SolrJClientIT {
 
 //      builder used in HttpClient 4.5.3, needed for later SolrJ client versions (7x)
 //      SolrClient sc = new HttpSolrClient.Builder("http://localhost:8983/solr/" + solrCoreName).build();
-        SolrClient sc = new HttpSolrClient("http://localhost:8983/solr/" + solrCoreName);
+        SolrClient queryClient = new HttpSolrClient("http://localhost:8983/solr/" + solrCoreName);
+        SolrClient updateClient = new ConcurrentUpdateSolrClient("http://localhost:8983/solr/" + solrCoreName, null, 100,10);
         
-        SolrJClient client = new SolrJClient(sc);
+        // TODO: this is broken with the null parameter - need to tie in the solrSchema
+        SolrJClient client = new SolrJClient(null,updateClient, queryClient);
         client.setSolrSchemaPath(Settings.getConfiguration().getString("solr.schema.path"));
        
         
@@ -190,7 +193,7 @@ public class SolrJClientIT {
 
 
             client.sendUpdate(null, docList);
-            client.getSolrClient().commit();
+            client.commit();
             
         } catch (XPathExpressionException | SAXException
                 | ParserConfigurationException | EncoderException e) {

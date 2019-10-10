@@ -157,6 +157,7 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
 
         // system metadata
         eml210Expected.put("id", "peggym.130.4");
+        eml210Expected.put("identifier", "peggym.130.4");
         eml210Expected.put("seriesId", "peggym.130");
         eml210Expected.put("fileName", "fileName1.txt");
         eml210Expected.put("mediaType", "text/rdf");
@@ -328,6 +329,7 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
 
         // system metadata
         eml220Expected.put("id", "eml-test-doc");
+        eml220Expected.put("identifier", "eml-test-doc");
         eml220Expected.put("seriesId", "");
         eml220Expected.put("fileName", "");
         eml220Expected.put("mediaType", "");
@@ -422,6 +424,7 @@ public class SolrFieldXPathEmlTest extends BaseSolrFieldXPathTest {
                 
         // not checking system metadata
         emlServiceExpected.put("id", serviceEmlPid);
+        emlServiceExpected.put("identifier", serviceEmlPid);
         emlServiceExpected.put("seriesId", "");
         emlServiceExpected.put("fileName", "");
         emlServiceExpected.put("mediaType", "");

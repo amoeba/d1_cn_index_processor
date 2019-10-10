@@ -236,17 +236,6 @@
         <field name="awardNumber"       type="string" indexed="true" stored="true" multiValued="true" />
         <field name="awardTitle"        type="string" indexed="true" stored="true" multiValued="true" />
             
-	<bean id="eml.funderName" class="org.dataone.cn.indexer.parser.SolrField">
-
-	
-	<bean id="eml.funderIdentifier" class="org.dataone.cn.indexer.parser.SolrField">
-
-	<bean id="eml.awardNumber" class="org.dataone.cn.indexer.parser.SolrField">
-
-	
-	<bean id="eml.awardTitle" class="org.dataone.cn.indexer.parser.SolrField">
-
-
         <field name="site" 				type="string" 	indexed="true" stored="true" multiValued="true"/>
         <field name="siteText" 			type="text_general" 	indexed="true" stored="false" multiValued="true"/>
 

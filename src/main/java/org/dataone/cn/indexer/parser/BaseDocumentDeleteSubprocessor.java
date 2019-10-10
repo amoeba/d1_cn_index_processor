@@ -153,8 +153,7 @@ public class BaseDocumentDeleteSubprocessor implements IDocumentDeleteSubprocess
                     s.setModifier(SolrElementField.Modifier.SET); // setting to null is how to remove all
                     fields.add(s);
                 }
-                SolrDoc sd = new SolrDoc();
-                sd.setFieldList(fields);
+                SolrDoc sd = new SolrDoc(fields);
                 docs.put(relatedDocId, sd);
 
             }
@@ -236,8 +235,7 @@ public class BaseDocumentDeleteSubprocessor implements IDocumentDeleteSubprocess
                     fields.add(sef);
                     
                     
-                    SolrDoc sd = new SolrDoc();
-                    sd.setFieldList(fields);
+                    SolrDoc sd = new SolrDoc(fields);
                     docMap.put(relatedDocId, sd);
                     log.debug("... ... putting doc in map " + relatedDocId);
                     

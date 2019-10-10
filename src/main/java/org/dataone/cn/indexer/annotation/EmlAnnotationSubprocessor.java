@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
@@ -22,9 +23,11 @@ import org.dataone.cn.indexer.parser.ISolrField;
 import org.dataone.cn.indexer.parser.SubprocessorUtility;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
+import org.dataone.cn.indexer.AbstractStubMergingSubprocessor;
 import org.dataone.cn.indexer.XmlDocumentUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * A subprocessor that extracts semantic annotations from EML records and
@@ -38,7 +41,7 @@ import org.w3c.dom.Document;
  * Time: 4:57 PM
  *
  */
-public class EmlAnnotationSubprocessor implements IDocumentSubprocessor {
+public class EmlAnnotationSubprocessor extends AbstractStubMergingSubprocessor implements IDocumentSubprocessor {
     private static Logger log = Logger.getLogger(EmlAnnotationSubprocessor.class.getName());
 
     private PerformanceLogger perfLog = PerformanceLogger.getInstance();
@@ -76,14 +79,24 @@ public class EmlAnnotationSubprocessor implements IDocumentSubprocessor {
             InputStream is) throws Exception {
         log.debug(this.getClass().getName() + ".processDocument() called for identifier " + identifier);
 
-        Document doc = XmlDocumentUtility.generateXmlDocument(is);
+        
         SolrDoc solrDoc = docs.get(identifier);
 
         if (solrDoc == null) {
             solrDoc = new SolrDoc();
             docs.put(identifier, solrDoc);
         }
-
+        populateExpandedConcepts(identifier, solrDoc, is);
+        
+        return docs;
+        
+    }
+    
+    
+    private void populateExpandedConcepts(String identifier, SolrDoc visitingSolrDoc, InputStream is) throws SAXException {
+        
+        Document doc = XmlDocumentUtility.generateXmlDocument(is);
+        
         // Stores the set of expanded concepts per field
         Map<String, Set<String>> expandedFields = new HashMap<String, Set<String>>();
 
@@ -109,24 +122,24 @@ public class EmlAnnotationSubprocessor implements IDocumentSubprocessor {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("Failed to parse out expanded concepts from document. Logging and continuing...", e);
             }
 
             String fieldName = solrField.getName();
-            perfLog.log("BaseXPathDocumentSubprocessor.processDocument() processing id "+identifier +" of field " + solrField.getClass().getSimpleName() + "(\"" + fieldName +"\").getFields()", System.currentTimeMillis() - getFieldsStart);
+            perfLog.log("BaseXPathDocumentSubprocessor.processDocument() processing id "+identifier +" of field " + 
+                    solrField.getClass().getSimpleName() + "(\"" + fieldName +"\").getFields()", 
+                    System.currentTimeMillis() - getFieldsStart);
         }
 
-        // Add the set of expanded concepts to the Solr document
+        // Add the set of expanded concepts to the visiting Solr document
         log.debug("About to add expandedFields of size " + expandedFields.size());
         for (String field: expandedFields.keySet()) {
             log.debug("Adding field " + field + " to solrDoc");
             for (String concept: expandedFields.get(field)) {
                 log.debug("  concept is " + concept);
-                solrDoc.addField(new SolrElementField(field, concept));
+                visitingSolrDoc.addField(new SolrElementField(field, concept));
             }
         }
-
-        return docs;
     }
 
     /**
@@ -202,5 +215,15 @@ public class EmlAnnotationSubprocessor implements IDocumentSubprocessor {
         for (ISolrField solrField : fieldList) {
             solrField.initExpression(xpathObject);
         }
+    }
+
+    @Override
+    protected Map<String, SolrDoc> parseDocument(String identifier, InputStream source) throws Exception {
+        
+        Map<String, SolrDoc> docMap = new HashMap<>();
+        SolrDoc solrDoc = new SolrDoc();
+        docMap.put(identifier, solrDoc);
+        return processDocument(identifier, docMap, source );
+
     }
 }

@@ -108,6 +108,7 @@ public class SolrFieldDublinCoreTest extends BaseSolrFieldXPathTest {
 
         // system metadata
         dcxExpected.put("id", "ipumsi_6-3_br_2000_dc.xml");
+        dcxExpected.put("identifier", "ipumsi_6-3_br_2000_dc.xml");
         dcxExpected.put("seriesId", "");
         dcxExpected.put("fileName", "");
         dcxExpected.put("mediaType", "");
@@ -183,6 +184,7 @@ public class SolrFieldDublinCoreTest extends BaseSolrFieldXPathTest {
         
         // system metadata
         dc_spatial_Expected.put("id", "dcterms_spatial_no_namespace");
+        dc_spatial_Expected.put("identifier", "dcterms_spatial_no_namespace");
         dc_spatial_Expected.put("seriesId", "");
         dc_spatial_Expected.put("fileName", "");
         dc_spatial_Expected.put("mediaType", "");

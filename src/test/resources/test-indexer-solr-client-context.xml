@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:p="http://www.springframework.org/schema/p"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:context="http://www.springframework.org/schema/context"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans 
+ http://www.springframework.org/schema/beans/spring-beans.xsd
+ http://www.springframework.org/schema/context  
+ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+
+	<!--  the main goal of this configuation is to set up the d1IndexerSolrClient    -->
+	<!--  which for V2 SolrIndexService, will be the SolrJClient implementation      -->
+	<!--  and for V1, either the same as V2 or the custom HTTPService implementation -->
+	
+	<bean id="solrQueryUri" class="java.lang.String">
+		<constructor-arg value="${solr.query.uri}"/>
+	</bean>
+	
+	<bean id="solrIndexUri" class="java.lang.String">
+		<constructor-arg value="${solr.index.uri}"/>
+	</bean>
+	
+    
+    <!--  the queryClient is thread-safe, but can be slowed down by the number of connectiions the underlying
+          HttpClient can make. This is all local communication to Solr, so we want to allow plenty of connections  
+          -->
+    <bean id="queryHttpConnectionManager" class="org.apache.http.impl.conn.PoolingClientConnectionManager"  
+       p:defaultMaxPerRoute="25" />
+    	
+    <bean id="httpClient" class="org.apache.http.impl.client.DefaultHttpClient" scope = "prototype">
+        <constructor-arg ref="queryHttpConnectionManager"/>
+    </bean>    
+ 
+ 	<!--  note the prototype scope - we don't want to share between threads. 
+ 	      also, this is the quarying client -->
+    <bean id="queryClient" class="org.apache.solr.client.solrj.impl.HttpSolrClient" scope = "prototype">
+        <constructor-arg type = "java.lang.String" value = "${solr.index.uri}"/>
+        <constructor-arg type = "org.apache.http.client.HttpClient" ref = "httpClient"/>
+    </bean>
+
+	<!-- 
+	    The updateClient bean is specially configured to allow only one update request at a time, and to
+	be shared across many threads, and is synchronous.  This is slightly different behavior than the 
+	off-the-shelf ConcurrentUpdateSolrClient, which is asyncrhonous, but doesn't offer opportunity to
+	catch version conflicts.  Here notice the maxTotal (connections) is 1, and that this instance is 
+	shared by multiple threads.
+	-->
+    
+    <bean id="updateHttpConnectionManager" class="org.apache.http.impl.conn.PoolingHttpClientConnectionManager">
+       <property name="maxTotal" value = "1" />
+    </bean> 
+    	
+    <bean id="updateHttpClientBuilder" class="org.apache.http.impl.client.HttpClients"
+        factory-method="custom" >
+        <property name="connectionManager" ref="updateHttpConnectionManager"/>
+    </bean> 
+    
+    <bean id="updateHttpClient" factory-bean="updateHttpClientBuilder" factory-method="build"/>   
+       
+    <!--  note this is the default singleton scope - we want to share the update client between threads
+ 	      also, this is the update (and delete) client -->
+    <bean id="updateClient" class="org.apache.solr.client.solrj.impl.HttpSolrClient">
+        <constructor-arg type = "java.lang.String" value = "${solr.index.uri}"/>
+        <constructor-arg type = "org.apache.http.client.HttpClient" ref = "updateHttpClient"/>
+   </bean>
+    
+<!--     <bean id="solrSchema" class="org.dataone.cn.indexer.solrhttp.SolrSchema"> -->
+<!--          <property name="solrSchemaPath" value="${solr.schema.path}" /> -->
+<!--     </bean> -->
+       
+	<bean id="d1IndexerSolrClient" class="org.dataone.cn.indexer.solrhttp.SolrJClient">
+	    <constructor-arg index = "0" ref="solrSchema" />
+	    <constructor-arg index = "1" ref="updateClient" />
+		<constructor-arg index = "2" ref="queryClient" /> 
+<!-- 		<property name="solrSchemaPath" value="${solr.schema.path}" /> -->
+<!-- 		<property name="solrIndexUri" value="${solr.index.uri}" /> -->
+	</bean>
+	
+    
+<!--  A CloudSolrClient can be used once we have set up SolrCloud -->
+<!--  as of sept 26, 2017, this SolrClient doesn't work in tests where we portForwarded using localhost:2181 - it doesn't find the search_core collection -->    
+<!--     <bean id="solrClient" class="org.apache.solr.client.solrj.impl.CloudSolrClient"> -->
+<!--         <constructor-arg type = "java.lang.String" value = "${solr.zk.host.uri}"/> -->
+<!--         <constructor-arg ref="httpClient"/> -->
+<!--         <property name="defaultCollection" value="solr/search_core"/> -->
+<!--     </bean> -->
+    
+<!--      <bean id="solrClientBuilder" class="org.apache.solr.client.solrj.impl.HttpSolrClient.Builder"> -->
+<!--         <constructor-arg type = "java.lang.String" value = "${solr.index.uri}"/> -->
+<!--     </bean> -->
+	
+<!-- 	<bean id="d1IndexerSolrClient" class="org.dataone.cn.indexer.solrhttp.SolrJClient"> -->
+<!-- 		<constructor-arg ref="solrClientBuilder" /> -->
+<!-- 		<property name="solrSchemaPath" value="${solr.schema.path}" /> -->
+<!-- 		<property name="solrIndexUri" value="${solr.index.uri}" /> -->
+<!-- 	</bean> -->
+    
+</beans>

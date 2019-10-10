@@ -20,8 +20,10 @@ import org.apache.commons.codec.EncoderException;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.dataone.cn.index.util.PerformanceLogger;
+import org.dataone.cn.indexer.AbstractStubMergingSubprocessor;
 import org.dataone.cn.indexer.D1IndexerSolrClient;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
+import org.dataone.cn.indexer.parser.IDocumentSubprocessorV2;
 import org.dataone.cn.indexer.parser.ISolrDataField;
 import org.dataone.cn.indexer.parser.SubprocessorUtility;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
@@ -55,7 +57,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;*/
  * @author leinfelder
  *
  */
-public class AnnotatorSubprocessor implements IDocumentSubprocessor {
+public class AnnotatorSubprocessor extends AbstractStubMergingSubprocessor implements IDocumentSubprocessor, IDocumentSubprocessorV2 {
 
     public static final String FIELD_ANNOTATION = "sem_annotation";
     public static final String FIELD_ANNOTATES = "sem_annotates";
@@ -115,6 +117,50 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
         return matchDocuments.contains(formatId);
     }
 
+    /**
+     * Parses the annotation document and returns it as a stub (incomplete with only the id and annotation fields)
+     * Used by IDocumentSubprocessorV2 and AbstractStubMergingSubprocessor.
+     */
+    @Override
+    protected Map<String, SolrDoc> parseDocument(String mainIdentifier, InputStream source) throws Exception {
+       
+        Map<String,SolrDoc> docMap = new HashMap<>();
+        
+        long parseAnnotationStart = System.currentTimeMillis();
+        SolrDoc annotations = parseAnnotation(source);
+        perfLog.log("AnnotatorSubprocessor.parseDocument() parseAnnotation() ", System.currentTimeMillis() - parseAnnotationStart);
+        
+        if (annotations != null) {
+            // build the annotation stub
+            String referencedPid = annotations.getIdentifier();
+            SolrDoc referencedDoc = new SolrDoc();
+            referencedDoc.addField(new SolrElementField(SolrElementField.FIELD_ID, referencedPid));
+            docMap.put(referencedPid, referencedDoc);
+            
+            // add the annotations to the referenced document
+            Iterator<SolrElementField> annotationIter = annotations.getFieldList().iterator();
+            while (annotationIter.hasNext()) {
+                SolrElementField annotation = annotationIter.next();
+                if (!fieldsToMerge.contains(annotation.getName())) {
+                    log.debug("SKIPPING field (not in fieldsToMerge): " + annotation.getName());
+                    continue;
+                }
+                referencedDoc.addField(annotation);
+                log.debug("ADDING annotation to " + referencedPid + ": " + annotation.getName()
+                        + "=" + annotation.getValue());
+            }
+            
+            // make sure we say we annotate the object
+            SolrDoc annotationDoc = new SolrDoc();
+            annotationDoc.addField(new SolrElementField(SolrElementField.FIELD_ID, mainIdentifier)); 
+            annotationDoc.addField(new SolrElementField(FIELD_ANNOTATES, referencedPid));
+            docMap.put(mainIdentifier, annotationDoc);
+        }
+        
+        return docMap;
+    }
+    
+    
     @Override
     public Map<String, SolrDoc> processDocument(String annotationId, Map<String, SolrDoc> docs,
             InputStream is) throws Exception {
@@ -301,4 +347,6 @@ public class AnnotatorSubprocessor implements IDocumentSubprocessor {
         return processorUtility.mergeWithIndexedDocument(indexDocument, fieldsToMerge);
         
     }
+
+
 }

@@ -90,6 +90,7 @@ public class SolrFieldDataCiteTest extends BaseSolrFieldXPathTest {
 
         // system metadata
         datacite1Expected.put("id", pid1);
+        datacite1Expected.put("identifier", pid1);
         datacite1Expected.put("seriesId", "");
         datacite1Expected.put("fileName", "");
         datacite1Expected.put("mediaType", "");

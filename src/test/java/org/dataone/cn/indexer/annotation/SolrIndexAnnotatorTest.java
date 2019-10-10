@@ -60,6 +60,7 @@ public class SolrIndexAnnotatorTest extends DataONESolrJettyTestBase {
         // add peggym.130.4 to solr index, using XPathDocumentParser (used by
         // index-task-processor)
         addEmlToSolrIndex(systemMetadataResource);
+        if (client != null) client.commit();
 
         // retrieve solrDocument for peggym130.4 from solr server by pid
         SolrDocument result = assertPresentInSolrIndex(pid);
@@ -109,7 +110,7 @@ public class SolrIndexAnnotatorTest extends DataONESolrJettyTestBase {
 
         }
 
-        assertTrue("sem_annotation should have multiple values", !annotationValues.isEmpty());
+        assertTrue("sem_annotation should have multiple values", annotationValues != null && !annotationValues.isEmpty());
 
         // check the fields in the science metadata again to make sure we did not overwrite them
         for (Object field : eml210.getFieldList()) {

@@ -25,6 +25,7 @@ package org.dataone.cn.indexer.solrhttp;
 import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Objects;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -32,7 +33,9 @@ import org.apache.log4j.Logger;
 
 /**
  * User: Porter Date: 7/25/11 Time: 4:14 PM Contains constants FIELD_XXXX for
- * DataOne system metdata solr index fields.
+ * DataOne solr index field representation.
+ * 
+ * Basic properties are: name, value, segment, modifier.  
  * 
  * @see SolrElementAdd
  */
@@ -75,11 +78,15 @@ public class SolrElementField {
     public static final char[] ELEMENT_FIELD_OPEN = "<field ".toCharArray();
     public static final char[] ELEMENT_FIELD_CLOSE = "</field>".toCharArray();
     public static final String ATTRIBUTE_NAME = "name";
+    public static final String ATTRIBUTE_MODIFIER = "modifier";
 
     private String name = null;
     private String value = null;
-    private boolean escapeXML = true;
+ //   private String segment = null;
     private Modifier modifier;
+    
+    private boolean escapeXML = true;
+    
 
     public SolrElementField() {
     }
@@ -89,6 +96,10 @@ public class SolrElementField {
         this.value = value;
     }
 
+    /**
+     * gets the name of the index field
+     * @return
+     */
     public String getName() {
         return name;
     }
@@ -97,6 +108,11 @@ public class SolrElementField {
         this.name = name;
     }
 
+    /**
+     * gets the value of the index field, multivalued solr fields are represented as a
+     * list of SolrElementFields
+     * @return
+     */
     public String getValue() {
         return value;
     }
@@ -105,24 +121,48 @@ public class SolrElementField {
         this.value = value;
     }
     
+    /**
+     * gets the user defined segment of the solr record to which this
+     * field belongs.  Not transmitted to solr.  Used for grouping.
+     * @return
+     */
+//    public String getSegment() {
+//        return segment;
+//    }
+//
+//    public void setSegment(String segment) {
+//        this.segment = segment;
+//    }
+
+    /**
+     * gets the user define Modifier used for partial updates
+     * @return
+     */
+    public Modifier getModifier() {
+        return this.modifier;
+    }
+    
     public void setModifier(SolrElementField.Modifier modifier) {
         this.modifier = modifier;
     }
     
-    public Modifier getModifier() {
-        return this.modifier;
-    }
+
    
     
     public enum Modifier {
-        ADD,
         SET,
+        ADD,
+        ADD_DISTINCT,       // introduced in Solr 7.3 
         REMOVE,
         REMOVEREGEX,
         INC;
         
         public String toString() {
-            return super.toString().toLowerCase();
+            if (this.equals(ADD_DISTINCT)) {
+                return "add-distinct";
+            } else {
+                return super.toString().toLowerCase();
+            }
         }
     }
 
@@ -146,7 +186,14 @@ public class SolrElementField {
         cw.append(ATTRIBUTE_NAME);
         cw.append("=\"");
         cw.append(name);
-        cw.append("\">");
+        cw.append("\" ");
+        if (modifier != null) {
+            cw.append(ATTRIBUTE_MODIFIER);
+            cw.append("=\"");
+            cw.append(modifier.toString());
+            cw.append("\" ");
+        }
+        cw.append(">");
         IOUtils.write(cw.toCharArray(), outputStream, encoding);
 
         char[] toWrite = StringEscapeUtils.escapeXml11(value).toCharArray();
@@ -159,5 +206,35 @@ public class SolrElementField {
         if (log.isDebugEnabled()) {
             log.debug("SolrElementField serializing field: " + name + " with value: " + value);
         }
+    }
+    
+    public SolrElementField clone() {
+        SolrElementField clone = new SolrElementField();
+        clone.setName(this.name);
+        clone.setValue(this.value);
+//        clone.setSegment(this.segment);
+        clone.setModifier(this.modifier);
+        return clone;
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+
+        if (other == this)
+            return true;
+
+        if (other == null || other.getClass() != getClass()) {
+            return false;
+        }
+
+        SolrElementField sef = (SolrElementField) other;
+
+        return Objects.equals(this.name, sef.name) 
+                && Objects.equals(this.value, sef.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, value);
     }
 }

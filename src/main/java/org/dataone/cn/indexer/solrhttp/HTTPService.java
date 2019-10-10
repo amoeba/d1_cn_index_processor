@@ -88,9 +88,10 @@ public class HTTPService implements D1IndexerSolrClient {
     private static Logger log = Logger.getLogger(HTTPService.class.getName());
     private HttpComponentsClientHttpRequestFactory httpRequestFactory;
 
-    private String SOLR_SCHEMA_PATH;
+    private SolrSchema schema;
     private String solrIndexUri;
-    private List<String> validSolrFieldNames = new ArrayList<String>();
+//    private List<String> validSolrFieldNames = new ArrayList<String>();
+    
 
     public HTTPService(HttpComponentsClientHttpRequestFactory requestFactory) {
         httpRequestFactory = requestFactory;
@@ -322,7 +323,7 @@ public class HTTPService implements D1IndexerSolrClient {
             return null;
         }
 
-        loadSolrSchemaFields();
+//        loadSolrSchemaFields();
 
         List<SolrDoc> docs = new ArrayList<SolrDoc>();
 
@@ -382,7 +383,7 @@ public class HTTPService implements D1IndexerSolrClient {
     private List<SolrDoc> getDocumentsByTwoFields(String uir, String field1, String field1Value,
             String field2, String field2Value) throws IOException, XPathExpressionException,
             EncoderException {
-        loadSolrSchemaFields();
+//        loadSolrSchemaFields();
         List<SolrDoc> docs = new ArrayList<SolrDoc>();
         StringBuilder sb = new StringBuilder();
         sb.append(field1 + ":").append(escapeQueryChars(field1Value));
@@ -454,8 +455,7 @@ public class HTTPService implements D1IndexerSolrClient {
     }
 
     private SolrDoc parseDoc(Element docElement) {
-        SolrDoc doc = new SolrDoc();
-        doc.loadFromElement(docElement, validSolrFieldNames);
+        SolrDoc doc = new SolrDoc(docElement, schema.getValidFields());
         return doc;
     }
 
@@ -463,68 +463,69 @@ public class HTTPService implements D1IndexerSolrClient {
      * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#setSolrSchemaPath(java.lang.String)
      */
     @Override
-    public void setSolrSchemaPath(String path) {
-        SOLR_SCHEMA_PATH = path;
+    public void setSolrSchemaPath(String path) throws ParserConfigurationException, SAXException, IOException {
+        schema = new SolrSchema();
+        schema.setSolrSchemaPath(path);
     }
 
-    private void loadSolrSchemaFields() {
-        if (SOLR_SCHEMA_PATH != null && validSolrFieldNames.isEmpty()) {
-            Document doc = loadSolrSchemaDocument();
-            NodeList nList = doc.getElementsByTagName("copyField");
-            List<String> copyDestinationFields = new ArrayList<String>();
-            for (int i = 0; i < nList.getLength(); i++) {
-                Node node = nList.item(i);
-                String destinationField = node.getAttributes().getNamedItem("dest").getNodeValue();
-                copyDestinationFields.add(destinationField);
-            }
-            nList = doc.getElementsByTagName("field");
-            List<String> fields = new ArrayList<String>();
-            for (int i = 0; i < nList.getLength(); i++) {
-                Node node = nList.item(i);
-                String fieldName = node.getAttributes().getNamedItem("name").getNodeValue();
-                fields.add(fieldName);
-            }
-            fields.removeAll(copyDestinationFields);
-            validSolrFieldNames = fields;
-            fields.remove("_version_");
-        }
-    }
-
-    private Document loadSolrSchemaDocument() {
-
-        Document doc = null;
-        File schemaFile = new File(SOLR_SCHEMA_PATH);
-        if (schemaFile != null) {
-            FileInputStream fis = null;
-            try {
-                fis = new FileInputStream(schemaFile);
-            } catch (FileNotFoundException e) {
-                log.error(e.getMessage(), e);
-            }
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = null;
-            try {
-                dBuilder = dbFactory.newDocumentBuilder();
-            } catch (ParserConfigurationException e) {
-                log.error(e.getMessage(), e);
-            }
-            try {
-                doc = dBuilder.parse(fis);
-            } catch (SAXException e) {
-                log.error(e.getMessage(), e);
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-            }
-            try {
-                if (fis != null) {
-                    fis.close();
-                }
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-            }
-        }
-        return doc;
-    }
+//    private void loadSolrSchemaFields() {
+//        if (SOLR_SCHEMA_PATH != null && validSolrFieldNames.isEmpty()) {
+//            Document doc = loadSolrSchemaDocument();
+//            NodeList nList = doc.getElementsByTagName("copyField");
+//            List<String> copyDestinationFields = new ArrayList<String>();
+//            for (int i = 0; i < nList.getLength(); i++) {
+//                Node node = nList.item(i);
+//                String destinationField = node.getAttributes().getNamedItem("dest").getNodeValue();
+//                copyDestinationFields.add(destinationField);
+//            }
+//            nList = doc.getElementsByTagName("field");
+//            List<String> fields = new ArrayList<String>();
+//            for (int i = 0; i < nList.getLength(); i++) {
+//                Node node = nList.item(i);
+//                String fieldName = node.getAttributes().getNamedItem("name").getNodeValue();
+//                fields.add(fieldName);
+//            }
+//            fields.removeAll(copyDestinationFields);
+//            validSolrFieldNames = fields;
+//            fields.remove("_version_");
+//        }
+//    }
+//
+//    private Document loadSolrSchemaDocument() {
+//
+//        Document doc = null;
+//        File schemaFile = new File(SOLR_SCHEMA_PATH);
+//        if (schemaFile != null) {
+//            FileInputStream fis = null;
+//            try {
+//                fis = new FileInputStream(schemaFile);
+//            } catch (FileNotFoundException e) {
+//                log.error(e.getMessage(), e);
+//            }
+//            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+//            DocumentBuilder dBuilder = null;
+//            try {
+//                dBuilder = dbFactory.newDocumentBuilder();
+//            } catch (ParserConfigurationException e) {
+//                log.error(e.getMessage(), e);
+//            }
+//            try {
+//                doc = dBuilder.parse(fis);
+//            } catch (SAXException e) {
+//                log.error(e.getMessage(), e);
+//            } catch (IOException e) {
+//                log.error(e.getMessage(), e);
+//            }
+//            try {
+//                if (fis != null) {
+//                    fis.close();
+//                }
+//            } catch (IOException e) {
+//                log.error(e.getMessage(), e);
+//            }
+//        }
+//        return doc;
+//    }
 
     /* (non-Javadoc)
      * @see org.dataone.cn.indexer.solrhttp.D1IndexerSolrClient#setSolrIndexUri(java.lang.String)

@@ -9,7 +9,8 @@ xmlns:context="http://www.springframework.org/schema/context"
 
     <context:property-placeholder location="classpath:org/dataone/configuration/jdbc.properties, classpath:org/dataone/configuration/solr.properties"/>
 
-    <import resource="classpath:index-processor-context.xml"/>
+	<import resource="classpath:org/dataone/cn/indexer/solrhttp/test-solr-schema.xml"/>
+    <import resource="classpath:test-index-processor-context.xml"/>
 
     <import resource="classpath:application-context-systemmeta200.xml" />
  	<import resource="classpath:application-context-resourcemap.xml" />

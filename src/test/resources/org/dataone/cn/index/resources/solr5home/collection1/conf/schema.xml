@@ -65,7 +65,7 @@ This schema is copied into the dataone-cn-index buildout for deployment on cn no
             behavior when a single string produces multiple tokens.  Defaults 
             to off for version >= 1.4
        1.5: omitNorms defaults to true for primitive field types 
-            (int, float, boolean, string...)
+            (int, float, boolean, string...).     
      -->
 
 
@@ -127,6 +127,7 @@ This schema is copied into the dataone-cn-index buildout for deployment on cn no
    -->   
    
         <field name="id"              	type="string"   indexed="true" stored="true" multiValued="false"/>
+        <field name="identifer"              	type="string"   indexed="true" stored="true" multiValued="false"/>
         <field name="seriesId"				type="string"	indexed="true" stored="true" multiValued="false" />
         <field name="fileName"			type="string"	indexed="true"	stored="true"	multiValued="false" />
         <field name="mediaType"			type="string"	indexed="true"	stored="true"	multiValued="false" />
@@ -412,7 +413,7 @@ This schema is copied into the dataone-cn-index buildout for deployment on cn no
         is added to the index.  It's used either to index the same field differently,
         or to add multiple fields to the same field for easier/faster searching.  -->
 
-    <copyField source="id" dest="identifier"/>
+ <!--   <copyField source="id" dest="identifier"/> -->
 
     <copyField source="title" dest="titlestr"/>
 

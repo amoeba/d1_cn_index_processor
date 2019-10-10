@@ -8,6 +8,13 @@
  http://www.springframework.org/schema/context  
  http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
+ <!--     <context:property-placeholder location="file:/etc/dataone/index/indexer_client.properties"/>
+     -->
+    <import resource="org/dataone/cn/indexer/solrhttp/test-solr-schema.xml"/>
+	<import resource="classpath:test-indexer-solr-client-context.xml"/>
+<!--     <import resource="${dataone.indexer.solrClient.context.location}"/>
+       	<import resource="classpath:test-indexer-solr-client-context.xml"/>
+	-->
 	<bean id="solrIndexService" class="org.dataone.cn.indexer.SolrIndexService">
      	<property name="systemMetadataProcessor" ref="systemMetadata200Subprocessor" />
      	<property name="subprocessors">
@@ -16,7 +23,47 @@
 				<ref bean="eml201Subprocessor" />
 				<ref bean="eml210Subprocessor" />
 				<ref bean="eml211Subprocessor" />
+				<ref bean="eml220Subprocessor" />
+				<ref bean="emlAnnotationSubprocessor" />
 				<ref bean="resourceMapSubprocessor" />
+				<ref bean="fgdcstd0011998Subprocessor" />
+				<ref bean="fgdcstd00111999Subprocessor" />
+				<ref bean="fgdcstd00121999Subprocessor" />
+				<ref bean="fgdcEsri80Subprocessor" />
+				<ref bean="ornlMercury10Subprocessor" />
+				<ref bean="dryad30Subprocessor" />
+				<ref bean="dryad31Subprocessor" />
+				<ref bean="qualifiedDublicCoreSubprocessor" />
+				<ref bean="dublinCoreExtendedSubprocessor" />
+                <ref bean="datacite3Subprocessor" />
+ 			  	<ref bean="prov20150115RdfXmlSubprocessor" />
+			 	<ref bean="annotatorSubprocessor" />
+				<ref bean="isotc211Subprocessor" />
+				<ref bean="isotc211NoaaSubprocessor" />
+                <ref bean="isotc211PangaeaSubprocessor" />
+  				<ref bean="reprocessResourceMapSubprocessor" /> 
+  				<ref bean="dublinCoreOAISubprocessor" />
+			</list>
+     	</property>
+     	<property name="deleteSubprocessors">
+     		<list>
+     			<ref bean="resourceMapDeleteSubprocessor" />
+     			<ref bean="annotationDeleteSubprocessor" />
+     		</list>
+     	</property>
+	</bean>
+	
+	<bean id="solrIndexServiceV2" class="org.dataone.cn.indexer.SolrIndexServiceV2">
+     	<property name="systemMetadataProcessor" ref="systemMetadata200Subprocessor" />
+     	<property name="subprocessors">
+      		<list>
+				<ref bean="eml200Subprocessor" />
+				<ref bean="eml201Subprocessor" />
+				<ref bean="eml210Subprocessor" />
+				<ref bean="eml211Subprocessor" />
+				<ref bean="eml220Subprocessor" />
+				<ref bean="emlAnnotationSubprocessor" />				
+				<ref bean="resourceMapSubprocessorV2" />
 				<ref bean="fgdcstd0011998Subprocessor" />
 				<ref bean="fgdcstd00111999Subprocessor" />
 				<ref bean="fgdcstd00121999Subprocessor" />
@@ -32,7 +79,8 @@
 				<ref bean="isotc211Subprocessor" />
 				<ref bean="isotc211NoaaSubprocessor" />
                 <ref bean="isotc211PangaeaSubprocessor" />
-  				<ref bean="reprocessResourceMapSubprocessor" /> 
+<!--   				<ref bean="reprocessResourceMapSubprocessor" />  -->
+  				<ref bean="dublinCoreOAISubprocessor" />
 			</list>
      	</property>
      	<property name="deleteSubprocessors">
@@ -41,6 +89,8 @@
      			<ref bean="annotationDeleteSubprocessor" />
      		</list>
      	</property>
+<!--      	<property name="solrSchema" ref="solrSchema"> -->  		
+<!--      	</property> -->
 	</bean>
 	
 	<bean id="subprocessorUtility" class="org.dataone.cn.indexer.parser.SubprocessorUtility" />
@@ -112,7 +162,11 @@
 		   <bean class="org.dataone.cn.indexer.XMLNamespace">
 		    	<constructor-arg name="namespace" value="eml://ecoinformatics.org/eml-2.1.1" />
 		    	<constructor-arg name="prefix" value="eml211" />
-		   </bean>
+			 </bean>
+			 <bean class="org.dataone.cn.indexer.XMLNamespace">
+				<constructor-arg name="namespace" value="https://eml.ecoinformatics.org/eml-2.2.0" />
+				<constructor-arg name="prefix" value="eml220" />
+		 </bean>
 		   <bean class="org.dataone.cn.indexer.XMLNamespace">
 		    	<constructor-arg name="prefix" value="cito" />
 		    	<constructor-arg name="namespace" value="http://purl.org/spar/cito/" />
@@ -193,63 +247,14 @@
 		</list>
 	 	</constructor-arg>
 	</bean>
-
-	<bean id="solrQueryUri" class="java.lang.String">
-		<constructor-arg value="${solr.query.uri}"/>
-	</bean>
 	
-	<bean id="solrIndexUri" class="java.lang.String">
-		<constructor-arg value="${solr.index.uri}"/>
-	</bean>
-	
-    <!--<bean id="httpConnectionManager" class="org.apache.http.impl.conn.SingleClientConnManager"/> -->
-    <bean id="httpConnectionManager" class="org.apache.http.impl.conn.PoolingClientConnectionManager"  p:defaultMaxPerRoute="12" />
     
-    
-    <bean id="httpClient" class="org.apache.http.impl.client.DefaultHttpClient">
-    	<constructor-arg ref="httpConnectionManager"/>
-    </bean>
-
+	<!--  used for MemberNodeServiceRegistrationTypeDocumentService bean -->
     <bean id="httpClientFactory" class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory"
     	p:connectTimeout="5000" >
     	<constructor-arg ref="httpClient" />
     </bean>
     
-<!--     <bean id="d1IndexerSolrClient" class="org.dataone.cn.indexer.solrhttp.HTTPService"> -->
-<!--         <constructor-arg ref="httpClientFactory" /> -->
-<!--         <property name="solrSchemaPath" value="${solr.schema.path}" /> -->
-<!--         <property name="solrIndexUri" value="${solr.index.uri}" /> -->
-<!--     </bean> -->
-    
-<!--  A CloudSolrClient can be used once we have set up SolrCloud -->
-<!--  as of sept 26, 2017, this SolrClient doesn't work in tests where we portForwarded using localhost:2181 - it doesn't find the search_core collection -->    
-<!--     <bean id="solrClient" class="org.apache.solr.client.solrj.impl.CloudSolrClient"> -->
-<!--         <constructor-arg type = "java.lang.String" value = "${solr.zk.host.uri}"/> -->
-<!--         <constructor-arg ref="httpClient"/> -->
-<!--         <property name="defaultCollection" value="solr/search_core"/> -->
-<!--     </bean> -->
-    
-<!--      <bean id="solrClientBuilder" class="org.apache.solr.client.solrj.impl.HttpSolrClient.Builder"> -->
-<!--         <constructor-arg type = "java.lang.String" value = "${solr.index.uri}"/> -->
-<!--     </bean> -->
-	
-<!-- 	<bean id="d1IndexerSolrClient" class="org.dataone.cn.indexer.solrhttp.SolrJClient"> -->
-<!-- 		<constructor-arg ref="solrClientBuilder" /> -->
-<!-- 		<property name="solrSchemaPath" value="${solr.schema.path}" /> -->
-<!-- 		<property name="solrIndexUri" value="${solr.index.uri}" /> -->
-<!-- 	</bean> -->
-
- 
-    <bean id="solrClient" class="org.apache.solr.client.solrj.impl.HttpSolrClient">
-        <constructor-arg type = "java.lang.String" value = "${solr.index.uri}"/>
-    </bean>
-       
-    <bean id="d1IndexerSolrClient" class="org.dataone.cn.indexer.solrhttp.SolrJClient">
-        <constructor-arg ref="solrClient" />
-        <property name="solrSchemaPath" value="${solr.schema.path}" />
-        <property name="solrIndexUri" value="${solr.index.uri}" />
-    </bean>
-	
 	<bean id="mnServiceRegistrationTypeDocumentService" class="org.dataone.cn.indexer.convert.MemberNodeServiceRegistrationTypeDocumentService"/>
 	
 	<bean id="mnServiceRegistrationTypeCacheService" class="org.dataone.cn.indexer.parser.utility.MemberNodeServiceRegistrationTypeCache"/>

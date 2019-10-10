@@ -453,7 +453,7 @@
        attributeLabel,attributeDescription,attributeUnit,attribute,
        authorSurName,authorSurNameSort,authorGivenName,
        geohash_1, geohash_2,
-       geohash_3, geohash_4, geohash_5, geohash_6, geohash_7, geohash_8, geohash_9,
+       geohash_3, geohash_4, geohash_5, geohash_6, geohash_7, geohash_8, geohash_9,_version_,
 		prov_wasDerivedFrom, prov_wasInformedBy, prov_used, prov_generated, prov_generatedByProgram, 
 		prov_generatedByExecution, prov_generatedByUser, prov_usedByProgram, 
         prov_usedByExecution, prov_usedByUser, prov_wasExecutedByExecution, prov_wasExecutedByUser, prov_hasSources, 

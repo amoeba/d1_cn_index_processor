@@ -165,6 +165,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
                                 + csiro_pid);
         // system metadata
         csiroExpected.put("id", csiro_pid);
+        csiroExpected.put("identifier", csiro_pid);
         csiroExpected.put("seriesId", "");
         csiroExpected.put("fileName", "");
         csiroExpected.put("mediaType", "");
@@ -289,6 +290,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
 
         // system metadata
         fgdcNasaExpected.put("id", nasa_pid);
+        fgdcNasaExpected.put("identifier", nasa_pid);
         fgdcNasaExpected.put("seriesId", "");
         fgdcNasaExpected.put("fileName", "");
         fgdcNasaExpected.put("mediaType", "");
@@ -390,6 +392,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
                                 + esri_pid);
         // system metadata
         esriExpected.put("id", esri_pid);
+        esriExpected.put("identifier", esri_pid);
         esriExpected.put("seriesId", "");
         esriExpected.put("fileName", "");
         esriExpected.put("mediaType", "");
@@ -488,6 +491,7 @@ public class SolrFieldXPathFgdcTest extends BaseSolrFieldXPathTest {
                                 + ornl_mercury_pid);
         // system metadata
         ornlMercuryExpected.put("id", ornl_mercury_pid);
+        ornlMercuryExpected.put("identifier", ornl_mercury_pid);
         ornlMercuryExpected.put("seriesId", "");
         ornlMercuryExpected.put("fileName", "");
         ornlMercuryExpected.put("mediaType", "");

@@ -98,11 +98,13 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         Resource systemMetadataResource = (Resource) context.getBean("peggym1304Sys");
         deleteAll();
         addEmlToSolrIndex(systemMetadataResource);
+        client.commit();
         Thread.sleep(SLEEPTIME);
         assertPresentInSolrIndex(pid);
         D1IndexerSolrClient httpService = (D1IndexerSolrClient) context.getBean("d1IndexerSolrClient");
         httpService.sendSolrDelete(pid);
         Thread.sleep(SLEEPTIME);
+        client.commit();
         assertNotPresentInSolrIndex(pid);
     }
 
@@ -421,6 +423,7 @@ public class SolrIndexDeleteTest extends DataONESolrJettyTestBase {
         httpService.sendSolrDelete("peggym.resourcemap2-complicated");
         httpService.sendSolrDelete("peggym.resourcemap1-overlap");
         httpService.sendSolrDelete("peggym.resourcemap2-overlap");
+        client.commit();
 //        try {
 //           List<SolrDoc> docsLeft =  this.getSolrClient().query("");
 //           assertTrue("After deleteAll, there should not be any docs left in the index", docsLeft.size() == 0);

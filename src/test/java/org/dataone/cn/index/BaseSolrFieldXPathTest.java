@@ -58,6 +58,7 @@ public abstract class BaseSolrFieldXPathTest {
     @Autowired
     private BaseXPathDocumentSubprocessor systemMetadata200Subprocessor;
 
+    
     protected void testXPathParsing(ScienceMetadataDocumentSubprocessor docProcessor,
             Resource sysMetadata, Resource sciMetadata, HashMap<String, String> expectedValues,
             String pid) throws Exception {

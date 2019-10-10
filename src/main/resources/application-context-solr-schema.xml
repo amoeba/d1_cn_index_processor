@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:p="http://www.springframework.org/schema/p"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:context="http://www.springframework.org/schema/context"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans 
+ http://www.springframework.org/schema/beans/spring-beans.xsd
+ http://www.springframework.org/schema/context  
+ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+<!-- <context:property-placeholder location="classpath:org/dataone/configuration/solr.properties"/>
+-->
+	<bean id="solrSchema" class="org.dataone.cn.indexer.solrhttp.SolrSchema">
+      	<property name="solrSchemaPath" value="${solr.schema.path}" />
+     	<property name="fieldSegmentMap">
+     	 		<map>
+      		
+      	<!--  internal properties -->
+       	<entry key="id"              		value="internal"/>
+       	<entry key="_version_"              	value="internal"/>
+       	
+       	<!-- SystemMetadata properties -->	
+       	<entry key="identifier"              value="sysmeta"/>
+       	<entry key="seriesId"              	value="sysmeta"/>
+     	<entry key="fileName"              	value="sysmeta"/>
+     	<entry key="mediaType"           	value="sysmeta"/>
+     	<entry key="mediaTypeProperty"       value="sysmeta"/>       
+     	<entry key="formatId"    			value="sysmeta"/>
+		<entry key="formatType"				value="sysmeta"/>
+        <entry key="size"            		value="sysmeta"/>
+        <entry key="checksum"        		value="sysmeta"/>
+        <entry key="checksumAlgorithm" 		value="sysmeta"/>
+        <entry key="dateUploaded"    		value="sysmeta"/>
+        <entry key="dateModified"    		value="sysmeta"/>
+        <entry key="submitter"       		value="sysmeta"/>
+        <entry key="rightsHolder"    		value="sysmeta"/>
+        <entry key="authoritativeMN"       	value="sysmeta"/>
+        <entry key="replicationAllowed"     	value="sysmeta"/>
+        <entry key="numberReplicas"      		value="sysmeta"/>
+        <entry key="preferredReplicationMN"  	value="sysmeta"/>
+        <entry key="blockedReplicationMN"  	value="sysmeta"/>
+        <entry key="replicaMN"      			value="sysmeta"/>
+        <entry key="replicaVerifiedDate" 		value="sysmeta"/>
+        <entry key="replicationStatus"       	value="sysmeta"/>
+        <entry key="datasource"       		value="sysmeta"/>
+        <entry key="obsoletes"       		value="sysmeta"/>
+        <entry key="obsoletedBy"      		value="sysmeta"/>
+        
+        <!--(Permissions remadeled for solr)-->
+        <entry key="readPermission"    		value="sysmeta"/>
+        <entry key="writePermission"   		value="sysmeta"/>
+        <entry key="changePermission"  		value="sysmeta"/>
+        <entry key="isPublic"          		value="sysmeta"/>
+      
+
+
+        <!-- Object relationships -->
+        <entry key="resourceMap"				value="ore"/>
+        <entry key="documents"				value="ore"/>
+        <entry key="isDocumentedBy"			value="ore"/>
+
+        
+        <!-- Science metadata properties -->
+
+        <entry key="author"					value="scimeta"/>
+        <entry key="authorSurName"			value="scimeta"/>
+        <entry key="authorGivenName"			value="scimeta"/>
+        <entry key="authorSurNameSort"		value="scimeta"/>
+        <entry key="authorGivenNameSort"	 	value="scimeta"/>
+        
+        <entry key="authorLastName"			value="scimeta"/>
+        
+        <entry key="abstract"				 value="scimeta"/>
+        <entry key="keywords"                 value="scimeta"/>
+        <entry key="keyConcept"               value="scimeta"/>
+        <entry key="southBoundCoord"          value="scimeta"/>
+        <entry key="northBoundCoord"          value="scimeta"/>
+        <entry key="westBoundCoord"           value="scimeta"/>
+        <entry key="eastBoundCoord"           value="scimeta"/>
+        <entry key="namedLocation"            value="scimeta"/>
+        <entry key="beginDate"                value="scimeta"/>
+        <entry key="endDate"                  value="scimeta"/>
+        <entry key="title"                    value="scimeta"/>
+        <entry key="scientificName"           value="scimeta"/>
+        <entry key="relatedOrganizations"     value="scimeta"/>
+        <entry key="datePublished"            value="scimeta"/>
+        <entry key="pubDate" 				 value="scimeta"/>
+
+		<entry key="investigator" 		value="scimeta"/>
+		<entry key="investigatorText" 	value="scimeta"/>
+        <entry key="ogcUrl" 				value="scimeta"/>
+        <entry key="sku" 				value="scimeta"/>
+        <entry key="LTERSite"	 		value="scimeta"/>
+        <entry key="origin" 				value="scimeta"/>
+        <entry key="originText" 			value="scimeta"/>
+        <entry key="titlestr" 			value="scimeta"/>
+        <entry key="geoform" 			value="scimeta"/>
+        <entry key="presentationCat" 	value="scimeta"/>
+        <entry key="purpose" 			value="scimeta"/>
+        <entry key="updateDate" 			value="scimeta"/>
+        <entry key="edition" 			value="scimeta"/>
+        <!--  this next one is a systemMetadata controlled field -->
+        <entry key="dataUrl" 			value="sysmeta"/>
+        <entry key="originator" 			value="scimeta"/>
+        <entry key="originatorText" 		value="scimeta"/>
+        <entry key="family" 				value="scimeta"/>
+        <entry key="species" 			value="scimeta"/>
+        <entry key="genus" 				value="scimeta"/>
+        <entry key="kingdom" 			value="scimeta"/>
+        <entry key="phylum" 				value="scimeta"/>
+        <entry key="order" 				value="scimeta"/>
+        <entry key="class" 				value="scimeta"/>
+
+		<entry key="attributeName" 		value="scimeta"/>
+		<entry key="attributeLabel" 		value="scimeta"/>
+		<entry key="attributeDescription" 	value="scimeta"/>
+		<entry key="attributeUnit" 		value="scimeta"/>
+		<entry key="attribute"			value="scimeta"/>
+        
+        <entry key="webUrl" 				value="scimeta"/>
+
+        <entry key="contactOrganization" 		value="scimeta"/>
+        <entry key="contactOrganizationText" 	value="scimeta"/>
+
+        <entry key="keywordsText" 		value="scimeta"/>
+        <entry key="placeKey" 			value="scimeta"/>
+
+        <entry key="noBoundingBox" 		value="scimeta"/>
+        <entry key="isSpatial" 			value="scimeta"/>
+
+        <entry key="decade" 				value="scimeta"/>
+        <entry key="gcmdKeyword" 		value="scimeta"/>
+
+        <!-- these are ornl daac fields, may not be populated for nbii, but are required to be here for indexing purpose-->
+        <entry key="project" 			value="scimeta"/>
+        <entry key="projectText" 		value="scimeta"/>
+
+        <entry key="site" 				value="scimeta"/>
+        <entry key="siteText" 			value="scimeta"/>
+
+        <entry key="parameter" 		    value="scimeta"/>
+        <entry key="parameterText"		value="scimeta"/>
+
+        <entry key="sensor" 				value="scimeta"/>
+        <entry key="sensorText" 			value="scimeta"/>
+
+        <entry key="source" 				value="scimeta"/>
+        <entry key="sourceText" 			value="scimeta"/>
+
+        <entry key="term" 				value="scimeta"/>
+        <entry key="termText" 			value="scimeta"/>
+
+        <entry key="topic" 				value="scimeta"/>
+        <entry key="topicText" 			value="scimeta"/>
+
+        <entry key="fileID" 				value="scimeta"/>
+   		<entry key="text"				value="scimeta"/>
+   		<entry key="geohash_1" 			value="scimeta"/>
+   		<entry key="geohash_2" 			value="scimeta"/>
+   		<entry key="geohash_3" 			value="scimeta"/>
+   		<entry key="geohash_4" 			value="scimeta"/>
+   		<entry key="geohash_5" 			value="scimeta"/>
+   		<entry key="geohash_6" 			value="scimeta"/>
+   		<entry key="geohash_7" 			value="scimeta"/>
+   		<entry key="geohash_8" 			value="scimeta"/>
+   		<entry key="geohash_9" 			value="scimeta"/>
+   		
+   		<!--  funding related metadata fields -->
+		<entry key="funding"				value="scimeta"/>
+		<entry key="funderName"			    value="scimeta"/>
+		<entry key="funderIdentifier"       value="scimeta"/>
+		<entry key="awardNumber"            value="scimeta"/>
+		<entry key="awardTitle"             value="scimeta"/>	
+
+        <!-- Provenance-based fields -->
+        <entry key="prov_wasDerivedFrom"         value="prov"/>
+        <entry key="prov_wasInformedBy"          value="prov"/>
+        <entry key="prov_used"                   value="prov"/>
+        <entry key="prov_generated"              value="prov"/>
+        <entry key="prov_generatedByProgram"     value="prov"/>
+        <entry key="prov_generatedByExecution"   value="prov"/>
+        <entry key="prov_generatedByUser"        value="prov"/>
+        <entry key="prov_usedByProgram"          value="prov"/>
+        <entry key="prov_usedByExecution"        value="prov"/>
+        <entry key="prov_usedByUser"             value="prov"/>
+        <entry key="prov_wasExecutedByExecution" value="prov"/>
+        <entry key="prov_wasExecutedByUser"      value="prov"/>
+        <entry key="prov_hasSources"             value="prov"/>
+        <entry key="prov_hasDerivations"         value="prov"/>
+        <entry key="prov_instanceOfClass"        value="prov"/>
+        
+        <!-- semantic fields -->
+        <entry key="sem_annotation"        	value="sem"/>
+        <entry key="sem_annotated_by"      	value="sem"/>
+        <entry key="sem_annotates"        	value="sem"/>
+        <entry key="sem_comment"        		value="sem"/>
+
+		<!-- member node service fields -->
+		<entry key="isService"			value="mn_service"/>
+		<entry key="serviceCoupling"		value="mn_service"/>
+		<entry key="serviceTitle"		value="mn_service"/>
+		<entry key="serviceDescription" 	value="mn_service"/>
+		<entry key="serviceType"			value="mn_service"/>
+		<entry key="serviceEndpoint"		value="mn_service"/>
+		<entry key="serviceInput"		value="mn_service"/>
+		<entry key="serviceOutput"		value="mn_service"/>
+		
+
+			</map>
+     	</property>
+	</bean>
+</beans>
+
+
+

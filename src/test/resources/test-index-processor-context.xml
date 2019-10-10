@@ -10,6 +10,7 @@
 
 	<import resource="classpath:task-index-context.xml"/>
 	<import resource="classpath:test-index-parser-context.xml"/>
+
 	
 	<bean id="indexTaskGenerator" class="org.dataone.cn.index.generator.IndexTaskGenerator" />
 	

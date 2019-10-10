@@ -16,5 +16,20 @@
      		</list>
      	</property>
 	</bean>
+	
+	<bean id="resourceMapSubprocessorV2" class="org.dataone.cn.indexer.parser.ResourceMapSubprocessorV2">
+		<property name="matchDocuments">
+			<list>
+				<value>http://www.openarchives.org/ore/terms</value>
+			</list>
+		</property>	
+		<property name="fieldsToMerge">
+     		<list>
+     			<value>resourceMap</value>
+     			<value>documents</value>
+     			<value>isDocumentedBy</value>
+     		</list>
+     	</property>
+	</bean>
 
 </beans>

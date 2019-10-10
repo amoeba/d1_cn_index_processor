@@ -47,8 +47,10 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shared.PrefixMapping;
 import org.dataone.cn.index.util.PerformanceLogger;
+import org.dataone.cn.indexer.AbstractStubMergingSubprocessor;
 import org.dataone.cn.indexer.D1IndexerSolrClient;
 import org.dataone.cn.indexer.parser.IDocumentSubprocessor;
+import org.dataone.cn.indexer.parser.IDocumentSubprocessorV2;
 import org.dataone.cn.indexer.parser.ISolrDataField;
 import org.dataone.cn.indexer.parser.SubprocessorUtility;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
@@ -61,7 +63,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * The solr doc of the RDF/XML object only has the system metadata information.
  * The solr docs of the science metadata doc and data file have the annotation information.
  */
-public class RdfXmlSubprocessor implements IDocumentSubprocessor {
+public class RdfXmlSubprocessor extends AbstractStubMergingSubprocessor implements IDocumentSubprocessor, IDocumentSubprocessorV2 {
 
     private static Log log = LogFactory.getLog(RdfXmlSubprocessor.class);
     private static PerformanceLogger perfLog = PerformanceLogger.getInstance();
@@ -118,12 +120,11 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
             serializeDocuments(docs);
         }
 
+
+        Map<String,SolrDoc> processedDocsMap = process(identifier, is);
         SolrDoc resourceMapDoc = docs.get(identifier);
-        List<SolrDoc> processedDocs = process(resourceMapDoc, is);
-        Map<String, SolrDoc> processedDocsMap = new HashMap<String, SolrDoc>();
-        for (SolrDoc processedDoc : processedDocs) {
-            processedDocsMap.put(processedDoc.getIdentifier(), processedDoc);
-        }
+        processedDocsMap.put(identifier,resourceMapDoc);
+
 
         if (log.isTraceEnabled()) {
             log.trace("PREMERGED DOCS from processDocument(): ");
@@ -140,7 +141,9 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
 
         return mergedDocs;
     }
-
+    
+    
+ 
     /**
      * Serialize documents to be indexed for debugging
      * 
@@ -171,27 +174,51 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
     }
 
     
+  
     /**
-     * Collects solrDocs from SOLR for each of the 
+     * Parses the docuent and merges with existing
      * @param indexDocument
      * @param is
      * @return
      * @throws Exception
      */
-    private List<SolrDoc> process(SolrDoc indexDocument, InputStream is) throws Exception {
+    private Map<String,SolrDoc> process(String indexDocId, InputStream is) throws Exception {
+   
         log.debug("process(..): entering method...");
+        
+        long start = System.currentTimeMillis();
+        Map<String,SolrDoc> documentsToIndex = parseDocument(indexDocId, is);
+        long getStart = System.currentTimeMillis();
+        Map<String, SolrDoc> existingDocuments = getSolrDocs(documentsToIndex.keySet());
+        perfLog.log("RdfXmlSubprocess.process get existing solr docs ", System.currentTimeMillis() - getStart);
+        Map<String, SolrDoc> mergedDocuments = mergeDocs(documentsToIndex, existingDocuments);
+//        mergedDocuments.put(indexDocument.getIdentifier(), indexDocument);
+
+        perfLog.log("RdfXmlSubprocess.process() total take ", System.currentTimeMillis() - start);
+        return mergedDocuments;
+        
+    }
+    
+    
+    @Override
+    protected Map<String, SolrDoc> parseDocument(String indexDocId, InputStream is)
+        throws Exception {
+     
+        Map<String, SolrDoc> documentsToIndex = new HashMap<String, SolrDoc>();
+
+        
         // get the triplestore dataset
         long start = System.currentTimeMillis();
-        Map<String, SolrDoc> mergedDocuments;
+        
         Dataset dataset = TripleStoreService.getInstance().getDataset();
-        log.debug("process(..): Got dataset from TripleStoreService");
+        log.debug("parseDocument(..): Got dataset from TripleStoreService");
         try {
             
 
-            perfLog.log("RdfXmlSubprocess.process gets a dataset from triple store service ", System.currentTimeMillis() - start);
+            perfLog.log("RdfXmlSubprocess.parseDocument gets a dataset from triple store service ", System.currentTimeMillis() - start);
             
             // read the annotation
-            String indexDocId = indexDocument.getIdentifier();
+  //          String indexDocId = indexDocument.getIdentifier();
             String name = indexDocId;
     
             //Check if the identifier is a valid URI and if not, make it one by prepending "http://"
@@ -224,7 +251,7 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
             //dataset.getDefaultModel().add(ontModel);
             log.debug("process(..): added ont-model...");
             // process each field query
-            Map<String, SolrDoc> documentsToIndex = new HashMap<String, SolrDoc>();
+            
             long startField = System.currentTimeMillis();
             for (ISolrDataField field : this.fieldList) {
                 long filed = System.currentTimeMillis();
@@ -270,20 +297,14 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
                         }
                     }
                 }
-                perfLog.log("RdfXmlSubprocess.process process the field "+field.getName(), System.currentTimeMillis() - filed);
+                perfLog.log("RdfXmlSubprocess.parseDocument process the field "+field.getName(), System.currentTimeMillis() - filed);
             }
-            perfLog.log("RdfXmlSubprocess.process process the fields total ", System.currentTimeMillis() - startField);
+            perfLog.log("RdfXmlSubprocess.parseDocument process the fields total ", System.currentTimeMillis() - startField);
             // clean up the triple store
             //TDBFactory.release(dataset);
     
             // merge the existing index with the new[er] values
-            long getStart = System.currentTimeMillis();
-            Map<String, SolrDoc> existingDocuments = getSolrDocs(documentsToIndex.keySet());
-            perfLog.log("RdfXmlSubprocess.process get existing solr docs ", System.currentTimeMillis() - getStart);
-            mergedDocuments = mergeDocs(documentsToIndex, existingDocuments);
-            mergedDocuments.put(indexDocument.getIdentifier(), indexDocument);
-    
-            perfLog.log("RdfXmlSubprocess.process() total take ", System.currentTimeMillis() - start);
+            
         } finally {
             try {
                 TripleStoreService.getInstance().destoryDataset(dataset);
@@ -291,8 +312,10 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
                 log.warn("A tdb directory can't be removed since "+e.getMessage(), e);
             }
         }
-        return new ArrayList<SolrDoc>(mergedDocuments.values());
+        return documentsToIndex;
     }
+    
+    
 
     private Map<String, SolrDoc> getSolrDocs(Set<String> ids) throws Exception {
         log.debug("getSolrDocs(..): entered method...");
@@ -379,4 +402,6 @@ public class RdfXmlSubprocessor implements IDocumentSubprocessor {
     public void setFieldsToMerge(List<String> fieldsToMerge) {
         this.fieldsToMerge = fieldsToMerge;
     }
+
+    
 }

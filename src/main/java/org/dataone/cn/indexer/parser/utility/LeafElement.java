@@ -89,6 +89,10 @@ public class LeafElement {
     public void setxPath(String xPath) {
         this.xPath = xPath;
     }
+    
+    public void setXPath(String xPath) {
+        this.xPath = xPath;
+    }
 
     public XPathExpression getxPathExpression() {
         return xPathExpression;
@@ -98,6 +102,9 @@ public class LeafElement {
         this.xPathExpression = xPathExpression;
     }
 
+    public void setXPathExpression(XPathExpression xPathExpression) {
+        this.xPathExpression = xPathExpression;
+    }
     public String getDelimiter() {
         return delimiter;
     }

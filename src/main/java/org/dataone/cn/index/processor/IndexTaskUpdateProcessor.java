@@ -31,6 +31,7 @@ import org.apache.log4j.Logger;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.task.IndexTask;
 import org.dataone.cn.indexer.SolrIndexService;
+import org.dataone.cn.indexer.SolrIndexServiceV2;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v2.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
@@ -44,10 +45,15 @@ public class IndexTaskUpdateProcessor implements IndexTaskProcessingStrategy {
     @Autowired
     private SolrIndexService solrIndexService;
     
+    @Autowired
+    private SolrIndexServiceV2 solrIndexServiceV2;
+    
+    
     public void process(IndexTask task) throws Exception {
         InputStream smdStream = new ByteArrayInputStream(task.getSysMetadata().getBytes());
         try {
-            solrIndexService.insertIntoIndex(task.getPid(), smdStream, task.getObjectPath());
+//            solrIndexService.insertIntoIndex(task.getPid(), smdStream, task.getObjectPath());
+            solrIndexServiceV2.insertIntoIndex(task.getPid(), smdStream, task.getObjectPath());
         } catch (SAXParseException spe) {
             logger.error(spe);
             logger.error("Caught SAX parse exception on: " + task.getPid()
