@@ -164,7 +164,7 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
         configureSpringResources();
 
         // instantiate the subprocessor
-        provRdfXmlSubprocessor = (RdfXmlSubprocessor) context.getBean("prov20150115RdfXmlSubprocessor");
+        provRdfXmlSubprocessor = (RdfXmlSubprocessor) context.getBean("rdfXMLSubprocessor");
 
     }
 

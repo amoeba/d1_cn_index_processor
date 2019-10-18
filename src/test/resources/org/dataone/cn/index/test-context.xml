@@ -48,13 +48,17 @@ xmlns:context="http://www.springframework.org/schema/context"
     <import resource="classpath:application-context-isotc211-pangaea.xml" />
 
     <import resource="classpath:application-context-prov-base.xml" />
-    <import resource="classpath:application-context-provone20150115.xml" />
+    <import resource="classpath:application-context-rdfxml.xml" />
 
     <import resource="classpath:application-context-oa.xml" />
     <import resource="classpath:application-context-annotator.xml" />
 
 	<import resource="classpath:application-context-eml-annotation.xml" />
     <import resource="classpath:application-context-ontology-model-service.xml" />
+    
+    <import resource="classpath:application-context-isPartOf.xml" />  
+    <import resource="classpath:application-context-collections.xml" />  
+    <import resource="classpath:application-context-portals.xml" />  
 
     <import resource="classpath:org/dataone/cn/indexer/annotation/test-context-annotator.xml"/>
 
