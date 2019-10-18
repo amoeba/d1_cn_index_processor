@@ -28,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,12 +55,16 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.dataone.service.exceptions.NotFound;
+import org.dataone.service.exceptions.UnsupportedType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
 
 /**
  * User: Porter Date: 7/26/11 Time: 11:37 AM
@@ -286,6 +291,40 @@ public class HTTPService {
         List<SolrDoc> docs = getDocumentsByField(uir, ids, SolrElementField.FIELD_SERIES_ID, false);
         docs.addAll(getDocumentsByField(uir, ids, SolrElementField.FIELD_ID, false));
         return docs;
+    }
+    
+    /**
+     * Gets a single solr document that is at the top of the version chain for the given seriesId
+     * @param seriesId - the target object's seriesId
+     * @return the SolrDoc
+     * @throws MalformedURLException
+     * @throws UnsupportedType
+     * @throws NotFound
+     * @throws SolrServerException
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws SAXException
+     * @throws XPathExpressionException 
+     */
+    public SolrDoc getDocumentBySeriesId(String seriesId, String uir) throws MalformedURLException, 
+                UnsupportedType, NotFound, SolrServerException, ParserConfigurationException, IOException, SAXException, XPathExpressionException {
+        //Contruct a query to search for the most recent SolrDoc with the given seriesId
+        StringBuilder query = new StringBuilder();
+        //query.append("q=" + SolrElementField.FIELD_SERIES_ID + ":\"" + escapeQueryChars(seriesId) + "\" AND -obsoletedBy:*"); 
+        query.append(SolrElementField.FIELD_SERIES_ID + ":\"" + escapeQueryChars(seriesId) + "\"" + escapeQueryChars(" AND -obsoletedBy:*")); 
+        log.info("HTTPService.getDocumentBeySeriesId - the uir is " + uir);
+        log.info("HTTPService.getDocumentBeySeriesId - the query is " + query.toString());
+        //Get the SolrDoc by querying for it
+        List<SolrDoc> list = new ArrayList<SolrDoc>();
+        list.addAll(doRequest(uir, query, MAX_ROWS));
+                
+        //If query results were found, get the first one (only one result should be found anyway)
+        SolrDoc doc = null;
+        if(list != null && !list.isEmpty()) {
+            doc = list.get(0);
+        }
+        
+        return doc;
     }
 
     public List<SolrDoc> getDocumentById(String uir, String id) throws IOException,
