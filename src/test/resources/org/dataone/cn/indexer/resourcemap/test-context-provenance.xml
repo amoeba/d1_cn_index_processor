@@ -44,5 +44,20 @@
         <constructor-arg type="java.lang.String" 
         value="org/dataone/cn/indexer/resourcemap/resources/ala-wai-ns02-image-data-AW02XX_001CTDXXXXR00_20150203_10day.1.jpg"/>
     </bean>
+    
+    <bean id="portalTestDoc" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+        value="org/dataone/cn/index/resources/d1_testdocs/portal/portal.xml"/>
+    </bean>
+    
+     <bean id="eml220TestDocSciMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+        value="org/dataone/cn/index/resources/d1_testdocs/eml220/eml220testdocscimeta.xml"/>
+     </bean>
+     
+     <bean id="partResourceMap" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+        value="org/dataone/cn/indexer/resourcemap/resources/resourcemap-with-part.xml"/>
+     </bean>
 
 </beans>
