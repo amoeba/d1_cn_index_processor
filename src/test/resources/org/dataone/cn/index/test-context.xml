@@ -419,4 +419,14 @@ xmlns:context="http://www.springframework.org/schema/context"
         <constructor-arg type="java.lang.String"
         value="org/dataone/cn/index/resources/d1_testdocs/eml220/eml220testdocscimeta.xml"/>
     </bean>
+    
+    <bean id="portalTestDocSysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+        value="org/dataone/cn/index/resources/d1_testdocs/portal/portalsysmeta.xml"/>
+    </bean>
+
+    <bean id="portalTestDoc" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+        value="org/dataone/cn/index/resources/d1_testdocs/portal/portal.xml"/>
+    </bean>
 </beans>
