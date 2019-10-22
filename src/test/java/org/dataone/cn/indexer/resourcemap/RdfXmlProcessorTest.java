@@ -426,7 +426,7 @@ public class RdfXmlProcessorTest extends DataONESolrJettyTestBase {
         // Insert the resource map into the task queue
         String resourceMapId = "resource_map_urn:uuid:cd489c7e-be88-4d57-b13a-911b25a0b47f";
         formatId = "http://www.openarchives.org/ore/terms";
-        insertResource(resourceMapId, formatId, partResourcemap, nodeid, userDN);
+        //insertResource(resourceMapId, formatId, partResourcemap, nodeid, userDN);
 
         Thread.sleep(SLEEPTIME);
         // now process the tasks
@@ -435,8 +435,8 @@ public class RdfXmlProcessorTest extends DataONESolrJettyTestBase {
         Thread.sleep(SLEEPTIME);
         assertPresentInSolrIndex(emlId);
         assertPresentInSolrIndex(portalId);
-        assertPresentInSolrIndex(resourceMapId);
-        compareFieldValue(emlId, null, null);
+        //assertPresentInSolrIndex(resourceMapId);
+        assertTrue(compareFieldValue(emlId, "title", "EML Annotation Example"));
 
     }
     
@@ -447,9 +447,8 @@ public class RdfXmlProcessorTest extends DataONESolrJettyTestBase {
         solrParams.set("fl", "*");
         QueryResponse qr = getSolrClient().query(solrParams);
         SolrDocument result = qr.getResults().get(0);
-        System.out.print("===================================");
-        System.out.println(result.toString());
-        return equal;
+        String value = (String)result.getFieldValue(fieldName);
+        return expectedValue.equals(value);
     }
     
     

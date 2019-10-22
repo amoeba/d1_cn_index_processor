@@ -311,7 +311,7 @@ public class HTTPService {
         //Contruct a query to search for the most recent SolrDoc with the given seriesId
         StringBuilder query = new StringBuilder();
         //query.append("q=" + SolrElementField.FIELD_SERIES_ID + ":\"" + escapeQueryChars(seriesId) + "\" AND -obsoletedBy:*"); 
-        query.append(SolrElementField.FIELD_SERIES_ID + ":\"" + escapeQueryChars(seriesId) + "\"" + escapeQueryChars(" AND -obsoletedBy:*")); 
+        query.append(SolrElementField.FIELD_SERIES_ID + ":" + escapeQueryChars(seriesId) + (" AND -obsoletedBy:*")); 
         log.info("HTTPService.getDocumentBeySeriesId - the uir is " + uir);
         log.info("HTTPService.getDocumentBeySeriesId - the query is " + query.toString());
         //Get the SolrDoc by querying for it
