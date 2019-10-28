@@ -312,6 +312,32 @@ public class RdfXmlProcessorTest extends DataONESolrJettyTestBase {
 
     }
     
+    /**
+     * Test if the hasPart/isPartOf fields in resource maps are processed correctly with the 
+     * RdfXmlsubprocessor. This test does not add content to Hazelcast or Solr.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testPartFields() throws Exception {
+
+        log.debug("Testing RDF/XML parts indexing of resourcemap-with-part.xml: ");
+
+        // Ensure fields associated with the data input objects are indexed
+        expectedFields.clear();
+        expectedFields.put("isPartOf", "urn:uuid:27ae3627-be62-4963-859a-8c96d940cadc");
+        compareFields(expectedFields, partResourcemap.getInputStream(),
+                provRdfXmlSubprocessor, "resource_map_urn:uuid:cd489c7e-be88-4d57-b13a-911b25a0b47f",
+                "urn:uuid:f18812ac-7f4f-496c-82cc-3f4f54830274");
+        
+        expectedFields.clear();
+        expectedFields.put("hasPart", "urn:uuid:f18812ac-7f4f-496c-82cc-3f4f54830274");
+        compareFields(expectedFields, partResourcemap.getInputStream(),
+                provRdfXmlSubprocessor, "resource_map_urn:uuid:cd489c7e-be88-4d57-b13a-911b25a0b47f",
+                null);
+
+    }
+    
 
     /**
      * Test the end to end index processing of a resource map with provenance statements
