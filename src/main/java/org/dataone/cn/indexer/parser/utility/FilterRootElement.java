@@ -22,27 +22,9 @@
 
 package org.dataone.cn.indexer.parser.utility;
 
-/**
-
- *             National Center for Ecological Analysis and Synthesis
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
-
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,13 +38,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Used by FilterCommonRootSolrField.
  *
  * Assembled a query string based on a set of filters in a DataONE collection document.
- *
- * @author slaughter
- *
+ * <p>
+ * Used by FilterCommonRootSolrField.
  * Based on CommonRootSolrField by sroseboo
+ * </p>
+ * @author slaughter
  *
  */
 public class FilterRootElement {
@@ -82,6 +64,7 @@ public class FilterRootElement {
     }
 
     /**
+     * Get the document processor values for the document or node
      *
      * @param docOrNode - An XML document root or sub-node of a DataONE collection document
      * @return the value of the query derived from the document
@@ -107,7 +90,6 @@ public class FilterRootElement {
 
         String prefilterValue = null;
         String postfilterValue = null;
-
         String filterValue = null;
         List<FilterProcessor> filters = getFilters();
         prefixMatch = getPrefixMatch();
@@ -228,10 +210,8 @@ public class FilterRootElement {
             }
         }
 
-
         // Now assemble the complete query
-
-        // ( ((prefilter) OR (mail filters)) AND (fixedTerm)) OR (postfilter)
+        // (((prefilter) OR (main filters)) AND (fixedTerm)) OR (postfilter)
         // Add the prefilter value, if defined.
         if(prefilterValue != null) {
             completeFilterValue = "(" + prefilterValue + ")";
@@ -246,12 +226,17 @@ public class FilterRootElement {
             }
         }
 
-        // Add the fixed terms
-        if(fixedTerm != null) {
-            if(completeFilterValue != null) {
-                completeFilterValue = "(" + completeFilterValue + " AND " + fixedTerm + ")";
-            } else {
-                completeFilterValue = "(" + fixedTerm + ")";
+        // Don't include the 'fixed' filter if there are no pre or main filters. The fixed filter
+        // is usually something like '(-obsoletedBy:* AND formatType:METADATA)', which will return ALL
+        // unobsoleted metadata pids if there is no pre or main filters to constrain it.
+        if(prefilterValue != null || mainFilterValue != null) {
+            // Add the fixed terms
+            if (fixedTerm != null) {
+                if (completeFilterValue != null) {
+                    completeFilterValue = "(" + completeFilterValue + " AND " + fixedTerm + ")";
+                } else {
+                    completeFilterValue = "(" + fixedTerm + ")";
+                }
             }
         }
 
@@ -274,8 +259,12 @@ public class FilterRootElement {
         return completeFilterValue;
     }
 
+    /**
+     * Initialize the XPath object for XML node which includes all filters for
+     * this collection document.
+     * @param xPathObject the XPath object which includes all filters to process
+     */
     public void initXPathExpressions(XPath xPathObject) {
-        //System.out.println("FilterRootElement.initXPathExpressions");
         try {
             if (xPathExpression == null) {
                 xPathExpression = xPathObject.compile(xPath);
@@ -291,82 +280,168 @@ public class FilterRootElement {
         }
     }
 
+    /**
+     * Set the name of this processor
+     * @return the name of this processor
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Get the name of this processor
+     * @param name the name of this processor
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Set the XPath of the filter node this processor operates on
+     * @return the XPath of the filter node this processor operates on
+     */
     public String getxPath() {
         return xPath;
     }
 
+    /**
+     * Return the XPath for filter nodes this processor operates on
+     * @param xPath  the XPath for filter nodes this processor operates on
+     */
     public void setxPath(String xPath) {
         this.xPath = xPath;
     }
 
+    /**
+     * Return the xPath expression applied to the filter node that this processor operates on
+     * @return the xPath expression applied to the filter node that this processor operates on
+     */
     public XPathExpression getxPathExpression() {
         return xPathExpression;
     }
 
+    /**
+     * Set the xpath expression applied to the filter node that this processor operates on
+     * @param xPathExpression the xpath expression applied to the filter node that this processor operates on
+     */
     public void setxPathExpression(XPathExpression xPathExpression) {
         this.xPathExpression = xPathExpression;
     }
 
+    /**
+     * Get the delimeter used to separate string tokens
+     * @return the delimeter used to separate string tokens
+     */
     public String getDelimiter() {
         return delimiter;
     }
 
+    /**
+     * Set the delimeter used to separate string tokens
+     * @param delimiter the delimeter used to separate string tokens
+     * @see "application-context-collection.xml"
+     */
     public void setDelimiter(String delimiter) {
         this.delimiter = delimiter;
     }
 
+    /**
+     * Get the terms used to identify a 'prefix' filter
+     * @return the terms used to identify a 'prefix' filter
+     * @see "application-context-collection.xml"
+     */
     public String getPrefixMatch() {
         return prefixMatch;
     }
 
+    /**
+     * Get the terms used to identify a 'prefix' filter
+     * @param prefixMatch the terms used to identify a 'prefix' filter
+     */
     public void setPrefixMatch(String prefixMatch) {
         this.prefixMatch = prefixMatch;
     }
 
+    /**
+     * Get the 'fixed' portion of a query filter
+     * @return the 'fixed' portion of a query filter
+     */
     public String getFixedTerm() {
         return fixedTerm;
     }
 
+    /**
+     * Set the 'fixed' portion of a query filter
+     * @param fixedTerm the 'fixed' portion of a query filter
+     */
     public void setFixedTerm(String fixedTerm) {
         this.fixedTerm = fixedTerm;
     }
 
+    /**
+     * Get the terms used to identify a 'postfix' filter
+     * @return the terms used to identify a 'postfix' filter
+     */
     public String getPostfixMatch() {
         return postfixMatch;
     }
 
+    /**
+     * Set the terms used to identify a 'postfix' filter
+     * @param postfixMatch the terms used to identify a 'postfix' filter
+     */
     public void setPostfixMatch(String postfixMatch) {
         this.postfixMatch = postfixMatch;
     }
 
+    /**
+     * Get the 'leaf' elements defined for a filter
+     * @return the leaf elements
+     * @see "application-context-collection.xml"
+     */
     public List<LeafElement> getLeafs() {
         return leafs;
     }
 
+    /**
+     * Get the 'leaf' elements defined for a filter
+     * @param leafs the 'leaf' elements defined for a filter
+     * @see "application-context-collection.xml"
+     */
     public void setLeafs(List<LeafElement> leafs) {
         this.leafs = leafs;
     }
 
+    /**
+     * Get the children filter nodes
+     * @return the children filter nodes
+     */
     public List<FilterRootElement> getSubRoots() {
         return subRoots;
     }
 
+    /**
+     * Set the children filter nodes
+     * @param subRoots the children filter nodes
+     */
     public void setSubRoots(List<FilterRootElement> subRoots) {
         this.subRoots = subRoots;
     }
 
+    /**
+     * Get all defined filter processors
+     * @return all defined filter processors
+     * @see "application-context-collection.xml"
+     */
     public List<FilterProcessor> getFilters() {
         return filters;
     }
 
+    /**
+     * Get all defined filter processors
+     * @param filters all defined filter processors
+     * @see "application-context-collection.xml"
+     */
     public void setFilters(List<FilterProcessor> filters) {
         this.filters = filters;
     }
