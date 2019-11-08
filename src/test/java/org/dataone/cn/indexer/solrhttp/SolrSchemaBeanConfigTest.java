@@ -26,13 +26,14 @@ public class SolrSchemaBeanConfigTest {
     @Test
     public void testSegmentsLoaded() {
         assertTrue("loaded schema should have segments", solrSchema.listSegments().size() > 0);
-        assertEquals("has 7 segments",solrSchema.listSegments().size(),7);
+        assertEquals("has 8 segments",solrSchema.listSegments().size(),8);
         assertTrue("has 'internal' ", solrSchema.listSegments().contains("internal"));    
         assertTrue("has 'systema' ", solrSchema.listSegments().contains("sysmeta"));    
         assertTrue("has 'scimeta' ", solrSchema.listSegments().contains("scimeta"));    
         assertTrue("has 'ore' ", solrSchema.listSegments().contains("ore"));    
         assertTrue("has 'prov' ", solrSchema.listSegments().contains("prov"));    
         assertTrue("has 'sem' ", solrSchema.listSegments().contains("sem"));    
+        assertTrue("has 'collections' ", solrSchema.listSegments().contains("collections"));    
         assertTrue("has 'mn_service' ", solrSchema.listSegments().contains("mn_service"));    
         }
         

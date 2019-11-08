@@ -257,10 +257,12 @@ public class RdfXmlSubprocessor extends AbstractStubMergingSubprocessor implemen
                 long filed = System.currentTimeMillis();
                 String q = null;
                 if (field instanceof SparqlField) {
-                    q = ((SparqlField) field).getQuery();
+                    log.warn("RNAHF TEMP: found a sparqlField");
+		    q = ((SparqlField) field).getQuery();
                     q = q.replaceAll("\\$GRAPH_NAME", name);
                     Query query = QueryFactory.create(q);
                     if (log.isTraceEnabled()) log.trace("Executing SPARQL query:\n" + query.toString());
+		    log.warn("RNAHF TEMP: Executing SPARQL query:\n" + query.toString());
                     QueryExecution qexec = QueryExecutionFactory.create(query, dataset);
                     ResultSet results = qexec.execSelect();
                     while (results.hasNext()) {
@@ -269,32 +271,32 @@ public class RdfXmlSubprocessor extends AbstractStubMergingSubprocessor implemen
                         if (log.isTraceEnabled()) log.trace(solution.toString());
     
                         // find the index document we are trying to augment with the annotation
+			String id = null;
                         if (solution.contains("pid")) {
-                            String id = solution.getLiteral("pid").getString();
-    
-                            // TODO: check if anyone with permissions on the annotation document has write permission on the document we are annotating
-                            boolean statementAuthorized = true;
-                            if (!statementAuthorized) {
-                                continue;
-                            }
-    
-                            // otherwise carry on with the indexing
+                            id = solution.getLiteral("pid").getString();
+		        } else if (solution.contains("seriesId")) {
+			    id = solution.getLiteral("seriesId").getString();
+			} else {
+			    log.warn("Did not find an id!!");
+			}
+			if (id != null) {
+			    // locate or create a solrDoc to add field to
                             solrDoc = documentsToIndex.get(id);
                             if (solrDoc == null) {
                                 solrDoc = new SolrDoc();
                                 solrDoc.addField(new SolrElementField(SolrElementField.FIELD_ID, id));
                                 documentsToIndex.put(id, solrDoc);
                             }
-                        }
     
-                        // add the field to the index document
-                        if (solution.contains(field.getName())) {
-                            String value = solution.get(field.getName()).toString();
-                            SolrElementField f = new SolrElementField(field.getName(), value);
-                            if (!solrDoc.hasFieldWithValue(f.getName(), f.getValue())) {
-                                solrDoc.addField(f);
-                            }
-                        }
+			    // add the field...
+			    if (solution.contains(field.getName())) {
+				String value = solution.get(field.getName()).toString();
+				SolrElementField f = new SolrElementField(field.getName(), value);
+				if (!solrDoc.hasFieldWithValue(f.getName(), f.getValue())) {
+				    solrDoc.addField(f);
+				}
+			    }
+			}
                     }
                 }
                 perfLog.log("RdfXmlSubprocess.parseDocument process the field "+field.getName(), System.currentTimeMillis() - filed);

@@ -43,10 +43,14 @@
     <import resource="file:/etc/dataone/index/index-generation-context/application-context-isotc211-pangaea.xml" />
 
     <import resource="file:/etc/dataone/index/index-generation-context/application-context-prov-base.xml" />
-    <import resource="file:/etc/dataone/index/index-generation-context/application-context-provone20150115.xml" />
+    <import resource="file:/etc/dataone/index/index-generation-context/application-context-rdfxml.xml" />
     
     <import resource="file:/etc/dataone/index/index-generation-context/application-context-annotator.xml" />  
     <import resource="file:/etc/dataone/index/index-generation-context/application-context-eml-annotation.xml" />  
     <import resource="file:/etc/dataone/index/index-generation-context/application-context-ontology-model-service.xml" />  
+    
+    <import resource="file:/etc/dataone/index/index-generation-context/application-context-isPartOf.xml" />  
+    <import resource="file:/etc/dataone/index/index-generation-context/application-context-collections.xml" />  
+    <import resource="file:/etc/dataone/index/index-generation-context/application-context-portals.xml" />  
     
 </beans>

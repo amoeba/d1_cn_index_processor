@@ -41,15 +41,20 @@ import org.apache.commons.lang3.StringUtils;
 import org.dataone.exceptions.MarshallingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.util.ClientUtils;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.params.ModifiableSolrParams;
 import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.DataONESolrJettyTestBase;
 import org.dataone.cn.index.HazelcastClientFactoryTest;
 import org.dataone.cn.index.generator.IndexTaskGenerator;
 import org.dataone.cn.index.processor.IndexTaskProcessor;
 import org.dataone.cn.index.task.IndexTask;
-import org.dataone.cn.indexer.D1IndexerSolrClient;
 import org.dataone.cn.indexer.annotation.RdfXmlSubprocessor;
 import org.dataone.cn.indexer.convert.SolrDateConverter;
+import org.dataone.cn.indexer.solrhttp.HTTPService;
 import org.dataone.cn.indexer.solrhttp.SolrDoc;
 import org.dataone.cn.indexer.solrhttp.SolrElementField;
 import org.dataone.service.types.v1.AccessPolicy;
@@ -79,10 +84,10 @@ import com.carrotsearch.randomizedtesting.annotations.ThreadLeakScope;
  * RDF/XML Subprocessor test for provenance field handling
  */
 @ThreadLeakScope(ThreadLeakScope.Scope.NONE)
-public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
+public class RdfXmlProcessorTest extends DataONESolrJettyTestBase {
 
     /* Log it */
-    private static Log log = LogFactory.getLog(ProvRdfXmlProcessorTest.class);
+    private static Log log = LogFactory.getLog(RdfXmlProcessorTest.class);
 
     /* the conext with provenance-specific bean definitions */
     private ApplicationContext provenanceContext = null;
@@ -109,6 +114,15 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
 
     /* The processed output image */
     private Resource provAlaWaiNS02ImageDataAW02XX_001CTDXXXXR00_20150203_10day1jpg;
+    
+    /* The eml 2.2.0 object is part of a portal */
+    private Resource partEml220;
+    
+    /* The portal object which has the part eml 220 object*/
+    private Resource partPortal;
+    
+    /* The resource map describing the hasPart/isPartOf relationship */
+    private Resource partResourcemap;
 
     /* An instance of the RDF/XML Subprocessor */
     private RdfXmlSubprocessor provRdfXmlSubprocessor;
@@ -164,7 +178,7 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
         configureSpringResources();
 
         // instantiate the subprocessor
-        provRdfXmlSubprocessor = (RdfXmlSubprocessor) context.getBean("prov20150115RdfXmlSubprocessor");
+        provRdfXmlSubprocessor = (RdfXmlSubprocessor) context.getBean("rdfXMLSubprocessor");
 
     }
 
@@ -297,6 +311,33 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
         //    "ala-wai-canal-ns02-image-data.eml.1.xml");
 
     }
+    
+    /**
+     * Test if the hasPart/isPartOf fields in resource maps are processed correctly with the 
+     * RdfXmlsubprocessor. This test does not add content to Hazelcast or Solr.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testPartFields() throws Exception {
+
+        log.debug("Testing RDF/XML parts indexing of resourcemap-with-part.xml: ");
+
+        // Ensure fields associated with the data input objects are indexed
+        expectedFields.clear();
+        expectedFields.put("isPartOf", "urn:uuid:27ae3627-be62-4963-859a-8c96d940cadc");
+        compareFields(expectedFields, partResourcemap.getInputStream(),
+                provRdfXmlSubprocessor, "resource_map_urn:uuid:cd489c7e-be88-4d57-b13a-911b25a0b47f",
+                "urn:uuid:f18812ac-7f4f-496c-82cc-3f4f54830274");
+        
+        expectedFields.clear();
+        expectedFields.put("hasPart", "urn:uuid:f18812ac-7f4f-496c-82cc-3f4f54830274");
+        compareFields(expectedFields, partResourcemap.getInputStream(),
+                provRdfXmlSubprocessor, "resource_map_urn:uuid:cd489c7e-be88-4d57-b13a-911b25a0b47f",
+                "urn:uuid:27ae3627-be62-4963-859a-8c96d940cadc");
+
+    }
+    
 
     /**
      * Test the end to end index processing of a resource map with provenance statements
@@ -375,6 +416,70 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
         assertPresentInSolrIndex(resourceMap);
 
     }
+    
+    /**
+     * Test the end to end index processing of a resource map with provenance statements
+     * 
+     * @throws Exception
+     */
+    //@Ignore
+    @Test
+    public void testInsertPartsResourceMap() throws Exception {
+
+        /* variables used to populate system metadata for each resource */
+        File object = null;
+        String formatId = null;
+
+        NodeReference nodeid = new NodeReference();
+        nodeid.setValue("urn:node:mnTestXXXX");
+
+        String userDN = "uid=tester,o=testers,dc=dataone,dc=org";
+        
+        // Insert the EML file into the task queue
+        String emlId = "urn:uuid:f18812ac-7f4f-496c-82cc-3f4f54830274";
+        formatId = "https://eml.ecoinformatics.org/eml-2.2.0";
+        insertResource(emlId, formatId, partEml220, nodeid, userDN);
+
+        // Insert the portal document into the task queue
+        String portalId = "urn:uuid:b210adf0-f08a-4cae-aa86-5b64605e9297";
+        formatId = "https://purl.dataone.org/portals-1.0.0";
+        String serieId = "urn:uuid:27ae3627-be62-4963-859a-8c96d940cadc";
+        insertResource(portalId, formatId,
+                partPortal, nodeid, userDN, serieId);
+
+        Thread.sleep(SLEEPTIME);
+        // now process the tasks
+        processor.processIndexTaskQueue();
+
+        // Insert the resource map into the task queue
+        String resourceMapId = "resource_map_urn:uuid:cd489c7e-be88-4d57-b13a-911b25a0b47f";
+        formatId = "http://www.openarchives.org/ore/terms";
+        //insertResource(resourceMapId, formatId, partResourcemap, nodeid, userDN);
+
+        Thread.sleep(SLEEPTIME);
+        // now process the tasks
+        processor.processIndexTaskQueue();
+        
+        Thread.sleep(SLEEPTIME);
+        assertPresentInSolrIndex(emlId);
+        assertPresentInSolrIndex(portalId);
+        //assertPresentInSolrIndex(resourceMapId);
+        assertTrue(compareFieldValue(emlId, "title", "EML Annotation Example"));
+
+    }
+    
+    protected boolean compareFieldValue(String id, String fieldName, String expectedValue) throws SolrServerException, IOException {
+        boolean equal = false;
+        ModifiableSolrParams solrParams = new ModifiableSolrParams();
+        solrParams.set("q", "id:" + ClientUtils.escapeQueryChars(id));
+        solrParams.set("fl", "*");
+        QueryResponse qr = getSolrClient().query(solrParams);
+        SolrDocument result = qr.getResults().get(0);
+        String value = (String)result.getFieldValue(fieldName);
+        return expectedValue.equals(value);
+    }
+    
+    
 
     /**
      *  Default test - is JUnit working as expected?
@@ -417,11 +522,17 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
 
         provAlaWaiNS02ImageDataAW02XX_001CTDXXXXR00_20150203_10day1jpg = (Resource) provenanceContext
                 .getBean("provAlaWaiNS02ImageDataAW02XX_001CTDXXXXR00_20150203_10day1jpg");
+        
+        partEml220 = (Resource) provenanceContext.getBean("eml220TestDocSciMeta");
+        
+        partPortal = (Resource) provenanceContext.getBean("portalTestDoc");
+        
+        partResourcemap = (Resource) provenanceContext.getBean("partResourceMap");
     }
 
     /* Delete a solr entry based on its identifier */
     private void deleteFromSolr(String pid) throws Exception {
-        D1IndexerSolrClient httpService = (D1IndexerSolrClient) context.getBean("httpService");
+        HTTPService httpService = (HTTPService) context.getBean("httpService");
         httpService.sendSolrDelete(pid);
 
     }
@@ -533,6 +644,26 @@ public class ProvRdfXmlProcessorTest extends DataONESolrJettyTestBase {
 
         // Build the system metadata
         SystemMetadata sysMeta = generateSystemMetadata(pid, formatId, nodeid, userDN, object);
+        // Add the system metadata to hazelcast, and create an index task in the queue
+        addSystemMetadata(resource, sysMeta);
+    }
+    
+    /*
+     * Insert members of the resource map into the index task queue by first generating
+     * system metadata for each, then crating the tasks. This method offers an extra field -
+     * series id for the system metadata
+     */
+    private void insertResource(String pid, String formatId, Resource resource,
+            NodeReference nodeid, String userDN, String seriesId) throws IOException {
+
+        // Get the File object of the resource to calculate size, checksum, etc.
+        File object = resource.getFile();
+
+        // Build the system metadata
+        SystemMetadata sysMeta = generateSystemMetadata(pid, formatId, nodeid, userDN, object);
+        Identifier seriesIdentifier = new Identifier();
+        seriesIdentifier.setValue(seriesId);
+        sysMeta.setSeriesId(seriesIdentifier);
         // Add the system metadata to hazelcast, and create an index task in the queue
         addSystemMetadata(resource, sysMeta);
     }

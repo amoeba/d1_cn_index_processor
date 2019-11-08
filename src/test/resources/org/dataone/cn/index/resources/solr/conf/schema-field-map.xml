@@ -54,10 +54,12 @@
 
 
         <!-- Object relationships -->
-        <entry key="resourceMap"				value="ore"/>
+        <entry key="resourceMap"			value="ore"/>
         <entry key="documents"				value="ore"/>
         <entry key="isDocumentedBy"			value="ore"/>
 
+        <entry key="hasPart"                    	value="ore"/>
+        <entry key="isPartOf"                   	value="ore"/>
         
         <!-- Science metadata properties -->
 
@@ -192,6 +194,11 @@
         <entry key="sem_annotated_by"      	value="sem"/>
         <entry key="sem_annotates"        	value="sem"/>
         <entry key="sem_comment"        		value="sem"/>
+
+	<!-- collections fields -->
+        <entry key="label"              	value="collections"/>
+        <entry key="logo"               	value="collections"/>
+        <entry key="collectionQuery"        	value="collections"/>
 
 		<!-- member node service fields -->
 		<entry key="isService"			value="mn_service"/>

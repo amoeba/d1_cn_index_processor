@@ -193,7 +193,8 @@ public class UpdateAssembler {
             case "sysmeta" :
             case "scimeta":
             case "mn_service":    
-                
+            case "collections":
+    
                 // values in these segments replace other values
                 // so the entire segment gets wiped, then newMaterial is added
 
