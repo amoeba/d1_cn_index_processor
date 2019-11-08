@@ -257,12 +257,10 @@ public class RdfXmlSubprocessor extends AbstractStubMergingSubprocessor implemen
                 long filed = System.currentTimeMillis();
                 String q = null;
                 if (field instanceof SparqlField) {
-                    log.warn("RNAHF TEMP: found a sparqlField");
 		    q = ((SparqlField) field).getQuery();
                     q = q.replaceAll("\\$GRAPH_NAME", name);
                     Query query = QueryFactory.create(q);
                     if (log.isTraceEnabled()) log.trace("Executing SPARQL query:\n" + query.toString());
-		    log.warn("RNAHF TEMP: Executing SPARQL query:\n" + query.toString());
                     QueryExecution qexec = QueryExecutionFactory.create(query, dataset);
                     ResultSet results = qexec.execSelect();
                     while (results.hasNext()) {
