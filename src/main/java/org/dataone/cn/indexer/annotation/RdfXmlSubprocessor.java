@@ -269,32 +269,32 @@ public class RdfXmlSubprocessor extends AbstractStubMergingSubprocessor implemen
                         if (log.isTraceEnabled()) log.trace(solution.toString());
     
                         // find the index document we are trying to augment with the annotation
-			String id = null;
+                        String id = null;
                         if (solution.contains("pid")) {
                             id = solution.getLiteral("pid").getString();
-		        } else if (solution.contains("seriesId")) {
-			    id = solution.getLiteral("seriesId").getString();
-			} else {
-			    log.warn("Did not find an id!!");
-			}
-			if (id != null) {
-			    // locate or create a solrDoc to add field to
+                        } else if (solution.contains("seriesId")) {
+                            id = solution.getLiteral("seriesId").getString();
+                        } else {
+                            log.warn("Did not find an id!!");
+                        }
+                        if (id != null) {
+                            // locate or create a solrDoc to add field to
                             solrDoc = documentsToIndex.get(id);
                             if (solrDoc == null) {
                                 solrDoc = new SolrDoc();
                                 solrDoc.addField(new SolrElementField(SolrElementField.FIELD_ID, id));
                                 documentsToIndex.put(id, solrDoc);
                             }
-    
-			    // add the field...
-			    if (solution.contains(field.getName())) {
-				String value = solution.get(field.getName()).toString();
-				SolrElementField f = new SolrElementField(field.getName(), value);
-				if (!solrDoc.hasFieldWithValue(f.getName(), f.getValue())) {
-				    solrDoc.addField(f);
-				}
-			    }
-			}
+                            
+                            // add the field...
+                            if (solution.contains(field.getName())) {
+                                String value = solution.get(field.getName()).toString();
+                                SolrElementField f = new SolrElementField(field.getName(), value);
+                                if (!solrDoc.hasFieldWithValue(f.getName(), f.getValue())) {
+                                    solrDoc.addField(f);
+                                }
+                            }
+                        }
                     }
                 }
                 perfLog.log("RdfXmlSubprocess.parseDocument process the field "+field.getName(), System.currentTimeMillis() - filed);
