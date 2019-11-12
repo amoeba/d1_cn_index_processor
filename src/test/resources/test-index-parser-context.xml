@@ -43,6 +43,7 @@
                 <ref bean="isotc211PangaeaSubprocessor" />
   				<ref bean="reprocessResourceMapSubprocessor" /> 
   				<ref bean="dublinCoreOAISubprocessor" />
+  				<ref bean="collectionsSubprocessor" />
 			</list>
      	</property>
      	<property name="deleteSubprocessors">
@@ -81,6 +82,7 @@
                 <ref bean="isotc211PangaeaSubprocessor" />
 <!--   				<ref bean="reprocessResourceMapSubprocessor" />  -->
   				<ref bean="dublinCoreOAISubprocessor" />
+  				<ref bean="collectionsSubprocessor" />
 			</list>
      	</property>
      	<property name="deleteSubprocessors">
@@ -244,6 +246,18 @@
 		 		<constructor-arg name="prefix" value="xlink" />
 		 	   	<constructor-arg name="namespace" value="http://www.w3.org/1999/xlink" />
 			</bean> 
+
+			<bean class="org.dataone.cn.indexer.XMLNamespace">
+                <constructor-arg name="prefix" value="portals100" />
+                <constructor-arg name="namespace" value="https://purl.dataone.org/portals-1.0.0" />
+            </bean>
+            
+            <bean class="org.dataone.cn.indexer.XMLNamespace">
+                <constructor-arg name="prefix" value="collections100" />
+                <constructor-arg name="namespace" value="https://purl.dataone.org/collections-1.0.0" />
+            </bean>
+
+
 		</list>
 	 	</constructor-arg>
 	</bean>
