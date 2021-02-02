@@ -95,7 +95,7 @@ public class RdfXmlProcessorTest extends DataONESolrJettyTestBase {
     private ApplicationContext provenanceContext = null;
 
     /* The index task processor used to process tasks in the queue */
-    private IndexTaskProcessor processor;
+    protected IndexTaskProcessor processor;
 
     /* The task generator that adds tasks to the queue */
     private IndexTaskGenerator generator;
@@ -476,6 +476,7 @@ public class RdfXmlProcessorTest extends DataONESolrJettyTestBase {
     }
     
     protected boolean compareFieldValue(String id, String fieldName, String expectedValue) throws SolrServerException, IOException {
+        System.out.println("==================== start of compare");
         boolean equal = false;
         ModifiableSolrParams solrParams = new ModifiableSolrParams();
         solrParams.set("q", "id:" + ClientUtils.escapeQueryChars(id));
@@ -483,6 +484,8 @@ public class RdfXmlProcessorTest extends DataONESolrJettyTestBase {
         QueryResponse qr = getSolrClient().query(solrParams);
         SolrDocument result = qr.getResults().get(0);
         String value = (String)result.getFieldValue(fieldName);
+        System.out.println("+++++++++++++++++++The value of the field "+ fieldName + " from Solr is " + value);
+        System.out.println("The expected value of the field " + fieldName + " is " + expectedValue);
         return expectedValue.equals(value);
     }
     
@@ -643,7 +646,7 @@ public class RdfXmlProcessorTest extends DataONESolrJettyTestBase {
      * Insert members of the resource map into the index task queue by first generating
      * system metadata for each, then crating the tasks
      */
-    private void insertResource(String pid, String formatId, Resource resource,
+    protected void insertResource(String pid, String formatId, Resource resource,
             NodeReference nodeid, String userDN) throws IOException {
 
         // Get the File object of the resource to calculate size, checksum, etc.

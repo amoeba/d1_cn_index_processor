@@ -1,0 +1,18 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="jsonLdSubprocessor" class="org.dataone.cn.indexer.parser.JsonLdSubprocessor">
+		<property name="matchDocuments">
+			<list>
+				<value>science-on-schema.org/Dataset/1.2;ld+json</value>
+			</list>
+		</property>
+		<property name="fieldList">
+			<list>
+                <ref bean="schema_org_abstract" />
+                <ref bean="schema_org_title" />
+			</list>
+		</property>
+	</bean>
+</beans>
