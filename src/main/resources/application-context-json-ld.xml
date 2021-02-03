@@ -10,8 +10,25 @@
 		</property>
 		<property name="fieldList">
 			<list>
-                <ref bean="schema_org_abstract" />
-                <ref bean="schema_org_title" />
+                <ref bean="schema_org_description" />
+				<ref bean="schema_org_name" />
+				<ref bean="schema_org_alternateName" />
+				<ref bean="schema_org_creator" />
+				<ref bean="schema_org_givenName" />
+				<ref bean="schema_org_familyName" />
+				<ref bean="schema_org_creator_list" />
+				<ref bean="schema_org_hasPart" />
+				<ref bean="schema_org_keywords" />
+				<ref bean="schema_org_geoShape_box_south" />
+				<ref bean="schema_org_geoShape_box_west" />
+				<ref bean="schema_org_geoShape_box_north" />
+				<ref bean="schema_org_geoShape_box_east" />
+				<ref bean="schema_org_spatialCoverage" />
+				<ref bean="schema_org_temporalCoverage_start" />
+				<ref bean="schema_org_temporalCoverage_end" />
+				<ref bean="schema_org_variableMeasured" />
+				<ref bean="schema_org_version" />
+				<ref bean="schema_org_url" />
 			</list>
 		</property>
 	</bean>
