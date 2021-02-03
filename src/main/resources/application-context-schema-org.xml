@@ -346,7 +346,7 @@
     </bean>
 
     <bean id="schema_org_temporalCoverage_start" class="org.dataone.cn.indexer.annotation.SparqlField">
-        <constructor-arg name="name" value="startDate" />
+        <constructor-arg name="name" value="beginDate" />
         <constructor-arg name="query">
             <value>
                 <![CDATA[
