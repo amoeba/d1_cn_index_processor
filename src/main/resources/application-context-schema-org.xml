@@ -136,78 +136,78 @@
         </constructor-arg>
     </bean>
 
-    <bean id="schema_org_creator_list" class="org.dataone.cn.indexer.annotation.SparqlField">
-        <constructor-arg name="name" value="origin" />
-        <constructor-arg name="query">
-            <value>
-                <![CDATA[
-                PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>
-                PREFIX SO:   <https://schema.org/>
+<!--    <bean id="schema_org_creator_list" class="org.dataone.cn.indexer.annotation.SparqlField">-->
+<!--        <constructor-arg name="name" value="origin" />-->
+<!--        <constructor-arg name="query">-->
+<!--            <value>-->
+<!--                <![CDATA[-->
+<!--                PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>-->
+<!--                PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>-->
+<!--                PREFIX SO:   <https://schema.org/>-->
 
-                SELECT (?name as ?origin)
-                WHERE {
-                    ?dsId rdf:type SO:Dataset .
-                    ?dsId SO:creator ?list .
-                    ?list list:index (?pos ?member) .
-                    ?member SO:name ?name .
-                }
-                order by (?pos)
-                ]]>
-            </value>
-        </constructor-arg>
-        <!-- <property name="multivalued" value="true" /> -->
-    </bean>
+<!--                SELECT (?name as ?origin)-->
+<!--                WHERE {-->
+<!--                    ?dsId rdf:type SO:Dataset .-->
+<!--                    ?dsId SO:creator ?list .-->
+<!--                    ?list list:index (?pos ?member) .-->
+<!--                    ?member SO:name ?name .-->
+<!--                }-->
+<!--                order by (?pos)-->
+<!--                ]]>-->
+<!--            </value>-->
+<!--        </constructor-arg>-->
+<!--        &lt;!&ndash; <property name="multivalued" value="true" /> &ndash;&gt;-->
+<!--    </bean>-->
 
-    <!-- Extract 'SO:hasPart' properties from the top level 'SO:Dataset' property -->
-    <bean id="schema_org_hasPart" class="org.dataone.cn.indexer.annotation.SparqlField">
-        <constructor-arg name="name" value="hasPart" />
-        <constructor-arg name="query">
-            <value>
-                <![CDATA[
-                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-                    PREFIX SO:   <https://schema.org/>
-                    SELECT ?hasPart
-                    WHERE {
-                      ?datasetId rdf:type SO:Dataset .
-                      {
-                        ?datasetId SO:hasPart ?node .
-                        ?node      rdf:type   SO:Dataset .
-                        ?node      SO:name    ?hasPart .
-                      }
-                      UNION
-                      {
-                        ?datasetId SO:hasPart ?hasPart .
-                        # SO:Dataset can also appear as a sub-element of the 'SO:hasPart'
-                        # so exclude those from the query result.
-                        FILTER NOT EXISTS { ?hasPart rdf:type SO:Dataset . }
-                      }
-                    }
-                ]]>
-            </value>
-        </constructor-arg>
-        <!-- <property name="multivalued" value="true" /> -->
-    </bean>
+<!--    &lt;!&ndash; Extract 'SO:hasPart' properties from the top level 'SO:Dataset' property &ndash;&gt;-->
+<!--    <bean id="schema_org_hasPart" class="org.dataone.cn.indexer.annotation.SparqlField">-->
+<!--        <constructor-arg name="name" value="hasPart" />-->
+<!--        <constructor-arg name="query">-->
+<!--            <value>-->
+<!--                <![CDATA[-->
+<!--                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>-->
+<!--                    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>-->
+<!--                    PREFIX SO:   <https://schema.org/>-->
+<!--                    SELECT ?hasPart-->
+<!--                    WHERE {-->
+<!--                      ?datasetId rdf:type SO:Dataset .-->
+<!--                      {-->
+<!--                        ?datasetId SO:hasPart ?node .-->
+<!--                        ?node      rdf:type   SO:Dataset .-->
+<!--                        ?node      SO:name    ?hasPart .-->
+<!--                      }-->
+<!--                      UNION-->
+<!--                      {-->
+<!--                        ?datasetId SO:hasPart ?hasPart .-->
+<!--                        # SO:Dataset can also appear as a sub-element of the 'SO:hasPart'-->
+<!--                        # so exclude those from the query result.-->
+<!--                        FILTER NOT EXISTS { ?hasPart rdf:type SO:Dataset . }-->
+<!--                      }-->
+<!--                    }-->
+<!--                ]]>-->
+<!--            </value>-->
+<!--        </constructor-arg>-->
+<!--        &lt;!&ndash; <property name="multivalued" value="true" /> &ndash;&gt;-->
+<!--    </bean>-->
 
-    <bean id="schema_org_keywords" class="org.dataone.cn.indexer.annotation.SparqlField">
-        <constructor-arg name="name" value="keywords" />
-        <constructor-arg name="query">
-            <value>
-                <![CDATA[
-                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-                    PREFIX SO:   <https://schema.org/>
-                      SELECT ?keywords
-                      WHERE {
-                        ?datasetId rdf:type    SO:Dataset .
-                        ?datasetId SO:keywords ?keywords .
-                      }
-                ]]>
-            </value>
-        </constructor-arg>
-        <!-- <property name="multivalued" value="true" /> -->
-    </bean>
+<!--    <bean id="schema_org_keywords" class="org.dataone.cn.indexer.annotation.SparqlField">-->
+<!--        <constructor-arg name="name" value="keywords" />-->
+<!--        <constructor-arg name="query">-->
+<!--            <value>-->
+<!--                <![CDATA[-->
+<!--                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>-->
+<!--                    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>-->
+<!--                    PREFIX SO:   <https://schema.org/>-->
+<!--                      SELECT ?keywords-->
+<!--                      WHERE {-->
+<!--                        ?datasetId rdf:type    SO:Dataset .-->
+<!--                        ?datasetId SO:keywords ?keywords .-->
+<!--                      }-->
+<!--                ]]>-->
+<!--            </value>-->
+<!--        </constructor-arg>-->
+<!--        &lt;!&ndash; <property name="multivalued" value="true" /> &ndash;&gt;-->
+<!--    </bean>-->
 
     <!-- Extract bounding box coordinates from a 'SO:spatialCoverage' property. -->
     <bean id="schema_org_geoShape_box_south" class="org.dataone.cn.indexer.annotation.SparqlField">
@@ -226,7 +226,7 @@
                         ?spatial   rdf:type           SO:Place .
                         ?spatial   SO:geo             ?geo .
                         ?geo       rdf:type           SO:GeoShape .
-                        ?geo       SO:box             ?bbox .
+                        ?geo       SO:box             ?box .
                         bind(strbefore(?box, " ") as ?southBoundCoord)
                       }
                 ]]>
@@ -251,7 +251,7 @@
                         ?spatial   rdf:type           SO:Place .
                         ?spatial   SO:geo             ?geo .
                         ?geo       rdf:type           SO:GeoShape .
-                        ?geo       SO:box             ?bbox .
+                        ?geo       SO:box             ?box .
                         bind(strbefore(?box, " ") as ?southBoundCoord)
                         bind(strafter(?box, " ") as ?rest)
                         bind(strbefore(?rest, " ") as ?westBoundCoord)
@@ -278,7 +278,7 @@
                         ?spatial   rdf:type           SO:Place .
                         ?spatial   SO:geo             ?geo .
                         ?geo       rdf:type           SO:GeoShape .
-                        ?geo       SO:box             ?bbox .
+                        ?geo       SO:box             ?box .
                         bind(strbefore(?box, " ") as ?southBoundCoord)
                         bind(strafter(?box, " ") as ?rest)
                         bind(strbefore(?rest, " ") as ?westBoundCoord)
@@ -307,7 +307,7 @@
                         ?spatial   rdf:type           SO:Place .
                         ?spatial   SO:geo             ?geo .
                         ?geo       rdf:type           SO:GeoShape .
-                        ?geo       SO:box             ?bbox .
+                        ?geo       SO:box             ?box .
                         bind(strbefore(?box, " ") as ?southBoundCoord)
                         bind(strafter(?box, " ") as ?rest)
                         bind(strbefore(?rest, " ") as ?westBoundCoord)
@@ -345,7 +345,7 @@
         </constructor-arg>
     </bean>
 
-    <bean id="schema_org_temporalCoverage_start" class="org.dataone.cn.indexer.annotation.SparqlField">
+    <bean id="schema_org_temporalCoverage_begin" class="org.dataone.cn.indexer.annotation.SparqlField">
         <constructor-arg name="name" value="beginDate" />
         <constructor-arg name="query">
             <value>
@@ -356,7 +356,7 @@
 
                     SELECT
                         # possible formats: "start/end", "start/..", "start"
-                        (if(contains(?dates, "/"), strbefore(?dates, "/"), ?dates) as ?startDate)
+                        (if(contains(?dates, "/"), strbefore(?dates, "/"), ?dates) as ?beginDate)
                     WHERE {
                         ?datasetId rdf:type SO:Dataset .
                         ?datasetId SO:temporalCoverage ?dates .
@@ -377,7 +377,7 @@
 
                     SELECT
                         # possible formats: "start/end", "start/..", "start"
-                        (if(contains(?dates, "/.."), strafter(?dates, "/"), "") as ?endDate)
+                        (if(contains(?dates, "/"), strafter(?dates, "/"), "") as ?endDate)
                     WHERE {
                         ?datasetId rdf:type SO:Dataset .
                         ?datasetId SO:temporalCoverage ?dates .
@@ -387,34 +387,34 @@
         </constructor-arg>
     </bean>
 
-    <bean id="schema_org_variableMeasured" class="org.dataone.cn.indexer.annotation.SparqlField">
-        <constructor-arg name="name" value="property" />
-        <constructor-arg name="query">
-            <value>
-                <![CDATA[
-                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-                    PREFIX SO:   <https://schema.org/>
+<!--    <bean id="schema_org_variableMeasured" class="org.dataone.cn.indexer.annotation.SparqlField">-->
+<!--        <constructor-arg name="name" value="property" />-->
+<!--        <constructor-arg name="query">-->
+<!--            <value>-->
+<!--                <![CDATA[-->
+<!--                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>-->
+<!--                    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>-->
+<!--                    PREFIX SO:   <https://schema.org/>-->
 
-                    SELECT (?variableMeasured as ?parameter)
-                    WHERE {
-                       ?datasetId rdf:type SO:Dataset .
-                       {
-                           ?datasetId SO:variableMeasured ?variable .
-                           ?variable  rdf:type            SO:PropertyValue .
-                           ?variable  SO:name             ?variableMeasured .
-                       }
-                       UNION
-                       {
-                           ?datasetId SO:variableMeasured ?variableMeasured .
-                           FILTER NOT EXISTS { ?parameter rdf:type SO:PropertyValue . }
-                       }
-                   }
-                ]]>
-            </value>
-        </constructor-arg>
-        <!-- <property name="multivalued" value="true" /> -->
-    </bean>
+<!--                    SELECT (?variableMeasured as ?parameter)-->
+<!--                    WHERE {-->
+<!--                       ?datasetId rdf:type SO:Dataset .-->
+<!--                       {-->
+<!--                           ?datasetId SO:variableMeasured ?variable .-->
+<!--                           ?variable  rdf:type            SO:PropertyValue .-->
+<!--                           ?variable  SO:name             ?variableMeasured .-->
+<!--                       }-->
+<!--                       UNION-->
+<!--                       {-->
+<!--                           ?datasetId SO:variableMeasured ?variableMeasured .-->
+<!--                           FILTER NOT EXISTS { ?parameter rdf:type SO:PropertyValue . }-->
+<!--                       }-->
+<!--                   }-->
+<!--                ]]>-->
+<!--            </value>-->
+<!--        </constructor-arg>-->
+<!--        &lt;!&ndash; <property name="multivalued" value="true" /> &ndash;&gt;-->
+<!--    </bean>-->
 
     <bean id="schema_org_version" class="org.dataone.cn.indexer.annotation.SparqlField">
         <constructor-arg name="name" value="edition" />

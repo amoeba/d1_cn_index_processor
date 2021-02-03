@@ -682,6 +682,7 @@
         "@id": "https://creativecommons.org/licenses/by/4.0/"
       },
       "name": "Neodymium isotopes, B/Ca and \u03b4\u00b9\u00b3C, and fresh sand volcanic glass count data from ODP Site 208-1267 and IODP Site 306-U1313 for MIS M2, MIS 100 and the Last Glacial-Holocene",
+      "alternateName": "Neodymium isotopes",
       "publisher": {
         "@type": "Organization",
         "disambiguatingDescription": "Data Publisher for Earth & Environmental Science",
@@ -705,7 +706,8 @@
       "temporalCoverage": "2003-04-21T09:40:00/2003-04-26T16:45:00",
       "url": {
         "@id": "https://doi.pangaea.de/10.1594/PANGAEA.925562"
-      }
+      },
+      "version": "1"
     }
   ]
 }

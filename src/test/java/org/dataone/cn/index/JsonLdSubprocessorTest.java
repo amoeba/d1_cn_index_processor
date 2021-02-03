@@ -121,5 +121,23 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         assertPresentInSolrIndex(id);
         assertTrue(compareFieldValue(id, "title", "Neodymium isotopes, B/Ca and δ¹³C, and fresh sand volcanic glass count data from ODP Site 208-1267 and IODP Site 306-U1313 for MIS M2, MIS 100 and the Last Glacial-Holocene"));
         assertTrue(compareFieldValue(id, "abstract", "Marine Isotope Stage (MIS) M2, 3.3 Ma, is an isolated cold stage punctuating the benthic oxygen isotope (δ¹⁸O) stratigraphy of the warm Piacenzian interval of the late Pliocene Epoch. The prominent (~0.65‰) δ¹⁸O increase that defines MIS M2 has prompted debate over the extent to which it signals an early prelude to the rhythmic extensive glaciations of the northern hemisphere that characterise the Quaternary and raised questions about the forcing mechanisms responsible. Recent work suggests that CO₂ storage in the deep Atlantic Ocean played an important role in these events but detailed reconstructions of deep ocean chemical stratification are needed to test this idea and competing hypotheses. Here we present new records of the Nd isotope composition of fish debris and δ¹³C and B/Ca ratios of benthic foraminifera from the northwest and southeast Atlantic Ocean. […]"));
+        assertTrue(compareFieldValue(id, "label", "Neodymium isotopes"));
+        assertTrue(compareFieldValue(id, "author", "Nicola Kirby"));
+        assertTrue(compareFieldValue(id, "authorGivenName", "Nicola"));
+//        assertTrue(compareFieldValue(id, "authorLastName", "Kirby"));
+//        assertTrue(compareFieldValue(id, "orgin", ""));
+//        assertTrue(compareFieldValue(id, "hasPart", ""));
+//        assertTrue(compareFieldValue(id, "keyword", ""));
+//        assertTrue(compareFieldValue(id, "southBoundCoord", "28.09816"));
+//        assertTrue(compareFieldValue(id, "westBoundCoord", "32.95731"));
+//        assertTrue(compareFieldValue(id, "northBoundCoord", "41.000022722222"));
+//        assertTrue(compareFieldValue(id, "eastBoundCoord", "1.71098"));
+//        assertTrue(compareFieldValue(id, "namedLocation", ""));
+//        assertTrue(compareFieldValue(id, "beginDate", "2003-04-21T09:40:00"));
+//        assertTrue(compareFieldValue(id, "endDate", "2003-04-26T16:45:00"));
+//        assertTrue(compareFieldValue(id, "paramter", ""));
+        assertTrue(compareFieldValue(id, "edition", ""));
+//        assertTrue(compareFieldValue(id, "serverEndPoint", ""));
+
     }
 }
