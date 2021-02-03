@@ -1,6 +1,9 @@
 {
   "@context": {
-    "@vocab": "https://schema.org/"
+    "@vocab": "https://schema.org/",
+    "creator": {
+        "@container":"@list"
+    }
   },
   "@graph": [
     {
