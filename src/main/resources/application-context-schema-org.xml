@@ -364,6 +364,7 @@
                 ]]>
             </value>
         </constructor-arg>
+        <property name="converter" ref="dateConverter" />
     </bean>
 
     <bean id="schema_org_temporalCoverage_end" class="org.dataone.cn.indexer.annotation.SparqlField">
@@ -385,6 +386,7 @@
                 ]]>
             </value>
         </constructor-arg>
+        <property name="converter" ref="dateConverter" />
     </bean>
 
 <!--    <bean id="schema_org_variableMeasured" class="org.dataone.cn.indexer.annotation.SparqlField">-->

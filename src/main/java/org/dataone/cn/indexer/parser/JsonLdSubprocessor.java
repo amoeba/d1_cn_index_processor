@@ -150,7 +150,9 @@ public class JsonLdSubprocessor implements IDocumentSubprocessor {
                         if (solution.contains(field.getName())) {
                             //Get the value for this field
                             String value = solution.get(field.getName()).toString();
-                            
+                            if (((SparqlField) field).getConverter() != null) {
+                                value = ((SparqlField) field).getConverter().convert(value);
+                            }
                             //Create an index field for this field name and value
                             SolrElementField f = new SolrElementField(field.getName(), value);
                             log.debug("JsonLdSubprocessor.process process the field " + field.getName() + "with value " + value);

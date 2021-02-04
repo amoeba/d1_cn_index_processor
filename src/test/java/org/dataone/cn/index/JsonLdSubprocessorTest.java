@@ -136,7 +136,7 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
 //        assertTrue(compareFieldValue(id, "beginDate", "2003-04-21T09:40:00"));
 //        assertTrue(compareFieldValue(id, "endDate", "2003-04-26T16:45:00"));
 //        assertTrue(compareFieldValue(id, "paramter", ""));
-        assertTrue(compareFieldValue(id, "edition", ""));
+        assertTrue(compareFieldValue(id, "edition", "1"));
 //        assertTrue(compareFieldValue(id, "serverEndPoint", ""));
 
     }
