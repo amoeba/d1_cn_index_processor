@@ -19,6 +19,7 @@
                     ?datasetId rdf:type       SO:Dataset .
                     ?datasetId SO:description ?description   .
                     }
+                    limit 1
                 ]]>
             </value>
         </constructor-arg>
@@ -37,6 +38,7 @@
                     ?datasetId rdf:type SO:Dataset .
                     ?datasetId SO:name ?name .
                     }
+                    limit 1
                  ]]>
             </value>
         </constructor-arg>
@@ -56,6 +58,7 @@
                     ?datasetId rdf:type SO:Dataset .
                     ?datasetId SO:alternateName ?label .
                 }
+                limit 1
                 ]]>
             </value>
         </constructor-arg>
@@ -130,7 +133,6 @@
                         ?member SO:familyName ?familyName .
                     }
                     order by (?pos)
-                    limit 1
                 ]]>
             </value>
         </constructor-arg>
@@ -229,6 +231,7 @@
                         ?geo       SO:box             ?box .
                         bind(strbefore(?box, " ") as ?southBoundCoord)
                       }
+                      limit 1
                 ]]>
             </value>
         </constructor-arg>
@@ -256,6 +259,7 @@
                         bind(strafter(?box, " ") as ?rest)
                         bind(strbefore(?rest, " ") as ?westBoundCoord)
                       }
+                      limit 1
                 ]]>
             </value>
         </constructor-arg>
@@ -285,6 +289,7 @@
                         bind(strafter(?rest, " ") as ?rest2)
                         bind(strbefore(?rest2, " ") as ?northBoundCoord)
                       }
+                      limit 1
                 ]]>
             </value>
         </constructor-arg>
@@ -315,6 +320,7 @@
                         bind(strbefore(?rest2, " ") as ?northBoundCoord)
                         bind(strafter(?rest2, " ") as ?eastBoundCoord)
                       }
+                      limit 1
                 ]]>
             </value>
         </constructor-arg>
@@ -361,6 +367,7 @@
                         ?datasetId rdf:type SO:Dataset .
                         ?datasetId SO:temporalCoverage ?dates .
                     }
+                    limit 1
                 ]]>
             </value>
         </constructor-arg>
@@ -383,6 +390,7 @@
                         ?datasetId rdf:type SO:Dataset .
                         ?datasetId SO:temporalCoverage ?dates .
                     }
+                    limit 1
                 ]]>
             </value>
         </constructor-arg>
@@ -433,6 +441,7 @@
                         ?datasetId rdf:type schema:Dataset .
                         ?datasetId schema:version ?version .
                     }
+                    limit 1
                 ]]>
             </value>
         </constructor-arg>
