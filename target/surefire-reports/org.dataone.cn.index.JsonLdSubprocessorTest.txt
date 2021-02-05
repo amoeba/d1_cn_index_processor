@@ -1,0 +1,10 @@
+-------------------------------------------------------------------------------
+Test set: org.dataone.cn.index.JsonLdSubprocessorTest
+-------------------------------------------------------------------------------
+Tests run: 6, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 82.812 sec <<< FAILURE! - in org.dataone.cn.index.JsonLdSubprocessorTest
+testInsertSchemaOrg(org.dataone.cn.index.JsonLdSubprocessorTest)  Time elapsed: 25.79 sec  <<< ERROR!
+java.lang.ClassCastException: java.util.ArrayList cannot be cast to java.lang.String
+	at __randomizedtesting.SeedInfo.seed([7999A80C3E9D0E1A:31B6602726C369ED]:0)
+	at org.dataone.cn.indexer.resourcemap.RdfXmlProcessorTest.compareFieldValue(RdfXmlProcessorTest.java:486)
+	at org.dataone.cn.index.JsonLdSubprocessorTest.testInsertSchemaOrg(JsonLdSubprocessorTest.java:153)
+

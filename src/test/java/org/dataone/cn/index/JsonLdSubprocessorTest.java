@@ -24,11 +24,7 @@ package org.dataone.cn.index;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -135,12 +131,14 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         assertTrue(compareFieldValue(id, "label", "Neodymium isotopes"));
         assertTrue(compareFieldValue(id, "author", "Nicola Kirby"));
         assertTrue(compareFieldValue(id, "authorGivenName", "Nicola"));
-//        assertTrue(compareFieldValue(id, "authorLastName", "Kirby"));
+        String[] authorLastName = {"Kirby", "Bailey", "Lang", "Brombacher", "Chalk"};
+        //assertTrue(compareFieldValue(id, "authorLastName", authorLastName));
         String[] origins = {"Nicola Kirby", "Ian Bailey", "David C Lang", "A Brombacher", "Thomas B Chalk", 
                 "Rebecca L Parker", "Anya J Crocker", "Victoria E Taylor", "J Andy Milton", "Gavin L Foster", "Maureen E Raymo", "Dick Kroon", "David B Bell", "Paul A Wilson"};
         assertTrue(compareFieldValue(id, "origin", origins));
 //        assertTrue(compareFieldValue(id, "hasPart", ""));
-//        assertTrue(compareFieldValue(id, "keyword", ""));
+        String[] keywords = {"AMOC", "Atlantic circulation", "B/Ca", "Last Glacial", "MIS 100", "MIS M2", "Nd isotopes"};
+        assertTrue(compareFieldValue(id, "keywords", keywords));
 //        assertTrue(compareFieldValue(id, "southBoundCoord", "28.09816"));
 //        assertTrue(compareFieldValue(id, "westBoundCoord", "32.95731"));
 //        assertTrue(compareFieldValue(id, "northBoundCoord", "41.000022722222"));
@@ -148,10 +146,11 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
 //        assertTrue(compareFieldValue(id, "namedLocation", ""));
 //        assertTrue(compareFieldValue(id, "beginDate", "2003-04-21T09:40:00"));
 //        assertTrue(compareFieldValue(id, "endDate", "2003-04-26T16:45:00"));
-//        assertTrue(compareFieldValue(id, "paramter", ""));
+        String[] parameters = {"unique record ID number", "Date (UTC) in ISO8601 format: YYYY-MM-DDThh:mmZ", 
+            "Date (local time zone of PST/PDT) in ISO8601; format: YYYY-MM-DDThh:mm", "Dissolved oxygen"};
+        assertTrue(compareFieldValue(id, "parameter", parameters));
         assertTrue(compareFieldValue(id, "edition", "1"));
-//        assertTrue(compareFieldValue(id, "serverEndPoint", ""));
-
+        assertTrue(compareFieldValue(id, "serviceEndpoint", "https://doi.pangaea.de/10.1594/PANGAEA.925562"));
     }
     
     protected boolean compareFieldValue(String id, String fieldName, String[] expectedValues) throws SolrServerException, IOException {
@@ -168,6 +167,10 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         if (solrValuesArray.length != expectedValues.length) {
             equal = false;
             return equal;
+        }
+        if (solrValuesArray.length > 1) {
+            Arrays.sort(expectedValues);
+            Arrays.sort(solrValuesArray);
         }
         for (int i=0; i<solrValuesArray.length; i++) {
             System.out.println("++++++++++++++++ compare values for the field " + fieldName + " Solr: " + solrValuesArray[i] + " expexted value" + expectedValues[i]);

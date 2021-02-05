@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ns1:systemMetadata xmlns:ns1="http://ns.dataone.org/service/types/v2.0">
+	<serialVersion>1</serialVersion>
+	<identifier>annotation.130.4</identifier>
+	<formatId>http://docs.annotatorjs.org/en/v1.2.x/annotation-format.html</formatId>
+	<size>855</size>
+	<checksum algorithm="MD5">df89097223d1afe36cad3d1e2bdda4fd</checksum>
+	<submitter>CN=Benjamin Leinfelder A515,O=University of Chicago,C=US,DC=cilogon,DC=org</submitter>
+	<rightsHolder>CN=Benjamin Leinfelder A515,O=University of Chicago,C=US,DC=cilogon,DC=org</rightsHolder>
+	<accessPolicy>
+		<allow>
+			<subject>public</subject>
+			<permission>read</permission>
+		</allow>
+	</accessPolicy>
+	<replicationPolicy replicationAllowed="true" />
+	<dateUploaded>2014-12-03T23:29:20.262152</dateUploaded>
+	<dateSysMetadataModified>2014-12-03T23:29:20.262152</dateSysMetadataModified>
+	<originMemberNode>urn:node:KNB</originMemberNode>
+	<authoritativeMemberNode>urn:node:KNB</authoritativeMemberNode>
+</ns1:systemMetadata>
+

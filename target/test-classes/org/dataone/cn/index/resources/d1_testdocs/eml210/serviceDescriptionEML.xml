@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eml:eml packageId="ala-wai-canal-ns02-ctd-data.eml.1.xml" scope="system"
+  system="knb"
+  xmlns:eml="eml://ecoinformatics.org/eml-2.1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="eml://ecoinformatics.org/eml-2.1.1 eml.xsd">
+  <access authSystem="knb" order="allowFirst" scope="document" system="knb">
+    <allow>
+      <principal>public</principal>
+      <permission>read</permission>
+    </allow>
+  </access>
+  <software>
+    <shortName>PACIOOS: Water Quality Processing Software</shortName>
+    <title>
+        PACIOOS: Water Quality Processing Software, Matlab DataProcessor, Configure, Scedule scripts
+    </title>
+    <creator>
+      <organizationName>Pacific Islands Ocena Observing System</organizationName>
+    </creator>
+    <creator>
+      <individualName>
+        <salutation>Dr.</salutation>
+        <givenName>Margaret</givenName>
+        <surName>McManus</surName>
+      </individualName>
+      <electronicMailAddress>mamc@hawaii.edu</electronicMailAddress>
+    </creator>
+    <pubDate>2015</pubDate>
+    <abstract>
+      <para>
+          PACIOOS processes water quality data in near real-time (with only network transfer delays)
+          and produces 1, 3, 7, 10, 21, and 30-day plots of conductivity, salinity, pressure,
+          chlorophyll, and turbidity measurements for each instrument location on the islands of
+          Oahu, Maui, and other insular Pacific sites.
+      </para>
+      <para>
+          The ala-wai-canal-ns02-matlab-processing-schedule_AW02XX_001CTDXXXXR00_processing.1.m provides
+          configuration values that get set in the ala-wai-canal-ns02-matlab-processing-Configure.1.m
+          class, which is in turn used by the ala-wai-canal-ns02-matlab-processing-DataProcessor.1.m
+          class to process the raw data and produce EPS and JPEG figures.
+      </para>
+    </abstract>
+    <keywordSet>
+      <keyword keywordType="theme">data processing</keyword>
+      <keyword keywordType="theme">Matlab</keyword>
+      <keyword keywordType="theme">CTD</keyword>
+      <keyword keywordType="place">Honolulu, HI, USA</keyword>
+      <keyword keywordType="place">PACIOOS</keyword>
+    </keywordSet>
+    <implementation>
+        <distribution>
+            <online>
+                <url function="download">
+                    https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-schedule_AW02XX_001CTDXXXXR00_processing.1.m
+                </url>
+            </online>
+        </distribution>
+        <distribution>
+            <online>
+                <url function="download">
+                    https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-DataProcessor.1.m
+                </url>
+            </online>
+        </distribution>
+        <distribution>
+            <online>
+                <url function="download">
+                    https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-Configure.1.m
+                </url>
+            </online>
+        </distribution>
+    </implementation>
+    <version>1.0.0</version>
+  </software>
+</eml:eml>

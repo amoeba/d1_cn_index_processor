@@ -1,0 +1,31 @@
+{
+  "pid": "peggym.130.4", 
+  "id": "annotation.130.4",   
+  "field": "sem_annotation", 
+  "reject": false, 
+  "ranges": [
+    {
+      "start": "/section[1]/article[1]/form[1]/section[1]/div[1]/div[1]", 
+      "end": "/section[1]/article[1]/form[1]/section[1]/div[1]/div[1]", 
+      "startOffset": 0, 
+      "endOffset": 4
+    }
+  ], 
+  "permissions": {
+    "read": [
+      "group:__world__"
+    ], 
+    "delete": [], 
+    "admin": [], 
+    "update": []
+  }, 
+  "user": "CN=Benjamin Leinfelder A515,O=University of Chicago,C=US,DC=cilogon,DC=org", 
+  "consumer": "metacat", 
+  "updated": "2014-12-03T23:29:20.262152+00:00", 
+  "quote": "Data", 
+  "oa:Motivation": "oa:tagging", 
+  "tags": ["http://ecoinformatics.org/oboe/oboe.1.0/oboe-characteristics.owl#Mass"], 
+  "text": "Original annotation content", 
+  "created": "2014-12-03T23:09:25.501665+00:00", 
+  "uri": "https://cn-dev.test.dataone.org/cn/v1/object/peggym.130.4"
+}

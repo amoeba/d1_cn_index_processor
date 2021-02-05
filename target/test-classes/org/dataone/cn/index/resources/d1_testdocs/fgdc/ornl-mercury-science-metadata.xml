@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ornl:metadata xmlns:ornl="http://purl.org/ornl/schema/mercury/terms/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://purl.org/ornl/schema/mercury/terms/v1.0 mercury-ornl-v1.xsd">
+  <idinfo>
+    <citation>
+      <citeinfo>
+        <origin><![CDATA[Henley, Marsha]]></origin>
+        <origin><![CDATA[Harris, Melinda H.]]></origin>
+        <title><![CDATA[Map ORR Aspect 2m 1993]]></title>
+        <onlink><![CDATA[http://daac.ornl.gov/data/bluangel_harvest/WBW/gibbs/metadata/Map_ORR_Aspect_2m_1993.xml]]></onlink>
+        <onlink><![CDATA[ftp://ftp.esd.ornl.gov/pub/orr/Maps/Topography/ORR/Aspect/Browse%20ORR%20Aspect.html]]></onlink>
+        <onlink />
+      </citeinfo>
+    </citation>
+    <descript>
+      <abstract><![CDATA[This raster map the Oak Ridge Reservation identifies the aspect or the steepest down-slope direction from each cell to its neighbors.  The aspect map was created from the Digital Elevation Model (DEM) produced by Melanie Harris (Qsystems).  She created the DEM from a Digital Terrain Model (DTM) created from aerial photography taken during leaf-off in April of 1993.  The aerial photographs were flown at 7200' Above Ground Level resulting in a nominal scale of 1:14400.  The data were compiled at 1:2,400 scale (1=200') yielding the +/- 2.32m error.  The original DTM was created as part of the DOE Basemapping and Imagery project for the Oak Ridge Environmental Restoration program.]]></abstract>
+      <supplinf />
+    </descript>
+    <timeperd>
+      <timeinfo>
+        <rngdates>
+          <begdate><![CDATA[19930401]]></begdate>
+          <enddate><![CDATA[19930401]]></enddate>
+        </rngdates>
+      </timeinfo>
+    </timeperd>
+    <status>
+      <progress><![CDATA[Final]]></progress>
+      <update><![CDATA[As appropriate]]></update>
+    </status>
+    <spdom>
+      <bounding>
+        <westbc>-84.19</westbc>
+        <eastbc>84.44</eastbc>
+        <northbc>36</northbc>
+        <southbc>-35.87</southbc>
+      </bounding>
+    </spdom>
+    <keywords>
+      <theme>
+        <themekt><![CDATA[Parameter_Sensor_Source]]></themekt>
+        <themekey><![CDATA[TERRAIN ELEVATION|CAMERA|HELICOPTER]]></themekey>
+        <themekt><![CDATA[Parameter]]></themekt>
+        <themekey><![CDATA[TERRAIN ELEVATION]]></themekey>
+        <themekt><![CDATA[Source]]></themekt>
+        <themekey><![CDATA[HELICOPTER]]></themekey>
+        <themekt><![CDATA[Sensor]]></themekt>
+        <themekey><![CDATA[CAMERA]]></themekey>
+      </theme>
+      <place>
+        <placekt><![CDATA[Place Keywords]]></placekt>
+        <placekey><![CDATA[Oak Ridge Reservation, TN, USA]]></placekey>
+      </place>
+    </keywords>
+    <ptcontac>
+      <cntinfo>
+        <cntperp>
+          <cntper><![CDATA[Henley, Marsha]]></cntper>
+        </cntperp>
+        <cntfax><![CDATA[6.1.10.8 Contact Electronic Mail: INTERNET &gt; mhenley@qsystems.net]]></cntfax>
+      </cntinfo>
+    </ptcontac>
+  </idinfo>
+  <distinfo>
+    <distrib>
+      <cntinfo>
+        <cntperp>
+          <cntorg><![CDATA[Environmental Sciences Division, Oak Ridge National Laboratory]]></cntorg>
+          <cntper><![CDATA[Gibbs, Holly K.]]></cntper>
+        </cntperp>
+        <cntvoice><![CDATA[(865) 574-7356]]></cntvoice>
+        <cntfax><![CDATA[6.1.10.8 Contact Electronic Mail: INTERNET &gt; mhenley@qsystems.net]]></cntfax>
+        <cntemail><![CDATA[gibbshk@ornl.gov]]></cntemail>
+      </cntinfo>
+    </distrib>
+    <stdorder>
+      <digform>
+        <digtopt>
+          <onlinopt>
+            <computer><![CDATA[ftp://ftp.esd.ornl.gov/pub/orr/]]></computer>
+            <accinstr><![CDATA[Public]]></accinstr>
+          </onlinopt>
+        </digtopt>
+      </digform>
+    </stdorder>
+    <resdesc />
+  </distinfo>
+  <metainfo>
+    <metd><![CDATA[20020413 162015]]></metd>
+    <metc>
+      <cntinfo>
+        <cntorgp>
+          <cntper><![CDATA[Gibbs, Holly K.]]></cntper>
+        </cntorgp>
+        <cntperp>
+          <cntper><![CDATA[Gibbs, Holly K.]]></cntper>
+        </cntperp>
+        <cntvoice><![CDATA[(865) 574-7356]]></cntvoice>
+        <cntemail><![CDATA[gibbshk@ornl.gov]]></cntemail>
+      </cntinfo>
+    </metc>
+    <metstdn><![CDATA[FGDC Content Standard for Digital Geospatial Metadata]]></metstdn>
+  </metainfo>
+  <mercury>
+    <begdate>19930401</begdate>
+    <enddate>19930401</enddate>
+    <Site_Information>
+      <Site><![CDATA[Oak Ridge Reservation, TN, USA]]></Site>
+      <Westernmost_Longitude><![CDATA[-84.19]]></Westernmost_Longitude>
+      <Easternmost_Longitude><![CDATA[84.44]]></Easternmost_Longitude>
+      <Northernmost_Latitude><![CDATA[36]]></Northernmost_Latitude>
+      <Southernmost_Latitude><![CDATA[-35.87]]></Southernmost_Latitude>
+    </Site_Information>
+    <Keywords><![CDATA[Aspect]]></Keywords>
+    <Keywords><![CDATA[Elevation]]></Keywords>
+    <Keywords><![CDATA[Oak Ridge Reservation]]></Keywords>
+    <Keywords><![CDATA[GIS]]></Keywords>
+    <Keywords><![CDATA[Raster]]></Keywords>
+    <Keywords><![CDATA[Digital Elevation Model]]></Keywords>
+    <Keywords><![CDATA[Topography]]></Keywords>
+    <Parameter_Description>
+      <Parameter><![CDATA[TERRAIN ELEVATION]]></Parameter>
+      <Sensor><![CDATA[CAMERA]]></Sensor>
+      <Source><![CDATA[HELICOPTER]]></Source>
+      <Term><![CDATA[TOPOGRAPHY]]></Term>
+      <Topic><![CDATA[LAND SURFACE]]></Topic>
+    </Parameter_Description>
+    <Project><![CDATA[The Oak Ridge Reservation Bioenergy and Carbon Sequestration Initiative; managed by Robin L. Graham]]></Project>
+    <Navpath><![CDATA[HELICOPTER|CAMERA|TERRAIN ELEVATION]]></Navpath>
+    <Principal_Investigator>
+      <Name><![CDATA[Henley, Marsha]]></Name>
+      <Email><![CDATA[mhenley@qsystems.net]]></Email>
+    </Principal_Investigator>
+    <Principal_Investigator>
+      <Name><![CDATA[Harris, Melinda H.]]></Name>
+      <Email><![CDATA[Harrism@qsystems.net]]></Email>
+    </Principal_Investigator>
+    <Data_Set_Link>
+      <URL><![CDATA[ftp://ftp.esd.ornl.gov/pub/orr/Maps/Topography/ORR/Aspect/]]></URL>
+      <Label><![CDATA[Download Aspect data set]]></Label>
+      <Link_Note />
+    </Data_Set_Link>
+    <Documentation_Link>
+      <URL><![CDATA[ftp://ftp.esd.ornl.gov/pub/orr/Maps/Topography/ORR/Aspect/Browse%20ORR%20Aspect.html]]></URL>
+      <Label><![CDATA[Browse image and metadata]]></Label>
+      <Text />
+    </Documentation_Link>
+    <Documentation_Link>
+      <URL />
+      <Label />
+    </Documentation_Link>
+    <OME_Software_Version><![CDATA[Version 2.4.04a, Revision Date: 19 Mar 2002]]></OME_Software_Version>
+    <OME_DTD_Version><![CDATA[metadata20.dtd]]></OME_DTD_Version>
+    <Contact_Person>
+      <Email><![CDATA[gibbshk@ornl.gov]]></Email>
+      <Name><![CDATA[Gibbs, Holly K.]]></Name>
+      <Phone><![CDATA[(865) 574-7356]]></Phone>
+    </Contact_Person>
+    <Temporal_Resolution><![CDATA[N/A]]></Temporal_Resolution>
+    <enddate_blank />
+    <Harvest_Date><![CDATA[20140610]]></Harvest_Date>
+    <File_ID><![CDATA[Created 20020413 161719 by 160.91.16.106]]></File_ID>
+    <Spatial_Reference_Method><![CDATA[Raster]]></Spatial_Reference_Method>
+    <Spatial_Extent>12119.4381</Spatial_Extent>
+    <Search_Text_Link>
+      <URL><![CDATA[ftp://ftp.esd.ornl.gov/pub/orr/Maps/Topography/ORR/Aspect/Browse%20ORR%20Aspect.html]]></URL>
+      <Label><![CDATA[Browse image and metadata]]></Label>
+    </Search_Text_Link>
+    <Other_Link>
+      <URL />
+      <Label />
+    </Other_Link>
+  </mercury>
+</ornl:metadata>

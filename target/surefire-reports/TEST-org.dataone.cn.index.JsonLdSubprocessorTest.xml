@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.dataone.cn.index.JsonLdSubprocessorTest" time="81.684" tests="6" errors="1" skipped="0" failures="0">
+  <properties>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib"/>
+    <property name="java.vm.version" value="25.102-b14"/>
+    <property name="gopherProxySet" value="false"/>
+    <property name="java.vm.vendor" value="Oracle Corporation"/>
+    <property name="maven.multiModuleProjectDirectory" value="/Users/slaughter/git/DataONEorg/d1_cn_index_processor"/>
+    <property name="java.vendor.url" value="http://java.oracle.com/"/>
+    <property name="path.separator" value=":"/>
+    <property name="guice.disable.misplaced.annotation.check" value="true"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="file.encoding.pkg" value="sun.io"/>
+    <property name="user.country" value="US"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.os.patch.level" value="unknown"/>
+    <property name="test" value="JsonLdSubprocessorTest"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="user.dir" value="/Users/slaughter/git/DataONEorg/d1_cn_index_processor"/>
+    <property name="java.runtime.version" value="1.8.0_102-b14"/>
+    <property name="java.awt.graphicsenv" value="sun.awt.CGraphicsEnvironment"/>
+    <property name="java.endorsed.dirs" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/endorsed"/>
+    <property name="os.arch" value="x86_64"/>
+    <property name="java.io.tmpdir" value="/var/folders/zb/y107bkgx6l90vc199ff_zx2r0000gn/T/"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="os.name" value="Mac OS X"/>
+    <property name="classworlds.conf" value="/usr/local/Cellar/maven/3.6.3_1/libexec/bin/m2.conf"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/Users/slaughter/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:."/>
+    <property name="maven.conf" value="/usr/local/Cellar/maven/3.6.3_1/libexec/conf"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.class.version" value="52.0"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="os.version" value="10.14.6"/>
+    <property name="library.jansi.path" value="/usr/local/Cellar/maven/3.6.3_1/libexec/lib/jansi-native"/>
+    <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="user.home" value="/Users/slaughter"/>
+    <property name="user.timezone" value="America/Los_Angeles"/>
+    <property name="java.awt.printerjob" value="sun.lwawt.macosx.CPrinterJob"/>
+    <property name="java.specification.version" value="1.8"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="user.name" value="slaughter"/>
+    <property name="java.class.path" value="/usr/local/Cellar/maven/3.6.3_1/libexec/boot/plexus-classworlds-2.6.0.jar"/>
+    <property name="java.vm.specification.version" value="1.8"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.home" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher clean -Dtest=JsonLdSubprocessorTest test"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="user.language" value="en"/>
+    <property name="awt.toolkit" value="sun.lwawt.macosx.LWCToolkit"/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.version" value="1.8.0_102"/>
+    <property name="java.ext.dirs" value="/Users/slaughter/Library/Java/Extensions:/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/ext:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java"/>
+    <property name="sun.boot.class.path" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/resources.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/rt.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/sunrsasign.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/jsse.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/jce.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/charsets.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/jfr.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/classes"/>
+    <property name="java.vendor" value="Oracle Corporation"/>
+    <property name="maven.home" value="/usr/local/Cellar/maven/3.6.3_1/libexec"/>
+    <property name="file.separator" value="/"/>
+    <property name="java.vendor.url.bug" value="http://bugreport.sun.com/bugreport/"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeBig"/>
+    <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="sun.cpu.isalist" value=""/>
+  </properties>
+  <testcase name="testProvenanceFields" classname="org.dataone.cn.index.JsonLdSubprocessorTest" time="8.418"/>
+  <testcase name="testInsertPartsResourceMap" classname="org.dataone.cn.index.JsonLdSubprocessorTest" time="17.925"/>
+  <testcase name="testInsertSchemaOrg" classname="org.dataone.cn.index.JsonLdSubprocessorTest" time="25.79">
+    <error message="java.util.ArrayList cannot be cast to java.lang.String" type="java.lang.ClassCastException">java.lang.ClassCastException: java.util.ArrayList cannot be cast to java.lang.String
+	at __randomizedtesting.SeedInfo.seed([7999A80C3E9D0E1A:31B6602726C369ED]:0)
+	at org.dataone.cn.indexer.resourcemap.RdfXmlProcessorTest.compareFieldValue(RdfXmlProcessorTest.java:486)
+	at org.dataone.cn.index.JsonLdSubprocessorTest.testInsertSchemaOrg(JsonLdSubprocessorTest.java:153)
+</error>
+    <system-out><![CDATA[the filter is id:urn\:uuid\:f18812ac\-7f4f\-496c\-82cc\-3f4f54830289
+Hibernate: select indextask0_.id as id4_, indextask0_.dateSysMetaModified as dateSysM2_4_, indextask0_.deleted as deleted4_, indextask0_.formatId as formatId4_, indextask0_.nextExecution as nextExec5_4_, indextask0_.objectPath as objectPath4_, indextask0_.pid as pid4_, indextask0_.priority as priority4_, indextask0_.status as status4_, indextask0_.sysMetadata as sysMeta10_4_, indextask0_.taskModifiedDate as taskMod11_4_, indextask0_.tryCount as tryCount4_, indextask0_.version as version4_ from index_task indextask0_ where indextask0_.pid=? and indextask0_.status=?
+Hibernate: select indextask0_.id as id4_, indextask0_.dateSysMetaModified as dateSysM2_4_, indextask0_.deleted as deleted4_, indextask0_.formatId as formatId4_, indextask0_.nextExecution as nextExec5_4_, indextask0_.objectPath as objectPath4_, indextask0_.pid as pid4_, indextask0_.priority as priority4_, indextask0_.status as status4_, indextask0_.sysMetadata as sysMeta10_4_, indextask0_.taskModifiedDate as taskMod11_4_, indextask0_.tryCount as tryCount4_, indextask0_.version as version4_ from index_task indextask0_ where indextask0_.pid=? and indextask0_.status=?
+Hibernate: insert into index_task (id, dateSysMetaModified, deleted, formatId, nextExecution, objectPath, pid, priority, status, sysMetadata, taskModifiedDate, tryCount, version) values (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: select count(indextask0_.id) as col_0_0_ from index_task indextask0_ where indextask0_.status=? limit ?
+Hibernate: select count(indextask0_.id) as col_0_0_ from index_task indextask0_ where indextask0_.status=? limit ?
+Hibernate: select indextask0_.id as id4_, indextask0_.dateSysMetaModified as dateSysM2_4_, indextask0_.deleted as deleted4_, indextask0_.formatId as formatId4_, indextask0_.nextExecution as nextExec5_4_, indextask0_.objectPath as objectPath4_, indextask0_.pid as pid4_, indextask0_.priority as priority4_, indextask0_.status as status4_, indextask0_.sysMetadata as sysMeta10_4_, indextask0_.taskModifiedDate as taskMod11_4_, indextask0_.tryCount as tryCount4_, indextask0_.version as version4_ from index_task indextask0_ where indextask0_.status=? and indextask0_.tryCount<? order by indextask0_.priority asc, indextask0_.taskModifiedDate asc
+Hibernate: select indextask0_.id as id4_0_, indextask0_.dateSysMetaModified as dateSysM2_4_0_, indextask0_.deleted as deleted4_0_, indextask0_.formatId as formatId4_0_, indextask0_.nextExecution as nextExec5_4_0_, indextask0_.objectPath as objectPath4_0_, indextask0_.pid as pid4_0_, indextask0_.priority as priority4_0_, indextask0_.status as status4_0_, indextask0_.sysMetadata as sysMeta10_4_0_, indextask0_.taskModifiedDate as taskMod11_4_0_, indextask0_.tryCount as tryCount4_0_, indextask0_.version as version4_0_ from index_task indextask0_ where indextask0_.id=?
+Hibernate: update index_task set dateSysMetaModified=?, deleted=?, formatId=?, nextExecution=?, objectPath=?, pid=?, priority=?, status=?, sysMetadata=?, taskModifiedDate=?, tryCount=?, version=? where id=? and version=?
+Hibernate: select indextask0_.id as id4_, indextask0_.dateSysMetaModified as dateSysM2_4_, indextask0_.deleted as deleted4_, indextask0_.formatId as formatId4_, indextask0_.nextExecution as nextExec5_4_, indextask0_.objectPath as objectPath4_, indextask0_.pid as pid4_, indextask0_.priority as priority4_, indextask0_.status as status4_, indextask0_.sysMetadata as sysMeta10_4_, indextask0_.taskModifiedDate as taskMod11_4_, indextask0_.tryCount as tryCount4_, indextask0_.version as version4_ from index_task indextask0_ where indextask0_.status=? and indextask0_.nextExecution<? and indextask0_.tryCount<?
+Hibernate: select indextask0_.id as id4_0_, indextask0_.dateSysMetaModified as dateSysM2_4_0_, indextask0_.deleted as deleted4_0_, indextask0_.formatId as formatId4_0_, indextask0_.nextExecution as nextExec5_4_0_, indextask0_.objectPath as objectPath4_0_, indextask0_.pid as pid4_0_, indextask0_.priority as priority4_0_, indextask0_.status as status4_0_, indextask0_.sysMetadata as sysMeta10_4_0_, indextask0_.taskModifiedDate as taskMod11_4_0_, indextask0_.tryCount as tryCount4_0_, indextask0_.version as version4_0_ from index_task indextask0_ where indextask0_.id=?
+Hibernate: delete from index_task where id=? and version=?
+==================== start of compare
++++++++++++++++++++The value of the field title from Solr is Neodymium isotopes, B/Ca and δ¹³C, and fresh sand volcanic glass count data from ODP Site 208-1267 and IODP Site 306-U1313 for MIS M2, MIS 100 and the Last Glacial-Holocene
+The expected value of the field title is Neodymium isotopes, B/Ca and δ¹³C, and fresh sand volcanic glass count data from ODP Site 208-1267 and IODP Site 306-U1313 for MIS M2, MIS 100 and the Last Glacial-Holocene
+==================== start of compare
++++++++++++++++++++The value of the field abstract from Solr is Marine Isotope Stage (MIS) M2, 3.3 Ma, is an isolated cold stage punctuating the benthic oxygen isotope (δ¹⁸O) stratigraphy of the warm Piacenzian interval of the late Pliocene Epoch. The prominent (~0.65‰) δ¹⁸O increase that defines MIS M2 has prompted debate over the extent to which it signals an early prelude to the rhythmic extensive glaciations of the northern hemisphere that characterise the Quaternary and raised questions about the forcing mechanisms responsible. Recent work suggests that CO₂ storage in the deep Atlantic Ocean played an important role in these events but detailed reconstructions of deep ocean chemical stratification are needed to test this idea and competing hypotheses. Here we present new records of the Nd isotope composition of fish debris and δ¹³C and B/Ca ratios of benthic foraminifera from the northwest and southeast Atlantic Ocean. […]
+The expected value of the field abstract is Marine Isotope Stage (MIS) M2, 3.3 Ma, is an isolated cold stage punctuating the benthic oxygen isotope (δ¹⁸O) stratigraphy of the warm Piacenzian interval of the late Pliocene Epoch. The prominent (~0.65‰) δ¹⁸O increase that defines MIS M2 has prompted debate over the extent to which it signals an early prelude to the rhythmic extensive glaciations of the northern hemisphere that characterise the Quaternary and raised questions about the forcing mechanisms responsible. Recent work suggests that CO₂ storage in the deep Atlantic Ocean played an important role in these events but detailed reconstructions of deep ocean chemical stratification are needed to test this idea and competing hypotheses. Here we present new records of the Nd isotope composition of fish debris and δ¹³C and B/Ca ratios of benthic foraminifera from the northwest and southeast Atlantic Ocean. […]
+==================== start of compare
++++++++++++++++++++The value of the field label from Solr is Neodymium isotopes
+The expected value of the field label is Neodymium isotopes
+==================== start of compare
++++++++++++++++++++The value of the field author from Solr is Nicola Kirby
+The expected value of the field author is Nicola Kirby
+==================== start of compare
++++++++++++++++++++The value of the field authorGivenName from Solr is Nicola
+The expected value of the field authorGivenName is Nicola
+++++++++++++++++ the solr result array for the field origin is [Ljava.lang.String;@137e6fa7
+++++++++++++++++ the expected values for the field origin is [Ljava.lang.String;@edfdd49
+++++++++++++++++ compare values for the field origin Solr: A Brombacher expexted valueA Brombacher
+++++++++++++++++ compare values for the field origin Solr: Anya J Crocker expexted valueAnya J Crocker
+++++++++++++++++ compare values for the field origin Solr: David B Bell expexted valueDavid B Bell
+++++++++++++++++ compare values for the field origin Solr: David C Lang expexted valueDavid C Lang
+++++++++++++++++ compare values for the field origin Solr: Dick Kroon expexted valueDick Kroon
+++++++++++++++++ compare values for the field origin Solr: Gavin L Foster expexted valueGavin L Foster
+++++++++++++++++ compare values for the field origin Solr: Ian Bailey expexted valueIan Bailey
+++++++++++++++++ compare values for the field origin Solr: J Andy Milton expexted valueJ Andy Milton
+++++++++++++++++ compare values for the field origin Solr: Maureen E Raymo expexted valueMaureen E Raymo
+++++++++++++++++ compare values for the field origin Solr: Nicola Kirby expexted valueNicola Kirby
+++++++++++++++++ compare values for the field origin Solr: Paul A Wilson expexted valuePaul A Wilson
+++++++++++++++++ compare values for the field origin Solr: Rebecca L Parker expexted valueRebecca L Parker
+++++++++++++++++ compare values for the field origin Solr: Thomas B Chalk expexted valueThomas B Chalk
+++++++++++++++++ compare values for the field origin Solr: Victoria E Taylor expexted valueVictoria E Taylor
+++++++++++++++++ the solr result array for the field keywords is [Ljava.lang.String;@31c8f294
+++++++++++++++++ the expected values for the field keywords is [Ljava.lang.String;@51f62edf
+++++++++++++++++ compare values for the field keywords Solr: AMOC expexted valueAMOC
+++++++++++++++++ compare values for the field keywords Solr: Atlantic circulation expexted valueAtlantic circulation
+++++++++++++++++ compare values for the field keywords Solr: B/Ca expexted valueB/Ca
+++++++++++++++++ compare values for the field keywords Solr: Last Glacial expexted valueLast Glacial
+++++++++++++++++ compare values for the field keywords Solr: MIS 100 expexted valueMIS 100
+++++++++++++++++ compare values for the field keywords Solr: MIS M2 expexted valueMIS M2
+++++++++++++++++ compare values for the field keywords Solr: Nd isotopes expexted valueNd isotopes
+++++++++++++++++ the solr result array for the field parameter is [Ljava.lang.String;@31957011
+++++++++++++++++ the expected values for the field parameter is [Ljava.lang.String;@4150d6ff
+++++++++++++++++ compare values for the field parameter Solr: Date (UTC) in ISO8601 format: YYYY-MM-DDThh:mmZ expexted valueDate (UTC) in ISO8601 format: YYYY-MM-DDThh:mmZ
+++++++++++++++++ compare values for the field parameter Solr: Date (local time zone of PST/PDT) in ISO8601; format: YYYY-MM-DDThh:mm expexted valueDate (local time zone of PST/PDT) in ISO8601; format: YYYY-MM-DDThh:mm
+++++++++++++++++ compare values for the field parameter Solr: Dissolved oxygen expexted valueDissolved oxygen
+++++++++++++++++ compare values for the field parameter Solr: unique record ID number expexted valueunique record ID number
+==================== start of compare
++++++++++++++++++++The value of the field edition from Solr is 1
+The expected value of the field edition is 1
+==================== start of compare
+]]></system-out>
+    <system-err><![CDATA[[ERROR] 2021-02-05 13:57:22,671 (org.dataone.cn.index.processor.IndexTaskProcessor:isDataObject:851) The format specified by science-on-schema.org/Dataset/1.2;ld+json was not found after refreshing the cache.
+org.dataone.service.exceptions.NotFound: The format specified by science-on-schema.org/Dataset/1.2;ld+json was not found after refreshing the cache.
+	at org.dataone.client.v2.formats.ObjectFormatCache.getFormat(ObjectFormatCache.java:291)
+	at org.dataone.cn.index.processor.IndexTaskProcessor.isDataObject(IndexTaskProcessor.java:849)
+	at org.dataone.cn.index.processor.IndexTaskProcessor.isObjectPathReady(IndexTaskProcessor.java:809)
+	at org.dataone.cn.index.processor.IndexTaskProcessor.getNextIndexTask(IndexTaskProcessor.java:630)
+	at org.dataone.cn.index.processor.IndexTaskProcessor.processIndexTaskQueue(IndexTaskProcessor.java:186)
+	at org.dataone.cn.index.JsonLdSubprocessorTest.testInsertSchemaOrg(JsonLdSubprocessorTest.java:123)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at com.carrotsearch.randomizedtesting.RandomizedRunner.invoke(RandomizedRunner.java:1627)
+	at com.carrotsearch.randomizedtesting.RandomizedRunner$6.evaluate(RandomizedRunner.java:836)
+	at com.carrotsearch.randomizedtesting.RandomizedRunner$7.evaluate(RandomizedRunner.java:872)
+	at com.carrotsearch.randomizedtesting.RandomizedRunner$8.evaluate(RandomizedRunner.java:886)
+	at com.carrotsearch.randomizedtesting.rules.SystemPropertiesRestoreRule$1.evaluate(SystemPropertiesRestoreRule.java:57)
+	at org.apache.lucene.util.TestRuleSetupTeardownChained$1.evaluate(TestRuleSetupTeardownChained.java:50)
+	at org.apache.lucene.util.AbstractBeforeAfterRule$1.evaluate(AbstractBeforeAfterRule.java:46)
+	at org.apache.lucene.util.TestRuleThreadAndTestName$1.evaluate(TestRuleThreadAndTestName.java:49)
+	at org.apache.lucene.util.TestRuleIgnoreAfterMaxFailures$1.evaluate(TestRuleIgnoreAfterMaxFailures.java:65)
+	at org.apache.lucene.util.TestRuleMarkFailure$1.evaluate(TestRuleMarkFailure.java:48)
+	at com.carrotsearch.randomizedtesting.rules.StatementAdapter.evaluate(StatementAdapter.java:36)
+	at com.carrotsearch.randomizedtesting.ThreadLeakControl$StatementRunner.run(ThreadLeakControl.java:365)
+	at com.carrotsearch.randomizedtesting.ThreadLeakControl.forkTimeoutingTask(ThreadLeakControl.java:798)
+	at com.carrotsearch.randomizedtesting.ThreadLeakControl$3.evaluate(ThreadLeakControl.java:458)
+	at com.carrotsearch.randomizedtesting.RandomizedRunner.runSingleTest(RandomizedRunner.java:845)
+	at com.carrotsearch.randomizedtesting.RandomizedRunner$3.evaluate(RandomizedRunner.java:747)
+	at com.carrotsearch.randomizedtesting.RandomizedRunner$4.evaluate(RandomizedRunner.java:781)
+	at com.carrotsearch.randomizedtesting.RandomizedRunner$5.evaluate(RandomizedRunner.java:792)
+	at com.carrotsearch.randomizedtesting.rules.StatementAdapter.evaluate(StatementAdapter.java:36)
+	at com.carrotsearch.randomizedtesting.rules.SystemPropertiesRestoreRule$1.evaluate(SystemPropertiesRestoreRule.java:57)
+	at org.apache.lucene.util.AbstractBeforeAfterRule$1.evaluate(AbstractBeforeAfterRule.java:46)
+	at com.carrotsearch.randomizedtesting.rules.StatementAdapter.evaluate(StatementAdapter.java:36)
+	at org.apache.lucene.util.TestRuleStoreClassName$1.evaluate(TestRuleStoreClassName.java:42)
+	at com.carrotsearch.randomizedtesting.rules.NoShadowingOrOverridesOnMethodsRule$1.evaluate(NoShadowingOrOverridesOnMethodsRule.java:39)
+	at com.carrotsearch.randomizedtesting.rules.NoShadowingOrOverridesOnMethodsRule$1.evaluate(NoShadowingOrOverridesOnMethodsRule.java:39)
+	at com.carrotsearch.randomizedtesting.rules.StatementAdapter.evaluate(StatementAdapter.java:36)
+	at com.carrotsearch.randomizedtesting.rules.StatementAdapter.evaluate(StatementAdapter.java:36)
+	at com.carrotsearch.randomizedtesting.rules.StatementAdapter.evaluate(StatementAdapter.java:36)
+	at org.apache.lucene.util.TestRuleAssertionsRequired$1.evaluate(TestRuleAssertionsRequired.java:54)
+	at org.apache.lucene.util.TestRuleMarkFailure$1.evaluate(TestRuleMarkFailure.java:48)
+	at org.apache.lucene.util.TestRuleIgnoreAfterMaxFailures$1.evaluate(TestRuleIgnoreAfterMaxFailures.java:65)
+	at org.apache.lucene.util.TestRuleIgnoreTestSuites$1.evaluate(TestRuleIgnoreTestSuites.java:55)
+	at com.carrotsearch.randomizedtesting.rules.StatementAdapter.evaluate(StatementAdapter.java:36)
+	at com.carrotsearch.randomizedtesting.ThreadLeakControl$StatementRunner.run(ThreadLeakControl.java:365)
+	at java.lang.Thread.run(Thread.java:745)
+org.dataone.service.exceptions.NotFound: The format specified by science-on-schema.org/Dataset/1.2;ld+json was not found after refreshing the cache.
+	at org.dataone.client.v2.formats.ObjectFormatCache.getFormat(ObjectFormatCache.java:291)
+	at org.dataone.cn.indexer.parser.BaseReprocessSubprocessor.canProcess(BaseReprocessSubprocessor.java:171)
+	at org.dataone.cn.indexer.SolrIndexService.processObject(SolrIndexService.java:218)
+	at org.dataone.cn.indexer.SolrIndexService.insertIntoIndex(SolrIndexService.java:303)
+	at org.dataone.cn.index.processor.IndexTaskUpdateProcessor.process(IndexTaskUpdateProcessor.java:50)
+	at org.dataone.cn.index.processor.IndexTaskProcessor.processTask(IndexTaskProcessor.java:288)
+	at org.dataone.cn.index.processor.IndexTaskProcessor.access$000(IndexTaskProcessor.java:80)
+	at org.dataone.cn.index.processor.IndexTaskProcessor$1.run(IndexTaskProcessor.java:265)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+]]></system-err>
+  </testcase>
+  <testcase name="testPartFields" classname="org.dataone.cn.index.JsonLdSubprocessorTest" time="2.526"/>
+  <testcase name="testInsertProvResourceMap" classname="org.dataone.cn.index.JsonLdSubprocessorTest" time="26.213"/>
+  <testcase name="testInit" classname="org.dataone.cn.index.JsonLdSubprocessorTest" time="0.812"/>
+</testsuite>

@@ -1,0 +1,88 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:provone="http://purl.dataone.org/provone/2015/01/15/ontology#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:ore="http://www.openarchives.org/ore/terms/"
+    xmlns:dcterms="http://purl.org/dc/terms/"
+    xmlns:prov="http://www.w3.org/ns/prov#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:cito="http://purl.org/spar/cito/"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" > 
+  <rdf:Description rdf:about="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-Configure.1.m">
+    <ore:isAggregatedBy rdf:resource="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing.2.rdf#aggregation"/>
+    <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ala-wai-canal-ns02-matlab-processing-Configure.1.m</dcterms:identifier>
+    <rdf:type rdf:resource="http://purl.dataone.org/provone/2015/01/15/ontology#Program"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="urn:uuid:D89221AD-E251-4CCB-B515-09D869DB1A61">
+    <foaf:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Christopher Jones</foaf:name>
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdf:type rdf:resource="http://purl.dataone.org/provone/2015/01/15/ontology#User"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="urn:uuid:731927C6-F7EE-4C19-83BC-64CC2E8AF57E">
+    <foaf:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DataONE Java Libclient Version 2.0.0</foaf:name>
+    <rdf:type rdf:resource="http://purl.org/dc/terms/Agent"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A0">
+    <prov:agent rdf:resource="urn:uuid:D89221AD-E251-4CCB-B515-09D869DB1A61"/>
+    <prov:hadPlan rdf:resource="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-schedule_AW02XX_001CTDXXXXR00_processing.1.m"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/prov#Association"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-image-data-AW02XX_001CTDXXXXR00_20150203_10day.1.jpg">
+    <prov:wasGeneratedBy rdf:resource="urn:uuid:6EC8CAB7-2063-4440-BA23-364313C145FC"/>
+    <prov:wasDerivedFrom rdf:resource="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-ctd-data.1.txt"/>
+    <ore:isAggregatedBy rdf:resource="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing.2.rdf#aggregation"/>
+    <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ala-wai-canal-ns02-image-data-AW02XX_001CTDXXXXR00_20150203_10day.1.jpg</dcterms:identifier>
+    <rdf:type rdf:resource="http://purl.dataone.org/provone/2015/01/15/ontology#Data"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-DataProcessor.1.m">
+    <ore:isAggregatedBy rdf:resource="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing.2.rdf#aggregation"/>
+    <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ala-wai-canal-ns02-matlab-processing-DataProcessor.1.m</dcterms:identifier>
+    <rdf:type rdf:resource="http://purl.dataone.org/provone/2015/01/15/ontology#Program"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing.2.rdf#aggregation">
+    <ore:aggregates rdf:resource="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-image-data-AW02XX_001CTDXXXXR00_20150203_10day.1.jpg"/>
+    <ore:aggregates rdf:resource="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-ctd-data.1.txt"/>
+    <ore:aggregates rdf:resource="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-Configure.1.m"/>
+    <ore:aggregates rdf:resource="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-DataProcessor.1.m"/>
+    <ore:aggregates rdf:resource="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-schedule_AW02XX_001CTDXXXXR00_processing.1.m"/>
+    <ore:aggregates rdf:resource="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing.eml.1.xml"/>
+    <ore:isDescribedBy rdf:resource="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing.2.rdf"/>
+    <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ala-wai-canal-ns02-matlab-processing.2.rdf#aggregation</dcterms:identifier>
+    <rdf:type rdf:resource="http://www.openarchives.org/ore/terms/Aggregation"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing.eml.1.xml">
+    <cito:documents rdf:resource="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-Configure.1.m"/>
+    <cito:documents rdf:resource="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-DataProcessor.1.m"/>
+    <cito:documents rdf:resource="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-schedule_AW02XX_001CTDXXXXR00_processing.1.m"/>
+    <ore:isAggregatedBy rdf:resource="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing.2.rdf#aggregation"/>
+    <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ala-wai-canal-ns02-matlab-processing.eml.1.xml</dcterms:identifier>
+    <rdf:type rdf:resource="http://purl.dataone.org/provone/2015/01/15/ontology#Data"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="urn:uuid:6EC8CAB7-2063-4440-BA23-364313C145FC">
+    <prov:qualifiedAssociation rdf:nodeID="A0"/>
+    <prov:wasAssociatedWith rdf:resource="urn:uuid:D89221AD-E251-4CCB-B515-09D869DB1A61"/>
+    <prov:used rdf:resource="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-ctd-data.1.txt"/>
+    <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">urn:uuid:6EC8CAB7-2063-4440-BA23-364313C145FC</dcterms:identifier>
+    <rdf:type rdf:resource="http://purl.dataone.org/provone/2015/01/15/ontology#Execution"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing.2.rdf">
+    <ore:describes rdf:resource="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing.2.rdf#aggregation"/>
+    <dcterms:creator rdf:resource="urn:uuid:731927C6-F7EE-4C19-83BC-64CC2E8AF57E"/>
+    <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ala-wai-canal-ns02-matlab-processing.2.rdf</dcterms:identifier>
+    <rdf:type rdf:resource="http://www.openarchives.org/ore/terms/ResourceMap"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-ctd-data.1.txt">
+    <ore:isAggregatedBy rdf:resource="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing.2.rdf#aggregation"/>
+    <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ala-wai-canal-ns02-ctd-data.1.txt</dcterms:identifier>
+    <rdf:type rdf:resource="http://purl.dataone.org/provone/2015/01/15/ontology#Data"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-schedule_AW02XX_001CTDXXXXR00_processing.1.m">
+    <ore:isAggregatedBy rdf:resource="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing.2.rdf#aggregation"/>
+    <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ala-wai-canal-ns02-matlab-processing-schedule_AW02XX_001CTDXXXXR00_processing.1.m</dcterms:identifier>
+    <provone:hasSubProgram rdf:resource="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-DataProcessor.1.m"/>
+    <provone:hasSubProgram rdf:resource="https://cn-sandbox-2.test.dataone.org/cn/v1/resolve/ala-wai-canal-ns02-matlab-processing-Configure.1.m"/>
+    <rdf:type rdf:resource="http://purl.dataone.org/provone/2015/01/15/ontology#Workflow"/>
+    <rdf:type rdf:resource="http://purl.dataone.org/provone/2015/01/15/ontology#Program"/>
+  </rdf:Description>
+</rdf:RDF>
