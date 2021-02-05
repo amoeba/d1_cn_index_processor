@@ -22,11 +22,22 @@
 package org.dataone.cn.index;
 
 import java.io.File;
-
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.TimeZone;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.util.ClientUtils;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.params.ModifiableSolrParams;
 import org.dataone.cn.indexer.parser.JsonLdSubprocessor;
 import org.dataone.cn.indexer.resourcemap.RdfXmlProcessorTest;
 import org.dataone.service.types.v1.NodeReference;
@@ -125,7 +136,9 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         assertTrue(compareFieldValue(id, "author", "Nicola Kirby"));
         assertTrue(compareFieldValue(id, "authorGivenName", "Nicola"));
 //        assertTrue(compareFieldValue(id, "authorLastName", "Kirby"));
-//        assertTrue(compareFieldValue(id, "orgin", ""));
+        String[] origins = {"Nicola Kirby", "Ian Bailey", "David C Lang", "A Brombacher", "Thomas B Chalk", 
+                "Rebecca L Parker", "Anya J Crocker", "Victoria E Taylor", "J Andy Milton", "Gavin L Foster", "Maureen E Raymo", "Dick Kroon", "David B Bell", "Paul A Wilson"};
+        assertTrue(compareFieldValue(id, "origin", origins));
 //        assertTrue(compareFieldValue(id, "hasPart", ""));
 //        assertTrue(compareFieldValue(id, "keyword", ""));
 //        assertTrue(compareFieldValue(id, "southBoundCoord", "28.09816"));
@@ -139,5 +152,31 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         assertTrue(compareFieldValue(id, "edition", "1"));
 //        assertTrue(compareFieldValue(id, "serverEndPoint", ""));
 
+    }
+    
+    protected boolean compareFieldValue(String id, String fieldName, String[] expectedValues) throws SolrServerException, IOException {
+        boolean equal = true;
+        ModifiableSolrParams solrParams = new ModifiableSolrParams();
+        solrParams.set("q", "id:" + ClientUtils.escapeQueryChars(id));
+        solrParams.set("fl", "*");
+        QueryResponse qr = getSolrClient().query(solrParams);
+        SolrDocument result = qr.getResults().get(0);
+        Collection<Object> solrValues = result.getFieldValues(fieldName);
+        String[] solrValuesArray = solrValues.toArray(new String[solrValues.size()]);
+        System.out.println("++++++++++++++++ the solr result array for the field " + fieldName + " is " + solrValuesArray);
+        System.out.println("++++++++++++++++ the expected values for the field " + fieldName + " is " + expectedValues);
+        if (solrValuesArray.length != expectedValues.length) {
+            equal = false;
+            return equal;
+        }
+        for (int i=0; i<solrValuesArray.length; i++) {
+            System.out.println("++++++++++++++++ compare values for the field " + fieldName + " Solr: " + solrValuesArray[i] + " expexted value" + expectedValues[i]);
+            if (!solrValuesArray[i].equals(expectedValues[i])) {
+                equal = false;
+                break;
+            }
+        }
+        return equal;
+        
     }
 }

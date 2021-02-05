@@ -136,28 +136,28 @@
         </constructor-arg>
     </bean>
 
-<!--    <bean id="schema_org_creator_list" class="org.dataone.cn.indexer.annotation.SparqlField">-->
-<!--        <constructor-arg name="name" value="origin" />-->
-<!--        <constructor-arg name="query">-->
-<!--            <value>-->
-<!--                <![CDATA[-->
-<!--                PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>-->
-<!--                PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>-->
-<!--                PREFIX SO:   <https://schema.org/>-->
+    <bean id="schema_org_creator_list" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="origin" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>
+                PREFIX SO:   <https://schema.org/>
 
-<!--                SELECT (?name as ?origin)-->
-<!--                WHERE {-->
-<!--                    ?dsId rdf:type SO:Dataset .-->
-<!--                    ?dsId SO:creator ?list .-->
-<!--                    ?list list:index (?pos ?member) .-->
-<!--                    ?member SO:name ?name .-->
-<!--                }-->
-<!--                order by (?pos)-->
-<!--                ]]>-->
-<!--            </value>-->
-<!--        </constructor-arg>-->
-<!--        &lt;!&ndash; <property name="multivalued" value="true" /> &ndash;&gt;-->
-<!--    </bean>-->
+                SELECT (?name as ?origin)
+                WHERE {
+                    ?dsId rdf:type SO:Dataset .
+                    ?dsId SO:creator ?list .
+                    ?list list:index (?pos ?member) .
+                    ?member SO:name ?name .
+                }
+                order by (?pos)
+                ]]>
+            </value>
+        </constructor-arg>
+        <!--&lt;!&ndash; <property name="multivalued" value="true" /> &ndash;&gt;-->
+    </bean>
 
 <!--    &lt;!&ndash; Extract 'SO:hasPart' properties from the top level 'SO:Dataset' property &ndash;&gt;-->
 <!--    <bean id="schema_org_hasPart" class="org.dataone.cn.indexer.annotation.SparqlField">-->
