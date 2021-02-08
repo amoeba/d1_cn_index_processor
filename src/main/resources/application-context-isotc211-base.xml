@@ -53,7 +53,7 @@
 	<bean id="isotc.origin" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="origin" />
 		<constructor-arg name="xpath" 
-			value='//gmd:CI_ResponsibleParty[gmd:role/gmd:CI_RoleCode/text() = "owner" or gmd:role/gmd:CI_RoleCode/text() = "originator" or gmd:role/gmd:CI_RoleCode/text() = "principalInvestigator" or gmd:role/gmd:CI_RoleCode/text() = "author"]/gmd:individualName/gco:CharacterString/text() | //gmd:CI_ResponsibleParty[(gmd:role/gmd:CI_RoleCode/text() = "owner" or gmd:role/gmd:CI_RoleCode/text() = "originator" or gmd:role/gmd:CI_RoleCode/text() = "principalInvestigator" or gmd:role/gmd:CI_RoleCode/text() = "author") and (not(gmd:individualName) or gmd:individualName[@gco:nilReason = "missing"])]/gmd:organisationName/gco:CharacterString/text()' />
+			value='//gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:citedResponsibleParty/gmd:CI_ResponsibleParty[gmd:role/gmd:CI_RoleCode/text() = "owner" or gmd:role/gmd:CI_RoleCode/text() = "originator" or gmd:role/gmd:CI_RoleCode/text() = "principalInvestigator" or gmd:role/gmd:CI_RoleCode/text() = "author"]/gmd:individualName/*/text() | //gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:citedResponsibleParty/gmd:CI_ResponsibleParty[(gmd:role/gmd:CI_RoleCode/text() = "owner" or gmd:role/gmd:CI_RoleCode/text() = "originator" or gmd:role/gmd:CI_RoleCode/text() ="principalInvestigator" or gmd:role/gmd:CI_RoleCode/text() = "author") and (not(gmd:individualName) or gmd:individualName[@gco:nilReason = "missing"])]/gmd:organisationName/*/text()' />
 		<property name="multivalue" value="true" />
 		<property name="dedupe" value="true" />
 	</bean>

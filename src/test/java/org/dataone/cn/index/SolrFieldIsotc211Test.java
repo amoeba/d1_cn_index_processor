@@ -245,7 +245,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         nodc2Expected.put("authorSurNameSort", "Peter Miller");
         nodc2Expected
                 .put("origin",
-                        "NEODAAS");
+                        "NERC Earth Observation Data Acquisition and Analysis Service");
         nodc2Expected.put("investigator", "Peter Miller#Edward M. Armstrong#NEODAAS");
         nodc2Expected
                 .put("abstract",
@@ -713,7 +713,8 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         distributionInfoExpected.put("author", "Robert Potash");
         distributionInfoExpected.put("authorSurName", "Robert Potash");
         distributionInfoExpected.put("authorSurNameSort", "Robert Potash");
-        distributionInfoExpected.put("origin", "NOAA/NESDIS USA, 5200 Auth Rd, Camp Springs, MD, 20746");
+        distributionInfoExpected.put("origin",
+                        "US DOC; NOAA; NESDIS; Office of Satellite and Product Operations (OSPO)#US DOC; NOAA; NESDIS; Office of Satellite and Product Operations (OSDPD)");
         distributionInfoExpected.put("investigator", "Robert Potash"
                 + "#" + "Edward M. Armstrong" 
                 + "#" + "NOAA/NESDIS USA, 5200 Auth Rd, Camp Springs, MD, 20746");
@@ -845,7 +846,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         geoserverExpected.put("serviceCoupling", "tight");
         geoserverExpected.put("serviceTitle", "Test Service Description - for a WMS service in ISO19139/119");
         geoserverExpected.put("serviceDescription", "Abstract: The ISO19139/119 metadata standard is the preferred metadata standard to use for services (WMS, WFS, WCS).");
-        geoserverExpected.put("serviceType", "WMS");
+        geoserverExpected.put("serviceType", "OGC:WMS");
         geoserverExpected.put("serviceEndpoint", 
                 "http://localhost:8080/geoserver/wms?SERVICE=WMS1&" 
                 + "#" + "http://localhost:8080/geoserver/wms?SERVICE=WMS2&" 
@@ -906,7 +907,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         looselyCoupledServiceSrvAndDistribExpected.put("author", "Bob");
         looselyCoupledServiceSrvAndDistribExpected.put("authorSurName", "Bob");
         looselyCoupledServiceSrvAndDistribExpected.put("authorSurNameSort", "Bob");
-        looselyCoupledServiceSrvAndDistribExpected.put("origin", "Bob");
+        looselyCoupledServiceSrvAndDistribExpected.put("origin", "");
         looselyCoupledServiceSrvAndDistribExpected.put("investigator", "Bob" + "#" + "Steven Baum");
         looselyCoupledServiceSrvAndDistribExpected.put("abstract", "");
         looselyCoupledServiceSrvAndDistribExpected.put("title", "");
@@ -983,7 +984,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         tightlyCoupledServiceSrvOnlyExpected.put("author", "");
         tightlyCoupledServiceSrvOnlyExpected.put("authorSurName", "");
         tightlyCoupledServiceSrvOnlyExpected.put("authorSurNameSort", "");
-        tightlyCoupledServiceSrvOnlyExpected.put("origin", "UNM");
+        tightlyCoupledServiceSrvOnlyExpected.put("origin", "");
         tightlyCoupledServiceSrvOnlyExpected.put("investigator", "");
         tightlyCoupledServiceSrvOnlyExpected.put("abstract", "");
         tightlyCoupledServiceSrvOnlyExpected.put("title", "");
