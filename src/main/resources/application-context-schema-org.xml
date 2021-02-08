@@ -232,6 +232,7 @@
                 ]]>
             </value>
         </constructor-arg>
+        <property name="converter" ref="solrLatitudeConverter" />
     </bean>
 
     <!-- Extract bounding box coordinates from a 'SO:spatialCoverage' property. -->
@@ -260,6 +261,7 @@
                 ]]>
             </value>
         </constructor-arg>
+        <property name="converter" ref="solrLongitudeConverter" />
     </bean>
 
     <!-- Extract bounding box coordinates from a 'SO:spatialCoverage' property. -->
@@ -290,6 +292,7 @@
                 ]]>
             </value>
         </constructor-arg>
+        <property name="converter" ref="solrLatitudeConverter" />
     </bean>
 
     <!-- Extract bounding box coordinates from a 'SO:spatialCoverage' property. -->
@@ -321,6 +324,7 @@
                 ]]>
             </value>
         </constructor-arg>
+        <property name="converter" ref="solrLongitudeConverter" />
     </bean>
 
     <!-- Extract 'SO:spatialCoverage'. This property can have several different forms, for different
