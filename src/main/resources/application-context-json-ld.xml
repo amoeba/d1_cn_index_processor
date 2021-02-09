@@ -19,10 +19,10 @@
         		<ref bean="schema_org_creator_list" />
 <!--				<ref bean="schema_org_hasPart" />-->
 				<ref bean="schema_org_keywords" />
-<!--				<ref bean="schema_org_geoShape_box_south" />-->
-<!--				<ref bean="schema_org_geoShape_box_west" />-->
-<!--				<ref bean="schema_org_geoShape_box_north" />-->
-<!--				<ref bean="schema_org_geoShape_box_east" />-->
+				<ref bean="schema_org_geoShape_box_south" />
+				<ref bean="schema_org_geoShape_box_west" />
+				<ref bean="schema_org_geoShape_box_north" />
+				<ref bean="schema_org_geoShape_box_east" />
 <!--				<ref bean="schema_org_spatialCoverage" />-->
 				<ref bean="schema_org_temporalCoverage_begin" />
 				<ref bean="schema_org_temporalCoverage_end" />

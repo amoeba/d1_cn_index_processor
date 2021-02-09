@@ -139,20 +139,24 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
 //        assertTrue(compareFieldValue(id, "hasPart", ""));
         String[] keywords = {"AMOC", "Atlantic circulation", "B/Ca", "Last Glacial", "MIS 100", "MIS M2", "Nd isotopes"};
         assertTrue(compareFieldValue(id, "keywords", keywords));
-//        assertTrue(compareFieldValue(id, "southBoundCoord", "28.09816"));
-//        assertTrue(compareFieldValue(id, "westBoundCoord", "32.95731"));
-//        assertTrue(compareFieldValue(id, "northBoundCoord", "41.000022722222"));
-//        assertTrue(compareFieldValue(id, "eastBoundCoord", "1.71098"));
+        String [] coord = {"-28.09816"};
+        assertTrue(compareFieldValue(id, "southBoundCoord", coord));
+        coord[0] = "-32.95731";
+        assertTrue(compareFieldValue(id, "westBoundCoord", coord));
+        coord[0] = "41.000023";
+        assertTrue(compareFieldValue(id, "northBoundCoord", coord));
+        coord[0] = "1.71098";
+        assertTrue(compareFieldValue(id, "eastBoundCoord", coord));
 //        assertTrue(compareFieldValue(id, "namedLocation", ""));
 //        assertTrue(compareFieldValue(id, "beginDate", "2003-04-21T09:40:00"));
 //        assertTrue(compareFieldValue(id, "endDate", "2003-04-26T16:45:00"));
-        String[] parameters = {"unique record ID number", "Date (UTC) in ISO8601 format: YYYY-MM-DDThh:mmZ", 
+        String[] parameters = {"unique record ID number", "Date (UTC) in ISO8601 format: YYYY-MM-DDThh:mmZ",
             "Date (local time zone of PST/PDT) in ISO8601; format: YYYY-MM-DDThh:mm", "Dissolved oxygen"};
         assertTrue(compareFieldValue(id, "parameter", parameters));
         assertTrue(compareFieldValue(id, "edition", "1"));
-        assertTrue(compareFieldValue(id, "serviceEndpoint", "https://doi.pangaea.de/10.1594/PANGAEA.925562"));
+        assertTrue(compareFieldValue(id, "serviceEndpoint", new String[] {"https://doi.pangaea.de/10.1594/PANGAEA.925562"}));
     }
-    
+
     protected boolean compareFieldValue(String id, String fieldName, String[] expectedValues) throws SolrServerException, IOException {
         boolean equal = true;
         ModifiableSolrParams solrParams = new ModifiableSolrParams();
@@ -161,7 +165,20 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         QueryResponse qr = getSolrClient().query(solrParams);
         SolrDocument result = qr.getResults().get(0);
         Collection<Object> solrValues = result.getFieldValues(fieldName);
-        String[] solrValuesArray = solrValues.toArray(new String[solrValues.size()]);
+        Object testResult = result.getFirstValue(fieldName);
+        String[] solrValuesArray = new String[solrValues.size()];
+        if(testResult instanceof Float) {
+            int iObj = 0;
+            float fval;
+            for (Object obj : solrValues) {
+               fval = (Float) obj;
+               solrValuesArray[iObj] = Float.toString(fval);
+            }
+
+        } else if (testResult instanceof String) {
+            solrValuesArray = solrValues.toArray(new String[solrValues.size()]);
+        }
+
         System.out.println("++++++++++++++++ the solr result array for the field " + fieldName + " is " + solrValuesArray);
         System.out.println("++++++++++++++++ the expected values for the field " + fieldName + " is " + expectedValues);
         if (solrValuesArray.length != expectedValues.length) {
@@ -173,7 +190,8 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
             Arrays.sort(solrValuesArray);
         }
         for (int i=0; i<solrValuesArray.length; i++) {
-            System.out.println("++++++++++++++++ compare values for the field " + fieldName + " Solr: " + solrValuesArray[i] + " expexted value" + expectedValues[i]);
+            System.out.println("++++++++++++++++ compare values for field " + "\"" + fieldName + "\"" + " Solr: " + solrValuesArray[i] + " expected value: " + expectedValues[i]);
+
             if (!solrValuesArray[i].equals(expectedValues[i])) {
                 equal = false;
                 break;
