@@ -138,6 +138,8 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         assertTrue(compareFieldValue(id, "origin", origins));
 //        assertTrue(compareFieldValue(id, "hasPart", ""));
         String[] keywords = {"AMOC", "Atlantic circulation", "B/Ca", "Last Glacial", "MIS 100", "MIS M2", "Nd isotopes"};
+        // "box": "-28.09816 -32.95731 41.000022722222 1.71098"
+        // i.e. "south west north east" - lat, long of southwest corner ; lat, long of northeast corner
         assertTrue(compareFieldValue(id, "keywords", keywords));
         String [] coord = {"-28.09816"};
         assertTrue(compareFieldValue(id, "southBoundCoord", coord));
