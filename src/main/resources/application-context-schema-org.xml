@@ -226,8 +226,9 @@
                         ?spatial   SO:geo             ?geo .
                         ?geo       rdf:type           SO:GeoShape .
                         ?geo       SO:box             ?box .
-                        # Handle ',' or ' ' as coordinate delimeters
-                        bind(strbefore(replace(str(?box), ",", " "), " ") as ?southBoundCoord) .
+                        # Extract south coord, replacing commas and multiple whitespaces to single whitespaces
+                        # to simplify parsing
+                        bind(strbefore(replace(str(?box), "\\s*,\\s*|\\s{2,}", " "), " ") as ?southBoundCoord)
                       }
                       limit 1
                 ]]>
@@ -254,9 +255,9 @@
                         ?spatial   SO:geo             ?geo .
                         ?geo       rdf:type           SO:GeoShape .
                         ?geo       SO:box             ?box .
-                        bind(strbefore(replace(str(?box), ",", " "), " ") as ?southBoundCoord) .
-                        bind(strafter(replace(str(?box), ",", " "), " ") as ?rest)
-                        bind(strbefore(replace(str(?rest), ",", " "), " ") as ?westBoundCoord)
+                        bind(strbefore(replace(str(?box), "\\s*,\\s*|\\s{2,}", " "), " ") as ?southBoundCoord)
+                        bind(strafter(replace(str(?box), "\\s*,\\s*|\\s{2,}", " "), " ") as ?rest)
+                        bind(strbefore(str(?rest), " ") as ?westBoundCoord)
                       }
                       limit 1
                 ]]>
@@ -283,11 +284,11 @@
                         ?spatial   SO:geo             ?geo .
                         ?geo       rdf:type           SO:GeoShape .
                         ?geo       SO:box             ?box .
-                        bind(strbefore(replace(str(?box), ",", " "), " ") as ?southBoundCoord) .
-                        bind(strafter(replace(str(?box), ",", " "), " ") as ?rest)
-                        bind(strbefore(replace(str(?rest), ",", " "), " ") as ?westBoundCoord)
-                        bind(strafter(replace(str(?rest), ",", " "), " ") as ?rest2)
-                        bind(strbefore(replace(str(?rest2), ",", ""), " ") as ?northBoundCoord)
+                        bind(strbefore(replace(str(?box), "\\s*,\\s*|\\s{2,}", " "), " ") as ?southBoundCoord)
+                        bind(strafter(replace(str(?box), "\\s*,\\s*|\\s{2,}", " "), " ") as ?rest)
+                        bind(strbefore(str(?rest), " ") as ?westBoundCoord)
+                        bind(strafter(str(?rest), " ") as ?rest2)
+                        bind(strbefore(str(?rest2), " ") as ?northBoundCoord)
                       }
                       limit 1
                 ]]>
@@ -314,12 +315,12 @@
                         ?spatial   SO:geo             ?geo .
                         ?geo       rdf:type           SO:GeoShape .
                         ?geo       SO:box             ?box .
-                        bind(strbefore(replace(str(?box), ",", " "), " ") as ?southBoundCoord) .
-                        bind(strafter(replace(str(?box), ",", " "), " ") as ?rest)
-                        bind(strbefore(replace(str(?rest), ",", " "), " ") as ?westBoundCoord)
-                        bind(strafter(replace(str(?rest), ",", " "), " ") as ?rest2)
-                        bind(strbefore(?rest2, " ") as ?northBoundCoord)
-                        bind(strafter(?rest2, " ") as ?eastBoundCoord)
+                        bind(strbefore(replace(str(?box), "\\s*,\\s*|\\s{2,}", " "), " ") as ?southBoundCoord)
+                        bind(strafter(replace(str(?box), "\\s*,\\s*|\\s{2,}", " "), " ") as ?rest)
+                        bind(strbefore(str(?rest), " ") as ?westBoundCoord)
+                        bind(strafter(str(?rest), " ") as ?rest2)
+                        bind(strbefore(str(?rest2), " ") as ?northBoundCoord)
+                        bind(strafter(str(?rest2), " ") as ?eastBoundCoord)
                       }
                       limit 1
                 ]]>
