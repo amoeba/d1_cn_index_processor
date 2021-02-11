@@ -27,6 +27,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.joda.time.DateTimeZone;
+import org.joda.time.Instant;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+
+
+
 /**Converts date to solr consumable format.
  * User: Porter
  * Date: 7/26/11
@@ -71,11 +79,15 @@ public class SolrDateConverter implements IConverter{
         
         String outputDateFormat = "";
         try {
-            Date dateTime = javax.xml.bind.DatatypeConverter.parseDate(data).getTime();
-            SimpleDateFormat sdf = new SimpleDateFormat(OUTPUT_DATE_FORMAT);
-            sdf.setTimeZone(OUTPUT_TIMEZONE);
-            outputDateFormat = sdf.format(dateTime);
-        } catch (IllegalArgumentException iae) {
+            //System.out.println("********************** the date string is " + data);
+            Instant utcTime = Instant.parse(data);
+            //System.out.println("********************** the utc instant is " + utcTime);
+            DateTimeFormatter sdf = DateTimeFormat.forPattern(OUTPUT_DATE_FORMAT);
+            sdf.withZone(DateTimeZone.forTimeZone(OUTPUT_TIMEZONE));
+            outputDateFormat = sdf.print(utcTime);
+            //System.out.println("********************** final output is " + outputDateFormat);
+        } catch (Exception iae) {
+            iae.printStackTrace();
         }
         return outputDateFormat;
     }

@@ -80,7 +80,7 @@ public class SolrDateConverterTest {
         date = "2001-07-04T12:08:56.235-0700";
         output = dateConverter.convert(date);
         System.out.println("The output string is " + output);
-        assertTrue(output.equals(""));
+        assertTrue(output.equals("2001-07-04T19:08:56.235Z"));
         
         date = "2001-07-04T12:08:56.235-07:00";
         output = dateConverter.convert(date);
@@ -90,7 +90,12 @@ public class SolrDateConverterTest {
         date = "2001-W27-3";
         output = dateConverter.convert(date);
         System.out.println("The output string is " + output);
-        assertTrue(output.equals(""));
+        assertTrue(output.equals("2001-07-04T07:00:00.000Z"));
+        
+        date = "2011";
+        output = dateConverter.convert(date);
+        System.out.println("The output string is " + output);
+        assertTrue(output.equals("2011-01-01T08:00:00.000Z"));
         
     }
 
