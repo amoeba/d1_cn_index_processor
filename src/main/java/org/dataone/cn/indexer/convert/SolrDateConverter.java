@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Instant;
 import org.joda.time.format.DateTimeFormat;
@@ -80,10 +81,10 @@ public class SolrDateConverter implements IConverter{
         String outputDateFormat = "";
         try {
             //System.out.println("********************** the date string is " + data);
-            Instant utcTime = Instant.parse(data);
+            DateTime utcTime = DateTime.parse(data);
             //System.out.println("********************** the utc instant is " + utcTime);
             DateTimeFormatter sdf = DateTimeFormat.forPattern(OUTPUT_DATE_FORMAT);
-            sdf.withZone(DateTimeZone.forTimeZone(OUTPUT_TIMEZONE));
+            //sdf.withZone(DateTimeZone.forTimeZone(OUTPUT_TIMEZONE));
             outputDateFormat = sdf.print(utcTime);
             //System.out.println("********************** final output is " + outputDateFormat);
         } catch (Exception iae) {
