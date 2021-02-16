@@ -150,8 +150,8 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         coord[0] = "1.71098";
         assertTrue(compareFieldValue(id, "eastBoundCoord", coord));
 //        assertTrue(compareFieldValue(id, "namedLocation", ""));
-        assertTrue(compareFieldValue(id, "beginDate", "2003-04-21T16:40:00.000Z"));
-        assertTrue(compareFieldValue(id, "endDate", "2003-04-26T23:45:00.000Z"));
+        assertTrue(compareFieldValue(id, "beginDate", "2003-04-21T09:40:00.000Z"));
+        assertTrue(compareFieldValue(id, "endDate", "2003-04-26T16:45:00.000Z"));
         String[] parameters = {"unique record ID number", "Date (UTC) in ISO8601 format: YYYY-MM-DDThh:mmZ",
             "Date (local time zone of PST/PDT) in ISO8601; format: YYYY-MM-DDThh:mm", "Dissolved oxygen"};
         assertTrue(compareFieldValue(id, "parameter", parameters));
