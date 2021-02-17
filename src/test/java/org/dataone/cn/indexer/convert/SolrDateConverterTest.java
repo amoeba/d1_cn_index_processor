@@ -45,7 +45,7 @@ public class SolrDateConverterTest {
         String date = "2003-04-21T09:40:00";
         String output = dateConverter.convert(date);
         System.out.println("The output string is " + output);
-        assertTrue(output.equals("2003-04-21T16:40:00.000Z"));
+        assertTrue(output.equals("2003-04-21T09:40:00.000Z"));
         
         date = "2001.07.04 AD at 12:08:56 PDT";
         output = dateConverter.convert(date);
@@ -77,25 +77,25 @@ public class SolrDateConverterTest {
         System.out.println("The output string is " + output);
         assertTrue(output.equals(""));
         
-        date = "2001-07-04T12:08:56.235-0700";
+        date = "2001-07-04T12:08:56.235+0700";
         output = dateConverter.convert(date);
         System.out.println("The output string is " + output);
-        assertTrue(output.equals("2001-07-04T19:08:56.235Z"));
+        assertTrue(output.equals("2001-07-04T05:08:56.235Z"));
         
-        date = "2001-07-04T12:08:56.235-07:00";
+        date = "2001-07-04T12:08:56.235-08:00";
         output = dateConverter.convert(date);
         System.out.println("The output string is " + output);
-        assertTrue(output.equals("2001-07-04T19:08:56.235Z"));
+        assertTrue(output.equals("2001-07-04T20:08:56.235Z"));
         
         date = "2001-W27-3";
         output = dateConverter.convert(date);
         System.out.println("The output string is " + output);
-        assertTrue(output.equals("2001-07-04T07:00:00.000Z"));
+        assertTrue(output.equals("2001-07-04T00:00:00.000Z"));
         
         date = "2011";
         output = dateConverter.convert(date);
         System.out.println("The output string is " + output);
-        assertTrue(output.equals("2011-01-01T08:00:00.000Z"));
+        assertTrue(output.equals("2011-01-01T00:00:00.000Z"));
         
     }
 
