@@ -17,7 +17,7 @@
 				<ref bean="schema_org_givenName" />
 				<ref bean="schema_org_familyName" />
         		<ref bean="schema_org_creator_list" />
-<!--				<ref bean="schema_org_hasPart" />-->
+				<ref bean="schema_org_hasPart" />
 				<ref bean="schema_org_keywords" />
 				<ref bean="schema_org_geoShape_box_south" />
 				<ref bean="schema_org_geoShape_box_west" />

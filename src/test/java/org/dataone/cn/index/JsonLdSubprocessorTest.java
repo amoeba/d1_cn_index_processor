@@ -136,7 +136,8 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         String[] origins = {"Nicola Kirby", "Ian Bailey", "David C Lang", "A Brombacher", "Thomas B Chalk", 
                 "Rebecca L Parker", "Anya J Crocker", "Victoria E Taylor", "J Andy Milton", "Gavin L Foster", "Maureen E Raymo", "Dick Kroon", "David B Bell", "Paul A Wilson"};
         assertTrue(compareFieldValue(id, "origin", origins));
-//        assertTrue(compareFieldValue(id, "hasPart", ""));
+        String[] parts = {"Sub dataset 01", "Sub dataset 02"};
+        assertTrue(compareFieldValue(id, "hasPart", parts));
         String[] keywords = {"AMOC", "Atlantic circulation", "B/Ca", "Last Glacial", "MIS 100", "MIS M2", "Nd isotopes"};
         // "box": "-28.09816 -32.95731 41.000022722222 1.71098"
         // i.e. "south west north east" - lat, long of southwest corner ; lat, long of northeast corner

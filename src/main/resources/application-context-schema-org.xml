@@ -18,7 +18,9 @@
                 WHERE {
                     ?datasetId rdf:type       SO:Dataset .
                     ?datasetId SO:description ?description   .
-                    }
+                    # Don't include referenced sub-Datasets (i.e. a Dataset in a 'hasPart' property)
+                    FILTER NOT EXISTS { ?id SO:hasPart ?datasetId . }
+                }
                     limit 1
                 ]]>
             </value>
@@ -37,8 +39,10 @@
                 WHERE {
                     ?datasetId rdf:type SO:Dataset .
                     ?datasetId SO:name ?name .
-                    }
-                    limit 1
+                    # Don't include referenced sub-Datasets (i.e. a Dataset in a 'hasPart' property)
+                    FILTER NOT EXISTS { ?id SO:hasPart ?datasetId . }
+                }
+                limit 1
                  ]]>
             </value>
         </constructor-arg>
@@ -57,6 +61,8 @@
                 WHERE {
                     ?datasetId rdf:type SO:Dataset .
                     ?datasetId SO:alternateName ?label .
+                    # Don't include referenced sub-Datasets (i.e. a Dataset in a 'hasPart' property)
+                    FILTER NOT EXISTS { ?id SO:hasPart ?datasetId . }
                 }
                 limit 1
                 ]]>
@@ -347,7 +353,7 @@
                     WHERE {
                         ?datasetId rdf:type SO:Dataset .
                         ?datasetId SO:spatialCoverage ?namedLocation .
-                        FILTER NOT EXISTS { ?namedLocaiton rdf:type SO:Place . }
+                        FILTER NOT EXISTS { ?namedLocation rdf:type SO:Place . }
                     }
                 ]]>
             </value>
@@ -463,6 +469,8 @@
                     WHERE {
                         ?datasetId rdf:type SO:Dataset .
                         ?datasetId SO:url ?url .
+                        # Don't include referenced sub-Datasets (i.e. a Dataset in a 'hasPart' property)
+                        FILTER NOT EXISTS { ?id SO:hasPart ?datasetId . }
                     }
                 ]]>
             </value>
