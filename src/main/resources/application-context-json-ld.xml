@@ -23,7 +23,7 @@
 				<ref bean="schema_org_geoShape_box_west" />
 				<ref bean="schema_org_geoShape_box_north" />
 				<ref bean="schema_org_geoShape_box_east" />
-<!--				<ref bean="schema_org_spatialCoverage" />-->
+				<ref bean="schema_org_spatialCoverage" />
 				<ref bean="schema_org_temporalCoverage_begin" />
 				<ref bean="schema_org_temporalCoverage_end" />
 				<ref bean="schema_org_variableMeasured" />
