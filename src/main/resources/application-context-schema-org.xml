@@ -144,6 +144,49 @@
         </constructor-arg>
     </bean>
 
+    <bean id="schema_org_funder_identifier" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="funderIdentifier" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                    PREFIX SO:   <https://schema.org/>
+
+                    SELECT
+                        (?identifier as ?funderIdentifier)
+                    WHERE {
+                        ?datasetId rdf:type SO:Dataset .
+                        ?datasetId SO:funder ?funderId .
+                        ?funderId SO:identifier ?identifier.
+                    }
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
+
+    <bean id="schema_org_funder_name" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="funderName" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                    PREFIX SO:   <https://schema.org/>
+
+                    SELECT
+                        (?name as ?funderName)
+                    WHERE {
+                        ?datasetId rdf:type SO:Dataset .
+                        ?datasetId SO:funder ?funderId .
+                        ?funderId SO:name ?name .
+                    }
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
     <bean id="schema_org_creator_list" class="org.dataone.cn.indexer.annotation.SparqlField">
         <constructor-arg name="name" value="origin" />
         <constructor-arg name="query">

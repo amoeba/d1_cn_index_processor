@@ -142,6 +142,8 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         String[] origins = {"Nicola Kirby", "Ian Bailey", "David C Lang", "A Brombacher", "Thomas B Chalk",
                 "Rebecca L Parker", "Anya J Crocker", "Victoria E Taylor", "J Andy Milton", "Gavin L Foster", "Maureen E Raymo", "Dick Kroon", "David B Bell", "Paul A Wilson"};
         assertTrue(compareFieldValue(id, "origin", origins));
+        assertTrue(compareFieldValue(id, "funderIdentifier", new String [] {"https://doi.org/10.13039/100000141"}));
+        assertTrue(compareFieldValue(id, "funderName", new String [] {"NSF Division of Ocean Sciences"}));
         String[] parts = {"Sub dataset 01", "Sub dataset 02"};
         assertTrue(compareFieldValue(id, "hasPart", parts));
         String[] keywords = {"AMOC", "Atlantic circulation", "B/Ca", "Last Glacial", "MIS 100", "MIS M2", "Nd isotopes"};

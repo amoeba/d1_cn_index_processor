@@ -16,6 +16,8 @@
 				<ref bean="schema_org_creator" />
 				<ref bean="schema_org_givenName" />
 				<ref bean="schema_org_familyName" />
+				<ref bean="schema_org_funder_identifier" />
+				<ref bean="schema_org_funder_name" />
         		<ref bean="schema_org_creator_list" />
 				<ref bean="schema_org_hasPart" />
 				<ref bean="schema_org_keywords" />

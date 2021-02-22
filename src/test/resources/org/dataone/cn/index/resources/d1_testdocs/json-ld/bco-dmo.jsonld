@@ -747,6 +747,21 @@
           "unitText": "micromoles O2 per kilogram (umol O2 kg-1)"
         }
       ],
+      "funder": [
+        {
+          "@id": "https://www.bco-dmo.org/node/355",
+          "@type": "FundingAgency",
+          "name": "NSF Division of Ocean Sciences",
+          "alternateName": "NSF OCE",
+          "identifier": {
+            "@id": "https://doi.org/10.13039/100000141",
+            "@type": "PropertyValue",
+            "propertyID": "https://registry.identifiers.org/registry/doi",
+            "value": "doi:10.13039/100000141",
+            "url": "https://doi.org/10.13039/100000141"
+         }
+       }
+     ],
       "version": "1"
     }
   ]
