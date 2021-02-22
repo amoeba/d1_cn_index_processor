@@ -443,7 +443,7 @@
                     PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
                     PREFIX schema:  <https://schema.org/>
 
-                    SELECT ( ?version as ?edition )
+                    SELECT ( str(?version) as ?edition )
 
                     WHERE {
                         ?datasetId rdf:type schema:Dataset .

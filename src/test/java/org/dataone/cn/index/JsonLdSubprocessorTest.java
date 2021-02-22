@@ -23,6 +23,7 @@ package org.dataone.cn.index;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -37,6 +38,10 @@ import org.apache.solr.common.params.ModifiableSolrParams;
 import org.dataone.cn.indexer.parser.JsonLdSubprocessor;
 import org.dataone.cn.indexer.resourcemap.RdfXmlProcessorTest;
 import org.dataone.service.types.v1.NodeReference;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -60,10 +65,10 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
 
     /* The schema.org object */
     private Resource schemaOrgDoc;
+    private Resource schemaOrgDoc2;
 
     /* An instance of the RDF/XML Subprocessor */
     private JsonLdSubprocessor jsonLdSubprocessor;
-
 
     /* Store a map of expected Solr fields and their values for testing */
     private HashMap<String, String> expectedFields = new HashMap<String, String>();
@@ -81,9 +86,9 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         // Start up the embedded Jetty server and Solr service
         super.setUp();
         schemaOrgDoc = (Resource) context.getBean("schemaOrgTestDoc");
+        schemaOrgDoc2 = (Resource) context.getBean("schemaOrgTestDoc2");
         // instantiate the subprocessor
         jsonLdSubprocessor = (JsonLdSubprocessor) context.getBean("jsonLdSubprocessor");
-
     }
 
 
@@ -97,8 +102,8 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
     }
 
     /**
-     * Test the end to end index processing of a resource map with provenance statements
-     * 
+     * Test the end to end index processing a schema.org 'Dataset' document
+     *
      * @throws Exception
      */
     //@Ignore
@@ -112,7 +117,7 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         nodeid.setValue("urn:node:mnTestXXXX");
 
         String userDN = "uid=tester,o=testers,dc=dataone,dc=org";
-        
+
         // Insert the schema.org file into the task queue
         String id = "urn:uuid:f18812ac-7f4f-496c-82cc-3f4f54830289";
         formatId = "science-on-schema.org/Dataset/1.2;ld+json";
@@ -131,9 +136,10 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         assertTrue(compareFieldValue(id, "label", "Neodymium isotopes"));
         assertTrue(compareFieldValue(id, "author", "Nicola Kirby"));
         assertTrue(compareFieldValue(id, "authorGivenName", "Nicola"));
-        String[] authorLastName = {"Kirby", "Bailey", "Lang", "Brombacher", "Chalk"};
-        //assertTrue(compareFieldValue(id, "authorLastName", authorLastName));
-        String[] origins = {"Nicola Kirby", "Ian Bailey", "David C Lang", "A Brombacher", "Thomas B Chalk", 
+        String[] authorLastName = {"Kirby", "Bailey", "Lang", "Brombacher", "Chalk", "Parker",
+                "Crocker", "Taylor", "Milton", "Foster", "Raymo", "Kroon", "Bell", "Wilson"};
+        assertTrue(compareFieldValue(id, "authorLastName", authorLastName));
+        String[] origins = {"Nicola Kirby", "Ian Bailey", "David C Lang", "A Brombacher", "Thomas B Chalk",
                 "Rebecca L Parker", "Anya J Crocker", "Victoria E Taylor", "J Andy Milton", "Gavin L Foster", "Maureen E Raymo", "Dick Kroon", "David B Bell", "Paul A Wilson"};
         assertTrue(compareFieldValue(id, "origin", origins));
         String[] parts = {"Sub dataset 01", "Sub dataset 02"};
@@ -150,14 +156,58 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         assertTrue(compareFieldValue(id, "northBoundCoord", coord));
         coord[0] = "1.71098";
         assertTrue(compareFieldValue(id, "eastBoundCoord", coord));
-//        assertTrue(compareFieldValue(id, "namedLocation", ""));
-        assertTrue(compareFieldValue(id, "beginDate", "2003-04-21T09:40:00.000Z"));
-        assertTrue(compareFieldValue(id, "endDate", "2003-04-26T16:45:00.000Z"));
+        assertTrue(compareFieldValue(id, "beginDate", new String [] {"2003-04-21T09:40:00.000Z"}));
+        assertTrue(compareFieldValue(id, "endDate", new String [] {"2003-04-26T16:45:00.000Z"}));
         String[] parameters = {"unique record ID number", "Date (UTC) in ISO8601 format: YYYY-MM-DDThh:mmZ",
             "Date (local time zone of PST/PDT) in ISO8601; format: YYYY-MM-DDThh:mm", "Dissolved oxygen"};
         assertTrue(compareFieldValue(id, "parameter", parameters));
         assertTrue(compareFieldValue(id, "edition", "1"));
         assertTrue(compareFieldValue(id, "serviceEndpoint", new String[] {"https://doi.pangaea.de/10.1594/PANGAEA.925562"}));
+    }
+
+    /**
+     * Test the end to end index processing a schema.org 'Dataset' document. This example
+     * contains properties not present or in a different format than the first schema.org example.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testInsertSchemaOrg2() throws Exception {
+        /* variables used to populate system metadata for each resource */
+        File object = null;
+        String formatId = null;
+
+        NodeReference nodeid = new NodeReference();
+        nodeid.setValue("urn:node:mnTestXXXX");
+
+        String userDN = "uid=tester,o=testers,dc=dataone,dc=org";
+
+        // Insert the schema.org file into the task queue
+        String id = "doi.org_10.5061_dryad.m8s2r36";
+        formatId = "science-on-schema.org/Dataset/1.2;ld+json";
+        insertResource(id, formatId, schemaOrgDoc2, nodeid, userDN);
+
+        Thread.sleep(SLEEPTIME);
+        // now process the tasks
+        processor.processIndexTaskQueue();
+        Thread.sleep(SLEEPTIME);
+        Thread.sleep(SLEEPTIME);
+        Thread.sleep(SLEEPTIME);
+        Thread.sleep(SLEEPTIME);
+        assertPresentInSolrIndex(id);
+        assertTrue(compareFieldValue(id, "title", new String [] {"Context-dependent costs and benefits of a heterospecific nesting association"}));
+        assertTrue(compareFieldValue(id, "author", new String [] {"Rose J Swift"}));
+        assertTrue(compareFieldValue(id, "authorGivenName", new String [] {"Rose J"}));
+        //assertTrue(compareFieldValue(id, "authorLastName", new String [] {"Swift"}));
+        String[] origins = {"Rose J Swift", "Amanda D Rodewald", "Nathan R Senner"};
+        assertTrue(compareFieldValue(id, "origin", origins));
+        String[] keywords = {"Mew Gull", "Larus canus", "Limosa haemastica", "predation", "Hudsonian Godwit",
+                "protective nesting association"};
+        assertTrue(compareFieldValue(id, "keywords", keywords));
+        assertTrue(compareFieldValue(id, "namedLocation", new String [] {"Beluga River", "Alaska"}));
+        assertTrue(compareFieldValue(id, "beginDate", new String [] {"2018-03-05T15:54:47.000Z"}));
+        assertTrue(compareFieldValue(id, "edition", new String [] {"1"}));
+        assertTrue(compareFieldValue(id, "serviceEndpoint", new String[] {"http://datadryad.org/stash/dataset/doi%253A10.5061%252Fdryad.m8s2r36"}));
     }
 
     protected boolean compareFieldValue(String id, String fieldName, String[] expectedValues) throws SolrServerException, IOException {
@@ -171,15 +221,35 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         Object testResult = result.getFirstValue(fieldName);
         String[] solrValuesArray = new String[solrValues.size()];
         if(testResult instanceof Float) {
+            // Solr returned a 'Float' value, so convert it to a string so that it can
+            // be compared to the expected value.
+            System.out.println("++++++++++++++++ Solr returned a 'Float'.");
             int iObj = 0;
             float fval;
             for (Object obj : solrValues) {
                fval = (Float) obj;
                solrValuesArray[iObj] = Float.toString(fval);
+               iObj++;
             }
-
         } else if (testResult instanceof String) {
             solrValuesArray = solrValues.toArray(new String[solrValues.size()]);
+        } else if (testResult instanceof Date) {
+            // Solr returned a 'Date' value, so convert it to a string so that it can
+            // be compared to the expected value.
+            System.out.println("++++++++++++++++ Solr returned a 'Date'.");
+            TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+            int iObj = 0;
+
+            DateTimeZone.setDefault(DateTimeZone.UTC);
+            DateTimeFormatter dtfOut = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+            Date dateObj;
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+            for (Object obj : solrValues) {
+                DateTime dateTime = new DateTime(obj);
+                solrValuesArray[iObj] = dtfOut.print(dateTime);
+                iObj++;
+            }
         }
 
         System.out.println("++++++++++++++++ the solr result array for the field " + fieldName + " is " + solrValuesArray);
