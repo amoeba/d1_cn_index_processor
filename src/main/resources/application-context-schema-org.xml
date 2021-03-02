@@ -70,6 +70,66 @@
         </constructor-arg>
     </bean>
 
+    <bean id="schema_org_award_id" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="awardNumber" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                    PREFIX SO:   <https://schema.org/>
+
+                    SELECT
+                        ( str(?identifier) as ?awardNumber)
+                    WHERE {
+                        ?datasetId rdf:type SO:Dataset .
+                        {
+                            ?awardId rdf:type SO:MonetaryGrant .
+                            ?awardId SO:fundedItem ?datasetId .
+                            ?awardId SO:identifier ?identifier .
+                        }
+                        UNION
+                        {
+                            ?datasetId SO:about ?awardId .
+                            ?awardId rdf:type SO:MonetaryGrant .
+                            ?awardId SO:sameAs ?identifier .
+                        }
+                    }
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
+    <bean id="schema_org_award_name" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="awardTitle" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                    PREFIX SO:   <https://schema.org/>
+
+                    SELECT
+                        ( str(?name) as ?awardTitle)
+                    WHERE {
+                        ?datasetId rdf:type SO:Dataset .
+                        {
+                            ?awardId rdf:type SO:MonetaryGrant .
+                            ?awardId SO:fundedItem ?datasetId .
+                            ?awardId SO:name ?name .
+                        }
+                        UNION
+                        {
+                            ?datasetId SO:about ?awardId .
+                            ?awardId rdf:type SO:MonetaryGrant .
+                            ?awardId SO:name ?name .
+                        }
+                    }
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
     <!-- Extract one SO:creator to populate Solr 'author'. The convention used is to extract
          the first creator in document order and use that. The JSON-LD list must be ordered
          by using '@list', so that an ordered list is created when converted to an RDF model.
@@ -97,6 +157,31 @@
                 ]]>
             </value>
         </constructor-arg>
+    </bean>
+
+
+
+    <bean id="schema_org_datePublished" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="pubDate" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                    PREFIX SO:   <https://schema.org/>
+
+                    SELECT
+                        ( str(?datePublished) as ?pubDate)
+                    WHERE {
+                        ?datasetId rdf:type SO:Dataset .
+                        ?datasetId SO:datePublished ?datePublished
+                        # Don't include referenced sub-Datasets (i.e. a Dataset in a 'hasPart' property)
+                        FILTER NOT EXISTS { ?id SO:hasPart ?datasetId . }
+                    }
+                ]]>
+            </value>
+        </constructor-arg>
+        <property name="converter" ref="dateConverter" />
     </bean>
 
     <bean id="schema_org_givenName" class="org.dataone.cn.indexer.annotation.SparqlField">
@@ -132,6 +217,29 @@
                     PREFIX SO:  <https://schema.org/>
 
                     SELECT (?familyName as ?authorLastName)
+                    WHERE {
+                        ?dsId rdf:type SO:Dataset .
+                        ?dsId SO:creator ?list .
+                        ?list list:index (?pos ?member) .
+                        ?member SO:familyName ?familyName .
+                    }
+                    order by (?pos)
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
+    <!-- The Solr 'investigator' field is the last name of the creators. This is the same as Solr 'authorLastName'. -->
+    <bean id="schema_org_creator_last_name" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="investigator" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>
+                    PREFIX SO:  <https://schema.org/>
+
+                    SELECT (?familyName as ?investigator)
                     WHERE {
                         ?dsId rdf:type SO:Dataset .
                         ?dsId SO:creator ?list .

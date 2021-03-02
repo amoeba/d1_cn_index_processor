@@ -13,7 +13,10 @@
                 <ref bean="schema_org_description" />
 				<ref bean="schema_org_name" />
 				<ref bean="schema_org_alternateName" />
+				<ref bean="schema_org_award_id" />
+				<ref bean="schema_org_award_name" />
 				<ref bean="schema_org_creator" />
+				<ref bean="schema_org_datePublished" />
 				<ref bean="schema_org_givenName" />
 				<ref bean="schema_org_familyName" />
 				<ref bean="schema_org_funder_identifier" />
