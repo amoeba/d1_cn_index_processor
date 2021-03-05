@@ -28,6 +28,14 @@
 				<ref bean="schema_org_geoShape_box_west" />
 				<ref bean="schema_org_geoShape_box_north" />
 				<ref bean="schema_org_geoShape_box_east" />
+				<ref bean="schema_org_creator_last_name" />
+				<ref bean="schema_org_prov_hadDerivation" />
+				<ref bean="schema_org_prov_instanceOfClass" />
+				<ref bean="schema_org_prov_usedByExecution" />
+				<ref bean="schema_org_prov_usedByProgram" />
+				<ref bean="schema_org_prov_wasDerivedFrom" />
+				<ref bean="schema_org_prov_wasGeneratedByExecution" />
+				<ref bean="schema_org_prov_wasGeneratedByPlan" />
 				<ref bean="schema_org_spatialCoverage" />
 				<ref bean="schema_org_temporalCoverage_begin" />
 				<ref bean="schema_org_temporalCoverage_end" />

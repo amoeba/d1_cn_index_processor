@@ -317,6 +317,27 @@
         </constructor-arg>
     </bean>
 
+    <bean id="schema_org_prov_hadDerivation" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="prov_hasDerivations" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                    PREFIX SO:   <https://schema.org/>
+                    PREFIX PROV: <http://www.w3.org/ns/prov#>
+                    PREFIX PROVONE: <http://purl.dataone.org/provone/2015/01/15/ontology#>
+
+                    SELECT ( str(?derivations) as ?prov_hasDerivations )
+                    WHERE {
+                      ?datasetId rdf:type SO:Dataset .
+                      ?datasetId PROV:hadDerivation ?derivations .
+                    }
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
     <!-- Extract 'SO:hasPart' properties from the top level 'SO:Dataset' property -->
     <bean id="schema_org_hasPart" class="org.dataone.cn.indexer.annotation.SparqlField">
         <constructor-arg name="name" value="hasPart" />
@@ -355,7 +376,8 @@
                     PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                     PREFIX SO:   <https://schema.org/>
-                      SELECT ?keywords
+
+                    SELECT ?keywords
                       WHERE {
                         ?datasetId rdf:type    SO:Dataset .
                         ?datasetId SO:keywords ?keywords .
@@ -601,6 +623,147 @@
                         ?datasetId schema:version ?version .
                     }
                     limit 1
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
+    <!-- The prov_wasDerivedFrom relationship can be obtained from either the source "SO:isBasedOn" or
+         "PROV:wasDerivedFrom" relationships, which are considered equivalent. -->
+    <bean id="schema_org_prov_wasDerivedFrom" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="prov_wasDerivedFrom" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX SO:   <https://schema.org/>
+                    PREFIX PROV: <http://www.w3.org/ns/prov#>
+                    PREFIX PROVONE: <http://purl.dataone.org/provone/2015/01/15/ontology#>
+
+                    SELECT DISTINCT
+                        ( str(?wasDerivedFrom) as ?prov_wasDerivedFrom )
+                    WHERE {
+                        ?datasetId rdf:type SO:Dataset .
+                        {
+                            ?datasetId SO:isBasedOn ?wasDerivedFrom .
+                        }
+                        UNION
+                        {
+                            ?datasetId PROV:wasDerivedFrom ?wasDerivedFrom .
+                        }
+                    }
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
+    <bean id="schema_org_prov_usedByExecution" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="prov_usedByExecution" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX SO:   <https://schema.org/>
+                    PREFIX PROV: <http://www.w3.org/ns/prov#>
+                    PREFIX PROVONE: <http://purl.dataone.org/provone/2015/01/15/ontology#>
+
+                    SELECT ( str(?executionId) as ?prov_usedByExecution)
+                    WHERE {
+                      ?datasetId rdf:type SO:Dataset .
+                      ?datasetId PROV:wasUsedBy ?executionId .
+                    }
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
+    <bean id="schema_org_prov_usedByProgram" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="prov_usedByProgram" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX SO:   <https://schema.org/>
+                    PREFIX PROV: <http://www.w3.org/ns/prov#>
+                    PREFIX PROVONE: <http://purl.dataone.org/provone/2015/01/15/ontology#>
+
+                    SELECT ( str(?plan) as ?prov_usedByProgram)
+                    WHERE {
+                      ?datasetId rdf:type SO:Dataset .
+                      ?datasetId PROV:wasUsedBy ?executionId .
+                      ?executionId PROV:hadPlan ?plan.
+                    }
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
+    <bean id="schema_org_prov_wasGeneratedByExecution" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="prov_generatedByExecution" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX SO:   <https://schema.org/>
+                    PREFIX PROV: <http://www.w3.org/ns/prov#>
+                    PREFIX PROVONE: <http://purl.dataone.org/provone/2015/01/15/ontology#>
+
+                    SELECT ( str(?executionId) as ?prov_generatedByExecution)
+                    WHERE {
+                        ?datasetId rdf:type SO:Dataset .
+                        ?datasetId PROV:wasGeneratedBy ?executionId
+                    }
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
+    <bean id="schema_org_prov_wasGeneratedByPlan" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="prov_generatedByProgram" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX SO:   <https://schema.org/>
+                    PREFIX PROV: <http://www.w3.org/ns/prov#>
+                    PREFIX PROVONE: <http://purl.dataone.org/provone/2015/01/15/ontology#>
+
+                    SELECT
+                        ( str(?planId ) as ?prov_generatedByProgram)
+                    WHERE {
+                        ?datasetId rdf:type SO:Dataset .
+                        ?datasetId PROV:wasGeneratedBy ?executionId .
+                        ?executionId PROV:hadPlan ?planId
+                    }
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
+    <bean id="schema_org_prov_instanceOfClass" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="prov_instanceOfClass" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX SO:   <https://schema.org/>
+                    PREFIX PROV: <http://www.w3.org/ns/prov#>
+                    PREFIX PROVONE: <http://purl.dataone.org/provone/2015/01/15/ontology#>
+
+                    SELECT DISTINCT
+                      ( str(?instanceType ) as ?prov_instanceOfClass )
+                    WHERE {
+                      ?datasetId rdf:type SO:Dataset .
+                      {
+                        ?datasetId PROV:wasGeneratedBy ?executionId .
+                        bind ( PROVONE:Data as ?instanceType )
+                      }
+                      UNION
+                      {
+                        ?datasetId PROV:wasUsedBy ?executionId .
+                        bind ( PROVONE:Data as ?instanceType )
+                      }
+                    }
                 ]]>
             </value>
         </constructor-arg>

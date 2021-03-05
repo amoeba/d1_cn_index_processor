@@ -66,6 +66,7 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
     /* The schema.org object */
     private Resource schemaOrgDoc;
     private Resource schemaOrgDoc2;
+    private Resource schemaOrgDocSOSO;
 
     /* An instance of the RDF/XML Subprocessor */
     private JsonLdSubprocessor jsonLdSubprocessor;
@@ -87,6 +88,7 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         super.setUp();
         schemaOrgDoc = (Resource) context.getBean("schemaOrgTestDoc");
         schemaOrgDoc2 = (Resource) context.getBean("schemaOrgTestDoc2");
+        schemaOrgDocSOSO = (Resource) context.getBean("schemaOrgTestDocSOSO");
         // instantiate the subprocessor
         jsonLdSubprocessor = (JsonLdSubprocessor) context.getBean("jsonLdSubprocessor");
     }
@@ -216,6 +218,45 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         assertTrue(compareFieldValue(id, "beginDate", new String [] {"2018-03-05T15:54:47.000Z"}));
         assertTrue(compareFieldValue(id, "edition", new String [] {"1"}));
         assertTrue(compareFieldValue(id, "serviceEndpoint", new String[] {"http://datadryad.org/stash/dataset/doi%253A10.5061%252Fdryad.m8s2r36"}));
+    }
+
+    /**
+     * Test the end to end index processing a schema.org 'Dataset' document. This example
+     * contains properties from the ESIP Federation "Science on Schema.org" guidelines full example
+     * document.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testInsertSchemaOrgSOSO() throws Exception {
+        /* variables used to populate system metadata for each resource */
+        File object = null;
+        String formatId = null;
+
+        NodeReference nodeid = new NodeReference();
+        nodeid.setValue("urn:node:mnTestXXXX");
+        String userDN = "uid=tester,o=testers,dc=dataone,dc=org";
+
+        // Insert the schema.org file into the task queue
+        String id = "doi:10.1234/1234567890";
+        formatId = "science-on-schema.org/Dataset/1.2;ld+json";
+        insertResource(id, formatId, schemaOrgDocSOSO, nodeid, userDN);
+
+        Thread.sleep(SLEEPTIME);
+        // now process the tasks
+        processor.processIndexTaskQueue();
+        Thread.sleep(SLEEPTIME);
+        Thread.sleep(SLEEPTIME);
+        Thread.sleep(SLEEPTIME);
+        Thread.sleep(SLEEPTIME);
+        assertPresentInSolrIndex(id);
+        assertTrue(compareFieldValue(id, "prov_wasDerivedFrom", new String[] {"https://doi.org/10.xxxx/Dataset-1"}));
+        assertTrue(compareFieldValue(id, "prov_generatedByExecution", new String[] {"https://example.org/executions/execution-42"}));
+        assertTrue(compareFieldValue(id, "prov_generatedByProgram", new String[] {"https://somerepository.org/datasets/10.xxxx/Dataset-2.v2/process-script.R"}));
+        assertTrue(compareFieldValue(id, "prov_instanceOfClass", new String[] {"http://purl.dataone.org/provone/2015/01/15/ontology#Data"}));
+        assertTrue(compareFieldValue(id, "prov_hasDerivations", new String[] {"https://somerepository.org/datasets/10.xxxx/Dataset-101"}));
+        assertTrue(compareFieldValue(id, "prov_usedByProgram", new String [] {"https://somerepository.org/datasets/10.xxxx/Dataset-101/process-script.R"}));
+        assertTrue(compareFieldValue(id, "prov_usedByExecution", new String [] {"https://example.org/executions/execution-101"}));
     }
 
     protected boolean compareFieldValue(String id, String fieldName, String[] expectedValues) throws SolrServerException, IOException {
