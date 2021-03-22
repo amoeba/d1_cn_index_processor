@@ -411,6 +411,14 @@ xmlns:context="http://www.springframework.org/schema/context"
         <constructor-arg type="java.lang.String"
         value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_noaa_SciMeta.xml"/>
     </bean>
+    
+    <bean id="isotc211_researchWorkspace_sysmeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_researchWorkspace_10_24431_rw1k321_20195519285_sysmeta.xml"/>
+    </bean>
+
+    <bean id="isotc211_researchWorkspace_scimeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_researchWorkspace_10_24431_rw1k321_20195519285_scimeta.xml"/>
+    </bean>
 
 	<bean id="eml220TestDocSysMeta" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String"
