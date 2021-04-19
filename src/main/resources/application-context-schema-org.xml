@@ -18,7 +18,9 @@
                 WHERE {
                     ?datasetId rdf:type       SO:Dataset .
                     ?datasetId SO:description ?description   .
-                    }
+                    # Don't include referenced sub-Datasets (i.e. a Dataset in a 'hasPart' property)
+                    FILTER NOT EXISTS { ?id SO:hasPart ?datasetId . }
+                }
                     limit 1
                 ]]>
             </value>
@@ -37,8 +39,10 @@
                 WHERE {
                     ?datasetId rdf:type SO:Dataset .
                     ?datasetId SO:name ?name .
-                    }
-                    limit 1
+                    # Don't include referenced sub-Datasets (i.e. a Dataset in a 'hasPart' property)
+                    FILTER NOT EXISTS { ?id SO:hasPart ?datasetId . }
+                }
+                limit 1
                  ]]>
             </value>
         </constructor-arg>
@@ -57,8 +61,70 @@
                 WHERE {
                     ?datasetId rdf:type SO:Dataset .
                     ?datasetId SO:alternateName ?label .
+                    # Don't include referenced sub-Datasets (i.e. a Dataset in a 'hasPart' property)
+                    FILTER NOT EXISTS { ?id SO:hasPart ?datasetId . }
                 }
                 limit 1
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
+    <bean id="schema_org_award_id" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="awardNumber" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                    PREFIX SO:   <https://schema.org/>
+
+                    SELECT
+                        ( str(?identifier) as ?awardNumber)
+                    WHERE {
+                        ?datasetId rdf:type SO:Dataset .
+                        {
+                            ?awardId rdf:type SO:MonetaryGrant .
+                            ?awardId SO:fundedItem ?datasetId .
+                            ?awardId SO:identifier ?identifier .
+                        }
+                        UNION
+                        {
+                            ?datasetId SO:about ?awardId .
+                            ?awardId rdf:type SO:MonetaryGrant .
+                            ?awardId SO:sameAs ?identifier .
+                        }
+                    }
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
+    <bean id="schema_org_award_name" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="awardTitle" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                    PREFIX SO:   <https://schema.org/>
+
+                    SELECT
+                        ( str(?name) as ?awardTitle)
+                    WHERE {
+                        ?datasetId rdf:type SO:Dataset .
+                        {
+                            ?awardId rdf:type SO:MonetaryGrant .
+                            ?awardId SO:fundedItem ?datasetId .
+                            ?awardId SO:name ?name .
+                        }
+                        UNION
+                        {
+                            ?datasetId SO:about ?awardId .
+                            ?awardId rdf:type SO:MonetaryGrant .
+                            ?awardId SO:name ?name .
+                        }
+                    }
                 ]]>
             </value>
         </constructor-arg>
@@ -91,6 +157,31 @@
                 ]]>
             </value>
         </constructor-arg>
+    </bean>
+
+
+
+    <bean id="schema_org_datePublished" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="pubDate" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                    PREFIX SO:   <https://schema.org/>
+
+                    SELECT
+                        ( str(?datePublished) as ?pubDate)
+                    WHERE {
+                        ?datasetId rdf:type SO:Dataset .
+                        ?datasetId SO:datePublished ?datePublished
+                        # Don't include referenced sub-Datasets (i.e. a Dataset in a 'hasPart' property)
+                        FILTER NOT EXISTS { ?id SO:hasPart ?datasetId . }
+                    }
+                ]]>
+            </value>
+        </constructor-arg>
+        <property name="converter" ref="dateConverter" />
     </bean>
 
     <bean id="schema_org_givenName" class="org.dataone.cn.indexer.annotation.SparqlField">
@@ -138,6 +229,72 @@
         </constructor-arg>
     </bean>
 
+    <!-- The Solr 'investigator' field is the last name of the creators. This is the same as Solr 'authorLastName'. -->
+    <bean id="schema_org_creator_last_name" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="investigator" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>
+                    PREFIX SO:  <https://schema.org/>
+
+                    SELECT (?familyName as ?investigator)
+                    WHERE {
+                        ?dsId rdf:type SO:Dataset .
+                        ?dsId SO:creator ?list .
+                        ?list list:index (?pos ?member) .
+                        ?member SO:familyName ?familyName .
+                    }
+                    order by (?pos)
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
+    <bean id="schema_org_funder_identifier" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="funderIdentifier" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                    PREFIX SO:   <https://schema.org/>
+
+                    SELECT
+                        (?identifier as ?funderIdentifier)
+                    WHERE {
+                        ?datasetId rdf:type SO:Dataset .
+                        ?datasetId SO:funder ?funderId .
+                        ?funderId SO:identifier ?identifier.
+                    }
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
+
+    <bean id="schema_org_funder_name" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="funderName" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                    PREFIX SO:   <https://schema.org/>
+
+                    SELECT
+                        (?name as ?funderName)
+                    WHERE {
+                        ?datasetId rdf:type SO:Dataset .
+                        ?datasetId SO:funder ?funderId .
+                        ?funderId SO:name ?name .
+                    }
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
     <bean id="schema_org_creator_list" class="org.dataone.cn.indexer.annotation.SparqlField">
         <constructor-arg name="name" value="origin" />
         <constructor-arg name="query">
@@ -155,6 +312,27 @@
                     ?member SO:name ?name .
                 }
                 order by (?pos)
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
+    <bean id="schema_org_prov_hadDerivation" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="prov_hasDerivations" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                    PREFIX SO:   <https://schema.org/>
+                    PREFIX PROV: <http://www.w3.org/ns/prov#>
+                    PREFIX PROVONE: <http://purl.dataone.org/provone/2015/01/15/ontology#>
+
+                    SELECT ( str(?derivations) as ?prov_hasDerivations )
+                    WHERE {
+                      ?datasetId rdf:type SO:Dataset .
+                      ?datasetId PROV:hadDerivation ?derivations .
+                    }
                 ]]>
             </value>
         </constructor-arg>
@@ -198,7 +376,8 @@
                     PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                     PREFIX SO:   <https://schema.org/>
-                      SELECT ?keywords
+
+                    SELECT ?keywords
                       WHERE {
                         ?datasetId rdf:type    SO:Dataset .
                         ?datasetId SO:keywords ?keywords .
@@ -347,7 +526,7 @@
                     WHERE {
                         ?datasetId rdf:type SO:Dataset .
                         ?datasetId SO:spatialCoverage ?namedLocation .
-                        FILTER NOT EXISTS { ?namedLocaiton rdf:type SO:Place . }
+                        FILTER NOT EXISTS { ?namedLocation rdf:type SO:Place . }
                     }
                 ]]>
             </value>
@@ -437,13 +616,154 @@
                     PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
                     PREFIX schema:  <https://schema.org/>
 
-                    SELECT ( ?version as ?edition )
+                    SELECT ( str(?version) as ?edition )
 
                     WHERE {
                         ?datasetId rdf:type schema:Dataset .
                         ?datasetId schema:version ?version .
                     }
                     limit 1
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
+    <!-- The prov_wasDerivedFrom relationship can be obtained from either the source "SO:isBasedOn" or
+         "PROV:wasDerivedFrom" relationships, which are considered equivalent. -->
+    <bean id="schema_org_prov_wasDerivedFrom" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="prov_wasDerivedFrom" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX SO:   <https://schema.org/>
+                    PREFIX PROV: <http://www.w3.org/ns/prov#>
+                    PREFIX PROVONE: <http://purl.dataone.org/provone/2015/01/15/ontology#>
+
+                    SELECT DISTINCT
+                        ( str(?wasDerivedFrom) as ?prov_wasDerivedFrom )
+                    WHERE {
+                        ?datasetId rdf:type SO:Dataset .
+                        {
+                            ?datasetId SO:isBasedOn ?wasDerivedFrom .
+                        }
+                        UNION
+                        {
+                            ?datasetId PROV:wasDerivedFrom ?wasDerivedFrom .
+                        }
+                    }
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
+    <bean id="schema_org_prov_usedByExecution" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="prov_usedByExecution" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX SO:   <https://schema.org/>
+                    PREFIX PROV: <http://www.w3.org/ns/prov#>
+                    PREFIX PROVONE: <http://purl.dataone.org/provone/2015/01/15/ontology#>
+
+                    SELECT ( str(?executionId) as ?prov_usedByExecution)
+                    WHERE {
+                      ?datasetId rdf:type SO:Dataset .
+                      ?datasetId PROV:wasUsedBy ?executionId .
+                    }
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
+    <bean id="schema_org_prov_usedByProgram" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="prov_usedByProgram" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX SO:   <https://schema.org/>
+                    PREFIX PROV: <http://www.w3.org/ns/prov#>
+                    PREFIX PROVONE: <http://purl.dataone.org/provone/2015/01/15/ontology#>
+
+                    SELECT ( str(?plan) as ?prov_usedByProgram)
+                    WHERE {
+                      ?datasetId rdf:type SO:Dataset .
+                      ?datasetId PROV:wasUsedBy ?executionId .
+                      ?executionId PROV:hadPlan ?plan.
+                    }
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
+    <bean id="schema_org_prov_wasGeneratedByExecution" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="prov_generatedByExecution" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX SO:   <https://schema.org/>
+                    PREFIX PROV: <http://www.w3.org/ns/prov#>
+                    PREFIX PROVONE: <http://purl.dataone.org/provone/2015/01/15/ontology#>
+
+                    SELECT ( str(?executionId) as ?prov_generatedByExecution)
+                    WHERE {
+                        ?datasetId rdf:type SO:Dataset .
+                        ?datasetId PROV:wasGeneratedBy ?executionId
+                    }
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
+    <bean id="schema_org_prov_wasGeneratedByPlan" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="prov_generatedByProgram" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX SO:   <https://schema.org/>
+                    PREFIX PROV: <http://www.w3.org/ns/prov#>
+                    PREFIX PROVONE: <http://purl.dataone.org/provone/2015/01/15/ontology#>
+
+                    SELECT
+                        ( str(?planId ) as ?prov_generatedByProgram)
+                    WHERE {
+                        ?datasetId rdf:type SO:Dataset .
+                        ?datasetId PROV:wasGeneratedBy ?executionId .
+                        ?executionId PROV:hadPlan ?planId
+                    }
+                ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
+    <bean id="schema_org_prov_instanceOfClass" class="org.dataone.cn.indexer.annotation.SparqlField">
+        <constructor-arg name="name" value="prov_instanceOfClass" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                    PREFIX SO:   <https://schema.org/>
+                    PREFIX PROV: <http://www.w3.org/ns/prov#>
+                    PREFIX PROVONE: <http://purl.dataone.org/provone/2015/01/15/ontology#>
+
+                    SELECT DISTINCT
+                      ( str(?instanceType ) as ?prov_instanceOfClass )
+                    WHERE {
+                      ?datasetId rdf:type SO:Dataset .
+                      {
+                        ?datasetId PROV:wasGeneratedBy ?executionId .
+                        bind ( PROVONE:Data as ?instanceType )
+                      }
+                      UNION
+                      {
+                        ?datasetId PROV:wasUsedBy ?executionId .
+                        bind ( PROVONE:Data as ?instanceType )
+                      }
+                    }
                 ]]>
             </value>
         </constructor-arg>
@@ -463,6 +783,8 @@
                     WHERE {
                         ?datasetId rdf:type SO:Dataset .
                         ?datasetId SO:url ?url .
+                        # Don't include referenced sub-Datasets (i.e. a Dataset in a 'hasPart' property)
+                        FILTER NOT EXISTS { ?id SO:hasPart ?datasetId . }
                     }
                 ]]>
             </value>
