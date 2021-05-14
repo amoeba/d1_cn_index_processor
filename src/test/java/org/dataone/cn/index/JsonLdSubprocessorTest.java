@@ -122,7 +122,7 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
 
         // Insert the schema.org file into the task queue
         String id = "urn:uuid:f18812ac-7f4f-496c-82cc-3f4f54830289";
-        formatId = "science-on-schema.org/Dataset/1.2;ld+json";
+        formatId = "science-on-schema.org/Dataset;ld+json";
         insertResource(id, formatId, schemaOrgDoc, nodeid, userDN);
 
         Thread.sleep(SLEEPTIME);
@@ -194,7 +194,7 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
 
         // Insert the schema.org file into the task queue
         String id = "doi.org_10.5061_dryad.m8s2r36";
-        formatId = "science-on-schema.org/Dataset/1.2;ld+json";
+        formatId = "science-on-schema.org/Dataset;ld+json";
         insertResource(id, formatId, schemaOrgDoc2, nodeid, userDN);
 
         Thread.sleep(SLEEPTIME);
@@ -239,7 +239,7 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
 
         // Insert the schema.org file into the task queue
         String id = "doi:10.1234/1234567890";
-        formatId = "science-on-schema.org/Dataset/1.2;ld+json";
+        formatId = "science-on-schema.org/Dataset;ld+json";
         insertResource(id, formatId, schemaOrgDocSOSO, nodeid, userDN);
 
         Thread.sleep(SLEEPTIME);
