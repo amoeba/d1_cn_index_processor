@@ -257,6 +257,7 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         assertTrue(compareFieldValue(id, "prov_hasDerivations", new String[] {"https://somerepository.org/datasets/10.xxxx/Dataset-101"}));
         assertTrue(compareFieldValue(id, "prov_usedByProgram", new String [] {"https://somerepository.org/datasets/10.xxxx/Dataset-101/process-script.R"}));
         assertTrue(compareFieldValue(id, "prov_usedByExecution", new String [] {"https://example.org/executions/execution-101"}));
+        assertTrue(compareFieldValue(id, "abstract", new String [] {"Winter ecology of larval krill: quantifying their interaction with the pack ice habitat."}));
     }
 
     protected boolean compareFieldValue(String id, String fieldName, String[] expectedValues) throws SolrServerException, IOException {
