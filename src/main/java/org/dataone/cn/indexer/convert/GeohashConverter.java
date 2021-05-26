@@ -55,14 +55,14 @@ public class GeohashConverter implements IConverter {
      */
     public String convert(String latlong) {
 
-        BoundingBox bbox = null;
+        //BoundingBox bbox = null;
         String geohash = null;
         double geohashLat = 0;
         double geohashLong = 0;
 
         // This will be either the center point of the input bounding box, or
         // the lat, long of an input point.
-        WGS84Point centerPoint = null;
+        //WGS84Point centerPoint = null;
 
         // Parse command line for either bounding coords (west,south,east,north)
         // or single point coords (lat, long)
@@ -87,10 +87,30 @@ public class GeohashConverter implements IConverter {
                 geohashLong = westCoord;
             } else {
                 // Geohash library has a different ordering of bbox coords
-                bbox = new BoundingBox(southCoord, northCoord, westCoord, eastCoord);
-                centerPoint = bbox.getCenterPoint();
-                geohashLat = centerPoint.getLatitude();
-                geohashLong = centerPoint.getLongitude();
+                //bbox = new BoundingBox(southCoord, northCoord, westCoord, eastCoord);
+                //centerPoint = bbox.getCenterPoint();
+
+                if (southCoord > northCoord)
+                    throw new IllegalArgumentException("The southLatitude must not be greater than the northLatitude");
+
+                if (Math.abs(southCoord) > 90 || Math.abs(northCoord) > 90 || Math.abs(westCoord) > 180 || Math.abs(eastCoord) > 180) {
+                    throw new IllegalArgumentException("The supplied coordinates are out of range.");
+                }
+
+                // Does the bounding box cross the International Date Line?
+                // If yes, then normalize coords to 0 to 360 for the calculation.
+                if (eastCoord < westCoord) {
+                    if(eastCoord < 0.0) eastCoord += 360.0;
+                }
+
+                double centerLatitude = (southCoord + northCoord) / 2.0;
+                double centerLongitude = (westCoord + eastCoord) / 2.0;
+
+                // convert back to 0 > coord > 180 if needed
+                if (centerLongitude > 180.0) centerLongitude -= 360.0;
+
+                geohashLat = centerLatitude;
+                geohashLong = centerLongitude;
             }
         } else {
             return null;
@@ -101,6 +121,9 @@ public class GeohashConverter implements IConverter {
         } catch (IllegalArgumentException iae) {
             return null;
         }
+        
+        //System.out.println("geohashLat, geohashLong, geohash: " + geohashLat + ", " + geohashLong + ", " + geohash);
+        
         return geohash;
     }
 }
