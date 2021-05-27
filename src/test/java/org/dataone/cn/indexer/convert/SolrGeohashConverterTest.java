@@ -107,7 +107,7 @@ public class SolrGeohashConverterTest {
         assertTrue(getGeohash(GEOHASH_LEVEL_9, latLongBox).equals("bknjxn593"));
         
         latLongBox = "-40 -50 -160 -170";
-        // Center point of bbox (lat, long  ): -45.0, -165.0, 2248j248j
+        // Center point of bbox (lat, long  ): -45.0, -165.0 
         assertTrue(getGeohash(GEOHASH_LEVEL_1, latLongBox).equals("2"));
         assertTrue(getGeohash(GEOHASH_LEVEL_2, latLongBox).equals("22"));
         assertTrue(getGeohash(GEOHASH_LEVEL_3, latLongBox).equals("224"));
@@ -119,7 +119,7 @@ public class SolrGeohashConverterTest {
         assertTrue(getGeohash(GEOHASH_LEVEL_9, latLongBox).equals("2248j248j"));
         
         latLongBox = "63.0 61.0 15.5 15.3";
-        // Center point of bbox (lat, long  ): 62.0, 15.4, u74bwqvbn 
+        // Center point of bbox (lat, long  ): 62.0, 15.4
         assertTrue(getGeohash(GEOHASH_LEVEL_1, latLongBox).equals("u"));
         assertTrue(getGeohash(GEOHASH_LEVEL_2, latLongBox).equals("u7"));
         assertTrue(getGeohash(GEOHASH_LEVEL_3, latLongBox).equals("u74"));
@@ -130,8 +130,11 @@ public class SolrGeohashConverterTest {
         assertTrue(getGeohash(GEOHASH_LEVEL_8, latLongBox).equals("u74bwqvb"));
         assertTrue(getGeohash(GEOHASH_LEVEL_9, latLongBox).equals("u74bwqvbn"));
         
+        // Test with southern coord as negative and northern as positive.
+        // In this case, the midpoint will be the equator (value = 0).
+        // Also, the centerLongitutde is 180 (the hypothetical IDL)
         latLongBox = "10.0 -10.0 -175.0 175.0";
-        // Center point of bbox (lat, long  ): 0.0, 180.0, xbpbpbpbp
+        // Center point of bbox (lat, long  ): 0.0, 180.0
         assertTrue(getGeohash(GEOHASH_LEVEL_1, latLongBox).equals("x"));
         assertTrue(getGeohash(GEOHASH_LEVEL_2, latLongBox).equals("xb"));
         assertTrue(getGeohash(GEOHASH_LEVEL_3, latLongBox).equals("xbp"));
@@ -141,7 +144,46 @@ public class SolrGeohashConverterTest {
         assertTrue(getGeohash(GEOHASH_LEVEL_7, latLongBox).equals("xbpbpbp"));
         assertTrue(getGeohash(GEOHASH_LEVEL_8, latLongBox).equals("xbpbpbpb"));
         assertTrue(getGeohash(GEOHASH_LEVEL_9, latLongBox).equals("xbpbpbpbp"));
-    
+        
+        // Test with longitude centerpoint calculated to 0.0
+        latLongBox = "-10.0 -20.0 10.0 -10.0";
+        // Center point of bbox (lat, long  ): -15.0, 0.0
+        assertTrue(getGeohash(GEOHASH_LEVEL_1, latLongBox).equals("k"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_2, latLongBox).equals("kj"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_3, latLongBox).equals("kj2"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_4, latLongBox).equals("kj24"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_5, latLongBox).equals("kj248"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_6, latLongBox).equals("kj248j"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_7, latLongBox).equals("kj248j2"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_8, latLongBox).equals("kj248j24"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_9, latLongBox).equals("kj248j248"));
+        
+        // Test with west coord as -180.
+        latLongBox = "20.0 10.0 -175.0 -180.0";
+        // Center point of bbox (lat, long  ): 15.0, -177.5
+        assertTrue(getGeohash(GEOHASH_LEVEL_1, latLongBox).equals("8"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_2, latLongBox).equals("84"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_3, latLongBox).equals("849"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_4, latLongBox).equals("849v"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_5, latLongBox).equals("849v2"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_6, latLongBox).equals("849v2f"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_7, latLongBox).equals("849v2fs"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_8, latLongBox).equals("849v2fsm"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_9, latLongBox).equals("849v2fsmq"));
+        
+        // Test with east coord as 180.
+        latLongBox = "20.0 10.0 180.0 170.0";
+        // Center point of bbox (lat, long  ): 15.0, 175.0, xfsmq4xj7
+        assertTrue(getGeohash(GEOHASH_LEVEL_1, latLongBox).equals("x"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_2, latLongBox).equals("xf"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_3, latLongBox).equals("xfs"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_4, latLongBox).equals("xfsm"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_5, latLongBox).equals("xfsmq"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_6, latLongBox).equals("xfsmq4"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_7, latLongBox).equals("xfsmq4x"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_8, latLongBox).equals("xfsmq4xj"));
+        assertTrue(getGeohash(GEOHASH_LEVEL_9, latLongBox).equals("xfsmq4xj7"));
+
     }    
     
     public String getGeohash(int level, String latLongVal) {
