@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<por:portal xmlns:por="https://purl.dataone.org/portals-1.1.0">
+    <label>lauren-test</label>
+    <name>Lauren's test project - updated</name>
+    <description>The State of Alaska's Salmon and People (SASAP) project is a collaboration of researchers, cultural leaders, and others working to bring together integrated, accurate, and up-to-date information that will help to support better salmon decision-making.
+    </description>
+    <definition>
+        <filter>
+            <label>Datasets added manually</label>
+            <field>isPartOf</field>
+            <operator>AND</operator>
+            <matchSubstring>false</matchSubstring>
+            <value>urn:uuid:7c959e15-d309-4850-91e8-399c0e862893</value>
+        </filter>
+        <filter>
+            <label>Search</label>
+            <field>text</field>
+            <operator>AND</operator>
+            <matchSubstring>true</matchSubstring>
+            <value>test</value>
+        </filter>
+        <dateFilter>
+            <label>Publish Year</label>
+            <field>datePublished</field>
+            <field>dateUploaded</field>
+            <operator>AND</operator>
+            <min>1919-01-01T00:00:00Z</min>
+            <max>2019-12-31T00:00:00Z</max>
+        </dateFilter>
+        <filter>
+            <label>Show only results with data</label>
+            <field>documents</field>
+            <operator>AND</operator>
+            <matchSubstring>false</matchSubstring>
+            <value>*</value>
+        </filter>
+    </definition>
+</por:portal>

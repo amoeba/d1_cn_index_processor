@@ -71,7 +71,7 @@ public class SolrFieldPortalTest extends BaseSolrFieldXPathTest {
     public void setUpPortal() throws Exception {
         portalExpected.put("title", "Lauren test 10");
         portalExpected.put("label", "laurentest10");
-        portalExpected.put("collectionQuery", "((((isPartOf:urn\\:uuid\\:27ae3627-be62-4963-859a-8c96d940cadc) OR (text:*ocean*)) AND (-obsoletedBy:* AND formatType:METADATA)))");
+        portalExpected.put("collectionQuery", "((text:*ocean*) OR isPartOf:urn\\:uuid\\:27ae3627-be62-4963-859a-8c96d940cadc) AND (-obsoletedBy:* AND formatType:METADATA)");
         portalExpected.put("logo", "urn:uuid:4adc5fac-79d5-46d1-b5d9-425a5a90b39a");
         portalExpected.put("investigator", "");
         portalExpected.put("funderName", "");
