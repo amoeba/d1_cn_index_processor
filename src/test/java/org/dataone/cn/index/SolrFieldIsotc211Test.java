@@ -568,7 +568,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
                 "ETOPO1 is a 1 arc-minute global relief model of Earth's surface that integrates land topography and ocean bathymetry. It was built from numerous global and regional data sets. This is the 'Ice Surface' version, with the top of the Antarctic and Greenland ice sheets. The horizontal datum is WGS-84, the vertical datum is Mean Sea Level. Keywords: Bathymetry, Digital Elevation. This is the grid/node-registered version: the dataset's latitude and longitude values mark the centers of the cells.");
         tightlyCoupledServiceExpected.put("title",
                 "Topography, ETOPO1, 0.0166667 degrees, Global (longitude -180 to 180), (Ice Sheet Surface)");
-        tightlyCoupledServiceExpected.put("pubDate", dateConverter.convert("20151214-01-01T00:00:00Z"));    // may need to remove convert() call?
+        tightlyCoupledServiceExpected.put("pubDate", dateConverter.convert("20151214Z"));    // may need to remove convert() call?
         tightlyCoupledServiceExpected.put("beginDate", "");
         tightlyCoupledServiceExpected.put("endDate", "");
         tightlyCoupledServiceExpected.put("keywords", 
@@ -857,7 +857,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         geoserverExpected.put("serviceCoupling", "tight");
         geoserverExpected.put("serviceTitle", "Test Service Description - for a WMS service in ISO19139/119");
         geoserverExpected.put("serviceDescription", "Abstract: The ISO19139/119 metadata standard is the preferred metadata standard to use for services (WMS, WFS, WCS).");
-        geoserverExpected.put("serviceType", "OGC:WMS");
+        geoserverExpected.put("serviceType", serviceTypeConverter.convert("OGC:WMS"));
         geoserverExpected.put("serviceEndpoint", 
                 "http://localhost:8080/geoserver/wms?SERVICE=WMS1&" 
                 + "#" + "http://localhost:8080/geoserver/wms?SERVICE=WMS2&" 
