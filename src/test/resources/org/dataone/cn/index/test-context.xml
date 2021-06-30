@@ -463,4 +463,8 @@ xmlns:context="http://www.springframework.org/schema/context"
         <constructor-arg type="java.lang.String"
                          value="org/dataone/cn/index/resources/d1_testdocs/json-ld/ESIP-SOSO-v1.2.0-example-full.jsonld"/>
     </bean>
+    <bean id="schemaOrgTestWithoutVocab" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+                         value="org/dataone/cn/index/resources/d1_testdocs/json-ld/conext-http-without-vocab.jsonld"/>
+    </bean>
 </beans>

@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -171,6 +172,35 @@ public class JsonLdSubprocessor implements IDocumentSubprocessor {
             }
         }
         return docs;
+    }
+    
+    /**
+     * Determine if the expanded jsonld object uses the schema of https://schema.org
+     * @param expandedJsonld  the expanded Jsonld object
+     * @return true if it uses https://schema.org; false if it uses http://schema.org
+     */
+    public boolean isHttps(List expandedJsonld) throws Exception {
+        boolean https = false;
+        for (int i=0; i< expandedJsonld.size(); i++) {
+            Object obj = expandedJsonld.get(i);
+            if(obj instanceof Map) {
+                Map map = (Map) obj;
+                Set keys = map.keySet();
+                for (Object key : keys) {
+                    log.debug("JsonLdSubProcess.isHttps - the key is " + key + " and value is " + map.get(key));
+                    if (key instanceof String) {
+                        if (((String)key).startsWith("https://schema.org")) {
+                            https = true;
+                            return https;
+                        } else if (((String)key).startsWith("http://schema.org")) {
+                            https = false;
+                            return https;
+                        }
+                    } 
+                }
+            }
+        }
+        throw new Exception("The Processor cannot find the either prefix of https://schema.org or http://schema.org in the expanded json-ld object.");
     }
     
     @Override

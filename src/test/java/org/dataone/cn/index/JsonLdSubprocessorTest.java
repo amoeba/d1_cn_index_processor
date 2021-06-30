@@ -22,7 +22,9 @@
 package org.dataone.cn.index;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -51,6 +53,8 @@ import org.junit.Test;
 import org.springframework.core.io.Resource;
 
 import com.carrotsearch.randomizedtesting.annotations.ThreadLeakScope;
+import com.github.jsonldjava.core.JsonLdProcessor;
+import com.github.jsonldjava.utils.JsonUtils;
 
 /**
  * Test the json-ld subprocessor
@@ -67,6 +71,7 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
     private Resource schemaOrgDoc;
     private Resource schemaOrgDoc2;
     private Resource schemaOrgDocSOSO;
+    private Resource schemaOrgTestWithoutVocab;
 
     /* An instance of the RDF/XML Subprocessor */
     private JsonLdSubprocessor jsonLdSubprocessor;
@@ -89,6 +94,7 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         schemaOrgDoc = (Resource) context.getBean("schemaOrgTestDoc");
         schemaOrgDoc2 = (Resource) context.getBean("schemaOrgTestDoc2");
         schemaOrgDocSOSO = (Resource) context.getBean("schemaOrgTestDocSOSO");
+        schemaOrgTestWithoutVocab = (Resource) context.getBean("schemaOrgTestWithoutVocab");
         // instantiate the subprocessor
         jsonLdSubprocessor = (JsonLdSubprocessor) context.getBean("jsonLdSubprocessor");
     }
@@ -323,4 +329,17 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         return equal;
         
     }
+    
+    @Test
+    public void testIsHttps() throws Exception {
+        File file = schemaOrgTestWithoutVocab.getFile();
+        Object object = JsonUtils.fromInputStream(new FileInputStream(file), "UTF-8");
+        List list = JsonLdProcessor.expand(object);
+        assertTrue(!(jsonLdSubprocessor.isHttps(list)));
+        file = schemaOrgDoc.getFile();
+         object = JsonUtils.fromInputStream(new FileInputStream(file), "UTF-8");
+         list = JsonLdProcessor.expand(object);
+         assertTrue(jsonLdSubprocessor.isHttps(list));
+    }
+    
 }
