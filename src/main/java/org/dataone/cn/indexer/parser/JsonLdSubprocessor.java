@@ -21,15 +21,17 @@
  */
 package org.dataone.cn.indexer.parser;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import com.github.jsonldjava.core.DocumentLoader;
+import com.github.jsonldjava.core.JsonLdOptions;
+import com.github.jsonldjava.core.JsonLdProcessor;
+import com.github.jsonldjava.utils.JsonUtils;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -106,6 +108,69 @@ public class JsonLdSubprocessor implements IDocumentSubprocessor {
     @Override
     public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs,
             InputStream is) throws Exception {
+
+        // ClassLoader oldContextCL = Thread.currentThread().getContextClassLoader();
+        // try {
+        //     Thread.currentThread().setContextClassLoader(JSONLD.class.getClassLoader());
+        //     expandedJSON = JsonLdProcessor.expand(jsonObject);
+        // } finally {
+        //     // Restore, in case the current thread was doing something else
+        //     // with the context classloader before calling our method
+        //     Thread.currentThread().setContextClassLoader(oldContextCL);
+        // }
+        
+        DocumentLoader dl;
+        JsonLdOptions options = new JsonLdOptions();
+        Map context = new HashMap();
+        Object compactedJSONLD;
+        Object object = JsonUtils.fromInputStream(is, "UTF-8");
+
+        // Perform any necessary pre-processing on the original JSONLD document before
+        // indexing
+        Object expandedJSONLD = JsonLdProcessor.expand(object);
+        
+        if(isHttps((List) expandedJSONLD)) {
+            log.debug("processing a JSONLD document containing an https://schema.org context");
+            options = new JsonLdOptions();
+            //options.setDocumentLoader(dl);
+            context = new HashMap();
+            context.put("@context", "https://schema.org/");
+            compactedJSONLD = JsonLdProcessor.compact(expandedJSONLD, context, options);
+            log.trace("JSON document after compaction: ");
+            log.trace(JsonUtils.toPrettyString(compactedJSONLD));
+        } else {
+            log.debug("processing a JSONLD document containing an http://schema.org context");
+            options = new JsonLdOptions();
+            context = new HashMap();
+            context.put("@context", "http://schema.org/");
+            compactedJSONLD = JsonLdProcessor.compact(expandedJSONLD, context, options);
+            log.trace("JSON document after compaction: ");
+            log.trace(JsonUtils.toPrettyString(compactedJSONLD));
+        }
+        
+        /**
+         * Expand the document, forcing the @context to be 'http://schema.org'
+         */
+
+        String contextStr = (String) ((HashMap) compactedJSONLD).get("@context");
+        log.trace("context in compacted doc: " + contextStr);
+
+        // There appears to be a bug in the jsonld-java library that doesn't properly insert
+        // the context into the document to be expanded. Therefor the context has to manually
+        // inserted. The following commented lines are the documented method to use, that doesn't
+        // work.
+        //  context = new HashMap();
+        //  context.put("@context", "http://schema.org/");
+        //  options.setExpandContext(context);
+        //  Object expanded = JsonLdProcessor.expand(compact, options);
+
+        ((HashMap) compactedJSONLD).put("@context", "http://schema.org");
+        expandedJSONLD = JsonLdProcessor.expand(compactedJSONLD);
+
+        String str = JsonUtils.toString(expandedJSONLD);
+        log.trace("JSON document after expand: " + str);
+        is = new ByteArrayInputStream(str.getBytes());
+
         SolrDoc metaDocument = docs.get(identifier);
         if (metaDocument == null) {
             metaDocument = new SolrDoc();

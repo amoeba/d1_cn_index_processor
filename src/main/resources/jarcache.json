@@ -1,0 +1,32 @@
+[
+  {
+    "Content-Location": "http://schema.org",
+    "X-Classpath": "contexts/jsonldcontext.jsonld",
+    "Content-Type": "application/ld+json"
+  },
+  {
+    "Content-Location": "http://schema.org/",
+    "X-Classpath": "contexts/jsonldcontext.jsonld",
+    "Content-Type": "application/ld+json"
+  },
+  {
+    "Content-Location": "http://schema.org/docs/jsonldcontext.jsonld",
+    "X-Classpath": "contexts/jsonldcontext.jsonld",
+    "Content-Type": "application/ld+json"
+  },
+  {
+    "Content-Location": "https://schema.org",
+    "X-Classpath": "contexts/jsonldcontext_s.jsonld",
+    "Content-Type": "application/ld+json"
+  },
+  {
+    "Content-Location": "https://schema.org/",
+    "X-Classpath": "contexts/jsonldcontext_s.jsonld",
+    "Content-Type": "application/ld+json"
+  },
+  {
+    "Content-Location": "https://schema.org/docs/jsonldcontext.jsonld",
+    "X-Classpath": "contexts/jsonldcontext_s.jsonld",
+    "Content-Type": "application/ld+json"
+  }
+]
