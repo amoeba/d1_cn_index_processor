@@ -72,6 +72,10 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
     private Resource schemaOrgDoc2;
     private Resource schemaOrgDocSOSO;
     private Resource schemaOrgTestWithoutVocab;
+    private Resource schemaOrgTestDocHttpVocab;
+    private Resource schemaOrgTestDocHttpsVocab;
+    private Resource schemaOrgTestDocHttp;
+    private Resource schemaOrgTestDocHttps;
 
     /* An instance of the RDF/XML Subprocessor */
     private JsonLdSubprocessor jsonLdSubprocessor;
@@ -95,6 +99,10 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         schemaOrgDoc2 = (Resource) context.getBean("schemaOrgTestDoc2");
         schemaOrgDocSOSO = (Resource) context.getBean("schemaOrgTestDocSOSO");
         schemaOrgTestWithoutVocab = (Resource) context.getBean("schemaOrgTestWithoutVocab");
+        schemaOrgTestDocHttpVocab = (Resource) context.getBean("schemaOrgTestHttpVocab");
+        schemaOrgTestDocHttpsVocab = (Resource) context.getBean("schemaOrgTestHttpsVocab");
+        schemaOrgTestDocHttp = (Resource) context.getBean("schemaOrgTestHttp");
+        schemaOrgTestDocHttps = (Resource) context.getBean("schemaOrgTestHttps");
         // instantiate the subprocessor
         jsonLdSubprocessor = (JsonLdSubprocessor) context.getBean("jsonLdSubprocessor");
     }
@@ -264,6 +272,60 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         assertTrue(compareFieldValue(id, "prov_usedByProgram", new String [] {"https://somerepository.org/datasets/10.xxxx/Dataset-101/process-script.R"}));
         assertTrue(compareFieldValue(id, "prov_usedByExecution", new String [] {"https://example.org/executions/execution-101"}));
         assertTrue(compareFieldValue(id, "abstract", new String [] {"Winter ecology of larval krill: quantifying their interaction with the pack ice habitat."}));
+    }
+
+    /**
+     * Test that the JsonLdSubprocessor can normalize several JSONLD @context variants, so that
+     * indexing can be performed on the document, where the indexing queries only look for the
+     * namespace http://schema.org.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testInsertSchemaNormalization() throws Exception {
+        /* variables used to populate system metadata for each resource */
+        File object = null;
+        String formatId = null;
+
+        NodeReference nodeid = new NodeReference();
+        nodeid.setValue("urn:node:mnTestXXXX");
+        String userDN = "uid=tester,o=testers,dc=dataone,dc=org";
+
+        ArrayList<Resource> resources = new ArrayList<>();
+        resources.add(schemaOrgTestDocHttp);
+        resources.add(schemaOrgTestDocHttps);
+        resources.add(schemaOrgTestDocHttpVocab);
+        resources.add(schemaOrgTestDocHttpsVocab);
+
+        // Insert the schema.org file into the task queue
+        ArrayList<String> ids = new ArrayList<>();
+        ids.add("F7CD5CE0-E798-4BD0-911E-CFE6A2FE605C");
+        ids.add("54B393F9-E756-40D7-A88C-3B8CE7A54AD3");
+        ids.add("A5D04C9A-B9CA-43FD-8A97-BA7D2BD4D0E7");
+        ids.add("406A4A02-3426-4E99-9D84-1E3F40DDEF06");
+        formatId = "science-on-schema.org/Dataset;ld+json";
+        int i = -1;
+        String thisId;
+        for (Resource res : resources) {
+            i++;
+            thisId = ids.get(i);
+            log.info("processing doc with id: " + thisId);
+            insertResource(thisId, formatId, res, nodeid, userDN);
+            Thread.sleep(SLEEPTIME);
+            // now process the tasks
+            processor.processIndexTaskQueue();
+            Thread.sleep(SLEEPTIME);
+            Thread.sleep(SLEEPTIME);
+            Thread.sleep(SLEEPTIME);
+            Thread.sleep(SLEEPTIME);
+            assertPresentInSolrIndex(thisId);
+            //assertTrue(compareFieldValue(thisId, "abstract", new String [] {"Winter ecology of larval krill: quantifying their interaction with the pack ice habitat."}));
+
+            assertTrue(compareFieldValue(thisId, "title", new String [] {"test of context normalization"}));
+            assertTrue(compareFieldValue(thisId, "author", new String [] {"creator_03"}));
+            String[] origins = {"creator_03", "creator_02", "creator_01"};
+            assertTrue(compareFieldValue(thisId, "origin", origins));
+        }
     }
 
     protected boolean compareFieldValue(String id, String fieldName, String[] expectedValues) throws SolrServerException, IOException {

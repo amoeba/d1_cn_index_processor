@@ -465,6 +465,26 @@ xmlns:context="http://www.springframework.org/schema/context"
     </bean>
     <bean id="schemaOrgTestWithoutVocab" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String"
-                         value="org/dataone/cn/index/resources/d1_testdocs/json-ld/conext-http-without-vocab.jsonld"/>
+                         value="org/dataone/cn/index/resources/d1_testdocs/json-ld/context-http-without-vocab.jsonld"/>
+    </bean>
+
+    <bean id="schemaOrgTestHttpVocab" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+                         value="org/dataone/cn/index/resources/d1_testdocs/json-ld/context-http-vocab.jsonld"/>
+    </bean>
+
+    <bean id="schemaOrgTestHttpsVocab" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+                         value="org/dataone/cn/index/resources/d1_testdocs/json-ld/context-https-vocab.jsonld"/>
+    </bean>
+
+    <bean id="schemaOrgTestHttp" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+                         value="org/dataone/cn/index/resources/d1_testdocs/json-ld/context-http.jsonld"/>
+    </bean>
+
+    <bean id="schemaOrgTestHttps" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+                         value="org/dataone/cn/index/resources/d1_testdocs/json-ld/context-https.jsonld"/>
     </bean>
 </beans>

@@ -21,9 +21,7 @@
  */
 package org.dataone.cn.indexer.parser;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 
 import javax.xml.xpath.XPathExpressionException;
@@ -33,6 +31,7 @@ import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.utils.JsonUtils;
 import org.apache.commons.codec.EncoderException;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dataone.cn.index.util.PerformanceLogger;
@@ -50,6 +49,10 @@ import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import org.dataone.configuration.Settings;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.Resource;
 
 /**
  * This sub-processor handles the index of the json-ld documents.
@@ -62,6 +65,19 @@ public class JsonLdSubprocessor implements IDocumentSubprocessor {
     private static PerformanceLogger perfLog = PerformanceLogger.getInstance();
     private List<String> matchDocuments = null;
     private List<ISolrDataField> fieldList = new ArrayList<ISolrDataField>();
+
+    private static String schemaOrghttpContextFn  = "jsonldcontext_http.jsonld";
+    private static String schemaOrgHttpsContextFn = "jsonldcontext_https.jsonld";
+    private static String schemaOrgHttpListContextFn = "jsonldcontext_http_list.jsonld";
+    private static String schemaOrghttpContextPath =
+            Settings.getConfiguration().getString("dataone.indexing.schema.org.httpcontext.path",
+                    "/etc/dataone/index/contexts/" + schemaOrghttpContextFn);
+    private static String schemaOrgHttpsContextPath =
+            Settings.getConfiguration().getString("dataone.indexing.schema.org.httpscontext.path",
+                    "/etc/dataone/index/contexts/" + schemaOrgHttpsContextFn);
+    private static String schemaOrgHttpListContextPath =
+            Settings.getConfiguration().getString("dataone.indexing.schema.org.httpListcontext.path",
+                    "/etc/dataone/index/contexts/" + schemaOrgHttpListContextFn);
 
     /**
      * Returns true if subprocessor should be run against object
@@ -109,63 +125,112 @@ public class JsonLdSubprocessor implements IDocumentSubprocessor {
     public Map<String, SolrDoc> processDocument(String identifier, Map<String, SolrDoc> docs,
             InputStream is) throws Exception {
 
-        // ClassLoader oldContextCL = Thread.currentThread().getContextClassLoader();
-        // try {
-        //     Thread.currentThread().setContextClassLoader(JSONLD.class.getClassLoader());
-        //     expandedJSON = JsonLdProcessor.expand(jsonObject);
-        // } finally {
-        //     // Restore, in case the current thread was doing something else
-        //     // with the context classloader before calling our method
-        //     Thread.currentThread().setContextClassLoader(oldContextCL);
-        // }
-        
+        JsonLdOptions options;
         DocumentLoader dl;
-        JsonLdOptions options = new JsonLdOptions();
-        Map context = new HashMap();
+        DocumentLoader dlAll;
+        Map ctx;
+
+        /**
+         * Load the schema.org context files.
+         * First check the DataONE configuration settings for the file paths, either a set value or
+         * default config value will be checked. If those files don't exist, use config files from
+         * the d1_cn_index_processor jar file.
+         */
+        File schemaOrghttp = new File(schemaOrghttpContextPath);
+        File schemaOrghttps = new File(schemaOrgHttpsContextPath);
+        File schemaOrghttpList = new File(schemaOrgHttpListContextPath);
+
+        FileInputStream fis;
+        InputStream resourceIS;
+        String httpContextStr;
+        String httpListContextStr;
+        String httpsContextStr;
+        if(schemaOrghttp.exists()) {
+            fis = new FileInputStream(schemaOrghttp);
+            httpContextStr = IOUtils.toString(fis, "UTF-8");
+        } else {
+            resourceIS = this.getClass().getResourceAsStream("/contexts/" + schemaOrghttpContextFn);
+            httpContextStr = IOUtils.toString(resourceIS, "UTF-8");
+        }
+
+        if(schemaOrghttps.exists()) {
+            fis = new FileInputStream(schemaOrghttps);
+            httpsContextStr = IOUtils.toString(fis, "UTF-8");
+        } else {
+            resourceIS = this.getClass().getResourceAsStream("/contexts/" + schemaOrgHttpsContextFn);
+            httpsContextStr = IOUtils.toString(resourceIS, "UTF-8");
+        }
+
+        if(schemaOrghttpList.exists()) {
+            fis = new FileInputStream(schemaOrghttpList);
+            httpListContextStr = IOUtils.toString(fis, "UTF-8");
+        } else {
+            resourceIS = this.getClass().getResourceAsStream("/contexts/" + schemaOrgHttpListContextFn);
+            httpListContextStr = IOUtils.toString(resourceIS, "UTF-8");
+        }
+
         Object compactedJSONLD;
         Object object = JsonUtils.fromInputStream(is, "UTF-8");
 
         // Perform any necessary pre-processing on the original JSONLD document before
-        // indexing
-        Object expandedJSONLD = JsonLdProcessor.expand(object);
+        // indexing. The steps are:
+        // - expand the input JSONLD document which expands all schema.org terms to IRIs
+        // - compact the document to normalize it, so that a simple @context term is used
+        // - expand the document again, forcing the expansion to http://schema.org, so only
+        //   this namespace is present for all documents to be indexed.
+        // Use document loader that maps to http://schema.org or https://schema.org
+        dlAll = new DocumentLoader();
+        dlAll.addInjectedDoc("http://schema.org",  httpContextStr);
+        dlAll.addInjectedDoc("http://schema.org/", httpContextStr);
+        dlAll.addInjectedDoc("http://schema.org/docs/jsonldcontext.jsonld", httpContextStr);
+        dlAll.addInjectedDoc("https://schema.org",  httpsContextStr);
+        dlAll.addInjectedDoc("https://schema.org/", httpsContextStr);
+        dlAll.addInjectedDoc("https://schema.org/docs/jsonldcontext.jsonld", httpsContextStr);
+        options = new JsonLdOptions();
+        options.setDocumentLoader(dlAll);
+        Object expandedJSONLD = JsonLdProcessor.expand(object, options);
         
         if(isHttps((List) expandedJSONLD)) {
             log.debug("processing a JSONLD document containing an https://schema.org context");
             options = new JsonLdOptions();
-            //options.setDocumentLoader(dl);
-            context = new HashMap();
-            context.put("@context", "https://schema.org/");
-            compactedJSONLD = JsonLdProcessor.compact(expandedJSONLD, context, options);
+            ctx = new HashMap();
+            ctx.put("@context", "https://schema.org/");
+            options.setDocumentLoader(dlAll);
+            compactedJSONLD = JsonLdProcessor.compact(expandedJSONLD, ctx, options);
             log.trace("JSON document after compaction: ");
             log.trace(JsonUtils.toPrettyString(compactedJSONLD));
         } else {
             log.debug("processing a JSONLD document containing an http://schema.org context");
             options = new JsonLdOptions();
-            context = new HashMap();
-            context.put("@context", "http://schema.org/");
-            compactedJSONLD = JsonLdProcessor.compact(expandedJSONLD, context, options);
+            //options.setDocumentLoader(dl);
+            ctx = new HashMap();
+            ctx.put("@context", "http://schema.org/");
+            options.setDocumentLoader(dlAll);
+            compactedJSONLD = JsonLdProcessor.compact(expandedJSONLD, ctx, options);
             log.trace("JSON document after compaction: ");
             log.trace(JsonUtils.toPrettyString(compactedJSONLD));
         }
         
         /**
-         * Expand the document, forcing the @context to be 'http://schema.org'
+         * Expand the document. Include a document loader that results in the http://schema.org 
+         * context file to be used, for any schema.org context url that is in the compacted (input) object.
+         * Note also that the jsonldcontext_l.jsonld context file also ensures that the JSONLD document
+         * will be expanded such that creators are represented as lists, which is needed by the SPARQL
+         * queries used for indexing indexing.
          */
 
-        String contextStr = (String) ((HashMap) compactedJSONLD).get("@context");
-        log.trace("context in compacted doc: " + contextStr);
-
-        // There appears to be a bug in the jsonld-java library that doesn't properly insert
-        // the context into the document to be expanded. Therefor the context has to manually
-        // inserted. The following commented lines are the documented method to use, that doesn't
-        // work.
-        //  context = new HashMap();
-        //  context.put("@context", "http://schema.org/");
-        //  options.setExpandContext(context);
-        //  Object expanded = JsonLdProcessor.expand(compact, options);
-
-        ((HashMap) compactedJSONLD).put("@context", "http://schema.org");
-        expandedJSONLD = JsonLdProcessor.expand(compactedJSONLD);
+        // Create a document loader where all context map to the http://schema.org context file,
+        // so that we ensure that the expanded document contains http://schema.org
+        dl = new DocumentLoader();
+        dl.addInjectedDoc("http://schema.org",  httpListContextStr);
+        dl.addInjectedDoc("http://schema.org/", httpListContextStr);
+        dl.addInjectedDoc("https://schema.org", httpListContextStr);
+        dl.addInjectedDoc("https://schema.org/", httpListContextStr);
+        dl.addInjectedDoc("http://schema.org/docs/jsonldcontext.jsonld", httpListContextStr);
+        dl.addInjectedDoc("https://schema.org/docs/jsonldcontext.jsonld", httpListContextStr);
+        options = new JsonLdOptions();
+        options.setDocumentLoader(dl);
+        expandedJSONLD = JsonLdProcessor.expand(compactedJSONLD, options);
 
         String str = JsonUtils.toString(expandedJSONLD);
         log.trace("JSON document after expand: " + str);
@@ -207,7 +272,6 @@ public class JsonLdSubprocessor implements IDocumentSubprocessor {
                     ResultSet results = qexec.execSelect();
                     //Iterate over each query result and process it
                     while (results.hasNext()) {
-                        
                         //Create a SolrDoc for this query result
                         SolrDoc solrDoc = null;
                         QuerySolution solution = results.next();
@@ -221,7 +285,7 @@ public class JsonLdSubprocessor implements IDocumentSubprocessor {
                             }
                             //Create an index field for this field name and value
                             SolrElementField f = new SolrElementField(field.getName(), value);
-                            log.debug("JsonLdSubprocessor.process process the field " + field.getName() + "with value " + value);
+                            log.trace("JsonLdSubprocessor.process process the field " + field.getName() + "with value " + value);
                             metaDocument.addField(f);
                         }
                     }
