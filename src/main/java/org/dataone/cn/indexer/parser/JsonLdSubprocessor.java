@@ -71,13 +71,13 @@ public class JsonLdSubprocessor implements IDocumentSubprocessor {
     private static String schemaOrgHttpListContextFn = "jsonldcontext_http_list.jsonld";
     private static String schemaOrghttpContextPath =
             Settings.getConfiguration().getString("dataone.indexing.schema.org.httpcontext.path",
-                    "/etc/dataone/index/contexts/" + schemaOrghttpContextFn);
+                    "/etc/dataone/index/schema-org-contexts/" + schemaOrghttpContextFn);
     private static String schemaOrgHttpsContextPath =
             Settings.getConfiguration().getString("dataone.indexing.schema.org.httpscontext.path",
-                    "/etc/dataone/index/contexts/" + schemaOrgHttpsContextFn);
+                    "/etc/dataone/index/schema-org-contexts/" + schemaOrgHttpsContextFn);
     private static String schemaOrgHttpListContextPath =
             Settings.getConfiguration().getString("dataone.indexing.schema.org.httpListcontext.path",
-                    "/etc/dataone/index/contexts/" + schemaOrgHttpListContextFn);
+                    "/etc/dataone/index/schema-org-contexts/" + schemaOrgHttpListContextFn);
 
     /**
      * Returns true if subprocessor should be run against object
