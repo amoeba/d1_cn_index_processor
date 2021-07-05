@@ -146,25 +146,31 @@ public class JsonLdSubprocessor implements IDocumentSubprocessor {
         String httpListContextStr;
         String httpsContextStr;
         if(schemaOrghttp.exists()) {
+            log.info("reading schema files from the local file system " + schemaOrghttp.getCanonicalPath());
             fis = new FileInputStream(schemaOrghttp);
             httpContextStr = IOUtils.toString(fis, "UTF-8");
         } else {
+            log.info("reading schema files from the jar file " + schemaOrghttpContextFn);
             resourceIS = this.getClass().getResourceAsStream("/contexts/" + schemaOrghttpContextFn);
             httpContextStr = IOUtils.toString(resourceIS, "UTF-8");
         }
 
         if(schemaOrghttps.exists()) {
+            log.info("reading schema files from the local file system " + schemaOrghttps.getCanonicalPath());
             fis = new FileInputStream(schemaOrghttps);
             httpsContextStr = IOUtils.toString(fis, "UTF-8");
         } else {
+            log.info("reading schema files from the jar file " + schemaOrgHttpsContextFn);
             resourceIS = this.getClass().getResourceAsStream("/contexts/" + schemaOrgHttpsContextFn);
             httpsContextStr = IOUtils.toString(resourceIS, "UTF-8");
         }
 
         if(schemaOrghttpList.exists()) {
+            log.info("reading schema files from the local file system " + schemaOrghttpList.getCanonicalPath());
             fis = new FileInputStream(schemaOrghttpList);
             httpListContextStr = IOUtils.toString(fis, "UTF-8");
         } else {
+            log.info("reading schema files from the jar file " + schemaOrgHttpListContextFn);
             resourceIS = this.getClass().getResourceAsStream("/contexts/" + schemaOrgHttpListContextFn);
             httpListContextStr = IOUtils.toString(resourceIS, "UTF-8");
         }
