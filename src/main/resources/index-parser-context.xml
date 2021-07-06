@@ -38,6 +38,7 @@
   				<ref bean="dublinCoreOAISubprocessor" />
   				<ref bean="collectionsSubprocessor" />
                 <ref bean="portalsSubprocessor" />
+                <ref bean="jsonLdSubprocessor" />
 			</list>
      	</property>
      	<property name="deleteSubprocessors">

@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
@@ -73,6 +74,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -93,7 +95,7 @@ public class RdfXmlProcessorTest extends DataONESolrJettyTestBase {
     private ApplicationContext provenanceContext = null;
 
     /* The index task processor used to process tasks in the queue */
-    private IndexTaskProcessor processor;
+    protected IndexTaskProcessor processor;
 
     /* The task generator that adds tasks to the queue */
     private IndexTaskGenerator generator;
@@ -215,6 +217,11 @@ public class RdfXmlProcessorTest extends DataONESolrJettyTestBase {
 
         // A list of Solr fields filtered by the target object identifier
         System.out.println("referencedPid: " + referencedPid);
+        
+        Set<String> keys = solrDocs.keySet();
+        for (String key : keys) {
+            System.out.println("============= the key is " + key);
+        }
 
         SolrDoc referencedPidDoc = solrDocs.get(referencedPid);
 
@@ -234,8 +241,8 @@ public class RdfXmlProcessorTest extends DataONESolrJettyTestBase {
             if (expectedValue != null) {
                 List<String> expectedValues = Arrays.asList(StringUtils.split(expectedValue, "||"));
                 if (expectedValues != null && !expectedValues.isEmpty()) {
-                    log.debug("Checking value:\t" + value);
-                    log.debug("in expected: \t" + expectedValues);
+                    System.out.println("Checking value:\t" + value);
+                    System.out.println("in expected: \t" + expectedValues);
                     Assert.assertTrue(expectedValues.contains(value));
                 }
             }
@@ -251,6 +258,7 @@ public class RdfXmlProcessorTest extends DataONESolrJettyTestBase {
      * 
      * @throws Exception
      */
+    //@Ignore
     @Test
     public void testProvenanceFields() throws Exception {
 
@@ -322,13 +330,6 @@ public class RdfXmlProcessorTest extends DataONESolrJettyTestBase {
     public void testPartFields() throws Exception {
 
         log.debug("Testing RDF/XML parts indexing of resourcemap-with-part.xml: ");
-
-        // Ensure fields associated with the data input objects are indexed
-        expectedFields.clear();
-        expectedFields.put("isPartOf", "urn:uuid:27ae3627-be62-4963-859a-8c96d940cadc");
-        compareFields(expectedFields, partResourcemap.getInputStream(),
-                provRdfXmlSubprocessor, "resource_map_urn:uuid:cd489c7e-be88-4d57-b13a-911b25a0b47f",
-                "urn:uuid:f18812ac-7f4f-496c-82cc-3f4f54830274");
         
         expectedFields.clear();
         expectedFields.put("hasPart", "urn:uuid:f18812ac-7f4f-496c-82cc-3f4f54830274");
@@ -336,6 +337,12 @@ public class RdfXmlProcessorTest extends DataONESolrJettyTestBase {
                 provRdfXmlSubprocessor, "resource_map_urn:uuid:cd489c7e-be88-4d57-b13a-911b25a0b47f",
                 null);
 
+        // Ensure fields associated with the data input objects are indexed
+        expectedFields.clear();
+        expectedFields.put("isPartOf", "urn:uuid:27ae3627-be62-4963-859a-8c96d940cadc");
+        compareFields(expectedFields, partResourcemap.getInputStream(),
+                provRdfXmlSubprocessor, "resource_map_urn:uuid:cd489c7e-be88-4d57-b13a-911b25a0b47f",
+                "urn:uuid:f18812ac-7f4f-496c-82cc-3f4f54830274");
     }
     
 
@@ -404,6 +411,8 @@ public class RdfXmlProcessorTest extends DataONESolrJettyTestBase {
         
 
         Thread.sleep(SLEEPTIME);
+        Thread.sleep(SLEEPTIME);
+        Thread.sleep(SLEEPTIME);
         // ensure everything indexed properly
         assertPresentInSolrIndex(script1);
         assertPresentInSolrIndex(script2);
@@ -467,6 +476,7 @@ public class RdfXmlProcessorTest extends DataONESolrJettyTestBase {
     }
     
     protected boolean compareFieldValue(String id, String fieldName, String expectedValue) throws SolrServerException, IOException {
+        System.out.println("==================== start of compare");
         boolean equal = false;
         ModifiableSolrParams solrParams = new ModifiableSolrParams();
         solrParams.set("q", "id:" + ClientUtils.escapeQueryChars(id));
@@ -474,6 +484,8 @@ public class RdfXmlProcessorTest extends DataONESolrJettyTestBase {
         QueryResponse qr = getSolrClient().query(solrParams);
         SolrDocument result = qr.getResults().get(0);
         String value = (String)result.getFieldValue(fieldName);
+        System.out.println("+++++++++++++++++++The value of the field "+ fieldName + " from Solr is " + value);
+        System.out.println("The expected value of the field " + fieldName + " is " + expectedValue);
         return expectedValue.equals(value);
     }
     
@@ -634,7 +646,7 @@ public class RdfXmlProcessorTest extends DataONESolrJettyTestBase {
      * Insert members of the resource map into the index task queue by first generating
      * system metadata for each, then crating the tasks
      */
-    private void insertResource(String pid, String formatId, Resource resource,
+    protected void insertResource(String pid, String formatId, Resource resource,
             NodeReference nodeid, String userDN) throws IOException {
 
         // Get the File object of the resource to calculate size, checksum, etc.

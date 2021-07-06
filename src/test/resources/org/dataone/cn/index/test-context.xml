@@ -59,6 +59,8 @@ xmlns:context="http://www.springframework.org/schema/context"
     <import resource="classpath:application-context-isPartOf.xml" />  
     <import resource="classpath:application-context-collections.xml" />  
     <import resource="classpath:application-context-portals.xml" />  
+    <import resource="classpath:application-context-schema-org.xml" />
+    <import resource="classpath:application-context-json-ld.xml" /> 
 
     <import resource="classpath:org/dataone/cn/indexer/annotation/test-context-annotator.xml"/>
 
@@ -409,6 +411,14 @@ xmlns:context="http://www.springframework.org/schema/context"
         <constructor-arg type="java.lang.String"
         value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_noaa_SciMeta.xml"/>
     </bean>
+    
+    <bean id="isotc211_researchWorkspace_sysmeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_researchWorkspace_10_24431_rw1k321_20195519285_sysmeta.xml"/>
+    </bean>
+
+    <bean id="isotc211_researchWorkspace_scimeta" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg type="java.lang.String" value="org/dataone/cn/index/resources/d1_testdocs/isotc211/isotc211_researchWorkspace_10_24431_rw1k321_20195519285_scimeta.xml"/>
+    </bean>
 
 	<bean id="eml220TestDocSysMeta" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String"
@@ -428,5 +438,53 @@ xmlns:context="http://www.springframework.org/schema/context"
     <bean id="portalTestDoc" class="org.springframework.core.io.ClassPathResource" >
         <constructor-arg type="java.lang.String"
         value="org/dataone/cn/index/resources/d1_testdocs/portal/portal.xml"/>
+    </bean>
+    
+     <bean id="schemaOrgTestDocSysMeta" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+        value="org/dataone/cn/index/resources/d1_testdocs/json-ld/bco-dmo-sysmeta.xml"/>
+    </bean>
+
+    <bean id="schemaOrgTestDoc" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+        value="org/dataone/cn/index/resources/d1_testdocs/json-ld/bco-dmo.jsonld"/>
+    </bean>
+
+<!--    <bean id="schemaOrgTestDocSysMeta2" class="org.springframework.core.io.ClassPathResource" >-->
+<!--        <constructor-arg type="java.lang.String"-->
+<!--                         value="org/dataone/cn/index/resources/d1_testdocs/json-ld/doi_A10.5061_dryad.m8s2r36-sysmeta.xml"/>-->
+<!--    </bean>-->
+
+    <bean id="schemaOrgTestDoc2" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+                         value="org/dataone/cn/index/resources/d1_testdocs/json-ld/doi_A10.5061_dryad.m8s2r36.jsonld"/>
+    </bean>
+    <bean id="schemaOrgTestDocSOSO" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+                         value="org/dataone/cn/index/resources/d1_testdocs/json-ld/ESIP-SOSO-v1.2.0-example-full.jsonld"/>
+    </bean>
+    <bean id="schemaOrgTestWithoutVocab" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+                         value="org/dataone/cn/index/resources/d1_testdocs/json-ld/context-http-without-vocab.jsonld"/>
+    </bean>
+
+    <bean id="schemaOrgTestHttpVocab" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+                         value="org/dataone/cn/index/resources/d1_testdocs/json-ld/context-http-vocab.jsonld"/>
+    </bean>
+
+    <bean id="schemaOrgTestHttpsVocab" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+                         value="org/dataone/cn/index/resources/d1_testdocs/json-ld/context-https-vocab.jsonld"/>
+    </bean>
+
+    <bean id="schemaOrgTestHttp" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+                         value="org/dataone/cn/index/resources/d1_testdocs/json-ld/context-http.jsonld"/>
+    </bean>
+
+    <bean id="schemaOrgTestHttps" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+                         value="org/dataone/cn/index/resources/d1_testdocs/json-ld/context-https.jsonld"/>
     </bean>
 </beans>

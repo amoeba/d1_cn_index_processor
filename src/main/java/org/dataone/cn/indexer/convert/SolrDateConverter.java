@@ -27,6 +27,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+
+
+
 /**Converts date to solr consumable format.
  * User: Porter
  * Date: 7/26/11
@@ -71,11 +79,18 @@ public class SolrDateConverter implements IConverter{
         
         String outputDateFormat = "";
         try {
-            Date dateTime = javax.xml.bind.DatatypeConverter.parseDate(data).getTime();
-            SimpleDateFormat sdf = new SimpleDateFormat(OUTPUT_DATE_FORMAT);
-            sdf.setTimeZone(OUTPUT_TIMEZONE);
-            outputDateFormat = sdf.format(dateTime);
-        } catch (IllegalArgumentException iae) {
+            //System.out.println("********************** the date string is " + data);
+            DateTimeZone.setDefault(DateTimeZone.forTimeZone(OUTPUT_TIMEZONE));
+            //System.out.println("the system default time zone is "+DateTimeZone.getDefault().getID());
+            DateTime dateTime = DateTime.parse(data);
+            //System.out.println("The result of paring string is " + dateTime);
+            DateTime utcTime = dateTime.withZone(DateTimeZone.forTimeZone(OUTPUT_TIMEZONE));
+            //System.out.println("The result of transforming the date time to UTC is " + utcTime);
+            DateTimeFormatter sdf = DateTimeFormat.forPattern(OUTPUT_DATE_FORMAT);
+            outputDateFormat = sdf.print(utcTime);
+            //System.out.println("********************** final output is " + outputDateFormat);
+        } catch (Exception iae) {
+            iae.printStackTrace();
         }
         return outputDateFormat;
     }

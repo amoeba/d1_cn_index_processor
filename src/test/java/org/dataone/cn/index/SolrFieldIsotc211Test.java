@@ -113,6 +113,14 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     private String pid11 = "isotc211_noaa_12345";
     
     @Autowired
+    private Resource isotc211_researchWorkspace_sysmeta;
+
+    @Autowired
+    private Resource isotc211_researchWorkspace_scimeta;
+
+    private String pid12 = "isotc211_researchWorkspace";
+    
+    @Autowired
     private ScienceMetadataDocumentSubprocessor isotc211Subprocessor;
 
     @Autowired
@@ -135,6 +143,8 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     
     private HashMap<String, String> noaaExpected = new HashMap<String, String>();
     
+    private HashMap<String, String> researchWorkspaceExpected = new HashMap<String, String>();
+    
     private SolrDateConverter dateConverter = new SolrDateConverter();
     @Autowired
     private MemberNodeServiceRegistrationTypeConverter serviceTypeConverter;
@@ -152,6 +162,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         setupLooselyCoupledServiceSrvOnlyExpected();
         setupTightlyCoupledServiceSrvOnlyExpected();
         setupNoaaExpected();
+        setupResearchWorkspaceExpected();
     }
 
     private void setupNodc1Expected() throws Exception {
@@ -557,7 +568,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
                 "ETOPO1 is a 1 arc-minute global relief model of Earth's surface that integrates land topography and ocean bathymetry. It was built from numerous global and regional data sets. This is the 'Ice Surface' version, with the top of the Antarctic and Greenland ice sheets. The horizontal datum is WGS-84, the vertical datum is Mean Sea Level. Keywords: Bathymetry, Digital Elevation. This is the grid/node-registered version: the dataset's latitude and longitude values mark the centers of the cells.");
         tightlyCoupledServiceExpected.put("title",
                 "Topography, ETOPO1, 0.0166667 degrees, Global (longitude -180 to 180), (Ice Sheet Surface)");
-        tightlyCoupledServiceExpected.put("pubDate", dateConverter.convert("20151214-01-01T00:00:00Z"));    // may need to remove convert() call?
+        tightlyCoupledServiceExpected.put("pubDate", dateConverter.convert("20151214Z"));    // may need to remove convert() call?
         tightlyCoupledServiceExpected.put("beginDate", "");
         tightlyCoupledServiceExpected.put("endDate", "");
         tightlyCoupledServiceExpected.put("keywords", 
@@ -846,7 +857,7 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         geoserverExpected.put("serviceCoupling", "tight");
         geoserverExpected.put("serviceTitle", "Test Service Description - for a WMS service in ISO19139/119");
         geoserverExpected.put("serviceDescription", "Abstract: The ISO19139/119 metadata standard is the preferred metadata standard to use for services (WMS, WFS, WCS).");
-        geoserverExpected.put("serviceType", "OGC:WMS");
+        geoserverExpected.put("serviceType", serviceTypeConverter.convert("OGC:WMS"));
         geoserverExpected.put("serviceEndpoint", 
                 "http://localhost:8080/geoserver/wms?SERVICE=WMS1&" 
                 + "#" + "http://localhost:8080/geoserver/wms?SERVICE=WMS2&" 
@@ -1098,6 +1109,84 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
         noaaExpected.put("serviceOutput", "");
     }
     
+    private void setupResearchWorkspaceExpected() throws Exception {
+        // science metadata
+        researchWorkspaceExpected.put("author", "Keith Hobson");
+        researchWorkspaceExpected.put("authorSurName", "Keith Hobson");
+        researchWorkspaceExpected.put("authorSurNameSort", "Keith Hobson");
+        researchWorkspaceExpected.put("origin", "");
+        researchWorkspaceExpected.put("investigator", "Keith Hobson#John Piatt#Mayumi Arimitsu#Eran Hood");
+        researchWorkspaceExpected.put("abstract", "To demonstrate connectivity between terrestrial and marine ecosystems, we sampled stable and radiogenic isotopes to estimate the relative contribution terrestrial-derived organic matter (OM) via glacier runoff to marine food webs. This spreadsheet dataset contains isotope ratios of water, dissolved organic matter (DOM), dissolved inorganic matter (DIC) and particulate organic matter (POM), mussels, marine sponge, marine snail, shrimp, plankton, fish and seabirds from the Prince William Sound and Aleutian Islands during the peak glacier melt in summer (July-August 2012 and 2013). Data are provided in a CSV file (nprb-1206-glacier-isotope-data.xml), and the full metadata record for this dataset is provided in the FGDC-compliant XML file (nprb-1206-glacier-isotope-metadata.xml) archived as part of the dataset.");
+        researchWorkspaceExpected.put("title",
+                        "Hydrogen, carbon and nitrogen isotopes trace biogeochemical subsidies in glacier runoff into coastal marine food webs");
+        researchWorkspaceExpected.put("pubDate", "2012-07-30T00:00:00.000Z");
+        researchWorkspaceExpected.put("beginDate", "");
+        researchWorkspaceExpected.put("endDate", "");
+        researchWorkspaceExpected.put("keywords",
+                        "freshwater#zooplankton#forage fish#seabird#carbon#glacier#nearshore ecosystem#organic nutrients#radioisotope#deuterium");
+        researchWorkspaceExpected.put("contactOrganization", "University of Saskatchewan");
+        researchWorkspaceExpected.put("southBoundCoord", "");
+        researchWorkspaceExpected.put("northBoundCoord", "");
+        researchWorkspaceExpected.put("westBoundCoord", "");
+        researchWorkspaceExpected.put("eastBoundCoord", "");
+        researchWorkspaceExpected.put("geohash_1", "");
+        researchWorkspaceExpected.put("geohash_2", "");
+        researchWorkspaceExpected.put("geohash_3", "");
+        researchWorkspaceExpected.put("geohash_4", "");
+        researchWorkspaceExpected.put("geohash_5", "");
+        researchWorkspaceExpected.put("geohash_6", "");
+        researchWorkspaceExpected.put("geohash_7", "");
+        researchWorkspaceExpected.put("geohash_8", "");
+        researchWorkspaceExpected.put("geohash_9", "");
+        researchWorkspaceExpected.put("fileID",
+                "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid12, "UTF-8"));
+        researchWorkspaceExpected.put("text",
+                        "eng;USA    UTF-8    dataset        ISO 19115         Hydrogen, carbon and nitrogen isotopes trace biogeochemical subsidies in glacier runoff into coastal marine food webs      2012-07-30    creation        2015-06-01    creation      Multiple creation dates represent a range      To demonstrate connectivity between terrestrial and marine ecosystems, we sampled stable and radiogenic isotopes to estimate the relative contribution terrestrial-derived organic matter (OM) via glacier runoff to marine food webs. This spreadsheet dataset contains isotope ratios of water, dissolved organic matter (DOM), dissolved inorganic matter (DIC) and particulate organic matter (POM), mussels, marine sponge, marine snail, shrimp, plankton, fish and seabirds from the Prince William Sound and Aleutian Islands during the peak glacier melt in summer (July-August 2012 and 2013). Data are provided in a CSV file (nprb-1206-glacier-isotope-data.xml), and the full metadata record for this dataset is provided in the FGDC-compliant XML file (nprb-1206-glacier-isotope-metadata.xml) archived as part of the dataset.    1) Estimate the importance of freshwater-derived organic matter and organic nutrients to nearshore marine production using 13C and 2H stable isotopes, 2) Examine whether glacier-derived ancient organic matter subsidizes the nutritional requirements of marine biota using radiocarbon 1C, 3) Model the spatial pattern of freshwater infiltration and mixing in glacial fjords using 2H stable isotopes       Keith Hobson    University of Saskatchewan    Adjunct Professor        112 Science Place    Saskatoon    Saskatchewan    S7N 5E2    Canada        principalInvestigator        John Piatt        4210 University Dr    Anchorage    Alaska    99801    United States        principalInvestigator        Mayumi Arimitsu        3100 National Park Rd    Juneau    Alaska    99801    United States        principalInvestigator        Eran Hood        11120 Glacier Highway    Juneau    Alaska    99801    United States        principalInvestigator        freshwater    zooplankton    forage fish    seabird    carbon    glacier    nearshore ecosystem    organic nutrients    radioisotope    deuterium    theme      eng;USA      Port Nellie Juan                       eng; USA    true      Hydrogen, carbon and nitrogen isotopes trace biogeochemical subsidies in glacier runoff into coastal marine food webs             dataset isotc211_researchWorkspace");
+
+        // system metadata
+        researchWorkspaceExpected.put("id", pid12);
+        researchWorkspaceExpected.put("seriesId", "");
+        researchWorkspaceExpected.put("fileName", "10_24431_rw1k321_20195519285.xml");
+        researchWorkspaceExpected.put("mediaType", "");
+        researchWorkspaceExpected.put("mediaTypeProperty", "");
+        researchWorkspaceExpected.put("formatId", isotc211FormatId);
+        researchWorkspaceExpected.put("formatType", "");
+        researchWorkspaceExpected.put("formatType", "METADATA");
+        researchWorkspaceExpected.put("size", "14818");
+        researchWorkspaceExpected.put("checksum", "ea5693790305da9016bf938f1bb6671c78c0335ac7685f87614966e936d6fada");
+        researchWorkspaceExpected.put("checksumAlgorithm", "SHA-256");
+        researchWorkspaceExpected.put("submitter", "TESTUSER");
+        researchWorkspaceExpected.put("rightsHolder", "TESTUSER");
+        researchWorkspaceExpected.put("replicationAllowed", "");
+        researchWorkspaceExpected.put("numberReplicas", "");
+        researchWorkspaceExpected.put("preferredReplicationMN", "");
+        researchWorkspaceExpected.put("blockedReplicationMN", "");
+        researchWorkspaceExpected.put("obsoletes", "");
+        researchWorkspaceExpected.put("obsoletedBy", "");
+        researchWorkspaceExpected.put("dateUploaded", dateConverter.convert("2021-03-16T05:34:26.963Z"));
+        researchWorkspaceExpected.put("dateModified", dateConverter.convert("2021-03-16T05:34:26.963Z"));
+        researchWorkspaceExpected.put("datasource", "urn:node:DATAONE_TEST");
+        researchWorkspaceExpected.put("authoritativeMN", "urn:node:DATAONE_TEST");
+        researchWorkspaceExpected.put("replicaMN", "");
+        researchWorkspaceExpected.put("replicationStatus", "");
+        researchWorkspaceExpected.put("replicaVerifiedDate", "");
+        researchWorkspaceExpected.put("readPermission", "public");
+        researchWorkspaceExpected.put("writePermission", "");
+        researchWorkspaceExpected.put("changePermission", "");
+        researchWorkspaceExpected.put("isPublic", "true");
+        researchWorkspaceExpected.put("dataUrl",
+                "https://" + hostname + "/cn/v2/resolve/" + URLEncoder.encode(pid12, "UTF-8"));
+        // service info
+        researchWorkspaceExpected.put("isService", "false");
+        researchWorkspaceExpected.put("serviceCoupling", "");
+        researchWorkspaceExpected.put("serviceTitle", "");
+        researchWorkspaceExpected.put("serviceDescription", "");
+        researchWorkspaceExpected.put("serviceType", "");
+        researchWorkspaceExpected.put("serviceEndpoint", "");
+        researchWorkspaceExpected.put("serviceInput", "");
+        researchWorkspaceExpected.put("serviceOutput", "");
+    }
+    
     public void testIsotc211Nodc1FieldParsing() throws Exception {
         testXPathParsing(isotc211Subprocessor, isotc211_nodc_1_SysMeta, isotc211_nodc_1_SciMeta,
                 nodc1Expected, pid1);
@@ -1161,5 +1250,11 @@ public class SolrFieldIsotc211Test extends BaseSolrFieldXPathTest {
     public void testIsotc211NoaaFieldParsing() throws Exception {
         testXPathParsing(isotc211NoaaSubprocessor, isotc211_noaa_SysMeta, isotc211_noaa_SciMeta,
                 noaaExpected, pid11);
+    }
+    
+    @Test
+    public void testResearchWorkspaceFieldParsing() throws Exception {
+        testXPathParsing(isotc211Subprocessor, isotc211_researchWorkspace_sysmeta, isotc211_researchWorkspace_scimeta,
+                researchWorkspaceExpected, pid12);
     }
 }

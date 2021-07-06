@@ -55,17 +55,15 @@ public class GeohashConverter implements IConverter {
      */
     public String convert(String latlong) {
 
-        BoundingBox bbox = null;
         String geohash = null;
         double geohashLat = 0;
         double geohashLong = 0;
 
-        // This will be either the center point of the input bounding box, or
-        // the lat, long of an input point.
-        WGS84Point centerPoint = null;
-
-        // Parse command line for either bounding coords (west,south,east,north)
-        // or single point coords (lat, long)
+        // Note we refer to the International Date Line as a hypothetical line that is located
+        // at -180 west, from latitude 90N to -90S. This is just for convenience, to describe the
+        // min and max values of this coordinate system, where bounding box center point calculations
+        // need to take the limits of this coordinate system into account if the bounding box crosses them
+        // The actual IDL is not continuous at -180W.
         String[] coords = latlong.split(" ");
 
         if (coords.length == 2) {
@@ -81,16 +79,37 @@ public class GeohashConverter implements IConverter {
             // In some cases the the lat and long values for the bounding coords
             // can be equal, if it is intended to use four coords to specify a
             // single point, i.e. 
-            //west = -119.1234 south=34.5678 east = -119.1234 north=34.5678
+            //west = -119.1234 south=34.5678 east = -119.1234 north=34.5678.
             if (westCoord == eastCoord || southCoord == northCoord) {
                 geohashLat = southCoord;
                 geohashLong = westCoord;
             } else {
-                // Geohash library has a different ordering of bbox coords
-                bbox = new BoundingBox(southCoord, northCoord, westCoord, eastCoord);
-                centerPoint = bbox.getCenterPoint();
-                geohashLat = centerPoint.getLatitude();
-                geohashLong = centerPoint.getLongitude();
+                // Calculate the bbox centerpoint - this lat, long will be used to calculate the
+                // geohash.
+                if (southCoord > northCoord)
+                    throw new IllegalArgumentException("The southLatitude must not be greater than the northLatitude");
+
+                if (Math.abs(southCoord) > 90 || Math.abs(northCoord) > 90 || Math.abs(westCoord) > 180 || Math.abs(eastCoord) > 180) {
+                    throw new IllegalArgumentException("The supplied coordinates are out of range.");
+                }
+
+                // Does the bounding box cross the hypothetical IDL? The following will only be true if 
+                // the bbox does cross the hypothetical IDL. If it does, then normalize coords to 0 to 360 for the 
+                // calculation. Adding 360 to a negative longitude normalizes it to be the same spot on the earth 
+                // but in a coord system with longitude ranging from 0 to 360. We can then use this normalized value 
+                // to perform the center point calculation.
+                if (eastCoord < westCoord) {
+                    if(eastCoord < 0.0) eastCoord += 360.0;
+                }
+
+                double centerLatitude = (southCoord + northCoord) / 2.0;
+                double centerLongitude = (westCoord + eastCoord) / 2.0;
+
+                // convert back to -180 > coord > 180 if needed
+                if (centerLongitude > 180.0) centerLongitude -= 360.0;
+
+                geohashLat = centerLatitude;
+                geohashLong = centerLongitude;
             }
         } else {
             return null;
@@ -101,6 +120,9 @@ public class GeohashConverter implements IConverter {
         } catch (IllegalArgumentException iae) {
             return null;
         }
+        
+        //System.out.println("geohashLat, geohashLong, geohash: " + geohashLat + ", " + geohashLong + ", " + geohash);
+        
         return geohash;
     }
 }

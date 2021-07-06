@@ -51,6 +51,8 @@
     
     <import resource="file:/etc/dataone/index/index-generation-context/application-context-isPartOf.xml" />  
     <import resource="file:/etc/dataone/index/index-generation-context/application-context-collections.xml" />  
-    <import resource="file:/etc/dataone/index/index-generation-context/application-context-portals.xml" />  
+    <import resource="file:/etc/dataone/index/index-generation-context/application-context-portals.xml" /> 
+    <import resource="file:/etc/dataone/index/index-generation-context/application-context-schema-org.xml" /> 
+    <import resource="file:/etc/dataone/index/index-generation-context/application-context-json-ld.xml" /> 
     
 </beans>
