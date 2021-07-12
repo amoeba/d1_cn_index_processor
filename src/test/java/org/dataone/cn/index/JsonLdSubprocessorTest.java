@@ -76,6 +76,8 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
     private Resource schemaOrgTestDocHttpsVocab;
     private Resource schemaOrgTestDocHttp;
     private Resource schemaOrgTestDocHttps;
+    private Resource schemaOrgTestDocDryad1;
+    private Resource schemaOrgTestDocDryad2;
 
     /* An instance of the RDF/XML Subprocessor */
     private JsonLdSubprocessor jsonLdSubprocessor;
@@ -84,7 +86,6 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
     private HashMap<String, String> expectedFields = new HashMap<String, String>();
 
     private static final int SLEEPTIME = 5000;
-
 
     /**
      * For each test, set up the Solr service and test data
@@ -103,10 +104,12 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         schemaOrgTestDocHttpsVocab = (Resource) context.getBean("schemaOrgTestHttpsVocab");
         schemaOrgTestDocHttp = (Resource) context.getBean("schemaOrgTestHttp");
         schemaOrgTestDocHttps = (Resource) context.getBean("schemaOrgTestHttps");
+        schemaOrgTestDocDryad1 = (Resource) context.getBean("schemaOrgTestDryad1");
+        schemaOrgTestDocDryad2 = (Resource) context.getBean("schemaOrgTestDryad2");
+
         // instantiate the subprocessor
         jsonLdSubprocessor = (JsonLdSubprocessor) context.getBean("jsonLdSubprocessor");
     }
-
 
     /**
      * For each test, clean up, bring down the Solr service
@@ -114,7 +117,6 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
     @After
     public void tearDown() throws Exception {
         super.tearDown();
-
     }
 
     /**
@@ -148,7 +150,7 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         Thread.sleep(SLEEPTIME);
         assertPresentInSolrIndex(id);
         assertTrue(compareFieldValue(id, "title", "Neodymium isotopes, B/Ca and δ¹³C, and fresh sand volcanic glass count data from ODP Site 208-1267 and IODP Site 306-U1313 for MIS M2, MIS 100 and the Last Glacial-Holocene"));
-        assertTrue(compareFieldValue(id, "abstract", "Marine Isotope Stage (MIS) M2, 3.3 Ma, is an isolated cold stage punctuating the benthic oxygen isotope (δ¹⁸O) stratigraphy of the warm Piacenzian interval of the late Pliocene Epoch. The prominent (~0.65‰) δ¹⁸O increase that defines MIS M2 has prompted debate over the extent to which it signals an early prelude to the rhythmic extensive glaciations of the northern hemisphere that characterise the Quaternary and raised questions about the forcing mechanisms responsible. Recent work suggests that CO₂ storage in the deep Atlantic Ocean played an important role in these events but detailed reconstructions of deep ocean chemical stratification are needed to test this idea and competing hypotheses. Here we present new records of the Nd isotope composition of fish debris and δ¹³C and B/Ca ratios of benthic foraminifera from the northwest and southeast Atlantic Ocean. […]"));
+        assertTrue(compareFieldValue(id, "abstract", "Marine Isotope Stage (MIS) M2, 3.3 Ma, is an isolated cold stage punctuating the benthic oxygen isotope (\u03b4\u00b9\u2078O)"));
         assertTrue(compareFieldValue(id, "label", "Neodymium isotopes"));
         assertTrue(compareFieldValue(id, "author", "Nicola Kirby"));
         assertTrue(compareFieldValue(id, "authorGivenName", "Nicola"));
@@ -186,7 +188,9 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
             "Date (local time zone of PST/PDT) in ISO8601; format: YYYY-MM-DDThh:mm", "Dissolved oxygen"};
         assertTrue(compareFieldValue(id, "parameter", parameters));
         assertTrue(compareFieldValue(id, "edition", "1"));
-        assertTrue(compareFieldValue(id, "serviceEndpoint", new String[] {"https://doi.pangaea.de/10.1594/PANGAEA.925562"}));
+        String[] urls = {"https://doi.pangaea.de/10.1594/PANGAEA.925562",
+                        "https://doi.pangaea.de/10.1594/PANGAEA.925562?format=zip"};
+        assertTrue(compareFieldValue(id, "serviceEndpoint", urls));
     }
 
     /**
@@ -221,6 +225,7 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         assertPresentInSolrIndex(id);
         assertTrue(compareFieldValue(id, "title", new String [] {"Context-dependent costs and benefits of a heterospecific nesting association"}));
         assertTrue(compareFieldValue(id, "author", new String [] {"Rose J Swift"}));
+        assertTrue(compareFieldValue(id, "abstract", new String [] {"The costs and benefits of interactions among species"}));
         assertTrue(compareFieldValue(id, "authorGivenName", new String [] {"Rose J"}));
         //assertTrue(compareFieldValue(id, "authorLastName", new String [] {"Swift"}));
         String[] origins = {"Rose J Swift", "Amanda D Rodewald", "Nathan R Senner"};
@@ -231,7 +236,9 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         assertTrue(compareFieldValue(id, "namedLocation", new String [] {"Beluga River", "Alaska"}));
         assertTrue(compareFieldValue(id, "beginDate", new String [] {"2018-03-05T15:54:47.000Z"}));
         assertTrue(compareFieldValue(id, "edition", new String [] {"1"}));
-        assertTrue(compareFieldValue(id, "serviceEndpoint", new String[] {"http://datadryad.org/stash/dataset/doi%253A10.5061%252Fdryad.m8s2r36"}));
+        String urls[] = {"http://datadryad.org/api/v2/datasets/doi%253A10.5061%252Fdryad.m8s2r36/download",
+                         "http://datadryad.org/stash/dataset/doi%253A10.5061%252Fdryad.m8s2r36"};
+        assertTrue(compareFieldValue(id, "serviceEndpoint", urls));
     }
 
     /**
@@ -264,6 +271,11 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         Thread.sleep(SLEEPTIME);
         Thread.sleep(SLEEPTIME);
         assertPresentInSolrIndex(id);
+        assertTrue(compareFieldValue(id, "title", new String[] {"Larval krill studies - fluorescence and clearance from ARSV Laurence M. Gould LMG0106, LMG0205 in the Southern Ocean from 2001-2002 (SOGLOBEC project)"}));
+        assertTrue(compareFieldValue(id, "abstract", new String[] {"Winter ecology of larval krill: quantifying their interaction with the pack ice habitat."}));
+        String [] urls = {"https://www.example-data-repository.org/dataset/3300/data/larval-krill.tsv",
+        "https://www.example-data-repository.org/dataset/3300"};
+        assertTrue(compareFieldValue(id, "serviceEndpoint", urls));
         assertTrue(compareFieldValue(id, "prov_wasDerivedFrom", new String[] {"https://doi.org/10.xxxx/Dataset-1"}));
         assertTrue(compareFieldValue(id, "prov_generatedByExecution", new String[] {"https://example.org/executions/execution-42"}));
         assertTrue(compareFieldValue(id, "prov_generatedByProgram", new String[] {"https://somerepository.org/datasets/10.xxxx/Dataset-2.v2/process-script.R"}));
@@ -319,13 +331,75 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
             Thread.sleep(SLEEPTIME);
             Thread.sleep(SLEEPTIME);
             assertPresentInSolrIndex(thisId);
-            //assertTrue(compareFieldValue(thisId, "abstract", new String [] {"Winter ecology of larval krill: quantifying their interaction with the pack ice habitat."}));
 
             assertTrue(compareFieldValue(thisId, "title", new String [] {"test of context normalization"}));
             assertTrue(compareFieldValue(thisId, "author", new String [] {"creator_03"}));
             String[] origins = {"creator_03", "creator_02", "creator_01"};
             assertTrue(compareFieldValue(thisId, "origin", origins));
         }
+    }
+
+    /**
+     * Test that the JsonLdSubprocessor can sucessfully index JSONLD Dataset description documents from Dryad.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testInsertSchemaOrgDryad() throws Exception {
+        /* variables used to populate system metadata for each resource */
+        File object = null;
+        String formatId = null;
+
+        NodeReference nodeid = new NodeReference();
+        nodeid.setValue("urn:node:mnTestXXXX");
+        String userDN = "uid=tester,o=testers,dc=dataone,dc=org";
+
+        ArrayList<Resource> resources = new ArrayList<>();
+        resources.add(schemaOrgTestDocDryad1);
+        resources.add(schemaOrgTestDocDryad2);
+
+        // Insert the schema.org file into the task queue
+        ArrayList<String> ids = new ArrayList<>();
+        ids.add("BCD368D7-68B7-401A-86D4-35D1A3411C59");
+        ids.add("487C757E-5B71-4029-B165-C902A4E6CB8D");
+        formatId = "science-on-schema.org/Dataset;ld+json";
+        String thisId;
+
+        int iDoc = 0;
+        thisId = ids.get(iDoc);
+        insertResource(thisId, formatId, resources.get(iDoc), nodeid, userDN);
+        Thread.sleep(SLEEPTIME);
+        // now process the tasks
+        processor.processIndexTaskQueue();
+        Thread.sleep(SLEEPTIME);
+        Thread.sleep(SLEEPTIME);
+        Thread.sleep(SLEEPTIME);
+        Thread.sleep(SLEEPTIME);
+        assertPresentInSolrIndex(thisId);
+        assertTrue(compareFieldValue(thisId, "title", new String [] {"Mate choice and the operational sex ratio: an experimental test with robotic crabs"}));
+        assertTrue(compareFieldValue(thisId, "abstract", new String [] {"The operational sex ratio (OSR) in robotic crabs)."}));
+        assertTrue(compareFieldValue(thisId, "author", new String [] {"Catherine L. Hayes"}));
+        String[] urls = {"http://datadryad.org/stash/dataset/doi%253A10.5061%252Fdryad.5qb78",
+                         "http://datadryad.org/api/v2/datasets/doi%253A10.5061%252Fdryad.5qb78/download"};
+        assertTrue(compareFieldValue(thisId, "serviceEndpoint", urls));
+
+        iDoc++;
+        thisId = ids.get(iDoc);
+        insertResource(thisId, formatId, resources.get(iDoc), nodeid, userDN);
+        Thread.sleep(SLEEPTIME);
+        // now process the tasks
+        processor.processIndexTaskQueue();
+        Thread.sleep(SLEEPTIME);
+        Thread.sleep(SLEEPTIME);
+        Thread.sleep(SLEEPTIME);
+        Thread.sleep(SLEEPTIME);
+        assertPresentInSolrIndex(thisId);
+        assertTrue(compareFieldValue(thisId, "title", new String [] {"Flow of CO2 from soil may not correspond with CO2 concentration in soil"}));
+        assertTrue(compareFieldValue(thisId, "abstract", new String [] {"Soil CO2 concentration was investigated in the northwest of the Czechia."}));
+        assertTrue(compareFieldValue(thisId, "author", new String [] {"Jan Frouz"}));
+        urls = new String[]{"http://datadryad.org/stash/dataset/doi%253A10.5061%252Fdryad.41sk145",
+                "http://datadryad.org/api/v2/datasets/doi%253A10.5061%252Fdryad.41sk145/download"};
+        assertTrue(compareFieldValue(thisId, "serviceEndpoint", urls));
     }
 
     protected boolean compareFieldValue(String id, String fieldName, String[] expectedValues) throws SolrServerException, IOException {

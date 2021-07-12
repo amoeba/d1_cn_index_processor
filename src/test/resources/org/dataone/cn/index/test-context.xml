@@ -487,4 +487,14 @@ xmlns:context="http://www.springframework.org/schema/context"
         <constructor-arg type="java.lang.String"
                          value="org/dataone/cn/index/resources/d1_testdocs/json-ld/context-https.jsonld"/>
     </bean>
+
+    <bean id="schemaOrgTestDryad1" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+                         value="org/dataone/cn/index/resources/d1_testdocs/json-ld/doi.org_10.5061_dryad.5qb78.jsonld"/>
+    </bean>
+
+    <bean id="schemaOrgTestDryad2" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+                         value="org/dataone/cn/index/resources/d1_testdocs/json-ld/doi.org_10.5061_dryad.41sk145.jsonld"/>
+    </bean>
 </beans>

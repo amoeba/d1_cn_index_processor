@@ -1,0 +1,75 @@
+[
+  {
+    "@context": "http://schema.org",
+    "@id": "https://doi.org/10.5061/dryad.41sk145",
+    "@type": "Dataset",
+    "citation": "http://doi.org/10.1038/s41598-018-28225-z",
+    "creator": [
+      {
+        "@type": "Person",
+        "affiliation": {
+          "@type": "Organization",
+          "name": "Charles University",
+          "sameAs": "https://ror.org/024d6js02"
+        },
+        "familyName": "Frouz",
+        "givenName": "Jan",
+        "name": "Jan Frouz"
+      },
+      {
+        "@type": "Person",
+        "affiliation": {
+          "@type": "Organization",
+          "name": "Charles University",
+          "sameAs": "https://ror.org/024d6js02"
+        },
+        "familyName": "Bujalsk\u00c3\u00bd",
+        "givenName": "Lud\u00c4\u009bk",
+        "name": "Lud\u00c4\u009bk Bujalsk\u00c3\u00bd"
+      }
+    ],
+    "description": [
+      "Soil CO2 concentration was investigated in the northwest of the Czechia.",
+      "<div class=\"o-metadata__file-usage-entry\"><h4 class=\"o-heading__level3-file-title\">field_data_flow_concentration</h4><div class=\"o-metadata__file-description\">Table describes values of soil CO2 concentration measured at two depth (0-5 cm and 5-20cm) and value of CO2 flow from the soil measured the same spot, in addition, there is soil temperature measured at this spot in the same time. These data are accompanied by set soil physical and biological characteristics, which was measured for each spot at the end of measurement. See fig 1 for scheme of the measurement. The data in the table serve as basis for fig. 3 and 4.</div><div class=\"o-metadata__file-name\"></div></div><div class=\"o-metadata__file-usage-entry\"><h4 class=\"o-heading__level3-file-title\">labrsp_soil</h4><div class=\"o-metadata__file-description\">Table describes respiration of soil in laboratory incubation experiments when respiration was measured by incubation of samples in hermetically closed bottle where CO2 was trapped in NaOH. There were two variant of NaOH addition in one he NaOH was added at the beginning of cultivation in second at the end of cultivation. There were two bottle for soil from each spot so this is a pair data. See Fig 2 in the paper for scheme of experiment. Date were basis for Fig 5.</div><div class=\"o-metadata__file-name\"></div></div><div class=\"o-metadata__file-usage-entry\"><h4 class=\"o-heading__level3-file-title\">lab_spruce</h4><div class=\"o-metadata__file-description\">Table describes respiration of spruce seedling roots in laboratory incubation experiments when respiration was measured by incubation of samples in hermetically closed bottle where CO2 was trapped in NaOH. There were two variant of NaOH addition in one he NaOH was added at the beginning of cultivation in second at the end of cultivation. There were two comparable groups of seedlings so this is not a pair data. See Fig 2 in the paper for scheme of experiment.</div><div class=\"o-metadata__file-name\"></div></div>"
+    ],
+    "distribution": {
+      "@type": "DataDownload",
+      "contentUrl": "http://datadryad.org/api/v2/datasets/doi%253A10.5061%252Fdryad.41sk145/download",
+      "encodingFormat": "application/zip"
+    },
+    "identifier": "https://doi.org/10.5061/dryad.41sk145",
+    "isAccessibleForFree": true,
+    "keywords": [
+      "n/a",
+      "soil respiration",
+      "Holocene",
+      "Jan Frouz"
+    ],
+    "license": {
+      "@type": "CreativeWork",
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"
+    },
+    "name": "Flow of CO2 from soil may not correspond with CO2 concentration in soil",
+    "provider": {
+      "@id": "https://datadryad.org"
+    },
+    "publisher": {
+      "@id": "https://datadryad.org",
+      "@type": "Organization",
+      "legalName": "Dryad Digital Repository",
+      "name": "Dryad",
+      "url": "https://datadryad.org"
+    },
+    "spatialCoverage": [
+      "\u00c4\u008cesk\u00c3\u00a9 Bud\u00c4\u009bjovice 7",
+      "Europe"
+    ],
+    "temporalCoverage": [
+      "2019",
+      "2019-06-26T00:00:00Z"
+    ],
+    "url": "http://datadryad.org/stash/dataset/doi%253A10.5061%252Fdryad.41sk145",
+    "version": 1
+  }
+]

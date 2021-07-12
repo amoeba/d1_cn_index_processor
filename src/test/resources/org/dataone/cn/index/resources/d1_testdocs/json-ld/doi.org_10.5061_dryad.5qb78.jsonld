@@ -1,0 +1,106 @@
+[
+  {
+    "@context": "http://schema.org",
+    "@id": "https://doi.org/10.5061/dryad.5qb78",
+    "@type": "Dataset",
+    "citation": "http://doi.org/10.1111/jeb.12884",
+    "creator": [
+      {
+        "@type": "Person",
+        "affiliation": {
+          "@type": "Organization",
+          "name": "Australian National University",
+          "sameAs": "https://ror.org/019wvm592"
+        },
+        "familyName": "Hayes",
+        "givenName": "Catherine L.",
+        "name": "Catherine L. Hayes"
+      },
+      {
+        "@type": "Person",
+        "affiliation": {
+          "@type": "Organization",
+          "name": "Australian National University",
+          "sameAs": "https://ror.org/019wvm592"
+        },
+        "familyName": "Callander",
+        "givenName": "Sophie",
+        "name": "Sophie Callander"
+      },
+      {
+        "@type": "Person",
+        "affiliation": {
+          "@type": "Organization",
+          "name": "Australian National University",
+          "sameAs": "https://ror.org/019wvm592"
+        },
+        "familyName": "Booksmythe",
+        "givenName": "Isobel",
+        "name": "Isobel Booksmythe"
+      },
+      {
+        "@type": "Person",
+        "affiliation": {
+          "@type": "Organization",
+          "name": "Australian National University",
+          "sameAs": "https://ror.org/019wvm592"
+        },
+        "familyName": "Jennions",
+        "givenName": "Michael D.",
+        "name": "Michael D. Jennions"
+      },
+      {
+        "@type": "Person",
+        "affiliation": {
+          "@type": "Organization",
+          "name": "Australian National University",
+          "sameAs": "https://ror.org/019wvm592"
+        },
+        "familyName": "Backwell",
+        "givenName": "Patricia R. Y.",
+        "name": "Patricia R. Y. Backwell"
+      }
+    ],
+    "description": [
+      "The operational sex ratio (OSR) in robotic crabs).",
+      "<div class=\"o-metadata__file-usage-entry\"><h4 class=\"o-heading__level3-file-title\">Claw size choice by females</h4><div class=\"o-metadata__file-description\">data on the OSR treatment, female size and chosen male claw size for all 400 two choice tests. Variables names are explained in the worksheet titled 'information'.</div><div class=\"o-metadata__file-name\">Hayes OSR paper Data For Dryad Submitted.xlsx</br></div></div>"
+    ],
+    "distribution": {
+      "@type": "DataDownload",
+      "contentUrl": "http://datadryad.org/api/v2/datasets/doi%253A10.5061%252Fdryad.5qb78/download",
+      "encodingFormat": "application/zip"
+    },
+    "identifier": "https://doi.org/10.5061/dryad.5qb78",
+    "isAccessibleForFree": true,
+    "keywords": [
+      "mate sampling",
+      "Density",
+      "Uca mjoebergi",
+      "female choice",
+      "mating preference"
+    ],
+    "license": {
+      "@type": "CreativeWork",
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "name": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"
+    },
+    "name": "Mate choice and the operational sex ratio: an experimental test with robotic crabs",
+    "provider": {
+      "@id": "https://datadryad.org"
+    },
+    "publisher": {
+      "@id": "https://datadryad.org",
+      "@type": "Organization",
+      "legalName": "Dryad Digital Repository",
+      "name": "Dryad",
+      "url": "https://datadryad.org"
+    },
+    "spatialCoverage": "Australia",
+    "temporalCoverage": [
+      "2016",
+      "2020-07-02T00:00:00Z"
+    ],
+    "url": "http://datadryad.org/stash/dataset/doi%253A10.5061%252Fdryad.5qb78",
+    "version": 1
+  }
+]
