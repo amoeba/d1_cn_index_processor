@@ -62,9 +62,11 @@ public class EmlAnnotationSubprocessorTest {
 
             expectedConcepts.add("http://purl.dataone.org/odo/ECSO_00000512");
             expectedConcepts.add("http://ecoinformatics.org/oboe/oboe.1.2/oboe-core.owl#MeasurementType");
+            expectedConcepts.add("http://ecoinformatics.org/oboe/oboe.1.2/oboe-core.owl#hasUnit");
             expectedConcepts.add("http://purl.dataone.org/odo/ECSO_00001102");
             expectedConcepts.add("http://purl.dataone.org/odo/ECSO_00001243");
             expectedConcepts.add("http://purl.dataone.org/odo/ECSO_00000629");
+            expectedConcepts.add("http://ecoinformatics.org/oboe/oboe.1.2/oboe-core.owl#containsMeasurementsOfType");
             expectedConcepts.add("http://purl.dataone.org/odo/ECSO_00000518");
             expectedConcepts.add("http://www.w3.org/2000/01/rdf-schema#Resource");
             expectedConcepts.add("http://purl.dataone.org/odo/ECSO_00000516");
