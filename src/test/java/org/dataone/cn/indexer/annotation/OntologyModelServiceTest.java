@@ -29,13 +29,15 @@ public class OntologyModelServiceTest {
 
 			// Assert on Solr fields returend
 			Set<String> fields = new HashSet<String>();
-			fields.add("sem_annotation");
+			fields.add("annotation_property_uri");
+			fields.add("annotation_value_uri");
 			assertEquals(concepts.keySet(), fields);
 
 			// Assert on Solr field values returned
 			Set<String> values = new HashSet<String>();
 			values.add("https://example.org");
-			assertEquals(values, concepts.get("sem_annotation"));
+			assertEquals(values, concepts.get("annotation_property_uri"));
+			assertEquals(values, concepts.get("annotation_value_uri"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -53,7 +55,8 @@ public class OntologyModelServiceTest {
 
 			// Assert on Solr fields returend
 			Set<String> fields = new HashSet<String>();
-			fields.add("sem_annotation");
+			fields.add("annotation_property_uri");
+			fields.add("annotation_value_uri");
 			assertEquals(concepts.keySet(), fields);
 
 			// Assert on Solr field values returned
@@ -65,7 +68,25 @@ public class OntologyModelServiceTest {
 			values.add("http://ecoinformatics.org/oboe/oboe.1.2/oboe-core.owl#MeasurementType");
 			values.add("http://www.w3.org/2000/01/rdf-schema#Resource");
 
-			assertEquals(values, concepts.get("sem_annotation"));
+			assertEquals(values, concepts.get("annotation_value_uri"));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void testPropertyExpansion() {
+		try {
+			Map<String, Set<String>> concepts = OntologyModelService.getInstance().expandConcepts("http://purl.obolibrary.org/obo/RO_0002352");
+
+			Set<String> values = new HashSet<String>();
+			values.add("http://purl.obolibrary.org/obo/RO_0002328");
+			values.add("http://purl.obolibrary.org/obo/RO_0002352");
+			values.add("http://purl.obolibrary.org/obo/RO_0000056");
+
+			assertEquals(values, concepts.get("annotation_property_uri"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

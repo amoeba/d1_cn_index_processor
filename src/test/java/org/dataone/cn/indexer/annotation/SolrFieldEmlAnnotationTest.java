@@ -73,7 +73,10 @@ public class SolrFieldEmlAnnotationTest extends BaseSolrFieldXPathTest {
             "http://purl.dataone.org/odo/ECSO_00000518" + "||" +
             "http://www.w3.org/2000/01/rdf-schema#Resource" + "||" +
             "http://purl.dataone.org/odo/ECSO_00000516" + "||" +
-            "http://purl.obolibrary.org/obo/UO_0000301");
+            "http://purl.obolibrary.org/obo/UO_0000301" + "||" +
+            "http://ecoinformatics.org/oboe/oboe.1.2/oboe-core.owl#hasUnit" + "||" +
+            "http://purl.dataone.org/odo/ECSO_00000629" + "||" +
+            "http://ecoinformatics.org/oboe/oboe.1.2/oboe-core.owl#containsMeasurementsOfType");
     }
 
     protected boolean compareFields(HashMap<String, String> expected, InputStream document,
