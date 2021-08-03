@@ -293,6 +293,7 @@ public class JsonLdSubprocessor implements IDocumentSubprocessor {
             for (ISolrDataField field : this.fieldList) {
                 long filed = System.currentTimeMillis();
                 String q = null;
+                log.trace("Processing field: " + field.getName());
                 
                 //Process Sparql fields
                 if (field instanceof SparqlField) {
@@ -323,6 +324,14 @@ public class JsonLdSubprocessor implements IDocumentSubprocessor {
                             log.trace("JsonLdSubprocessor.process process the field " + field.getName() + "with value " + value);
                             metaDocument.addField(f);
                         }
+                    }
+                } else if (field instanceof DerivedSolrField) {
+                    //Get the Sparql query for this field
+                    SolrDoc solrDoc = null;
+                    List<SolrElementField> fields = ((DerivedSolrField) field).getFields(dataset);
+                    for (SolrElementField sel: fields) {
+                        log.trace("JsonLdSubprocessor.process processed the field " + sel.getName() + "with value " + sel.getValue());
+                        metaDocument.addField(sel);
                     }
                 }
                 perfLog.log("JsonLdSubprocessor.process process the field " + field.getName(), System.currentTimeMillis() - filed);

@@ -182,6 +182,15 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         assertTrue(compareFieldValue(id, "northBoundCoord", coord));
         coord[0] = "1.71098";
         assertTrue(compareFieldValue(id, "eastBoundCoord", coord));
+        assertTrue(compareFieldValue(id, "geohash_1", new String [] {"e"}));
+        assertTrue(compareFieldValue(id, "geohash_2", new String [] {"e9"}));
+        assertTrue(compareFieldValue(id, "geohash_3", new String [] {"e9h"}));
+        assertTrue(compareFieldValue(id, "geohash_4", new String [] {"e9hu"}));
+        assertTrue(compareFieldValue(id, "geohash_5", new String [] {"e9hus"}));
+        assertTrue(compareFieldValue(id, "geohash_6", new String [] {"e9husq"}));
+        assertTrue(compareFieldValue(id, "geohash_7", new String [] {"e9husqr"}));
+        assertTrue(compareFieldValue(id, "geohash_8", new String [] {"e9husqre"}));
+        assertTrue(compareFieldValue(id, "geohash_9", new String [] {"e9husqre3"}));
         assertTrue(compareFieldValue(id, "beginDate", new String [] {"2003-04-21T09:40:00.000Z"}));
         assertTrue(compareFieldValue(id, "endDate", new String [] {"2003-04-26T16:45:00.000Z"}));
         String[] parameters = {"unique record ID number", "Date (UTC) in ISO8601 format: YYYY-MM-DDThh:mmZ",
@@ -284,6 +293,23 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         assertTrue(compareFieldValue(id, "prov_usedByProgram", new String [] {"https://somerepository.org/datasets/10.xxxx/Dataset-101/process-script.R"}));
         assertTrue(compareFieldValue(id, "prov_usedByExecution", new String [] {"https://example.org/executions/execution-101"}));
         assertTrue(compareFieldValue(id, "abstract", new String [] {"Winter ecology of larval krill: quantifying their interaction with the pack ice habitat."}));
+        String [] coord = {"-68.4817"};
+        assertTrue(compareFieldValue(id, "southBoundCoord", coord));
+        coord[0] = "-75.8183";
+        assertTrue(compareFieldValue(id, "westBoundCoord", coord));
+        coord[0] = "-65.08";
+        assertTrue(compareFieldValue(id, "northBoundCoord", coord));
+        coord[0] = "-68.5033";
+        assertTrue(compareFieldValue(id, "eastBoundCoord", coord));
+        assertTrue(compareFieldValue(id, "geohash_1", new String [] {"4"}));
+        assertTrue(compareFieldValue(id, "geohash_2", new String [] {"4k"}));
+        assertTrue(compareFieldValue(id, "geohash_3", new String [] {"4kh"}));
+        assertTrue(compareFieldValue(id, "geohash_4", new String [] {"4khs"}));
+        assertTrue(compareFieldValue(id, "geohash_5", new String [] {"4khsj"}));
+        assertTrue(compareFieldValue(id, "geohash_6", new String [] {"4khsjf"}));
+        assertTrue(compareFieldValue(id, "geohash_7", new String [] {"4khsjfy"}));
+        assertTrue(compareFieldValue(id, "geohash_8", new String [] {"4khsjfyj"}));
+        assertTrue(compareFieldValue(id, "geohash_9", new String [] {"4khsjfyj7"}));
     }
 
     /**
