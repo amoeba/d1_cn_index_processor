@@ -232,4 +232,18 @@ public abstract class DataONESolrJettyTestBase extends SolrJettyTestBase {
         createJetty(solrHome, config);
         return jetty;
     }
+    
+    protected boolean compareFieldValue(String id, String fieldName, String expectedValue) throws SolrServerException, IOException {
+        System.out.println("==================== start of compare");
+        boolean equal = false;
+        ModifiableSolrParams solrParams = new ModifiableSolrParams();
+        solrParams.set("q", "id:" + ClientUtils.escapeQueryChars(id));
+        solrParams.set("fl", "*");
+        QueryResponse qr = getSolrClient().query(solrParams);
+        SolrDocument result = qr.getResults().get(0);
+        String value = (String)result.getFieldValue(fieldName);
+        System.out.println("+++++++++++++++++++The value of the field "+ fieldName + " from Solr is " + value);
+        System.out.println("The expected value of the field " + fieldName + " is " + expectedValue);
+        return expectedValue.equals(value);
+    }
 }
