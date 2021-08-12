@@ -497,4 +497,14 @@ xmlns:context="http://www.springframework.org/schema/context"
         <constructor-arg type="java.lang.String"
                          value="org/dataone/cn/index/resources/d1_testdocs/json-ld/doi.org_10.5061_dryad.41sk145.jsonld"/>
     </bean>
+    
+    <bean id="emlWithDataTableTestDoc" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+                         value="org/dataone/cn/index/resources/d1_testdocs/eml220/eml2.2.0testdatatable.xml"/>
+    </bean>
+    
+    <bean id="emlWithOtherEntityTestDoc" class="org.springframework.core.io.ClassPathResource" >
+        <constructor-arg type="java.lang.String"
+                         value="org/dataone/cn/index/resources/d1_testdocs/eml220/eml2.2.0testotherentity.xml"/>
+    </bean>
 </beans>
