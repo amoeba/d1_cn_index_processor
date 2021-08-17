@@ -26,11 +26,14 @@ import java.util.HashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dataone.cn.hazelcast.HazelcastClientFactory;
 import org.dataone.cn.index.processor.IndexTaskProcessor;
 import org.dataone.cn.indexer.parser.JsonLdSubprocessor;
 import org.dataone.cn.indexer.parser.ScienceMetadataDocumentSubprocessor;
 import org.dataone.cn.indexer.resourcemap.RdfXmlProcessorTest;
+import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.NodeReference;
+import org.dataone.service.types.v2.SystemMetadata;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,7 +62,8 @@ public class SolrFieldXPathEmlAttributeTest extends JsonLdSubprocessorTest {
     /* Store a map of expected Solr fields and their values for testing */
     private HashMap<String, String> expectedFields = new HashMap<String, String>();
 
-    private static final int SLEEPTIME = 5000;
+    private static final int SLEEPTIME = 500;
+    private static final int TIMES = 30;
     
     /**
      * For each test, set up the Solr service and test data
@@ -104,14 +108,27 @@ public class SolrFieldXPathEmlAttributeTest extends JsonLdSubprocessorTest {
         String id = "urn:uuid:4ad48407-8044-4f4a-9596-18e9cb221656";
         formatId = "https://eml.ecoinformatics.org/eml-2.2.0";
         insertResource(id, formatId, emlWithDataTable, nodeid, userDN);
-
-        Thread.sleep(SLEEPTIME);
+        Identifier identifier = new Identifier();
+        SystemMetadata sysmeta = HazelcastClientFactory.getSystemMetadataMap().get(identifier);
+        int count = 0;
+        while (sysmeta == null && count < TIMES) {
+            count ++;
+            Thread.sleep(SLEEPTIME);
+            sysmeta = HazelcastClientFactory.getSystemMetadataMap().get(identifier);
+        }
+        
         // now process the tasks
         processor.processIndexTaskQueue();
-        Thread.sleep(SLEEPTIME);
-        Thread.sleep(SLEEPTIME);
-        Thread.sleep(SLEEPTIME);
-        Thread.sleep(SLEEPTIME);
+        count = 0;
+        while (count < TIMES) {
+            try {
+                assertTrue(compareFieldValue(id, "title", "Chum salmon escapement on Bonanza River in Norton Sound, Alaska"));
+                break;
+            } catch (Exception e) {
+                count ++;
+                Thread.sleep(SLEEPTIME);
+            }
+        }
         assertPresentInSolrIndex(id);
         assertTrue(compareFieldValue(id, "title", "Chum salmon escapement on Bonanza River in Norton Sound, Alaska"));
         String[] projects = {"Chum salmon escapement on Bonanza River in Norton Sound, Alaska"};
@@ -155,14 +172,27 @@ public class SolrFieldXPathEmlAttributeTest extends JsonLdSubprocessorTest {
         String id = "urn:uuid:4ad48407-8044-4f4a-9596-18e9cb221658";
         formatId = "https://eml.ecoinformatics.org/eml-2.2.0";
         insertResource(id, formatId, emlWithOtherEntity, nodeid, userDN);
-
-        Thread.sleep(SLEEPTIME);
+        Identifier identifier = new Identifier();
+        SystemMetadata sysmeta = HazelcastClientFactory.getSystemMetadataMap().get(identifier);
+        int count = 0;
+        while (sysmeta == null && count < TIMES) {
+            count ++;
+            Thread.sleep(SLEEPTIME);
+            sysmeta = HazelcastClientFactory.getSystemMetadataMap().get(identifier);
+        }
+        
         // now process the tasks
         processor.processIndexTaskQueue();
-        Thread.sleep(SLEEPTIME);
-        Thread.sleep(SLEEPTIME);
-        Thread.sleep(SLEEPTIME);
-        Thread.sleep(SLEEPTIME);
+        count = 0;
+        while (count < TIMES) {
+            try {
+                assertTrue(compareFieldValue(id, "title", "Chum salmon escapement on Bonanza River in Norton Sound, Alaska"));
+                break;
+            } catch (Exception e) {
+                count ++;
+                Thread.sleep(SLEEPTIME);
+            }
+        }
         assertPresentInSolrIndex(id);
         assertTrue(compareFieldValue(id, "title", "Chum salmon escapement on Bonanza River in Norton Sound, Alaska"));
         String[] projects = {"Chum salmon escapement on Bonanza River in Norton Sound, Alaska"};
