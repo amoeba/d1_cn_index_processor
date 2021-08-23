@@ -883,5 +883,30 @@
 		<constructor-arg name="name" value="geohash_9" />
 		<property name="converter" ref="geohashConverter_9"/>
 	</bean>
-
+    <bean id="schema_org_fullText" class="org.dataone.cn.indexer.annotation.SparqlField"
+        p:multivalue="false"
+        p:concatValues="true"
+        p:separator=" ">
+        <constructor-arg name="name" value="text" />
+        <constructor-arg name="query">
+            <value>
+                <![CDATA[
+                    PREFIX SO:   <http://schema.org/>
+                    PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+                    SELECT DISTINCT (str(?string) as ?text)
+                    WHERE {
+                        {
+                            ?a ?b ?string .
+                            filter(datatype(?string) = xsd:string) .
+                        }
+                        UNION
+                        {
+                            ?a ?b ?string .
+                            filter(datatype(?string) = SO:HTML) .
+                        }
+                   }
+                ]]>
+           </value>
+        </constructor-arg>
+    </bean>
 </beans>

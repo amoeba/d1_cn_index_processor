@@ -51,6 +51,7 @@
 				<ref bean="schema_org_variableMeasured" />
 				<ref bean="schema_org_version" />
 				<ref bean="schema_org_url" />
+				<ref bean="schema_org_fullText" />
 			</list>
 		</property>
 	</bean>
