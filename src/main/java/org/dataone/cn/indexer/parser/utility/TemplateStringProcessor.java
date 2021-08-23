@@ -36,9 +36,18 @@ public class TemplateStringProcessor {
 
     public String process(String template, Map<String, String> valueMap) {
         String result = template;
+        // Check if the special template value "*" has been specified. If yes, then
+        // all values will be included, in the order that they are encountered.
+        Boolean includeAllValues = false;
+        if (template.trim().compareTo("*") == 0) {
+            includeAllValues = true;
+            result = "";
+        }
         for (String key : valueMap.keySet()) {
             String value = valueMap.get(key);
-            if (result.contains(key)) {
+            if (includeAllValues) {
+                result = result + " " + value;
+            } else if (result.contains(key)) {
                 result = result.replaceAll("\\[" + key + "\\]", Matcher.quoteReplacement(value));
             }
         }

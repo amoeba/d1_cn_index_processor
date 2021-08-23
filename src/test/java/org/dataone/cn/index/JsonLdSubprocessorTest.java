@@ -179,6 +179,15 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         assertTrue(compareFieldValue(id, "northBoundCoord", coord));
         coord[0] = "1.71098";
         assertTrue(compareFieldValue(id, "eastBoundCoord", coord));
+        assertTrue(compareFieldValue(id, "geohash_1", new String [] {"e"}));
+        assertTrue(compareFieldValue(id, "geohash_2", new String [] {"e9"}));
+        assertTrue(compareFieldValue(id, "geohash_3", new String [] {"e9h"}));
+        assertTrue(compareFieldValue(id, "geohash_4", new String [] {"e9hu"}));
+        assertTrue(compareFieldValue(id, "geohash_5", new String [] {"e9hus"}));
+        assertTrue(compareFieldValue(id, "geohash_6", new String [] {"e9husq"}));
+        assertTrue(compareFieldValue(id, "geohash_7", new String [] {"e9husqr"}));
+        assertTrue(compareFieldValue(id, "geohash_8", new String [] {"e9husqre"}));
+        assertTrue(compareFieldValue(id, "geohash_9", new String [] {"e9husqre3"}));
         assertTrue(compareFieldValue(id, "beginDate", new String [] {"2003-04-21T09:40:00.000Z"}));
         assertTrue(compareFieldValue(id, "endDate", new String [] {"2003-04-26T16:45:00.000Z"}));
         String[] parameters = {"unique record ID number", "Date (UTC) in ISO8601 format: YYYY-MM-DDThh:mmZ",
@@ -188,6 +197,7 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         String[] urls = {"https://doi.pangaea.de/10.1594/PANGAEA.925562",
                         "https://doi.pangaea.de/10.1594/PANGAEA.925562?format=zip"};
         assertTrue(compareFieldValue(id, "serviceEndpoint", urls));
+        assertTrue(compareFieldLength(id, "text", 4269));
     }
 
     /**
@@ -233,6 +243,7 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         String urls[] = {"http://datadryad.org/api/v2/datasets/doi%253A10.5061%252Fdryad.m8s2r36/download",
                          "http://datadryad.org/stash/dataset/doi%253A10.5061%252Fdryad.m8s2r36"};
         assertTrue(compareFieldValue(id, "serviceEndpoint", urls));
+        assertTrue(compareFieldLength(id, "text", 691));
     }
 
     /**
@@ -275,6 +286,24 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         assertTrue(compareFieldValue(id, "prov_usedByProgram", new String [] {"https://somerepository.org/datasets/10.xxxx/Dataset-101/process-script.R"}));
         assertTrue(compareFieldValue(id, "prov_usedByExecution", new String [] {"https://example.org/executions/execution-101"}));
         assertTrue(compareFieldValue(id, "abstract", new String [] {"Winter ecology of larval krill: quantifying their interaction with the pack ice habitat."}));
+        String [] coord = {"-68.4817"};
+        assertTrue(compareFieldValue(id, "southBoundCoord", coord));
+        coord[0] = "-75.8183";
+        assertTrue(compareFieldValue(id, "westBoundCoord", coord));
+        coord[0] = "-65.08";
+        assertTrue(compareFieldValue(id, "northBoundCoord", coord));
+        coord[0] = "-68.5033";
+        assertTrue(compareFieldValue(id, "eastBoundCoord", coord));
+        assertTrue(compareFieldValue(id, "geohash_1", new String [] {"4"}));
+        assertTrue(compareFieldValue(id, "geohash_2", new String [] {"4k"}));
+        assertTrue(compareFieldValue(id, "geohash_3", new String [] {"4kh"}));
+        assertTrue(compareFieldValue(id, "geohash_4", new String [] {"4khs"}));
+        assertTrue(compareFieldValue(id, "geohash_5", new String [] {"4khsj"}));
+        assertTrue(compareFieldValue(id, "geohash_6", new String [] {"4khsjf"}));
+        assertTrue(compareFieldValue(id, "geohash_7", new String [] {"4khsjfy"}));
+        assertTrue(compareFieldValue(id, "geohash_8", new String [] {"4khsjfyj"}));
+        assertTrue(compareFieldValue(id, "geohash_9", new String [] {"4khsjfyj7"}));
+        assertTrue(compareFieldLength(id, "text", 3681));
     }
 
     /**
@@ -324,6 +353,7 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
             assertTrue(compareFieldValue(thisId, "author", new String [] {"creator_03"}));
             String[] origins = {"creator_03", "creator_02", "creator_01"};
             assertTrue(compareFieldValue(thisId, "origin", origins));
+            //assertTrue(compareFieldLength(thisId, "text", 140));
         }
     }
 
@@ -382,9 +412,11 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         urls = new String[]{"http://datadryad.org/stash/dataset/doi%253A10.5061%252Fdryad.41sk145",
                 "http://datadryad.org/api/v2/datasets/doi%253A10.5061%252Fdryad.41sk145/download"};
         assertTrue(compareFieldValue(thisId, "serviceEndpoint", urls));
+        assertTrue(compareFieldLength(thisId, "text", 2501));
     }
 
     protected boolean compareFieldValue(String id, String fieldName, String[] expectedValues) throws SolrServerException, IOException {
+
         boolean equal = true;
         ModifiableSolrParams solrParams = new ModifiableSolrParams();
         solrParams.set("q", "id:" + ClientUtils.escapeQueryChars(id));
@@ -406,6 +438,7 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
                iObj++;
             }
         } else if (testResult instanceof String) {
+            System.out.println("++++++++++++++++ Solr returned a 'String'.");
             solrValuesArray = solrValues.toArray(new String[solrValues.size()]);
         } else if (testResult instanceof Date) {
             // Solr returned a 'Date' value, so convert it to a string so that it can
@@ -446,6 +479,34 @@ public class JsonLdSubprocessorTest extends RdfXmlProcessorTest {
         }
         return equal;
         
+    }
+
+    /**
+     * Compare the string length of a result with a known correct value.
+     * <p>
+     *     Some Solr fields (e.g. text) are derived by concatenating multiple source fields together into a single value. Because of the
+     *     RDF serialization and retrieval by SPARQL, there is no guarentee that the resulting string will be the same as any previous
+     *     result. Therefore, the only way to check that the value could be the same is to compare the resulting string length, which sould
+     *     always be the same, regardless of the order of component strings that comprise it. This isn't a perfect test, as it doesn't
+     *     definitively prove the string is correct, just that it could be correct.
+     * </p>
+     *
+     * @throws Exception
+     */
+    protected boolean compareFieldLength(String id, String fieldName, int expectedLength) throws SolrServerException, IOException {
+        boolean equal = true;
+        ModifiableSolrParams solrParams = new ModifiableSolrParams();
+        solrParams.set("q", "id:" + ClientUtils.escapeQueryChars(id));
+        solrParams.set("fl", "*");
+        QueryResponse qr = getSolrClient().query(solrParams);
+        SolrDocument result = qr.getResults().get(0);
+        String testResult = (String) result.getFirstValue(fieldName);
+        int fieldLength = testResult.length();
+
+        System.out.println("++++++++++++++++ the string length of solr result for the string field " + fieldName + " is " + fieldLength);
+        System.out.println("++++++++++++++++ the expected string length for the field " + fieldName + " is " + expectedLength);
+
+        return (fieldLength == expectedLength);
     }
     
     @Test

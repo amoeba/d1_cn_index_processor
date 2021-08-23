@@ -293,9 +293,17 @@ public class JsonLdSubprocessor implements IDocumentSubprocessor {
             for (ISolrDataField field : this.fieldList) {
                 long filed = System.currentTimeMillis();
                 String q = null;
+                String separator = null;
+                log.trace("Processing field: " + field.getName());
                 
-                //Process Sparql fields
+                //Process Sparql fields. The Solr field value is derived from a SPARQL query performed on the
+                // JSON-LD document that has been serialized to RDF.
                 if (field instanceof SparqlField) {
+                    String fullValue = null;
+                    Boolean concatValues = ((SparqlField) field).getConcatValues();
+                    if (concatValues == null) concatValues = false;
+                    separator = ((SparqlField) field).getSeparator();
+                    if (separator == null) separator = " ";
                     //Get the Sparql query for this field
                     q = ((SparqlField) field).getQuery();
                     //Create a Query object
@@ -318,11 +326,34 @@ public class JsonLdSubprocessor implements IDocumentSubprocessor {
                             if (((SparqlField) field).getConverter() != null) {
                                 value = ((SparqlField) field).getConverter().convert(value);
                             }
-                            //Create an index field for this field name and value
-                            SolrElementField f = new SolrElementField(field.getName(), value);
-                            log.trace("JsonLdSubprocessor.process process the field " + field.getName() + "with value " + value);
-                            metaDocument.addField(f);
+                            if (concatValues) {
+                                if (fullValue == null) {
+                                    fullValue = value;
+                                } else {
+                                    fullValue = fullValue + separator + value;
+                                }
+                            } else {
+                                //Create an index field for this field name and value
+                                SolrElementField f = new SolrElementField(field.getName(), value);
+                                log.trace("JsonLdSubprocessor.process process the field " + field.getName() + " with value " + value);
+                                metaDocument.addField(f);
+                            }
                         }
+                    }
+                    // Some result values are derived by concatenating the return values of multiple values from the document.
+                    if (concatValues) {
+                        //Create an index field for this field name and value
+                        SolrElementField f = new SolrElementField(field.getName(), fullValue);
+                        log.trace("JsonLdSubprocessor.process process the concat field " + field.getName() + " with value " + fullValue);
+                        metaDocument.addField(f);
+                    }
+                } else if (field instanceof DerivedSolrField) {
+                    //Get the Sparql query for this field
+                    SolrDoc solrDoc = null;
+                    List<SolrElementField> fields = ((DerivedSolrField) field).getFields(dataset);
+                    for (SolrElementField sel: fields) {
+                        log.trace("JsonLdSubprocessor.process processed the field " + sel.getName() + " with value " + sel.getValue());
+                        metaDocument.addField(sel);
                     }
                 }
                 perfLog.log("JsonLdSubprocessor.process process the field " + field.getName(), System.currentTimeMillis() - filed);
