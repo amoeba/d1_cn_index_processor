@@ -216,5 +216,13 @@ public class SolrFieldXPathEmlAttributeTest extends JsonLdSubprocessorTest {
                                 "ageErrorID  Source of error in age estimate"};
         assertTrue(compareFieldValue(id, "attribute", attributes));
     }
+    
+    /**
+     * Overwrite a super class to do nothing.
+     */
+    @Test
+    public void testInsertSchemaNormalization() throws Exception {
+        
+    }
 
 }
