@@ -425,7 +425,7 @@
 	<bean id="eml.attributeName" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="attributeName" />
 		<constructor-arg name="xpath"
-			value='//dataTable/attributeList/attribute/attributeName/text()' />
+			value='//attributeList/attribute/attributeName/text()' />
 		<property name="multivalue" value="true" />
 		<property name="dedupe" value="false" />
 	</bean>
@@ -433,7 +433,7 @@
 	<bean id="eml.attributeLabel" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="attributeLabel" />
 		<constructor-arg name="xpath"
-			value='//dataTable/attributeList/attribute/attributeLabel/text()' />
+			value='//attributeList/attribute/attributeLabel/text()' />
 		<property name="multivalue" value="true" />
 		<property name="dedupe" value="false" />
 	</bean>
@@ -441,7 +441,7 @@
 	<bean id="eml.attributeDescription" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="attributeDescription" />
 		<constructor-arg name="xpath"
-			value='//dataTable/attributeList/attribute/attributeDefinition/text()' />
+			value='//attributeList/attribute/attributeDefinition/text()' />
 		<property name="multivalue" value="true" />
 		<property name="dedupe" value="false" />
 	</bean>
@@ -449,7 +449,7 @@
 	<bean id="eml.attributeUnit" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="attributeUnit" />
 		<constructor-arg name="xpath"
-			value='//dataTable//standardUnit/text() | //dataTable//customUnit/text()' />
+			value='//attributeList/attribute//standardUnit/text() | //attributeList/attribute//customUnit/text()' />
 		<property name="multivalue" value="true" />
 		<property name="dedupe" value="false" />
 	</bean>
@@ -462,7 +462,7 @@
 	
 	<bean id="eml.attributeTextRoot" class="org.dataone.cn.indexer.parser.utility.RootElement"
 		p:name="attribute"
-		p:xPath='//dataTable/attributeList/attribute'
+		p:xPath='//attributeList/attribute'
 		p:template="[attributeName] [attributeLabel] [attributeDescription] [attributeUnit]">
 		<property name="leafs">
 			<list>
@@ -493,7 +493,7 @@
 	<bean id="eml.attributeName.noDupe" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="attributeName_noDupe" />
 		<constructor-arg name="xpath"
-			value='//dataTable/attributeList/attribute/attributeName/text()' />
+			value='//attributeList/attribute/attributeName/text()' />
 		<property name="multivalue" value="true" />
 		<property name="dedupe" value="true" />
 	</bean>
@@ -501,7 +501,7 @@
 	<bean id="eml.attributeLabel.noDupe" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="attributeLabel_noDupe" />
 		<constructor-arg name="xpath"
-			value='//dataTable/attributeList/attribute/attributeLabel/text()' />
+			value='//attributeList/attribute/attributeLabel/text()' />
 		<property name="multivalue" value="true" />
 		<property name="dedupe" value="true" />
 	</bean>
@@ -509,7 +509,7 @@
 	<bean id="eml.attributeDescription.noDupe" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="attributeDescription_noDupe" />
 		<constructor-arg name="xpath"
-			value='//dataTable/attributeList/attribute/attributeDefinition/text()' />
+			value='//attributeList/attribute/attributeDefinition/text()' />
 		<property name="multivalue" value="true" />
 		<property name="dedupe" value="true" />
 	</bean>
@@ -517,7 +517,7 @@
 	<bean id="eml.attributeUnit.noDupe" class="org.dataone.cn.indexer.parser.SolrField">
 		<constructor-arg name="name" value="attributeUnit_noDupe" />
 		<constructor-arg name="xpath"
-			value='//dataTable//standardUnit/text() | //dataTable//customUnit/text()' />
+			value='//attributeList/attribute//standardUnit/text() | //attributeList/attribute//customUnit/text()' />
 		<property name="multivalue" value="true" />
 		<property name="dedupe" value="true" />
 	</bean>
